@@ -14,16 +14,21 @@ const sendMail = async (emailAddresses: string | string[]): Promise<void> => {
       pass: config.smtpServer.password,
     },
   };
-  logger.debug({ transportOptions }, "Sending email with transport options");
-  const transporter = nodemailer.createTransport(transportOptions);
+  try {
+    logger.debug({ transportOptions }, "Sending email with transport options");
+    const transporter = nodemailer.createTransport(transportOptions);
 
-  const info: SentMessageInfo = await transporter.sendMail({
-    from: config.email.from,
-    to: emailAddresses,
-    subject: config.email.subject,
-    text: config.email.text,
-  } as Mail.Options);
+    const info: SentMessageInfo = await transporter.sendMail({
+      from: config.email.from,
+      to: emailAddresses,
+      subject: config.email.subject,
+      text: config.email.text,
+    } as Mail.Options);
 
-  logger.info(`Email sent to ${emailAddresses}: ${info.messageId}`);
+    logger.info(`Email sent to ${emailAddresses}: ${info.messageId}`);
+  } catch (error) {
+    logger.error(`Failed to send email to ${emailAddresses}: ${error}`);
+    throw error; // maybe handle it higher on call stack
+  }
 };
 export default sendMail;

@@ -286,25 +286,27 @@ emailService.post(
 
     let emailAddress: string;
     (async (): Promise<void> => {
-      logger.info(`Get email address of user ${id}`);
-      emailAddress = await db.getEmailAddress(id);
-      let body: NotificationResponseBody;
-      if (emailAddress.length > 0) {
-        await sendMail(emailAddress);
-        logger.trace("Notification sent to " + emailAddress);
-        body = {
-          notification: { recipient: id, status: "sent", emailAddress },
-        };
-        res.status(200).send(body);
-      } else {
-        logger.trace("Email address" + emailAddress + "not found");
-        body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
-        res.status(404).send(body);
+      try {
+        logger.info(`Get email address of user ${id}`);
+        emailAddress = await db.getEmailAddress(id);
+        let body: NotificationResponseBody;
+        if (emailAddress.length > 0) {
+          await sendMail(emailAddress);
+          logger.trace("Notification sent to " + emailAddress);
+          body = {
+            notification: { recipient: id, status: "sent", emailAddress },
+          };
+          res.status(200).send(body);
+        } else {
+          logger.trace("Email address" + emailAddress + "not found");
+          body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
+          res.status(404).send(body);
+        }
+      } catch (error) {
+        logger.error({ err: error }, "Error while send notification");
+        res.status(500).send(error);
       }
-    })().catch((error) => (): void => {
-      logger.error({ err: error }, "Error while send notification");
-      res.status(500).send(error);
-    });
+    })();
   },
 );
 
