@@ -125,7 +125,7 @@ class DocumentOverview extends Component {
       return (
         <TableRow key={index + "document"}>
           <TableCell data-test="workflowitemDocumentFileName">
-            <OverflowTooltip text={fileName} maxWidth="200px" />
+            <OverflowTooltip text={fileName} maxWidth="12.5rem" />
           </TableCell>
           <TableCell>
             {document.link ? (
@@ -135,7 +135,7 @@ class DocumentOverview extends Component {
             ) : (
               <div className="finger-print-container">
                 <FingerPrint className="finger-print" />
-                <OverflowTooltip text={hash} maxWidth="70px" />
+                <OverflowTooltip text={hash} maxWidth="4.375rem" />
               </div>
             )}
           </TableCell>

@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 
 import Tooltip from "@mui/material/Tooltip";
 
-const OverflowTooltip = ({ text = "", maxWidth = "140px" }) => {
+const OverflowTooltip = ({ text = "", maxWidth = "8.75rem" }) => {
   const textElementRef = useRef();
   const [isOverflowed, setIsOverflowed] = useState(false);
 
