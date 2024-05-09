@@ -35,7 +35,7 @@ func main() {
 	// Logger
 	configureLogger(logging.GetLevel(logLevel))
 
-	log.Info("multichain-feed: Starting program")
+	log.Debug("multichain-feed: Starting program")
 
 	// Check arguments
 	arguments := os.Args[1:]
@@ -48,10 +48,10 @@ func main() {
 
 	var rawMessage json.RawMessage
 
-	log.Info("multichain-feed: Parsing transaction type")
+	log.Debug("multichain-feed: Parsing transaction type")
 	txType, err := parseTransactionType(&rawMessage, transactionJSONAsString)
 	if err != nil {
-			log.Error("multichain-feed: Error parsing transaction: %v", err)
+		log.Debug("multichain-feed: Error parsing transaction: %v", err)
 			os.Exit(1)
 	}
 
@@ -60,19 +60,19 @@ func main() {
 
 	switch txType {
 	case "notification_created":
-			log.Info("multichain-feed: Creating new disk persister")
+		log.Debug("multichain-feed: Creating new disk persister")
 			myPersister = NewDiskPersister(notificationPath)
 	default:
 			// Unknown transaction types
-			log.Info("multichain-feed: Unknown transaction type: %s", txType)
+			log.Debug("multichain-feed: Unknown transaction type: %s", txType)
 	}
 
-	log.Info("multichain-feed: Persisting transaction")
+	log.Debug("multichain-feed: Persisting transaction")
 	err = myPersister.persist(transactionJSONAsString)
 	if err != nil {
 			log.Error("multichain-feed: Error persisting transaction: %v", err)
 			os.Exit(1)
 	}
 
-	log.Info("multichain-feed: Program completed successfully")
+	log.Debug("multichain-feed: Program completed successfully")
 }
