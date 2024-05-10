@@ -32,7 +32,7 @@
 
 .workflow-row {
   display: flex;
-  height: 30px;
+  height: 1.875rem;
   border-bottom: unset;
 }
 
@@ -53,15 +53,15 @@
 }
 
 .workflow-preview-typography {
-  margin: 0px 2.375rem 0.625rem 2.375rem;
+  margin: 0 2.375rem 0.625rem 2.375rem;
   display: flex;
   align-items: center;
   justify-content: center;
-  max-width: 500px;
+  max-width: 31.25rem;
 }
 
 .workflow-preview-dialog-box {
-  min-width: 600px;
+  min-width: 37.5rem;
   overflow-y: scroll;
   display: flex;
   justify-content: center;

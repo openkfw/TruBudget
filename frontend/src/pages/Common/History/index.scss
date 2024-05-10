@@ -2,13 +2,18 @@
   margin-top: 1.5rem;
 }
 
-.form-control {
-  margin-top: 1.5rem;
-  width: -webkit-fill-available;
-}
-
 .loader {
   display: flex;
   justify-content: center;
   padding: 1rem 0;
+}
+
+.history-dropdown {
+  min-width: 12.5rem;
+  margin-left: 1rem;
+}
+
+.history-list {
+  max-width: 21.875rem;
+  min-width: 21.875rem;
 }
