@@ -163,7 +163,7 @@ excelService.use(function (
   _next: express.NextFunction,
 ) {
   // set locals, only providing error in development
-  logger.error("Error handler: ", err.message);
+  logger.error("Error handler: " + err.message || "UNDEFINED ERROR");
   res.locals.message = err.message;
   res.locals.error = req.app.get("env") === "development" ? err : {};
 
