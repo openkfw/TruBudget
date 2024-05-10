@@ -5,12 +5,15 @@ import { createPinoExpressLogger } from "trubudget-logging-service";
 import * as URL from "url";
 import helmet from "helmet";
 import rateLimit from "express-rate-limit";
-import { getApiReadiness, getApiVersion } from "./api";
+import { formatHttpError, getApiReadiness, getApiVersion } from "./api";
 import { config } from "./config";
 import { writeXLSX } from "./excel";
 import strings, { languages } from "./localizeStrings";
 import logger from "./logger";
 import { CustomExpressRequest, CustomExpressResponse } from "./types";
+import { APIError } from "./apiError";
+import httpStatus = require("http-status");
+import { forwardError } from "./errors";
 
 const DEFAULT_API_VERSION = "1.0";
 const API_BASE = `http://${config.apiHost}:${config.apiPort}/api`;
@@ -97,58 +100,91 @@ excelService.get("/version", (req: CustomExpressRequest, res: CustomExpressRespo
   );
 });
 
-excelService.get("/download", async (req: CustomExpressRequest, res: CustomExpressResponse) => {
-  if (req.cookies && req.cookies.token) {
-    req.headers.authorization = req.cookies.token;
-  } else if (req.headers.cookie) {
-    const cookies = req.headers.cookie.split("; ");
-    const authToken = cookies.find((cookie) => cookie.startsWith("token="));
-    if (authToken) {
-      req.headers.authorization = `Bearer ${authToken.split("=")[1]}`;
+excelService.get(
+  "/download",
+  forwardError(async (req: CustomExpressRequest, res: CustomExpressResponse) => {
+    if (req.cookies && req.cookies.token) {
+      req.headers.authorization = req.cookies.token;
+    } else if (req.headers.cookie) {
+      const cookies = req.headers.cookie.split("; ");
+      const authToken = cookies.find((cookie) => cookie.startsWith("token="));
+      if (authToken) {
+        req.headers.authorization = `Bearer ${authToken.split("=")[1]}`;
+      }
     }
-  }
-  const token = req.headers.authorization;
-  if (!token) {
-    req.log.error("No authorization token was provided");
-    return res.status(401).send("Please provide authorization token");
+    const token = req.headers.authorization;
+    if (!token) {
+      req.log.error("No authorization token was provided");
+      return res.status(401).send("Please provide authorization token");
+    }
+
+    try {
+      await getApiVersion(axios, token, res.apiBase);
+    } catch (err) {
+      if (!err.response) {
+        logger.error({ err }, "Cannot connect to API service");
+        return res.status(503).send({ message: "Cannot connect to API service" });
+      }
+      if (err.response?.status == 401) {
+        logger.error({ err }, "Invalid Token:");
+        return res.status(err.response.status).send({ message: err.response.data });
+      }
+      logger.error({ err }, "Error validating token");
+      return res
+        .status(err.response.status)
+        .send({ message: `Error validating token: ${err.response} ` });
+    }
+
+    setExcelLanguage(req.url);
+
+    // create export
+    try {
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      );
+      res.setHeader("Content-Disposition", "attachment; filename=TruBudget_Export.xlsx");
+      res.setHeader("Transfer-Encoding", "chunked");
+
+      await writeXLSX(axios, token, res);
+    } catch (error) {
+      req.log.error({ err: error }, "Error while creating excel export");
+      if (error.response) {
+        return res.status(error.response.status).send({ message: error.response.data });
+      }
+    }
+  }),
+);
+
+excelService.use(function (
+  err: Error | APIError,
+  req: CustomExpressRequest,
+  res: CustomExpressResponse,
+  _next: express.NextFunction,
+) {
+  // set locals, only providing error in development
+  logger.error("Error handler: ", err.message);
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  // render the error page
+  const isPublic = (err as APIError).isPublic || false;
+  const formattedErrorResponse: {
+    message: string;
+    stack?: string;
+    stackArray?: Array<string>;
+  } = {
+    message: isPublic ? err.message : "Unexpected error",
+  };
+
+  if (config.NODE_ENV === "development") {
+    formattedErrorResponse.stack = err.stack ? err.stack : "";
+    formattedErrorResponse.stackArray = err.stack ? err.stack.split("\n") : [];
   }
 
-  try {
-    await getApiVersion(axios, token, res.apiBase);
-  } catch (err) {
-    if (!err.response) {
-      logger.error({ err }, "Cannot connect to API service");
-      return res.status(503).send({ message: "Cannot connect to API service" });
-    }
-    if (err.response?.status == 401) {
-      logger.error({ err }, "Invalid Token:");
-      return res.status(err.response.status).send({ message: err.response.data });
-    }
-    logger.error({ err }, "Error validating token");
-    return res
-      .status(err.response.status)
-      .send({ message: `Error validating token: ${err.response} ` });
-  }
-
-  setExcelLanguage(req.url);
-
-  // create export
-  try {
-    res.setHeader(
-      "Content-Type",
-      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    );
-    res.setHeader("Content-Disposition", "attachment; filename=TruBudget_Export.xlsx");
-    res.setHeader("Transfer-Encoding", "chunked");
-
-    await writeXLSX(axios, token, res);
-  } catch (error) {
-    req.log.error({ err: error }, "Error while creating excel export");
-    if (error.response) {
-      return res.status(error.response.status).send({ message: error.response.data });
-    }
-  }
+  res.status(httpStatus.INTERNAL_SERVER_ERROR).json(formatHttpError(formattedErrorResponse));
 });
+
 excelService.listen(config.serverPort, () => logger.info(`App listening on ${config.serverPort}`));
 
 // Enable useful traces of unhandled-promise warnings:

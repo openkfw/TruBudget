@@ -165,6 +165,7 @@ services:
       LOG_LEVEL: ${EXCEL_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       RATE_LIMIT: ${RATE_LIMIT}
+      NODE_ENV: ${NODE_ENV}
     command: ["npm", "run", "watch"]
     # volume for hot reloading
     volumes:
