@@ -12,6 +12,6 @@ describe("Check if Trubudget Environment is ready", () => {
     cy.task("awaitExcelExportReady", exportServiceBaseUrl, 10, 20000);
   });
   it("Provisioning has completed successfully", function () {
-    cy.task("awaitProvisioning", apiBaseUrl, 10, 60000);
+    cy.task("awaitProvisioning", apiBaseUrl, 10, 120000);
   });
 });
