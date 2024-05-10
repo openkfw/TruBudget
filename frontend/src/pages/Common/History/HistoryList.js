@@ -45,12 +45,9 @@ const HistoryList = ({ events, nEventsTotal, hasMore, getUserDisplayname, isLoad
 
   return (
     <List
+      className="history-list"
       data-test="history-list"
       subheader={<ListSubheader disableSticky>{historyType}</ListSubheader>}
-      sx={{
-        maxWidth: "350px",
-        minWidth: "350px"
-      }}
     >
       {!isLoading && nEventsTotal === 0 ? (
         <ListItem key="no-element">

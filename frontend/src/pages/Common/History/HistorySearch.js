@@ -9,6 +9,8 @@ import Dropdown from "../../Common/NewDropdown";
 
 import useHistoryState from "./historyHook";
 
+import "./index.scss";
+
 const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
   const [{ startAt, endAt, publisher, eventType }, mergeState, clearState] = useHistoryState();
 
@@ -60,7 +62,7 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
       />
 
       <Dropdown
-        style={{ minWidth: "200px", marginLeft: "1rem" }}
+        className="history-dropdown"
         value={publisher}
         floatingLabel={strings.history.publisher}
         onChange={(value) => mergeState({ publisher: value })}
@@ -71,7 +73,7 @@ const HistorySearch = ({ fetchFirstHistoryEvents, users, eventTypes }) => {
       </Dropdown>
 
       <Dropdown
-        style={{ minWidth: "200px", marginLeft: "1rem" }}
+        className="history-dropdown"
         value={eventType}
         floatingLabel={strings.history.event_type}
         onChange={(value) => mergeState({ eventType: value })}
