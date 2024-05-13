@@ -20,9 +20,15 @@ import {
 } from "./types";
 import isBodyValid from "./validation";
 
+if (config.email.from === undefined) {
+  logger.warn(
+    "The 'EMAIL_FROM' env variable is not set. The email service will not be able to send emails.",
+  );
+}
+
 // Setup
 let corsOptions = {
-  credentials: config.authentication === "jwt" ? true : false,
+  credentials: true,
   // eslint-disable-next-line @typescript-eslint/explicit-function-return-type, @typescript-eslint/no-explicit-any
   origin: function (origin: any, callback: any) {
     if (config.allowOrigin === "*") {
@@ -245,7 +251,7 @@ emailService.get(
           user: { id, emailAddress },
         });
       } else {
-        logger.trace("Email address" + emailAddress + " not found");
+        logger.info("Email address" + emailAddress + " not found");
         res.status(404).send({
           user: { id, emailAddress: "Not Found" },
         });
@@ -286,25 +292,27 @@ emailService.post(
 
     let emailAddress: string;
     (async (): Promise<void> => {
-      logger.info(`Get email address of user ${id}`);
-      emailAddress = await db.getEmailAddress(id);
-      let body: NotificationResponseBody;
-      if (emailAddress.length > 0) {
-        await sendMail(emailAddress);
-        logger.trace("Notification sent to " + emailAddress);
-        body = {
-          notification: { recipient: id, status: "sent", emailAddress },
-        };
-        res.status(200).send(body);
-      } else {
-        logger.trace("Email address" + emailAddress + "not found");
-        body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
-        res.status(404).send(body);
+      try {
+        logger.info(`Get email address of user ${id}`);
+        emailAddress = await db.getEmailAddress(id);
+        let body: NotificationResponseBody;
+        if (emailAddress.length > 0) {
+          await sendMail(emailAddress);
+          logger.trace("Notification sent to " + emailAddress);
+          body = {
+            notification: { recipient: id, status: "sent", emailAddress },
+          };
+          res.status(200).send(body);
+        } else {
+          logger.trace("Email address" + emailAddress + "not found");
+          body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
+          res.status(404).send(body);
+        }
+      } catch (error) {
+        logger.error(`Error while send notification: ${error}`);
+        res.status(500).send(error);
       }
-    })().catch((error) => (): void => {
-      logger.error({ err: error }, "Error while send notification");
-      res.status(500).send(error);
-    });
+    })();
   },
 );
 

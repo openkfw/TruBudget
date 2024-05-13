@@ -68,7 +68,7 @@ const sendNotifications = async (path, emailServiceSocketAddress, token, ssl = f
       );
       if (response.data.notification && response.data.notification.status === "sent") {
         log.debug("Delete file " + path + "/" + file);
-        await fs.unlinkSync(path + "/" + file);
+        await fs.promises.unlink(path + "/" + file);
       }
     } catch (error) {
       if (!error.response) {
@@ -117,7 +117,7 @@ const deleteFilesOlderThan = async (time, path) => {
         if (fileAgeInHours >= time) {
           try {
             log.debug("Delete file " + filePath);
-            await fs.unlinkSync(filePath);
+            await fs.promises.unlink(filePath);
           } catch (err) {
             log.error({ err }, "Error while deleting file " + filePath);
           }
@@ -145,6 +145,7 @@ const absolutePath = process.cwd() + "/" + path;
 let token = "";
 (async () => {
   while (true) {
+    log.trace("Checking for new notifications");
     try {
       // Check/Send/Delete notification transaction files in notification directory
       await sendNotifications(absolutePath, emailServiceSocketAddress, token, ssl);
