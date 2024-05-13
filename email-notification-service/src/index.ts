@@ -309,7 +309,7 @@ emailService.post(
           res.status(404).send(body);
         }
       } catch (error) {
-        logger.error({ err: error }, "Error while send notification");
+        logger.error(`Error while send notification: ${error}`);
         res.status(500).send(error);
       }
     })();
