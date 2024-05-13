@@ -15,7 +15,7 @@ const BudgetsList = ({ budgets }) => {
           <Box
             key={`projectedBudget-${i}`}
             sx={{
-              marginBottom: "8px"
+              marginBottom: "0.5rem"
             }}
           >
             <Tooltip title={b.organization}>
