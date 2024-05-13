@@ -6,6 +6,8 @@ This setup starts a development version of TruBudget.
 
 To setup TruBudget, you need to install [Docker](https://www.docker.com/community-edition#/download) (version 20.10.7 or higher) and [Docker Compose](https://docs.docker.com/compose/install/) (version 1.29.2 or higher).
 
+Set up local environment (creating .env files and installing npm packages in project folders) by running `bash scripts/initial-config.sh`. For more detailed information on how to set up development environment please refer to [developer-setup.md](../../docs/developer/developer-setup.md).
+
 To start the slim setup (only blockchain, api, frontend), run `bash start-dev.sh` or `bash start-dev.sh --slim`.
 
 To start 2 slim TruBudget instances for 2 organizations, run `bash start-dev.sh --slim --add-organization`.
@@ -16,9 +18,9 @@ For further information, run `bash start-dev.sh --help`.
 
 When the setup has completed, you can open these URLs in the browser:
 
-Frontend: http://localhost:3000/
+Frontend: <http://localhost:3000/>
 
-API: http://localhost:8080/api/documentation/static/index.html
+API: <http://localhost:8080/api/documentation/static/index.html>
 
 > If the Trubudget has started without provisioning, only available user will be the root. The root user credentials are (by default):
 
