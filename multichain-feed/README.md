@@ -37,11 +37,11 @@ As an Example, we want to log every transaction where a new user is created in a
 
 3. Set the environmental variables `MULTICHAIN_FEED_ENABLED` to `true` in `blockchain/.env`.
 
-4. Go to the multichain-feed directory (/multichain-feed) and compile the GO project to a binary script file with `go build .`
+4. Go to the multichain-feed directory (/multichain-feed) and compile the GO project to a binary script file with `GOOS=linux GOARCH=amd64 go build .` Use different target OS and architecture, if you know what you're doing.
 
 ```bash
 cd multichain-feed/
-go build .
+GOOS=linux GOARCH=amd64 go build .
 ```
 
 5. Now copy the multichain-feed binary script into the docker container using following commands. The docker container name can be found with `docker ps`. A restart or rebuild is not required. You need to be in the multichain-feed directory (/multichain-feed).
@@ -62,7 +62,7 @@ To test the current implemented transaction type `notification_created`, use fol
 
 ```bash
 cd multichain-feed/
-go build .
+GOOS=linux GOARCH=amd64 go build .
 ./multichain-feed "$(cat ./examples/notification_transaction_example.json)"
 ```
 
