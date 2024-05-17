@@ -11,9 +11,7 @@ import { writeXLSX } from "./excel";
 import strings, { languages } from "./localizeStrings";
 import logger from "./logger";
 import { CustomExpressRequest, CustomExpressResponse } from "./types";
-import { APIError } from "./apiError";
-import httpStatus = require("http-status");
-import { forwardError } from "./errors";
+import { forwardError, APIError } from "./errors";
 
 const DEFAULT_API_VERSION = "1.0";
 const API_BASE = `http://${config.apiHost}:${config.apiPort}/api`;
@@ -156,7 +154,8 @@ excelService.get(
   }),
 );
 
-excelService.use(function (
+// Default error handler
+excelService.use(function errorHandler(
   err: Error | APIError,
   req: CustomExpressRequest,
   res: CustomExpressResponse,
@@ -182,7 +181,7 @@ excelService.use(function (
     formattedErrorResponse.stackArray = err.stack ? err.stack.split("\n") : [];
   }
 
-  res.status(httpStatus.INTERNAL_SERVER_ERROR).json(formatHttpError(formattedErrorResponse));
+  res.status(500).json(formatHttpError(formattedErrorResponse));
 });
 
 excelService.listen(config.serverPort, () => logger.info(`App listening on ${config.serverPort}`));

@@ -1,26 +1,28 @@
 import { NextFunction } from "express";
 import { CustomExpressRequest, CustomExpressResponse } from "./types";
 
-/**
- * * @extends Error
+/** * Class representing an API error. *
+ * @extends ExtendableError
+ * @param {string} message - Error message.
+ * @param {number} status - HTTP status code of error.
+ * @param {boolean} isPublic - Whether the message should be visible to user or not.
+ * @param {string | null} originalMessage - Original Error message that was thrown.
  */
-export class ExtendableError extends Error {
+export class APIError extends Error {
   status: number;
   isPublic: boolean;
-  originalMessage: string | null;
 
-  constructor(message: string, status: number, isPublic: boolean, originalMessage: string | null) {
+  constructor(message: string, status = 500, isPublic: boolean) {
     super(message);
     this.name = this.constructor.name;
     this.message = message;
     this.status = status;
     this.isPublic = isPublic;
-    this.originalMessage = originalMessage;
   }
 }
 
 /**
- * Executes callback function and if error occures, it sends a notification email.
+ * Executes callback function and process the error if occured.
  * @param {*} callback Callback function.
  * @returns
  */
