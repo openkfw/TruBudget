@@ -34,7 +34,7 @@
     "jwt-decode": "^3.1.2",
     "localized-strings": "^0.2.4",
     "prettier": "^2.8.8",
-    "trubudget-logging-service": "^2.6.0",
+    "trubudget-logging-service": "^1.2.2",
     "url": "^0.11.0"
   },
   "devDependencies": {

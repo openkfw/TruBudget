@@ -87,6 +87,7 @@ services:
       AUTHPROXY_ENABLED: ${AUTHPROXY_ENABLED}
       AUTHPROXY_JWS_SIGNATURE: ${AUTHPROXY_JWS_SIGNATURE}
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}
+      SILENCE_LOGGING_ON_FREQUENT_ROUTES: ${SILENCE_LOGGING_ON_FREQUENT_ROUTES}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
@@ -193,6 +194,8 @@ services:
       LOG_LEVEL: ${STORAGE_LOG_LEVEL}
       PRETTY_PRINT: ${PRETTY_PRINT}
       RATE_LIMIT: ${RATE_LIMIT}
+      SILENCE_LOGGING_ON_FREQUENT_ROUTES: ${SILENCE_LOGGING_ON_FREQUENT_ROUTES}
+      SHORT_ROUTES_LOGGING_OUTPUT: ${SHORT_ROUTES_LOGGING_OUTPUT}
     command: ["npm", "run", "watch"]
     # volume for hot reloading
     volumes:

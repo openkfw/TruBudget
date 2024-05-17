@@ -34,7 +34,8 @@
     "express-validator": "^6.14.2",
     "helmet": "^7.1.0",
     "minio": "^7.1.0",
-    "trubudget-logging-service": "^1.2.2",
+    "pino": "^9.1.0",
+    "trubudget-logging-service": "file:../logging-service",
     "url": "^0.11.0",
     "uuid": "^8.3.2"
   },
