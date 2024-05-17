@@ -4,7 +4,6 @@ WORKDIR /home/node
 
 COPY package.json ./
 COPY package-lock.json ./
-RUN apt-get -y update && apt-get -y install libtool autoconf automake
 RUN npm ci
 
 COPY src src/
