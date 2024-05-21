@@ -1,8 +1,13 @@
 import * as crypto from "crypto";
-import logger from "lib/logger";
-import * as Result from "../../../result";
+
 import Joi = require("joi");
+import logger from "lib/logger";
+import uuid = require("uuid");
 import VError = require("verror");
+
+import * as Result from "../../../result";
+
+export const MAX_DOCUMENT_SIZE = 110000000; // ~75 MiB base64 encoded
 
 export interface StoredDocument {
   id: string;
@@ -61,6 +66,15 @@ export interface UploadedDocument extends GenericDocument {
   id: string;
   base64: string;
   fileName: string;
+  encoding?: string;
+}
+
+// TODO maybe not
+export interface UploadedDocumentBinary extends GenericDocument {
+  id: string;
+  buffer: string;
+  fileName: string;
+  encoding: string; // enum?
 }
 
 export interface DocumentLink extends GenericDocument {
@@ -76,9 +90,10 @@ export const uploadedDocumentSchema = Joi.alternatives([
     id: Joi.string(),
     base64: Joi.string()
       .required()
-      .max(67000000)
+      .max(MAX_DOCUMENT_SIZE)
       .error(() => new Error("Document is not valid")),
-    fileName: Joi.string(),
+    fileName: Joi.string().optional(),
+    encoding: Joi.string().optional(),
   }),
   Joi.object({
     id: Joi.string(),
@@ -137,4 +152,19 @@ export async function hashBase64String(base64String: string): Promise<string> {
 export function validate(input): Result.Type<UploadedDocument> {
   const { error, value } = uploadedDocumentSchema.validate(input);
   return !error ? value : error;
+}
+
+export function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string): boolean {
+  return allDocuments.some((doc) => doc.id === docId);
+}
+
+export function generateUniqueDocId(allDocuments: GenericDocument[]): string {
+  // Generate a new document id
+  // eslint-disable-next-line no-constant-condition
+  while (true) {
+    const docId = uuid.v4();
+    if (!docIdAlreadyExists(allDocuments, docId)) {
+      return docId;
+    }
+  }
 }

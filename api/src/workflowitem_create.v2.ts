@@ -1,3 +1,6 @@
+import { pipeline } from "stream";
+
+import fastifyMultipart = require("@fastify/multipart");
 import Joi = require("joi");
 import { VError } from "verror";
 
@@ -8,7 +11,11 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
-import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
+import {
+  UploadedDocument,
+  generateUniqueDocId,
+  uploadedDocumentSchema,
+} from "./service/domain/document/document";
 import {
   amountTypeSchema,
   conversionRateSchema,
@@ -20,11 +27,28 @@ import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_type
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import { AugmentedFastifyInstance } from "./types";
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fs = require("fs");
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const util = require("util");
+
+const pump = util.promisify(pipeline);
+
+const parseMultiPartFields = (fieldObj: any) => {
+  let parsedObject = {};
+  for (const [key, value] of Object.entries(fieldObj) as [string, fastifyMultipart.Multipart][]) {
+    if (value.type === "field") {
+      parsedObject[value.fieldname] = value.value;
+    }
+  }
+  return parsedObject;
+};
+
 /**
  * Represents the request body of the endpoint
  */
-interface RequestBodyV1 {
-  apiVersion: "1.0";
+interface RequestBodyV2 {
+  apiVersion: "2.0";
   data: {
     projectId: Project.Id;
     subprojectId: Subproject.Id;
@@ -45,8 +69,8 @@ interface RequestBodyV1 {
   };
 }
 
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
+const requestBodyV2Schema = Joi.object({
+  apiVersion: Joi.valid("2.0").required(),
   data: Joi.object({
     projectId: Project.idSchema,
     subprojectId: Subproject.idSchema,
@@ -67,8 +91,8 @@ const requestBodyV1Schema = Joi.object({
   }).required(),
 });
 
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
+type RequestBody = RequestBodyV2;
+const requestBodySchema = requestBodyV2Schema;
 
 /**
  * Validates the request body of the http request
@@ -77,7 +101,7 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
 function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
+  const { error, value } = requestBodySchema.validate(body, { stripUnknown: true });
   return !error ? value : error;
 }
 
@@ -102,44 +126,44 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
           bearerToken: [],
         },
       ],
-      body: {
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            additionalProperties: false,
-            required: ["projectId", "subprojectId", "displayName", "amountType"],
-            properties: {
-              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-              subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-              status: { type: "string", example: "open" },
-              displayName: { type: "string", example: "classroom" },
-              description: { type: "string", example: "build classroom" },
-              amount: { type: ["string", "null"], example: "500" },
-              assignee: { type: "string", example: "aSmith" },
-              currency: { type: ["string", "null"], example: "EUR" },
-              amountType: { type: "string", example: "disbursed" },
-              billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              exchangeRate: { type: "string", example: "1.0" },
-              documents: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
-                    fileName: { type: "string", example: "test-document" },
-                  },
-                },
-              },
-              additionalData: { type: "object", additionalProperties: true },
-              workflowitemType: { type: "string", example: "general" },
-              tags: { type: "array", items: { type: "string", example: "test" } },
-            },
-          },
-        },
-      },
+      // body: {
+      //   type: "object",
+      //   properties: {
+      //     apiVersion: { type: "string", example: "2.0" },
+      //     data: {
+      //       type: "object",
+      //       additionalProperties: false,
+      //       required: ["projectId", "subprojectId", "displayName", "amountType"],
+      //       properties: {
+      //         projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
+      //         subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
+      //         status: { type: "string", example: "open" },
+      //         displayName: { type: "string", example: "classroom" },
+      //         description: { type: "string", example: "build classroom" },
+      //         amount: { type: ["string", "null"], example: "500" },
+      //         assignee: { type: "string", example: "aSmith" },
+      //         currency: { type: ["string", "null"], example: "EUR" },
+      //         amountType: { type: "string", example: "disbursed" },
+      //         billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+      //         dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
+      //         exchangeRate: { type: "string", example: "1.0" },
+      //         documents: {
+      //           type: "array",
+      //           items: {
+      //             type: "object",
+      //             properties: {
+      //               base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
+      //               fileName: { type: "string", example: "test-document" },
+      //             },
+      //           },
+      //         },
+      //         additionalData: { type: "object", additionalProperties: true },
+      //         workflowitemType: { type: "string", example: "general" },
+      //         tags: { type: "array", items: { type: "string", example: "test" } },
+      //       },
+      //     },
+      //   },
+      // },
       response: {
         200: {
           description: "successful response",
@@ -201,14 +225,50 @@ export function addHttpHandler(
 ): void {
   server.register(async function () {
     server.post(
-      `${urlPrefix}/subproject.createWorkflowitem`,
+      `${urlPrefix}/v2/subproject.createWorkflowitem`,
       mkSwaggerSchema(server),
-      (request, reply) => {
+      async (request: AuthenticatedRequest, reply) => {
+        let body = {
+          apiVersion: "2.0",
+          data: {},
+        };
+
+        let uploadedDocuments: UploadedDocument[] = [];
+
+        const parts = request.parts();
+        for await (const part of parts) {
+          if (part.type === "file") {
+            const id = "";
+            const base64 = (await part.toBuffer()).toString();
+            const fileName = part.filename;
+            const encoding = "binary";
+            const mimetype = part.mimetype;
+            uploadedDocuments.push({ id, base64, fileName, encoding });
+          } else {
+            if (part.fieldname === "apiVersion") {
+              continue;
+            }
+            // part.type === 'field
+            body.data[part.fieldname] = part.value;
+            // todo handle it better
+            if (part.fieldname === "tags" && part.value === "") {
+              body.data[part.fieldname] = [];
+            }
+          }
+        }
+
+        // TODO this is done in service? if y remove it from here
+        uploadedDocuments.forEach((doc) => {
+          doc.id = generateUniqueDocId(uploadedDocuments);
+        });
+
+        body.data["documents"] = uploadedDocuments;
+
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
+        const bodyResult = validateRequestBody(body);
 
         if (Result.isErr(bodyResult)) {
           const { code, body } = toHttpError(
@@ -247,7 +307,7 @@ export function addHttpHandler(
             const resourceIds = resourceIdsResult;
             const code = 200;
             const body = {
-              apiVersion: "1.0",
+              apiVersion: "2.0",
               data: {
                 ...resourceIds,
               },

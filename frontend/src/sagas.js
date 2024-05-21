@@ -834,7 +834,7 @@ export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
         subprojectId: subprojectId,
         additionalActions
       });
-      const { data } = yield* executeOriginalAction(api.createWorkflowItem, originalAction, workflowitemData);
+      const { data } = yield* executeOriginalAction(api.createWorkflowItemV2, originalAction, workflowitemData);
       yield put({
         type: CREATE_WORKFLOW_SUCCESS,
         workflowitemId: data.workflowitem.id

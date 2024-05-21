@@ -2,6 +2,7 @@ import Joi = require("joi");
 import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent, { workflowitemIntents } from "../../../authz/intents";
 import { config } from "../../../config";
 import * as Result from "../../../result";
@@ -10,6 +11,7 @@ import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
 import {
   DocumentOrExternalLinkReference,
+  generateUniqueDocId,
   GenericDocument,
   hashDocument,
   UploadedDocument,
@@ -21,14 +23,13 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
+
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
-import uuid = require("uuid");
 
 export interface RequestData {
   projectId: Project.Id;
@@ -97,21 +98,6 @@ interface Repository {
     docId: string,
   ): Promise<Result.Type<BusinessEvent[]>>;
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
-}
-
-function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string): boolean {
-  return allDocuments.some((doc) => doc.id === docId);
-}
-
-function generateUniqueDocId(allDocuments: GenericDocument[]): string {
-  // Generate a new document id
-  // eslint-disable-next-line no-constant-condition
-  while (true) {
-    const docId = uuid.v4();
-    if (!docIdAlreadyExists(allDocuments, docId)) {
-      return docId;
-    }
-  }
 }
 
 const inheritSubprojectPermissions = (

@@ -5,6 +5,19 @@ import _isEmpty from "lodash/isEmpty";
 import config from "./config";
 import strings from "./localizeStrings";
 
+// todo move somewhere else
+function base64ToBlob(base64, type = "application/octet-stream") {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  return new Blob([bytes], { type });
+}
+
 const devMode = config.envMode === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
@@ -18,7 +31,9 @@ class Api {
     // Move all parameters into data object
     instance.defaults.transformRequest = [
       (data, _headers) => {
-        if (typeof data === "object") {
+        if (data instanceof FormData) {
+          return data;
+        } else if (typeof data === "object") {
           return {
             apiVersion: API_VERSION,
             data: {
@@ -331,6 +346,40 @@ class Api {
           };
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
+    });
+  };
+
+  createWorkflowItemV2 = (payload) => {
+    const { currency, amount, exchangeRate, documents, ...minimalPayload } = payload;
+    const payloadToSend =
+      payload.amountType === "N/A"
+        ? minimalPayload
+        : {
+            ...minimalPayload,
+            currency,
+            amount,
+            exchangeRate: exchangeRate.toString()
+          };
+
+    const formData = new FormData();
+
+    formData.append("apiVersion", "2.0");
+
+    for (const key in payloadToSend) {
+      formData.append(key, payloadToSend[key]);
+    }
+
+    if (documents) {
+      for (let i = 0; i < documents.length; i++) {
+        // todo maybe store type in redux store?
+        const blob = base64ToBlob(documents[i].base64, documents[i].type);
+        formData.append("documents", blob, documents[i].fileName);
+      }
+    }
+    return instance.post(`/v2/subproject.createWorkflowitem`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
     });
   };
 
