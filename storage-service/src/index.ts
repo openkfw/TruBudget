@@ -15,6 +15,7 @@ import {
   downloadDocument,
   establishConnection,
   getStorageProviderStatus,
+  uploadDocument,
 } from "./storage";
 
 interface DocumentUploadRequest extends express.Request {
@@ -153,7 +154,23 @@ app.post(
 
     const docId: string = req.query.docId;
     const { content, fileName } = req.body;
-    throw Error("some issue");
+    
+    (async (): Promise<void> => {
+      log.debug({ req }, "Uploading document");
+      const result = await uploadDocument(docId, content, {
+        fileName,
+        docId,
+      });
+      res.send({ docId, secret: result }).end();
+    })().catch((err) => {
+      if (err.code === "NoSuchBucket") {
+        req.log.error(
+          { err },
+          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
+        );
+      }
+      res.status(500).send(err).end();
+    });
   },
 );
 
