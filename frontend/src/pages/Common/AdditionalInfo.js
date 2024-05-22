@@ -23,7 +23,7 @@ const AdditionalInfo = ({ resources, idForInfo, isAdditionalDataShown, hideAddit
   return (
     <Dialog disableRestoreFocus open={isAdditionalDataShown} onClose={hideAdditionalData}>
       <DialogTitle>{strings.common.additional_data}</DialogTitle>
-      <DialogContent sx={{ maxWidth: "800px" }}>
+      <DialogContent sx={{ maxWidth: "50rem" }}>
         <div>
           <JsonEditor
             data={additionalDateChange}

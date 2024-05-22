@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"os"
 	"strconv"
+	"syscall"
 	"time"
 )
 
@@ -23,20 +24,32 @@ func (p *DiskPersister) persist(message string) error {
 	unixTimestamp := strconv.FormatInt(time.Now().UnixNano(), 10)
 
 	// Create directory if not existing
-	if _, err := os.Stat(p.path); os.IsNotExist(err) {
-	    os.Mkdir(p.path, os.ModePerm)
+if _, err := os.Stat(p.path); os.IsNotExist(err) {
+			os.Mkdir(p.path, os.ModePerm)
 	}
 
-	file, err := os.Create(p.path + unixTimestamp + ".json")
+	var file *os.File
+	var err error
+	for {
+			file, err = os.Create(p.path + unixTimestamp + ".json")
+			if err != nil {
+					if isInterrupted(err) {
+							continue
+					}
+					return fmt.Errorf("multichain-feed: Error persisting to disk: %v", err)
+			}
+			break
+	}
 	defer file.Close()
-
-	if err != nil {
-		return fmt.Errorf("Error persisting to disk: %v", err)
-	}
 
 	_, err = file.WriteString(message)
 	if err != nil {
-		return fmt.Errorf("Error writing to file: %v", err)
+			return fmt.Errorf("multichain-feed: Error writing to file: %v", err)
 	}
 	return nil
+}
+
+func isInterrupted(err error) bool {
+	pathErr, ok := err.(*os.PathError)
+	return ok && pathErr.Err == syscall.EINTR
 }
