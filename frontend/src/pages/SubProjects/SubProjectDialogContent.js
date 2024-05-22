@@ -103,7 +103,6 @@ const SubProjectDialogContent = (props) => {
                 <CustomInfoTooltip
                   title={`${strings.subproject.default_assignee_warning} ${strings.subproject.default_assignee_warning2}`}
                   iconType="warning"
-                  disableHoverListener={false}
                 />
               </div>
             </div>
