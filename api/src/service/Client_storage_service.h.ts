@@ -14,6 +14,14 @@ export interface StorageObject {
   base64: Base64String;
 }
 
+export interface UploadObject {
+  id: string;
+  name: string;
+  data: string;
+  encoding?: string;
+  mimetype?: string;
+}
+
 export interface DeleteResponse {
   status: number;
 }
@@ -34,13 +42,9 @@ export interface StorageServiceClientI {
    */
   getVersion(): Promise<Version>;
   /**
-   * Upload an object using the
-   *
-   * @param id id of object
-   * @param name name of object
-   * @param data content of uploaded object base64 encoded
+   * Upload an object
    */
-  uploadObject(id: string, name: string, data: Base64String): Promise<Result.Type<UploadResponse>>;
+  uploadObject(uploadObject: UploadObject): Promise<Result.Type<UploadResponse>>;
   /**
    * Download an object using the matching secret
    *

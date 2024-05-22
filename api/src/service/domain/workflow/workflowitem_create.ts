@@ -93,9 +93,7 @@ interface Repository {
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
   uploadDocumentToStorageService(
-    fileName: string,
-    documentBase64: string,
-    docId: string,
+    uploadedDocument: UploadedDocument,
   ): Promise<Result.Type<BusinessEvent[]>>;
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
@@ -146,6 +144,10 @@ const inheritSubprojectPermissions = (
   return result;
 };
 
+function numDocuments(docs: UploadedDocument[]): number {
+  return docs.filter((d) => d.hasOwnProperty("base64") || d.hasOwnProperty("buffer")).length;
+}
+
 export async function createWorkflowitem(
   ctx: Ctx,
   issuer: ServiceUser,
@@ -157,7 +159,7 @@ export async function createWorkflowitem(
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents?.length) {
-    const documentsCount = reqData.documents.filter((d) => d.base64).length;
+    const documentsCount = numDocuments(reqData.documents);
     if (
       config.documentFeatureEnabled ||
       (documentsCount === 0 && config.documentExternalLinksEnabled)
@@ -173,7 +175,7 @@ export async function createWorkflowitem(
       // preparation for workflowitem_created event
       for (const doc of reqData.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        if ("base64" in doc) {
+        if ("base64" in doc || "buffer" in doc) {
           const hashedDocumentResult = await hashDocument(doc);
           if (Result.isErr(hashedDocumentResult)) {
             return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
@@ -190,11 +192,11 @@ export async function createWorkflowitem(
           .filter((document) => "base64" in document)
           .map(async (document) => {
             logger.trace({ document }, "Trying to upload document to storage service");
-            return repository.uploadDocumentToStorageService(
-              document.fileName || "",
-              document.base64,
-              document.id,
-            );
+            return repository.uploadDocumentToStorageService({
+              id: document.id,
+              fileName: document.fileName || "",
+              base64: document.base64,
+            });
           }),
       );
       for (const result of documentUploadedEventsResults) {

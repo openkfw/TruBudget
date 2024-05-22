@@ -90,7 +90,7 @@ services:
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:
-      - "../../api/src:/home/node/src"
+      - "../../api/src:/home/node/src:delegated"
     depends_on:
       - alpha-node
     networks:

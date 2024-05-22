@@ -1,18 +1,20 @@
 import { EventEmitter } from "events";
+
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
+import * as DocumentDeleted from "./domain/document/document_deleted";
 import * as DocumentShared from "./domain/document/document_shared";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
-import * as DocumentDeleted from "./domain/document/document_deleted";
 import * as DocumentValidated from "./domain/document/document_validated";
 import * as StorageServiceUrlUpdated from "./domain/document/storage_service_url_updated";
-import * as NodesLogged from "./domain/network/nodes_logged";
 import * as NodeDeclined from "./domain/network/node_declined";
 import * as NodeRegistered from "./domain/network/node_registered";
+import * as NodesLogged from "./domain/network/nodes_logged";
 import * as GroupCreated from "./domain/organization/group_created";
 import * as GroupMemberAdded from "./domain/organization/group_member_added";
 import * as GroupMemberRemoved from "./domain/organization/group_member_removed";
@@ -33,11 +35,11 @@ import * as NotificationMarkedRead from "./domain/workflow/notification_marked_r
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
 import * as ProjectClosed from "./domain/workflow/project_closed";
 import * as ProjectCreated from "./domain/workflow/project_created";
-import * as ProjectSnapshotPublished from "./domain/workflow/project_snapshot_published";
 import * as ProjectPermissionsGranted from "./domain/workflow/project_permission_granted";
 import * as ProjectPermissionsRevoked from "./domain/workflow/project_permission_revoked";
 import * as ProjectProjectedBudgetDeleted from "./domain/workflow/project_projected_budget_deleted";
 import * as ProjectProjectedBudgetUpdated from "./domain/workflow/project_projected_budget_updated";
+import * as ProjectSnapshotPublished from "./domain/workflow/project_snapshot_published";
 import * as ProjectUpdated from "./domain/workflow/project_updated";
 import * as SubprojectAssigned from "./domain/workflow/subproject_assigned";
 import * as SubprojectClosed from "./domain/workflow/subproject_closed";
@@ -47,13 +49,13 @@ import * as SubprojectPermissionsRevoked from "./domain/workflow/subproject_perm
 import * as SubprojectProjectedBudgetDeleted from "./domain/workflow/subproject_projected_budget_deleted";
 import * as SubprojectProjectedBudgetUpdated from "./domain/workflow/subproject_projected_budget_updated";
 import * as SubprojectUpdated from "./domain/workflow/subproject_updated";
-import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import * as WorkflowitemAssigned from "./domain/workflow/workflowitem_assigned";
 import * as WorkflowitemClosed from "./domain/workflow/workflowitem_closed";
 import * as WorkflowitemCreated from "./domain/workflow/workflowitem_created";
 import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_permission_granted";
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
+import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Item } from "./liststreamitems";
 
 const STREAM_BLACKLIST = [

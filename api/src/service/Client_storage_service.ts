@@ -1,14 +1,18 @@
+import { performance } from "perf_hooks";
+
 import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import logger from "lib/logger";
-import { performance } from "perf_hooks";
 import { VError } from "verror";
+
 import { config } from "../config";
 import { decrypt, encrypt } from "../lib/symmetricCrypto";
 import * as Result from "../result";
+
 import {
   DeleteResponse,
   StorageObject,
   StorageServiceClientI,
+  UploadObject,
   UploadResponse,
   Version,
 } from "./Client_storage_service.h";
@@ -66,11 +70,9 @@ export default class StorageServiceClient implements StorageServiceClientI {
     return result?.data as Version;
   }
 
-  public async uploadObject(
-    id: string,
-    name: string,
-    data: string,
-  ): Promise<Result.Type<UploadResponse>> {
+  public async uploadObject(uploadObject: UploadObject): Promise<Result.Type<UploadResponse>> {
+    logger.error("uploadObject typeof data = ", typeof uploadObject.data);
+    const { name, data, id } = uploadObject;
     logger.debug(`Uploading Object "${name}"`);
 
     let requestData: UploadRequest = {
@@ -82,6 +84,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
       requestData.content = encrypt(config.encryptionPassword, requestData.content);
     }
     const url = `/upload?docId=${id}`;
+    // TODO
     const uploadResponse = await this.axiosInstance.post(url, requestData);
     if (Result.isErr(uploadResponse)) {
       logger.error(`Error while uploading document ${id} to storage service.`);

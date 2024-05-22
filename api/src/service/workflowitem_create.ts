@@ -9,6 +9,7 @@ import * as Cache from "./cache2";
 import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
+import { UploadedDocument } from "./domain/document/document";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
@@ -72,8 +73,9 @@ export async function createWorkflowitem(
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
         return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
       },
-      uploadDocumentToStorageService: (fileName, documentBase64, id) => {
-        return DocumentUpload.uploadDocument(
+      uploadDocumentToStorageService: async (uploadedDocument: UploadedDocument) => {
+        const { id, base64: documentBase64, fileName } = uploadedDocument;
+        return await DocumentUpload.uploadDocument(
           ctx,
           serviceUser,
           { fileName, documentBase64, id },
@@ -102,8 +104,8 @@ export async function createWorkflowitem(
             getPublicKey: async (organization) => {
               return PublicKeyGet.getPublicKey(conn, ctx, organization);
             },
-            storeDocument: async (id, name, hash) => {
-              return storageServiceClient.uploadObject(id, name, hash);
+            storeDocument: async (uploadObject: DocumentUpload.UploadObject) => {
+              return storageServiceClient.uploadObject(uploadObject);
             },
             encryptWithKey: async (secret, publicKey) => {
               return encryptWithKey(secret, publicKey);

@@ -1,6 +1,4 @@
-import { pipeline } from "stream";
-
-import fastifyMultipart = require("@fastify/multipart");
+import { MultipartFile } from "@fastify/multipart";
 import Joi = require("joi");
 import { VError } from "verror";
 
@@ -11,11 +9,7 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
-import {
-  UploadedDocument,
-  generateUniqueDocId,
-  uploadedDocumentSchema,
-} from "./service/domain/document/document";
+import { UploadedDocument, uploadedDocumentSchema } from "./service/domain/document/document";
 import {
   amountTypeSchema,
   conversionRateSchema,
@@ -27,21 +21,42 @@ import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_type
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import { AugmentedFastifyInstance } from "./types";
 
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const fs = require("fs");
-// eslint-disable-next-line @typescript-eslint/no-var-requires
-const util = require("util");
+const parseMultiPartFile = async (part: MultipartFile): Promise<any> => {
+  const id = "";
+  const buffer = await part.toBuffer();
+  const base64 = buffer.toString("base64");
+  const fileName = part.filename;
+  const encoding = "binary";
+  const mimetype = part.mimetype;
+  // return { id, buffer, fileName, encoding };
+  return { id, base64, fileName };
+};
 
-const pump = util.promisify(pipeline);
-
-const parseMultiPartFields = (fieldObj: any) => {
-  let parsedObject = {};
-  for (const [key, value] of Object.entries(fieldObj) as [string, fastifyMultipart.Multipart][]) {
-    if (value.type === "field") {
-      parsedObject[value.fieldname] = value.value;
+const parseMultiPartRequest = async (request: AuthenticatedRequest): Promise<any> => {
+  let data = {};
+  let uploadedDocuments: any[] = [];
+  const parts = request.parts();
+  for await (const part of parts) {
+    if (part.type === "file") {
+      uploadedDocuments.push(await parseMultiPartFile(part));
+    } else {
+      if (part.fieldname === "apiVersion") {
+        continue;
+      }
+      if (part.fieldname === "dueDate" && part.value === "null") {
+        data[part.fieldname] = undefined;
+        continue;
+      }
+      // part.type === 'field
+      data[part.fieldname] = part.value;
+      // todo handle it better?
+      if (part.fieldname === "tags" && part.value === "") {
+        data[part.fieldname] = [];
+      }
     }
   }
-  return parsedObject;
+  data["documents"] = uploadedDocuments;
+  return data;
 };
 
 /**
@@ -82,7 +97,7 @@ const requestBodyV2Schema = Joi.object({
     amount: moneyAmountSchema,
     amountType: amountTypeSchema.required(),
     billingDate: safeStringSchema,
-    dueDate: Joi.string().allow(""),
+    dueDate: Joi.string().allow("").optional().isoDate(),
     exchangeRate: conversionRateSchema,
     documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: Joi.object(),
@@ -106,7 +121,7 @@ function validateRequestBody(body: unknown): Result.Type<RequestBody> {
 }
 
 /**
- * Creates the swagger schema for the `/subproject.createWorkflowitem` endpoint
+ * Creates the swagger schema for the `/v2/subproject.createWorkflowitem` endpoint
  *
  * @param server fastify server
  * @returns the swagger schema for this endpoint
@@ -169,7 +184,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
           description: "successful response",
           type: "object",
           properties: {
-            apiVersion: { type: "string", example: "1.0" },
+            apiVersion: { type: "string", example: "2.0" },
             data: {
               type: "object",
               properties: {
@@ -212,7 +227,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
 }
 
 /**
- * Creates an http handler that handles incoming http requests for the `/subproject.createWorkflowitem` route
+ * Creates an http handler that handles incoming http requests for the `/v2/subproject.createWorkflowitem` route
  *
  * @param server the current fastify server instance
  * @param urlPrefix the prefix of the http url
@@ -230,39 +245,8 @@ export function addHttpHandler(
       async (request: AuthenticatedRequest, reply) => {
         let body = {
           apiVersion: "2.0",
-          data: {},
+          data: await parseMultiPartRequest(request),
         };
-
-        let uploadedDocuments: UploadedDocument[] = [];
-
-        const parts = request.parts();
-        for await (const part of parts) {
-          if (part.type === "file") {
-            const id = "";
-            const base64 = (await part.toBuffer()).toString();
-            const fileName = part.filename;
-            const encoding = "binary";
-            const mimetype = part.mimetype;
-            uploadedDocuments.push({ id, base64, fileName, encoding });
-          } else {
-            if (part.fieldname === "apiVersion") {
-              continue;
-            }
-            // part.type === 'field
-            body.data[part.fieldname] = part.value;
-            // todo handle it better
-            if (part.fieldname === "tags" && part.value === "") {
-              body.data[part.fieldname] = [];
-            }
-          }
-        }
-
-        // TODO this is done in service? if y remove it from here
-        uploadedDocuments.forEach((doc) => {
-          doc.id = generateUniqueDocId(uploadedDocuments);
-        });
-
-        body.data["documents"] = uploadedDocuments;
 
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
@@ -274,9 +258,8 @@ export function addHttpHandler(
           const { code, body } = toHttpError(
             new VError(bodyResult, "failed to create workflowitem"),
           );
-          reply.status(code).send(body);
           request.log.error({ err: bodyResult }, "Invalid request body");
-          return;
+          return reply.status(code).send(body);
         }
 
         const reqData: WorkflowitemCreate.RequestData = {
@@ -298,27 +281,25 @@ export function addHttpHandler(
           tags: bodyResult.data.tags,
         };
 
-        service
-          .createWorkflowitem(ctx, user, reqData)
-          .then((resourceIdsResult) => {
-            if (Result.isErr(resourceIdsResult)) {
-              throw new VError(resourceIdsResult, "subproject.createWorkflowitem failed");
-            }
-            const resourceIds = resourceIdsResult;
-            const code = 200;
-            const body = {
-              apiVersion: "2.0",
-              data: {
-                ...resourceIds,
-              },
-            };
-            reply.status(code).send(body);
-          })
-          .catch((err) => {
-            const { code, body } = toHttpError(err);
-            reply.status(code).send(body);
-            request.log.error({ err }, "Error while creating Workflowitem");
-          });
+        try {
+          const resourceIdsResult = await service.createWorkflowitem(ctx, user, reqData);
+          if (Result.isErr(resourceIdsResult)) {
+            throw new VError(resourceIdsResult, "v2/subproject.createWorkflowitem failed");
+          }
+
+          const code = 200;
+          const body = {
+            apiVersion: "2.0",
+            data: {
+              ...resourceIdsResult,
+            },
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          reply.status(code).send(body);
+          request.log.error({ err }, "Error while creating Workflowitem");
+        }
       },
     );
   });

@@ -9,7 +9,7 @@ import fastifyCookie, { FastifyCookieOptions } from "@fastify/cookie";
 import fastifyCors from "@fastify/cors";
 import fastifyHelmet from "@fastify/helmet";
 import fastifyJwt from "@fastify/jwt";
-import fastifyMultipart from "@fastify/multipart";
+import * as fastifyMultipart from "@fastify/multipart";
 import fastifyRateLimit from "@fastify/rate-limit";
 import fastifyStatic from "@fastify/static";
 import fastifySwagger from "@fastify/swagger";
@@ -251,10 +251,20 @@ export const createBasicApp = (
 
   // todo file size limit
   server.register(fastifyMultipart, {
-    // attachFieldsToBody: true,
+    // attachFieldsToBody: "keyValues",
+    // onFile,
     // routes that use Multipart Form
     prefix: "/v2/subproject.createWorkflowitem",
   });
 
   return server;
 };
+
+async function onFile(part) {
+  const buff = (await part.toBuffer()).toString();
+  part.value = {
+    id: "",
+    filename: part.filename,
+    content: buff,
+  };
+}

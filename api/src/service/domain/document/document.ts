@@ -62,9 +62,25 @@ export const documentReferenceSchema = Joi.alternatives([
   }),
 ]);
 
-export interface UploadedDocument extends GenericDocument {
+export type UploadedDocument = Base64Document; // | BufferDocument;
+
+export interface Base64Document extends GenericDocument {
   id: string;
   base64: string;
+  fileName: string;
+}
+
+export interface BufferDocument extends GenericDocument {
+  id: string;
+  buffer: Buffer;
+  fileName: string;
+  encoding?: string; // enum?
+  mimetype?: string;
+}
+
+export interface UploadedDocumentV2 extends GenericDocument {
+  id: string;
+  base64: Buffer;
   fileName: string;
   encoding?: string;
 }
@@ -87,10 +103,26 @@ export type UploadedDocumentOrLink = UploadedDocument | DocumentLink;
 
 export const uploadedDocumentSchema = Joi.alternatives([
   Joi.object({
-    id: Joi.string(),
+    id: Joi.string().allow(""),
     base64: Joi.string()
       .required()
       .max(MAX_DOCUMENT_SIZE)
+      .error(() => new Error("Document is not valid")),
+    fileName: Joi.string().optional(),
+    encoding: Joi.string().optional(),
+  }),
+  Joi.object({
+    id: Joi.string(),
+    buffer: Joi.custom((value, helpers) => {
+      if (!Buffer.isBuffer(value)) {
+        return helpers.error("any.invalid");
+      }
+      if (value.length > MAX_DOCUMENT_SIZE) {
+        return helpers.error("any.tooLarge");
+      }
+      return value;
+    }, "Buffer validation")
+      .required()
       .error(() => new Error("Document is not valid")),
     fileName: Joi.string().optional(),
     encoding: Joi.string().optional(),
@@ -113,7 +145,20 @@ export async function hashDocument(
   document: UploadedDocument,
 ): Promise<Result.Type<DocumentReference>> {
   logger.trace({ document: document.fileName }, "Hashing document");
-  return hashBase64String(document.base64).then((hashValue) => ({
+
+  let hashValuePromise;
+
+  if ("base64" in document) {
+    hashValuePromise = hashBase64String(document.base64);
+  } else if ("buffer" in document) {
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-ignore
+    hashValuePromise = hashBuffer(document.buffer);
+  } else {
+    return Promise.reject(new Error("Unknown document type"));
+  }
+
+  return hashValuePromise.then((hashValue) => ({
     id: document.id,
     hash: hashValue,
     fileName: document.fileName,
@@ -125,8 +170,8 @@ export async function hashDocuments(
 ): Promise<Result.Type<DocumentReference[]>> {
   const documentReference: DocumentReference[] = [];
   for (const doc of documents || []) {
-    // uploaded document
-    if ("base64" in doc) {
+    // uploaded document, content either base64 encoded string or buffer
+    if ("base64" in doc || "buffer" in doc) {
       const hashedDocumentResult = await hashDocument(doc);
       if (Result.isErr(hashedDocumentResult)) {
         return new VError(hashedDocumentResult, `failed to hash document ${doc.id}`);
@@ -147,6 +192,12 @@ export async function hashBase64String(base64String: string): Promise<string> {
     hash.update(Buffer.from(base64String, "base64"));
     resolve(hash.digest("hex"));
   });
+}
+
+function hashBuffer(buffer: Buffer): string {
+  const hash = crypto.createHash("sha256");
+  hash.update(buffer);
+  return hash.digest("hex");
 }
 
 export function validate(input): Result.Type<UploadedDocument> {

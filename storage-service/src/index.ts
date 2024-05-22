@@ -3,6 +3,7 @@ import * as express from "express";
 import { body, query, validationResult } from "express-validator";
 import rateLimit from "express-rate-limit";
 import { Logger } from "pino";
+import * as multer from "multer";
 import {
   createPinoExpressLogger,
   createPinoLogger,
@@ -26,6 +27,7 @@ interface DocumentUploadRequest extends express.Request {
     content: string;
   };
   log: Logger;
+  file?: multer.Multer.File;
 }
 interface DocumentDownloadRequest extends express.Request {
   query: {
@@ -50,7 +52,22 @@ interface DocumentUploadResponseBody extends express.Response {
   };
 }
 
+interface MultiPartRequestBody {
+  fileName: string;
+  content: string;
+  docId: string;
+}
+
 export const log = createPinoLogger("Storage-Service");
+
+function truncateErrors(errors: any, maxLength = 100): any {
+  return errors.array().map((error: any) => {
+    if (error.msg.length > maxLength) {
+      return { ...error, msg: `${error.msg.substring(0, maxLength)}...` };
+    }
+    return error;
+  });
+}
 
 // Setup
 const app = express();
@@ -88,6 +105,8 @@ app.use(
     },
   }),
 );
+
+const upload = multer({ dest: "uploads/" });
 app.use(express.json({ limit: "101mb" }));
 app.use(
   express.urlencoded({
@@ -136,35 +155,62 @@ app.get("/version", (req, res) => {
 
 app.post(
   "/upload",
+  express.json(),
+  upload.single("file"),
   query("docId").isString(),
-  body("content").isString().isBase64(),
   body("fileName").isString(),
+  // TODO should storage-service care if it gets base64 or not?
+  body("content").custom((value, { req }) => {
+    return true;
+    // if (req.is("json")) {
+    //   const isBase64 =
+    //     Buffer.from(req.file.buffer, "base64").toString("base64") ===
+    //     req.file.buffer;
+    //   if (!isBase64) {
+    //     throw new Error("File is not a base64 string");
+    //   }
+    // }
+
+    // return true;
+  }),
   (req: DocumentUploadRequest, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
-      log.error({ err: errors }, "Error while validating request");
-      return res.status(400).json({ errors: errors.array() }).end();
+      const truncatedErrors = truncateErrors(errors);
+      log.error({ err: truncatedErrors }, "Error while validating request");
+      return res.status(400).json({ errors: truncatedErrors }).end();
     }
 
-    const docId: string = req.query.docId;
-    const { content, fileName } = req.body;
+    if (req.is("json")) {
+      // Handle JSON request
+      const docId: string = req.query.docId;
+      const { content, fileName } = req.body;
 
-    (async (): Promise<void> => {
-      log.debug({ req }, "Uploading document");
-      const result = await uploadDocument(docId, content, {
-        fileName,
-        docId,
+      (async (): Promise<void> => {
+        log.debug({ req }, "Uploading document");
+        const result = await uploadDocument(docId, content, {
+          fileName,
+          docId,
+        });
+        res.send({ docId, secret: result }).end();
+      })().catch((err) => {
+        if (err.code === "NoSuchBucket") {
+          req.log.error(
+            { err },
+            "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
+          );
+        }
+        res.status(500).send(err).end();
       });
-      res.send({ docId, secret: result }).end();
-    })().catch((err) => {
-      if (err.code === "NoSuchBucket") {
-        req.log.error(
-          { err },
-          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
-        );
-      }
-      res.status(500).send(err).end();
-    });
+    } else if (req.is("multipart/form-data")) {
+      // Handle multipart/form-data request
+      const docId = (req.body as MultiPartRequestBody).docId;
+      const file = req.file; // This is the uploaded file
+
+      // Continue with your multipart/form-data request handling logic
+    } else {
+      res.status(400).send("Invalid request");
+    }
   },
 );
 

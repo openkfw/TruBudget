@@ -1,11 +1,13 @@
-import { Ctx } from "lib/ctx";
-import logger from "../../../lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
+
 import { GenericDocument } from "./document";
 import * as DocumentShared from "./document_shared";
 import * as DocumentUploaded from "./document_uploaded";
@@ -16,12 +18,20 @@ export interface RequestData {
   documentBase64: string;
 }
 
+export interface UploadObject {
+  id: string;
+  name: string;
+  data: string;
+  encoding?: string;
+  mimetype?: string;
+}
+
 type Base64String = string;
 
 interface Repository {
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  storeDocument(id, name, hash): Promise<any>;
+  storeDocument(uploadObject: UploadObject): Promise<any>;
   encryptWithKey(secret, publicKey): Promise<Result.Type<string>>;
   getPublicKey(organization): Promise<Result.Type<Base64String>>;
   getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
@@ -55,11 +65,11 @@ export async function uploadDocument(
   }
 
   logger.trace("Storing document in storage");
-  const documentStorageServiceResponseResult = await repository.storeDocument(
+  const documentStorageServiceResponseResult = await repository.storeDocument({
     id,
-    fileName,
-    documentBase64,
-  );
+    name: fileName,
+    data: documentBase64,
+  });
 
   if (Result.isErr(documentStorageServiceResponseResult)) {
     return new VError(documentStorageServiceResponseResult, "failed to store document");
