@@ -5,7 +5,7 @@ import WarningOutlinedIcon from "@mui/icons-material/WarningOutlined";
 import ClickAwayListener from "@mui/material/ClickAwayListener";
 import Tooltip from "@mui/material/Tooltip";
 
-export const CustomInfoTooltip = ({ title, iconType = "info", disableHoverListener=true }) => {
+export const CustomInfoTooltip = ({ title, iconType = "info" }) => {
   const [open, setOpen] = useState(false);
 
   const handleTooltipOpen = () => {
@@ -23,10 +23,7 @@ export const CustomInfoTooltip = ({ title, iconType = "info", disableHoverListen
         onClose={handleTooltipClose}
         open={open}
         disableFocusListener
-        disableHoverListener={disableHoverListener}
-        style={{
-          cursor: "pointer"
-        }}
+        disableHoverListener
       >
         {iconType === "info" ? (
           <InfoOutlinedIcon className="help-icon" onClick={handleTooltipOpen} />

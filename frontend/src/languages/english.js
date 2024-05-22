@@ -284,7 +284,7 @@ const en = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all wrokflow items in subproject without an option to change it."
+    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
