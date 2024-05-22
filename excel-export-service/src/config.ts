@@ -4,6 +4,7 @@ interface Config {
   serverPort: number;
   accessControlAllowOrigin: string;
   rateLimit: number | undefined;
+  NODE_ENV: string;
 }
 
 export const config: Config = {
@@ -15,4 +16,5 @@ export const config: Config = {
     process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
       ? undefined
       : Number(process.env.RATE_LIMIT),
+  NODE_ENV: process.env.NODE_ENV || "production",
 };
