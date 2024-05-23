@@ -22,6 +22,16 @@ const startEmailNotificationWatcher = (
     {},
   );
 
+  emailproc.on("exit", (code, signal) => {
+    if (signal) {
+      log.error(`Email notification watcher process was killed by signal: ${signal}`);
+    } else if (code !== null) {
+      log.error(`Email notification watcher process exited with code: ${code}`);
+    } else {
+      log.error("Email notification watcher process exited");
+    }
+  });
+
   return emailproc;
 };
 
