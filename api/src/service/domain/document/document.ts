@@ -6,6 +6,7 @@ import uuid = require("uuid");
 import VError = require("verror");
 
 import * as Result from "../../../result";
+import { DocumentBase } from "./DocumentBase";
 
 export const MAX_DOCUMENT_SIZE = 110000000; // ~75 MiB base64 encoded
 
@@ -184,6 +185,22 @@ export async function hashDocuments(
     }
   }
   return documentReference;
+}
+
+export function hashDocumentB(document: DocumentBase): Promise<Result.Type<DocumentReference>> {
+  logger.trace({ document: document.fileName }, "Hashing document");
+  let hashValuePromise;
+  try {
+    hashValuePromise = document.getHash();
+  } catch (error) {
+    return Promise.reject(new Error("Unknown document type"));
+  }
+
+  return hashValuePromise.then((hashValue) => ({
+    id: document.id,
+    hash: hashValue,
+    fileName: document.fileName,
+  }));
 }
 
 export async function hashBase64String(base64String: string): Promise<string> {

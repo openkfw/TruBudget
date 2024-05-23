@@ -20,4 +20,8 @@ export class DocumentBase {
   public get content(): string | Buffer {
     return this._content;
   }
+
+  public getHash(): string {
+    throw new Error("You have to implement the method getHash");
+  }
 }
