@@ -86,14 +86,6 @@ export interface UploadedDocumentV2 extends GenericDocument {
   encoding?: string;
 }
 
-// TODO maybe not
-export interface UploadedDocumentBinary extends GenericDocument {
-  id: string;
-  buffer: string;
-  fileName: string;
-  encoding: string; // enum?
-}
-
 export interface DocumentLink extends GenericDocument {
   id: string;
   link: string;

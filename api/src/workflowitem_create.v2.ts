@@ -20,15 +20,16 @@ import * as Subproject from "./service/domain/workflow/subproject";
 import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_types/types";
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import { AugmentedFastifyInstance } from "./types";
+import { BufferDocument } from "service/domain/document/BufferDocument";
 
 const parseMultiPartFile = async (part: MultipartFile): Promise<any> => {
   const id = "";
   const buffer = await part.toBuffer();
+  // TODO keep buffer. but downstream functionality should be refactored
   const base64 = buffer.toString("base64");
   const fileName = part.filename;
-  const encoding = "binary";
   const mimetype = part.mimetype;
-  // return { id, buffer, fileName, encoding };
+  const doc = new BufferDocument(id, fileName, buffer);
   return { id, base64, fileName };
 };
 
@@ -43,16 +44,16 @@ const parseMultiPartRequest = async (request: AuthenticatedRequest): Promise<any
       if (part.fieldname === "apiVersion") {
         continue;
       }
-      if (part.fieldname === "dueDate" && part.value === "null") {
+      if (part.value === "null") {
         data[part.fieldname] = undefined;
         continue;
       }
-      // part.type === 'field
-      data[part.fieldname] = part.value;
-      // todo handle it better?
+      // TODO what if tags is not empty?
       if (part.fieldname === "tags" && part.value === "") {
         data[part.fieldname] = [];
+        continue;
       }
+      data[part.fieldname] = part.value;
     }
   }
   data["documents"] = uploadedDocuments;
@@ -62,7 +63,7 @@ const parseMultiPartRequest = async (request: AuthenticatedRequest): Promise<any
 /**
  * Represents the request body of the endpoint
  */
-interface RequestBodyV2 {
+interface CreateWorkflowV2RequestBody {
   apiVersion: "2.0";
   data: {
     projectId: Project.Id;
@@ -106,7 +107,7 @@ const requestBodyV2Schema = Joi.object({
   }).required(),
 });
 
-type RequestBody = RequestBodyV2;
+type RequestBody = CreateWorkflowV2RequestBody;
 const requestBodySchema = requestBodyV2Schema;
 
 /**
