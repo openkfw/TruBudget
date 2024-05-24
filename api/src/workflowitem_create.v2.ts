@@ -21,6 +21,7 @@ import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_type
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import { AugmentedFastifyInstance } from "./types";
 import { BufferDocument } from "service/domain/document/BufferDocument";
+import { Base64Document } from "service/domain/document/Base64Document";
 
 const parseMultiPartFile = async (part: MultipartFile): Promise<any> => {
   const id = "";
@@ -277,7 +278,9 @@ export function addHttpHandler(
           dueDate: bodyResult.data.dueDate,
           exchangeRate: bodyResult.data.exchangeRate,
           additionalData: bodyResult.data.additionalData,
-          documents: bodyResult.data.documents,
+          documents: bodyResult.data.documents?.map(
+            (d) => new Base64Document(d.id, d.fileName, d.base64),
+          ),
           workflowitemType: bodyResult.data.workflowitemType,
           tags: bodyResult.data.tags,
         };

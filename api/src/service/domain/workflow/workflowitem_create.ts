@@ -9,14 +9,7 @@ import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
-import {
-  DocumentOrExternalLinkReference,
-  generateUniqueDocId,
-  GenericDocument,
-  hashDocument,
-  UploadedDocument,
-  uploadedDocumentSchema,
-} from "../document/document";
+import { generateUniqueDocId, GenericDocument, uploadedDocumentSchema } from "../document/document";
 import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -30,6 +23,8 @@ import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
+import { DocumentBase } from "../document/DocumentBase";
+import { DocumentReferenceBase } from "../document/DocumentReferenceBase";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -45,7 +40,7 @@ export interface RequestData {
   billingDate?: string;
   dueDate?: string;
   assignee?: string;
-  documents?: UploadedDocument[];
+  documents?: DocumentBase[];
   additionalData?: object;
   workflowitemType?: Type;
   tags?: string[];
@@ -93,7 +88,7 @@ interface Repository {
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
   uploadDocumentToStorageService(
-    uploadedDocument: UploadedDocument,
+    uploadedDocument: DocumentBase,
   ): Promise<Result.Type<BusinessEvent[]>>;
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
@@ -144,7 +139,7 @@ const inheritSubprojectPermissions = (
   return result;
 };
 
-function numDocuments(docs: UploadedDocument[]): number {
+function numDocuments(docs: DocumentBase[]): number {
   return docs.filter((d) => d.hasOwnProperty("base64") || d.hasOwnProperty("buffer")).length;
 }
 
@@ -155,7 +150,7 @@ export async function createWorkflowitem(
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
   const publisher = issuer.id;
-  const documents: DocumentOrExternalLinkReference[] = [];
+  const documents: DocumentReferenceBase[] = [];
   const documentUploadedEvents: BusinessEvent[] = [];
 
   if (reqData.documents?.length) {
@@ -175,28 +170,26 @@ export async function createWorkflowitem(
       // preparation for workflowitem_created event
       for (const doc of reqData.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        if ("base64" in doc || "buffer" in doc) {
-          const hashedDocumentResult = await hashDocument(doc);
-          if (Result.isErr(hashedDocumentResult)) {
-            return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
-          }
-          documents.push(hashedDocumentResult);
-        } else {
-          documents.push(doc);
-        }
+        documents.push(doc.reference());
+        // if ("base64" in doc || "buffer" in doc) {
+        //   const hashedDocumentResult = await doc.hash();
+        //   if (Result.isErr(hashedDocumentResult)) {
+        //     return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
+        //   }
+        //   documents.push(hashedDocumentResult);
+        // } else {
+        //   documents.push(doc);
+        // }
       }
       // upload documents to storage service
       // generate document events (document_uploaded, secret_published)
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
         reqData.documents
+          // todo adjust filter method
           .filter((document) => "base64" in document)
           .map(async (document) => {
             logger.trace({ document }, "Trying to upload document to storage service");
-            return repository.uploadDocumentToStorageService({
-              id: document.id,
-              fileName: document.fileName || "",
-              base64: document.base64,
-            });
+            return repository.uploadDocumentToStorageService(document);
           }),
       );
       for (const result of documentUploadedEventsResults) {

@@ -183,7 +183,7 @@ export function hashDocumentB(document: DocumentBase): Promise<Result.Type<Docum
   logger.trace({ document: document.fileName }, "Hashing document");
   let hashValuePromise;
   try {
-    hashValuePromise = document.getHash();
+    hashValuePromise = document.hash();
   } catch (error) {
     return Promise.reject(new Error("Unknown document type"));
   }

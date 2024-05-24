@@ -1,3 +1,5 @@
+import { DocumentReferenceBase } from "./DocumentReferenceBase";
+
 export class DocumentBase {
   protected _id: string;
   protected _fileName: string;
@@ -15,6 +17,10 @@ export class DocumentBase {
     return this._id;
   }
 
+  public set id(value: string) {
+    this._id = value;
+  }
+
   public get fileName(): string {
     return this._fileName;
   }
@@ -27,7 +33,11 @@ export class DocumentBase {
     return this._type;
   }
 
-  public getHash(): string {
-    throw new Error("You have to implement the method getHash");
+  public hash(): string {
+    throw new Error("You have to implement the method hash");
+  }
+
+  public reference(): DocumentReferenceBase {
+    throw new Error("You have to implement the method reference");
   }
 }
