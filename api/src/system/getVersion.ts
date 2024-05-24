@@ -3,6 +3,7 @@ import { HttpResponse } from "../httpd/lib";
 import { MultichainClient } from "../service/Client.h";
 import StorageServiceClient from "../service/Client_storage_service";
 import { Version } from "../service/Client_storage_service.h";
+
 import BlockchainApi from "./blockchainApi";
 
 interface VersionMetadata {

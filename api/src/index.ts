@@ -1,11 +1,14 @@
+// eslint-disable-next-line import/order
 import { AxiosRequestConfig } from "axios";
+
 import "module-alias/register";
-import { AugmentedFastifyInstance } from "./types";
+import { MAX_DOCUMENT_SIZE } from "service/domain/document/document";
+
 import getValidConfig from "./config";
-import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
-import * as GlobalPermissionsListAPI from "./global_permissions_list";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
+import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
+import * as GlobalPermissionsListAPI from "./global_permissions_list";
 import * as GroupCreateAPI from "./group_create";
 import * as GroupListAPI from "./group_list";
 import * as GroupMemberAddAPI from "./group_member_add";
@@ -30,9 +33,9 @@ import * as ProjectCloseAPI from "./project_close";
 import * as ProjectCreateAPI from "./project_create";
 import * as ProjectListAPI from "./project_list";
 import * as ProjectListV2API from "./project_list.v2";
-import * as ProjectPermissionsListAPI from "./project_permissions_list";
 import * as ProjectPermissionGrantAPI from "./project_permission_grant";
 import * as ProjectPermissionRevokeAPI from "./project_permission_revoke";
+import * as ProjectPermissionsListAPI from "./project_permissions_list";
 import * as ProjectUpdateAPI from "./project_update";
 import * as ProjectViewDetailsAPI from "./project_view_details";
 import * as ProjectViewHistoryAPI from "./project_view_history";
@@ -46,9 +49,9 @@ import StorageServiceClient from "./service/Client_storage_service";
 import * as DocumentValidationService from "./service/document_validation";
 import * as GroupQueryService from "./service/domain/organization/group_query";
 import * as UserQueryService from "./service/domain/organization/user_query";
-import * as GlobalPermissionsGetService from "./service/global_permissions_get";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
+import * as GlobalPermissionsGetService from "./service/global_permissions_get";
 import * as GroupCreateService from "./service/group_create";
 import * as GroupMemberAddService from "./service/group_member_add";
 import * as GroupMemberRemoveService from "./service/group_member_remove";
@@ -61,9 +64,9 @@ import * as ProjectCreateService from "./service/project_create";
 import * as ProjectGetService from "./service/project_get";
 import * as ProjectViewHistoryService from "./service/project_history_get";
 import * as ProjectListService from "./service/project_list";
-import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectPermissionGrantService from "./service/project_permission_grant";
 import * as ProjectPermissionRevokeService from "./service/project_permission_revoke";
+import * as ProjectPermissionsListService from "./service/project_permissions_list";
 import * as ProjectProjectedBudgetDeleteService from "./service/project_projected_budget_delete";
 import * as ProjectProjectedBudgetUpdateService from "./service/project_projected_budget_update";
 import * as ProjectUpdateService from "./service/project_update";
@@ -77,9 +80,9 @@ import * as SubprojectCreateService from "./service/subproject_create";
 import * as SubprojectGetService from "./service/subproject_get";
 import * as SubprojectViewHistoryService from "./service/subproject_history_get";
 import * as SubprojectListService from "./service/subproject_list";
-import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectPermissionGrantService from "./service/subproject_permission_grant";
 import * as SubprojectPermissionRevokeService from "./service/subproject_permission_revoke";
+import * as SubprojectPermissionListService from "./service/subproject_permissions_list";
 import * as SubprojectProjectedBudgetDeleteService from "./service/subproject_projected_budget_delete";
 import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_projected_budget_update";
 import * as SubprojectUpdateService from "./service/subproject_update";
@@ -89,63 +92,65 @@ import * as UserCreateService from "./service/user_create";
 import * as UserDisableService from "./service/user_disable";
 import * as UserEnableService from "./service/user_enable";
 import * as UserPasswordChangeService from "./service/user_password_change";
-import * as UserPermissionsListService from "./service/user_permissions_list";
 import * as UserPermissionGrantService from "./service/user_permission_grant";
 import * as UserPermissionRevokeService from "./service/user_permission_revoke";
-import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
+import * as UserPermissionsListService from "./service/user_permissions_list";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
-import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
 import * as WorkflowitemDocumentDeleteService from "./service/workflowitem_document_delete";
+import * as WorkflowitemDocumentDownloadService from "./service/workflowitem_document_download";
 import * as WorkflowitemGetService from "./service/workflowitem_get";
 import * as WorkflowitemGetDetailsService from "./service/workflowitem_get_details";
 import * as WorkflowitemViewHistoryService from "./service/workflowitem_history_get";
 import * as WorkflowitemListService from "./service/workflowitem_list";
-import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
+import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
+import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as SubprojectAssignAPI from "./subproject_assign";
 import * as SubprojectProjectedBudgetDeleteAPI from "./subproject_budget_delete_projected";
 import * as SubprojectProjectedBudgetUpdateAPI from "./subproject_budget_update_projected";
 import * as SubprojectCloseAPI from "./subproject_close";
 import * as SubprojectCreateAPI from "./subproject_create";
 import * as SubprojectListAPI from "./subproject_list";
-import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
 import * as SubprojectPermissionGrantAPI from "./subproject_permission_grant";
 import * as SubprojectPermissionRevokeAPI from "./subproject_permission_revoke";
+import * as SubprojectPermissionListAPI from "./subproject_permissions_list";
 import * as SubprojectUpdateAPI from "./subproject_update";
 import * as SubprojectViewDetailsAPI from "./subproject_view_details";
 import * as SubprojectViewHistoryAPI from "./subproject_view_history";
 import ensureStorageServiceUrlPublished from "./system/ensureOrganizationUrlPublished";
 import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
+import { AugmentedFastifyInstance } from "./types";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserAuthenticateAdAPI from "./user_authenticateAd";
-import * as UserLogoutAPI from "./user_logout";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
 import * as UserEnableAPI from "./user_enable";
 import * as UserListAPI from "./user_list";
 import * as UserAssignmentsAPI from "./user_listAssignments";
+import * as UserLogoutAPI from "./user_logout";
 import * as UserPasswordChangeAPI from "./user_password_change";
-import * as UserPermissionsListAPI from "./user_permissions_list";
 import * as UserPermissionGrantAPI from "./user_permission_grant";
 import * as UserPermissionRevokeAPI from "./user_permission_revoke";
-import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
+import * as UserPermissionsListAPI from "./user_permissions_list";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
-import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
+import * as WorkflowitemCreateV2API from "./workflowitem_create.v2";
 import * as WorkflowitemDocumentDeleteAPI from "./workflowitem_delete_document";
+import * as WorkflowitemsDocumentDownloadAPI from "./workflowitem_download_document";
 import * as WorkflowitemListAPI from "./workflowitem_list";
-import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
+import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
+import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -206,7 +211,7 @@ if (documentFeatureEnabled) {
     baseURL: `http://${storageService.host}:${storageService.port}`,
     // 10 seconds request timeout
     timeout: 10000,
-    maxBodyLength: 67000000, //  ~50mb in base64
+    maxBodyLength: MAX_DOCUMENT_SIZE,
   };
   logger.info("Documents are stored in external storage");
 } else {
@@ -747,6 +752,11 @@ WorkflowitemCloseAPI.addHttpHandler(server, URL_PREFIX, {
 });
 
 WorkflowitemCreateAPI.addHttpHandler(server, URL_PREFIX, {
+  createWorkflowitem: (ctx, user, requestData) =>
+    WorkflowitemCreateService.createWorkflowitem(db, storageServiceClient, ctx, user, requestData),
+});
+
+WorkflowitemCreateV2API.addHttpHandler(server, URL_PREFIX, {
   createWorkflowitem: (ctx, user, requestData) =>
     WorkflowitemCreateService.createWorkflowitem(db, storageServiceClient, ctx, user, requestData),
 });

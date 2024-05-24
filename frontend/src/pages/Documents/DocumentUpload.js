@@ -140,6 +140,7 @@ const DocumentUpload = ({
                     reader.onloadend = (e) => {
                       if (e.target.result !== undefined) {
                         const dataUrl = e.target.result.split(";base64,")[1];
+                        // data in redux store needs to be serializable, so we store base64 string
                         storeWorkflowDocument(dataUrl, file.name);
                       }
                     };

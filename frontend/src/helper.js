@@ -260,3 +260,15 @@ export const getLoginErrorFromResponse = (status, data) => {
       return strings.common.incorrect_username_or_password;
   }
 };
+
+export function base64ToBlob(base64, type = "application/octet-stream") {
+  const binaryString = atob(base64);
+  const len = binaryString.length;
+  const bytes = new Uint8Array(len);
+
+  for (let i = 0; i < len; i++) {
+    bytes[i] = binaryString.charCodeAt(i);
+  }
+
+  return new Blob([bytes], { type });
+}
