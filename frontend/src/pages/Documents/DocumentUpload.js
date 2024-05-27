@@ -18,13 +18,17 @@ import { DocumentEmptyState } from "./DocumentEmptyStates";
 
 import "./DocumentUpload.scss";
 
+const MAX_DOCUMENT_SIZE_BINARY = 100 * 1024 * 1024; // 100 MB
+
 const uriValidation = Yup.string().url().required();
 
 const DocumentUpload = ({
   storeWorkflowDocument,
   storeWorkflowDocumentExternalLink,
   workflowDocuments,
-  storageServiceAvailable
+  storageServiceAvailable,
+  storeSnackbarMessage,
+  showErrorSnackbar
 }) => {
   const defaultDocumentUrl = "https://";
   const defaultDocumentName = "";
@@ -136,10 +140,11 @@ const DocumentUpload = ({
                 onChange={(event) => {
                   if (event.target.files) {
                     const file = event.target.files[0];
-                    const maxSize = 105 * 1024 * 1024; // 105MB
-                    if (file.size > maxSize) {
-                      // todo dispatch action to show error message
-                      console.log("File size exceeds the limit of 105MB");
+                    if (file.size > MAX_DOCUMENT_SIZE_BINARY) {
+                      storeSnackbarMessage(
+                        `File size exceeds the limit of ${Math.round(MAX_DOCUMENT_SIZE_BINARY / (1024 * 1024))} MB`
+                      );
+                      showErrorSnackbar();
                       return;
                     }
                     const reader = new FileReader();
