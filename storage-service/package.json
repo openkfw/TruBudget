@@ -35,7 +35,7 @@
     "helmet": "^7.1.0",
     "minio": "^7.1.0",
     "pino": "^9.1.0",
-    "trubudget-logging-service": "^1.2.2",
+    "trubudget-logging-service": "^2.7.0",
     "url": "^0.11.0",
     "uuid": "^8.3.2"
   },
