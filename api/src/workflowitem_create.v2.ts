@@ -24,7 +24,7 @@ import { AugmentedFastifyInstance } from "./types";
 const parseMultiPartFile = async (part: MultipartFile): Promise<any> => {
   const id = "";
   const buffer = await part.toBuffer();
-  // TODO downstream functionality expects base64, but we should work with buffer directly
+  // TODO downstream functionality expects base64, but we should work with buffer directly in the future
   const base64 = buffer.toString("base64");
   const fileName = part.filename;
   return { id, base64, fileName };
@@ -40,14 +40,16 @@ const parseMultiPartRequest = async (request: AuthenticatedRequest): Promise<any
     } else {
       if (part.fieldname === "apiVersion") {
         continue;
+      } else if (part.fieldname === "tags") {
+        if (part.value === "") {
+          data[part.fieldname] = [];
+        } else {
+          data[part.fieldname] = (part.value as string).split(",");
+        }
+        continue;
       }
       if (part.value === "null") {
         data[part.fieldname] = undefined;
-        continue;
-      }
-      // TODO what if tags is not empty?
-      if (part.fieldname === "tags" && part.value === "") {
-        data[part.fieldname] = [];
         continue;
       }
       data[part.fieldname] = part.value;

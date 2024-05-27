@@ -2,7 +2,7 @@
 import { AxiosRequestConfig } from "axios";
 
 import "module-alias/register";
-import { MAX_DOCUMENT_SIZE } from "service/domain/document/document";
+import { MAX_DOCUMENT_SIZE_BASE64 } from "service/domain/document/document";
 
 import getValidConfig from "./config";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
@@ -211,7 +211,7 @@ if (documentFeatureEnabled) {
     baseURL: `http://${storageService.host}:${storageService.port}`,
     // 10 seconds request timeout
     timeout: 10000,
-    maxBodyLength: MAX_DOCUMENT_SIZE,
+    maxBodyLength: MAX_DOCUMENT_SIZE_BASE64,
   };
   logger.info("Documents are stored in external storage");
 } else {

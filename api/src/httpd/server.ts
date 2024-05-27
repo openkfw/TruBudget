@@ -19,7 +19,10 @@ import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import fastifyMetricsPlugin from "fastify-metrics";
 import { Ctx } from "lib/ctx";
 import { ConnToken } from "service";
-import { MAX_DOCUMENT_SIZE } from "service/domain/document/document";
+import {
+  MAX_DOCUMENT_SIZE_BASE64,
+  MAX_DOCUMENT_SIZE_BINARY,
+} from "service/domain/document/document";
 import { Identity } from "service/domain/organization/identity";
 import { ServiceUser } from "service/domain/organization/service_user";
 
@@ -208,7 +211,7 @@ export const createBasicApp = (
 ): FastifyInstance => {
   const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger,
-    bodyLimit: MAX_DOCUMENT_SIZE,
+    bodyLimit: MAX_DOCUMENT_SIZE_BASE64,
   });
 
   registerSwagger(server, urlPrefix, apiPort);
@@ -249,8 +252,8 @@ export const createBasicApp = (
     });
   }
 
-  // todo file size limit
   server.register(fastifyMultipart, {
+    limits: { fileSize: MAX_DOCUMENT_SIZE_BINARY },
     // routes that use Multipart Form:
     prefix: "/v2/subproject.createWorkflowitem",
   });

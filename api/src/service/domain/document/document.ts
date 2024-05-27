@@ -4,7 +4,8 @@ import * as Result from "../../../result";
 import Joi = require("joi");
 import VError = require("verror");
 
-export const MAX_DOCUMENT_SIZE = 108 * 1024 * 1024 * (4 / 3); // 105 MB encoded in Base64
+export const MAX_DOCUMENT_SIZE_BINARY = 108 * 1024 * 1024; // 108 MB
+export const MAX_DOCUMENT_SIZE_BASE64 = 108 * 1024 * 1024 * (4 / 3); // 108 MB encoded in Base64
 
 export interface StoredDocument {
   id: string;
@@ -78,7 +79,7 @@ export const uploadedDocumentSchema = Joi.alternatives([
     id: Joi.string().allow(""),
     base64: Joi.string()
       .required()
-      .max(MAX_DOCUMENT_SIZE)
+      .max(MAX_DOCUMENT_SIZE_BASE64)
       .error(() => new Error("Document is not valid")),
     fileName: Joi.string(),
   }),
