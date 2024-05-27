@@ -357,11 +357,17 @@ app.post("/chain", async (req, res) => {
         const config = loadConfig(metadataPath);
         const validSha256 = await verifyHashSha256(config.DirectoryHash, extractPath);
         const chainConfig = yaml.load(fs.readFileSync(chainConfigPath, "utf8"));
-        let correctConfig = chainConfig.includes(MULTICHAIN_RPC_PASSWORD);
+        let isCorrectPassword = chainConfig.includes(MULTICHAIN_RPC_PASSWORD);
+        let correctConfig = isCorrectPassword;
 
         if (config.hasOwnProperty("Organisation")) {
-          const correctOrg = config.Organisation === ORGANIZATION;
-          correctConfig = correctConfig && correctOrg;
+          const isCorrectOrg = config.Organisation === ORGANIZATION;
+          if (!isCorrectOrg) {
+            log.warn(
+              `Tried to Backup with invalid Organisation: current ${ORGANIZATION}, backup ${config.Organisation}`,
+            );
+          }
+          correctConfig = correctConfig && isCorrectOrg;
         }
         //Check for major version compatibility
         const compatibleVersions =
@@ -379,14 +385,16 @@ app.post("/chain", async (req, res) => {
             res.send("OK");
           } else {
             log.warn("Request did not contain a valid trubudget backup");
-            if (!compatibleVersions) {
-              log.warn("The uploaded backup is not compatible with this version of TruBudget");
-            }
+
             res.status(400).send("Not a valid TruBudget backup");
           }
         } else {
           if (!compatibleVersions) {
-            log.warn("The uploaded backup is not compatible with this version of TruBudget");
+            log.warn(
+              `The uploaded backup is not compatible with this version of TruBudget: current ${
+                version.split(".")[0]
+              }, backup ${config.Version.split(".")[0]} `,
+            );
           }
           log.warn("Tried to Backup with invalid configuration");
           res.status(400).send("Backup with these configurations is not permitted");

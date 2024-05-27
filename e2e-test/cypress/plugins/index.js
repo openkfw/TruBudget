@@ -23,6 +23,9 @@ const shell = require("shelljs");
 require("dotenv").config();
 
 function apiReportsReadiness(baseUrl) {
+  if (baseUrl.includes("localhost")) {
+    baseUrl = baseUrl.replace("localhost", "127.0.0.1");
+  }
   return axios
     .get(`${baseUrl}/api/readiness`)
     .then((response) => {
@@ -35,12 +38,16 @@ function apiReportsReadiness(baseUrl) {
       }
     })
     .catch((err) => {
-      console.log(`API is not ready yet: ${err}`);
+      console.log(`API is not ready yet: ${err.message}`);
+      console.log(err);
       return false;
     });
 }
 
 function excelExportReportsReadiness(exportServiceBaseUrl) {
+  if (exportServiceBaseUrl.includes("localhost")) {
+    exportServiceBaseUrl = exportServiceBaseUrl.replace("localhost", "127.0.0.1");
+  }
   return axios
     .get(`${exportServiceBaseUrl}/readiness`)
     .then((response) => {
