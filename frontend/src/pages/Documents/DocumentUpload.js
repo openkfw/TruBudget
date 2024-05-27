@@ -136,6 +136,12 @@ const DocumentUpload = ({
                 onChange={(event) => {
                   if (event.target.files) {
                     const file = event.target.files[0];
+                    const maxSize = 105 * 1024 * 1024; // 105MB
+                    if (file.size > maxSize) {
+                      // todo dispatch action to show error message
+                      console.log("File size exceeds the limit of 105MB");
+                      return;
+                    }
                     const reader = new FileReader();
                     reader.onloadend = (e) => {
                       if (e.target.result !== undefined) {
