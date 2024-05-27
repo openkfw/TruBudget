@@ -157,3 +157,33 @@ export async function getApiVersion(
   const response: AxiosResponse<string> = await axios.get(`${base}/version`, getAuthHeader(token));
   return response.data;
 }
+
+export function formatHttpResponse(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  response: any,
+  apiVersion = "1.0",
+): {
+  apiVersion: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  data: any;
+} {
+  return {
+    apiVersion,
+    data: response,
+  };
+}
+
+export function formatHttpError(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  response: any,
+  apiVersion = "1.0",
+): {
+  apiVersion: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  error: any;
+} {
+  return {
+    apiVersion,
+    error: response,
+  };
+}

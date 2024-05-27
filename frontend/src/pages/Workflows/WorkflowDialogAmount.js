@@ -169,10 +169,10 @@ const showAmountInputFields = (
         aria-label="rate"
         data-test="rateinput"
         disabled={workflowCurrency === subProjectCurrency}
-        className="amount-input"
+        className="exchange-rate"
       />
       <div className="typography-field-with-currency">
-        <Typography className="typography-field" data-test="calculated-result">
+        <Typography className="typography-field no-margin" data-test="calculated-result">
           {"= " + subProjectCurrency + " "}
           {exchangeRate ? toAmountString(fromAmountString(workflowAmount) * fromAmountString(exchangeRate)) : "-"}
         </Typography>

@@ -1,7 +1,7 @@
 @import "../../mixins.scss";
 
 .input-field {
-  min-width: 200px;
+  min-width: 12.5rem;
   flex-grow: 1;
   @include tablet {
     width: 50%;
@@ -27,6 +27,7 @@
   margin-top: 1.25rem;
   margin-bottom: 0.5rem;
   font-size: x-large;
+  cursor: pointer;
 }
 
 .add-organization-budget {

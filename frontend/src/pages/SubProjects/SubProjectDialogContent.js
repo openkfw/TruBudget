@@ -8,6 +8,7 @@ import MenuItem from "@mui/material/MenuItem";
 import { getCurrencies } from "../../helper";
 import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
+import { CustomInfoTooltip } from "../Common/CustomInfoTooltip";
 import Identifier from "../Common/Identifier";
 import Dropdown from "../Common/NewDropdown";
 import SingleSelection from "../Common/SingleSelection";
@@ -98,6 +99,10 @@ const SubProjectDialogContent = (props) => {
                   floatingLabel={strings.subproject.workflowitem_assignee}
                   onSelect={(selectId) => props.storeSubProjectValidator(selectId)}
                   onClearItem={() => props.storeSubProjectValidator("")}
+                />
+                <CustomInfoTooltip
+                  title={`${strings.subproject.default_assignee_warning} ${strings.subproject.default_assignee_warning2}`}
+                  iconType="warning"
                 />
               </div>
             </div>
