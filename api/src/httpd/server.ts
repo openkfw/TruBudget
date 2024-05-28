@@ -19,17 +19,17 @@ import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from "fastify"
 import fastifyMetricsPlugin from "fastify-metrics";
 import { Ctx } from "lib/ctx";
 import { ConnToken } from "service";
-import {
-  MAX_DOCUMENT_SIZE_BASE64,
-  MAX_DOCUMENT_SIZE_BINARY,
-} from "service/domain/document/document";
-import { Identity } from "service/domain/organization/identity";
-import { ServiceUser } from "service/domain/organization/service_user";
 
 import { JwtConfig } from "../config";
 import logger from "../lib/logger";
 import * as Result from "../result";
+import {
+  MAX_DOCUMENT_SIZE_BASE64,
+  MAX_DOCUMENT_SIZE_BINARY,
+} from "../service/domain/document/document";
 import * as Group from "../service/domain/organization/group";
+import { Identity } from "../service/domain/organization/identity";
+import { ServiceUser } from "../service/domain/organization/service_user";
 import { AugmentedFastifyInstance } from "../types";
 
 import { AuthenticatedRequest } from "./lib";
