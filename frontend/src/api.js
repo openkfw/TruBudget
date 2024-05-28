@@ -357,10 +357,12 @@ class Api {
       formData.append(key, payloadToSend[key]);
     }
 
-    if (documents) {
+    if (documents && documents.length > 0) {
       for (let i = 0; i < documents.length; i++) {
-        const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
-        formData.append("documents", blob, documents[i].fileName);
+        if (documents[i].base64) {
+          const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
+          formData.append("documents", blob, documents[i].fileName);
+        }
       }
     }
     return instance.post(`/v2/subproject.createWorkflowitem`, formData, {
