@@ -2,7 +2,6 @@
 import { AxiosRequestConfig } from "axios";
 
 import "module-alias/register";
-import { MAX_DOCUMENT_SIZE_BASE64 } from "service/domain/document/document";
 
 import getValidConfig from "./config";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
@@ -47,6 +46,7 @@ import * as Multichain from "./service";
 import * as Cache from "./service/cache2";
 import StorageServiceClient from "./service/Client_storage_service";
 import * as DocumentValidationService from "./service/document_validation";
+import { MAX_DOCUMENT_SIZE_BASE64 } from "./service/domain/document/document";
 import * as GroupQueryService from "./service/domain/organization/group_query";
 import * as UserQueryService from "./service/domain/organization/user_query";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
