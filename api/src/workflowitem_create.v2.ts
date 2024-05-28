@@ -131,54 +131,35 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
     preValidation: [server.authenticate],
     schema: {
       description:
-        "Create a workflowitem and associate it to the given subproject.\n.\n" +
+        "Create a workflowitem, upload related files, and associate it to the given subproject.\n.\n" +
+        "Request body must be multipart/form-data. The following fields are required:\n\n" +
+        "- `projectId` (string): the id of the project\n" +
+        "- `subprojectId` (string): the id of the subproject\n" +
+        "- `displayName` (string): the name of the workflowitem\n" +
+        "- `amountType` (string): the type of the amount\n\n" +
+        "The following fields are optional:\n\n" +
+        "- `status` (string): the status of the workflowitem\n" +
+        "- `description` (string): the description of the workflowitem\n" +
+        "- `assignee` (string): the assignee of the workflowitem\n" +
+        "- `currency` (string): the currency of the workflowitem\n" +
+        "- `amount` (string): the amount of the workflowitem\n" +
+        "- `billingDate` (string): the billing date of the workflowitem\n" +
+        "- `dueDate` (string): the due date of the workflowitem\n" +
+        "- `exchangeRate` (string): the exchange rate of the workflowitem\n" +
+        "- `documents` (array): an array of documents to be uploaded\n" +
+        "- `additionalData` (object): additional data\n" +
+        "- `workflowitemType` (string): the type of the workflowitem\n" +
+        "- `tags` (array): an array of tags\n\n" +
         "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
-        "The only possible values for 'status' are: 'open' and 'closed'",
-      tags: ["subproject"],
+        "The only possible values for 'status' are: 'open' and 'closed'\n\n",
+      tags: ["subproject", "v2"],
       summary: "Create a workflowitem",
       security: [
         {
           bearerToken: [],
         },
       ],
-      // body: {
-      //   type: "object",
-      //   properties: {
-      //     apiVersion: { type: "string", example: "2.0" },
-      //     data: {
-      //       type: "object",
-      //       additionalProperties: false,
-      //       required: ["projectId", "subprojectId", "displayName", "amountType"],
-      //       properties: {
-      //         projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-      //         subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-      //         status: { type: "string", example: "open" },
-      //         displayName: { type: "string", example: "classroom" },
-      //         description: { type: "string", example: "build classroom" },
-      //         amount: { type: ["string", "null"], example: "500" },
-      //         assignee: { type: "string", example: "aSmith" },
-      //         currency: { type: ["string", "null"], example: "EUR" },
-      //         amountType: { type: "string", example: "disbursed" },
-      //         billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-      //         dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-      //         exchangeRate: { type: "string", example: "1.0" },
-      //         documents: {
-      //           type: "array",
-      //           items: {
-      //             type: "object",
-      //             properties: {
-      //               base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
-      //               fileName: { type: "string", example: "test-document" },
-      //             },
-      //           },
-      //         },
-      //         additionalData: { type: "object", additionalProperties: true },
-      //         workflowitemType: { type: "string", example: "general" },
-      //         tags: { type: "array", items: { type: "string", example: "test" } },
-      //       },
-      //     },
-      //   },
-      // },
+      consumes: ["multipart/form-data"],
       response: {
         200: {
           description: "successful response",
