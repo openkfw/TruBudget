@@ -151,7 +151,7 @@ const CardView = (props) => {
               disabled={!canCreateProject(allowedIntents) || isRoot}
               onClick={() => showCreationDialog()}
               color="primary"
-              data-test="create-project-button"
+              data-test="add-project-button"
             >
               <ContentAdd />
             </Fab>
