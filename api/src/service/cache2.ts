@@ -391,7 +391,7 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
     if (streamName === "global" && newItems.length > 0) {
       const globalPermissions = sourceGlobalPermissions(
         ctx,
-        cache.eventsByStream[streamName] || [],
+        cache.eventsByStream.get(streamName) || [],
       );
       cache.globalPermissions = globalPermissions.globalPermissions;
     }
