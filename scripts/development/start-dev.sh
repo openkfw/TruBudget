@@ -60,6 +60,10 @@ IS_REBUILDING=false
 IS_PARTLY_REBUILDING=false
 BUILD_SERVICES=""
 START_FRONTEND_IN_CONTAINER=true
+IS_SKIPPING=false
+SKIPPED_SERVICE=""
+IS_RESTARTING_ONLY=false
+RESTART_ONLY_SERVICE=""
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -174,6 +178,30 @@ while [ "$1" != "" ]; do
         # --build-only must be the last argument if used
         # save all words right from option --build-only
         BUILD_SERVICES=$@
+        break
+        ;;
+
+    --skip)
+        IS_SKIPPING=true
+        shift # past argument --skip
+        # --skip must be the last argument if used
+        # save all words right from option --skip
+        SKIPPED_SERVICE=$@
+        break
+        ;;
+
+    --restart-only)
+        IS_RESTARTING_ONLY=true
+        shift # past argument --start-only
+        # --start-only must be the last argument if used
+        # save all words right from option --start-only
+        LOG_OPTION="--no-deps"
+        IS_PARTLY_REBUILDING=true
+        RESTART_ONLY_SERVICE=$@
+        BUILD_SERVICES=$RESTART_ONLY_SERVICE
+        COMPOSE_SERVICES=$RESTART_ONLY_SERVICE
+        ENABLED_SERVICES=""
+        BETA_SERVICES=""
         break
         ;;
 
@@ -323,6 +351,15 @@ else
     fi
 fi
 
+# Remove skipped service
+if [ "$IS_SKIPPING" = true ]; then
+  COMPOSE_SERVICES=${COMPOSE_SERVICES/"$SKIPPED_SERVICE "/}
+fi
+
+# Start only selected service/s
+if [ "$IS_RESTARTING_ONLY" = true ]; then
+  COMPOSE_SERVICES=$RESTART_ONLY_SERVICE
+fi
 
 # Check if the docker-compose command exists. Newer Docker versions come with compose command along the docker. (docker compose)
 if type -t docker-compose>/dev/null; then
@@ -333,7 +370,7 @@ fi
 
 COMPOSE="$COMPOSE_COMMAND -f $SCRIPT_DIR/docker-compose.yml"
 # add additional docker-compose file in case we want to add a storage provider
-if [[ $COMPOSE_SERVICES =~ "storage-service" ]]; then
+if [[ $COMPOSE_SERVICES =~ "minio" || $COMPOSE_SERVICES =~ "azure-storage" ]]; then
   if [ "$STORAGE_PROVIDER" = "minio" ]; then
     COMPOSE="$COMPOSE -f $SCRIPT_DIR/docker-compose.minio.yml"
   elif [ "$STORAGE_PROVIDER" = "azure-storage" ]; then
@@ -342,7 +379,9 @@ if [[ $COMPOSE_SERVICES =~ "storage-service" ]]; then
 fi
 COMPOSE="$COMPOSE -p trubudget-dev --env-file $SCRIPT_DIR/.env"
 
-$COMPOSE down
+if [ "$IS_RESTARTING_ONLY" = false ]; then
+  $COMPOSE down
+fi
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
 $COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
