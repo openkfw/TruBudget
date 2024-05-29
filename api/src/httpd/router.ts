@@ -21,6 +21,7 @@ import { restoreBackup } from "../system/restoreBackup";
 
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
+import { silentRouteSettings } from "../lib/loggingTools";
 
 const send = (res, httpResponse: HttpResponse): void => {
   const [code, body] = httpResponse;
@@ -234,7 +235,7 @@ export const registerRoutes = (
 
     server.get(
       `${urlPrefix}/readiness`,
-      getSchemaWithoutAuth("readiness"),
+      silentRouteSettings(getSchemaWithoutAuth("readiness")),
       async (_request, reply) => {
         if (await isReady(multichainClient)) {
           if (!config.documentFeatureEnabled || (await storageServiceClient.isReady())) {
@@ -248,21 +249,29 @@ export const registerRoutes = (
       },
     );
 
-    server.get(`${urlPrefix}/liveness`, getSchemaWithoutAuth("liveness"), (_, reply) => {
-      reply.status(200).send(
-        JSON.stringify({
-          uptime: process.uptime(),
-        }),
-      );
-    });
+    server.get(
+      `${urlPrefix}/liveness`,
+      silentRouteSettings(getSchemaWithoutAuth("liveness")),
+      (_, reply) => {
+        reply.status(200).send(
+          JSON.stringify({
+            uptime: process.uptime(),
+          }),
+        );
+      },
+    );
 
-    server.get(`${urlPrefix}/version`, getSchema(server, "version"), (request, reply) => {
-      getVersion(blockchainHost, blockchainPort, multichainClient, storageServiceClient)
-        .then((response) => {
-          send(reply, response);
-        })
-        .catch((err) => handleError(request, reply, err));
-    });
+    server.get(
+      `${urlPrefix}/version`,
+      silentRouteSettings(getSchema(server, "version")),
+      (request, reply) => {
+        getVersion(blockchainHost, blockchainPort, multichainClient, storageServiceClient)
+          .then((response) => {
+            send(reply, response);
+          })
+          .catch((err) => handleError(request, reply, err));
+      },
+    );
 
     // ------------------------------------------------------------
     //       network
