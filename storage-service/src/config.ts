@@ -17,6 +17,8 @@ interface Config {
   rateLimit: number | undefined;
   storage: MinioConfig;
   azureBlobStorage: AzureBlobConfig;
+  silenceLoggingOnFrequentRoutes: boolean;
+  shortRoutesLogging: boolean;
 }
 
 const config: Config = {
@@ -45,6 +47,8 @@ const config: Config = {
         : `https://${process.env.AZURE_ACCOUNT_NAME}.blob.core.windows.net`,
     containerName: process.env.AZURE_CONTAINER_NAME || "container",
   },
+  silenceLoggingOnFrequentRoutes: process.env.SILENCE_LOGGING_ON_FREQUENT_ROUTES === "true",
+  shortRoutesLogging: process.env.SHORT_ROUTES_LOGGING_OUTPUT === "true",
 };
 
 export default config;

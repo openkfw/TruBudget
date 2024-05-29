@@ -1,4 +1,4 @@
-import { RequestGenericInterface } from "fastify";
+import { RequestGenericInterface, RouteShorthandOptions } from "fastify";
 import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
 import { AuthenticatedRequest } from "./httpd/lib";
@@ -12,6 +12,7 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import { extractUser } from "./handlerUtils";
+import { silentRouteSettings } from "./lib/loggingTools";
 
 /**
  * Creates the swagger schema for the `/notification.list` endpoint
@@ -19,7 +20,7 @@ import { extractUser } from "./handlerUtils";
  * @param server fastify server
  * @returns the swagger schema for this endpoint
  */
-function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
+function mkSwaggerSchema(server: AugmentedFastifyInstance): RouteShorthandOptions {
   return {
     preValidation: [server.authenticate],
     schema: {
@@ -408,7 +409,7 @@ export function addHttpHandler(
   server.register(async function () {
     server.get<Request>(
       `${urlPrefix}/notification.list`,
-      mkSwaggerSchema(server),
+      silentRouteSettings(mkSwaggerSchema(server)),
       async (request, reply) => {
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
