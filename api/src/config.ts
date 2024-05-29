@@ -40,6 +40,7 @@ interface ProcessEnvVars {
   AUTHPROXY_ENABLED: string;
   AUTHPROXY_JWS_SIGNATURE: string;
   SNAPSHOT_EVENT_INTERVAL: string;
+  SILENCE_LOGGING_ON_FREQUENT_ROUTES: string;
 }
 
 /**
@@ -88,6 +89,7 @@ interface Config {
   };
   snapshotEventInterval: number;
   azureMonitorConnectionString: string;
+  silenceLoggingOnFrequentRoutes: boolean;
 }
 
 /**
@@ -147,6 +149,8 @@ export const config: Config = {
   },
   snapshotEventInterval: Number(process.env.SNAPSHOT_EVENT_INTERVAL) || 3,
   azureMonitorConnectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
+  silenceLoggingOnFrequentRoutes:
+    process.env.SILENCE_LOGGING_ON_FREQUENT_ROUTES === "true" || false,
 };
 
 /**
