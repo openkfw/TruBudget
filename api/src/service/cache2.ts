@@ -209,9 +209,9 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
           ctx,
           cache.eventsByStream.get("global") || [],
         );
-        cache.globalPermissions = JSON.parse(JSON.stringify(globalPermissions.globalPermissions));
+        cache.globalPermissions = globalPermissions.globalPermissions;
       }
-      return cache.globalPermissions;
+      return JSON.parse(JSON.stringify(cache.globalPermissions));
     },
   };
 }
