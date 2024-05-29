@@ -203,6 +203,14 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
     getGlobalPermissions: (): GlobalPermissions => {
       logger.trace("Getting global permissions from cache");
+      // if all values in all keys are empty, it means that the cache is empty
+      if (Object.values(cache.globalPermissions.permissions).every((x) => x.length === 0)) {
+        const globalPermissions = sourceGlobalPermissions(
+          ctx,
+          cache.eventsByStream.get("global") || [],
+        );
+        cache.globalPermissions = JSON.parse(JSON.stringify(globalPermissions.globalPermissions));
+      }
       return cache.globalPermissions;
     },
   };
