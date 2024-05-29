@@ -50,3 +50,14 @@
     }
   }
 }
+
+.card-view-actions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
+  width: 100%;
+}
+
+.add-project {
+  display: flex;
+}
