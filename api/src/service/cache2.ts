@@ -54,6 +54,8 @@ import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import { Item } from "./liststreamitems";
+import { GlobalPermissions } from "./domain/workflow/global_permissions";
+import { sourceGlobalPermissions } from "./domain/workflow/global_permissions_eventsourcing";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -75,6 +77,7 @@ export type Cache2 = {
   streamState: Map<StreamName, StreamCursor>;
   // The cached content:
   eventsByStream: Map<StreamName, BusinessEvent[]>;
+  globalPermissions: GlobalPermissions;
 };
 
 export function initCache(): Cache2 {
@@ -83,6 +86,7 @@ export function initCache(): Cache2 {
     isWriteLocked: false,
     streamState: new Map(),
     eventsByStream: new Map(),
+    globalPermissions: { permissions: {}, log: [] },
   };
 }
 
@@ -90,6 +94,7 @@ function clearCache(cache: Cache2): void {
   cache.lockQueue = [];
   cache.streamState.clear();
   cache.eventsByStream.clear();
+  cache.globalPermissions = { permissions: {}, log: [] };
 }
 
 interface CacheInstance {
@@ -103,6 +108,7 @@ interface CacheInstance {
   getDocumentUploadedEvents(): Result.Type<BusinessEvent[]>;
   getStorageServiceUrlPublishedEvents(): Result.Type<BusinessEvent[]>;
   getSecretPublishedEvents(): Result.Type<BusinessEvent[]>;
+  getGlobalPermissions(): GlobalPermissions;
 }
 
 export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
@@ -185,7 +191,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
     getSecretPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting Secret published events from cache");
-      const secretPhublishedFilter = (event): boolean => {
+      const secretPublishedFilter = (event): boolean => {
         switch (event.type) {
           case "secret_published":
             return true;
@@ -193,7 +199,11 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return (cache.eventsByStream.get("documents") || []).filter(secretPhublishedFilter);
+      return (cache.eventsByStream.get("documents") || []).filter(secretPublishedFilter);
+    },
+    getGlobalPermissions: (): GlobalPermissions => {
+      logger.trace("Getting global permissions from cache");
+      return cache.globalPermissions;
     },
   };
 }
@@ -377,6 +387,14 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
       cache.eventsByStream.delete(streamName);
     }
     addEventsToCache(cache, streamName, businessEvents);
+
+    if (streamName === "global" && newItems.length > 0) {
+      const globalPermissions = sourceGlobalPermissions(
+        ctx,
+        cache.eventsByStream[streamName] || [],
+      );
+      cache.globalPermissions = globalPermissions.globalPermissions;
+    }
 
     if (logger.levelVal >= logger.levels.values.warn) {
       parsedEvents.filter(Result.isErr).forEach((x) => logger.warn(x));
