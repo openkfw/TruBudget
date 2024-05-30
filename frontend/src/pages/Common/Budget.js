@@ -4,9 +4,7 @@ import _isEmpty from "lodash/isEmpty";
 import DoneIcon from "@mui/icons-material/Check";
 import DeleteIcon from "@mui/icons-material/Delete";
 import EditIcon from "@mui/icons-material/Edit";
-import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
 import Button from "@mui/material/Button";
-import ClickAwayListener from "@mui/material/ClickAwayListener";
 import MenuItem from "@mui/material/MenuItem";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -14,7 +12,6 @@ import TableCell from "@mui/material/TableCell";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import TextField from "@mui/material/TextField";
-import Tooltip from "@mui/material/Tooltip";
 
 import {
   fromAmountString,
@@ -25,35 +22,10 @@ import {
 } from "../../helper";
 import strings from "../../localizeStrings";
 
+import { CustomInfoTooltip } from "./CustomInfoTooltip";
 import DropDown from "./NewDropdown";
 
 import "./Budget.scss";
-
-const CustomInfoTooltip = (props) => {
-  const [open, setOpen] = useState(false);
-
-  const handleTooltipOpen = () => {
-    setOpen(true);
-  };
-  const handleTooltipClose = () => {
-    setOpen(false);
-  };
-
-  return (
-    <ClickAwayListener onClickAway={handleTooltipClose}>
-      <Tooltip
-        title={props.title}
-        onOpen={handleTooltipOpen}
-        onClose={handleTooltipClose}
-        open={open}
-        disableFocusListener
-        disableHoverListener
-      >
-        <InfoOutlinedIcon className="help-icon" onClick={handleTooltipOpen} />
-      </Tooltip>
-    </ClickAwayListener>
-  );
-};
 
 const renderProjectedBudgetAmount = ({
   projectedBudget,

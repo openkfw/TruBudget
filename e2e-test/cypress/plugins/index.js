@@ -131,7 +131,7 @@ async function awaitExcelExportReady(exportServiceBaseUrl, retries = 10, timeout
   return null;
 }
 
-async function awaitProvisioning(baseUrl, retries = 10, timeout = 20000) {
+async function awaitProvisioning({ baseUrl, retries = 10, timeout = 20000 }) {
   let nRetries = retries;
   while (nRetries > 0 && !(await isProvisioned(baseUrl))) {
     --nRetries;

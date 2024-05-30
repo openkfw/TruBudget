@@ -1,6 +1,6 @@
 {
   "name": "storage-service",
-  "version": "2.10.0",
+  "version": "2.11.0",
   "private": true,
   "description": "Handles the TruBudget object storage",
   "main": "src/index.js",
@@ -34,7 +34,8 @@
     "express-validator": "^6.14.2",
     "helmet": "^7.1.0",
     "minio": "^7.1.0",
-    "trubudget-logging-service": "^1.2.2",
+    "pino": "^9.1.0",
+    "trubudget-logging-service": "^2.7.0",
     "url": "^0.11.0",
     "uuid": "^8.3.2"
   },

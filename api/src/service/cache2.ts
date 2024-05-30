@@ -1,4 +1,3 @@
-import { EventEmitter } from "events";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import * as Result from "../result";
@@ -55,6 +54,8 @@ import * as WorkflowitemPermissionsGranted from "./domain/workflow/workflowitem_
 import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_permission_revoked";
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import { Item } from "./liststreamitems";
+import { GlobalPermissions } from "./domain/workflow/global_permissions";
+import { sourceGlobalPermissions } from "./domain/workflow/global_permissions_eventsourcing";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):
@@ -65,30 +66,35 @@ const STREAM_BLACKLIST = [
 
 type StreamName = string;
 type StreamCursor = { txid: string; index: number };
+type ResolveFunction = () => void;
 
 export type Cache2 = {
-  ee: EventEmitter;
+  // Queue of functions waiting for the lock to be released:
+  lockQueue: ResolveFunction[];
   // A lock is used to prevent sourcing updates concurrently:
   isWriteLocked: boolean;
   // How recent the cache is, in MultiChain terms:
   streamState: Map<StreamName, StreamCursor>;
   // The cached content:
   eventsByStream: Map<StreamName, BusinessEvent[]>;
+  globalPermissions: GlobalPermissions;
 };
 
 export function initCache(): Cache2 {
   return {
-    ee: new EventEmitter(),
+    lockQueue: [],
     isWriteLocked: false,
     streamState: new Map(),
     eventsByStream: new Map(),
+    globalPermissions: { permissions: {}, log: [] },
   };
 }
 
 function clearCache(cache: Cache2): void {
-  cache.ee.emit("release");
+  cache.lockQueue = [];
   cache.streamState.clear();
   cache.eventsByStream.clear();
+  cache.globalPermissions = { permissions: {}, log: [] };
 }
 
 interface CacheInstance {
@@ -102,6 +108,7 @@ interface CacheInstance {
   getDocumentUploadedEvents(): Result.Type<BusinessEvent[]>;
   getStorageServiceUrlPublishedEvents(): Result.Type<BusinessEvent[]>;
   getSecretPublishedEvents(): Result.Type<BusinessEvent[]>;
+  getGlobalPermissions(): GlobalPermissions;
 }
 
 export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
@@ -184,7 +191,7 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
     },
     getSecretPublishedEvents: (): Result.Type<BusinessEvent[]> => {
       logger.trace("Getting Secret published events from cache");
-      const secretPhublishedFilter = (event): boolean => {
+      const secretPublishedFilter = (event): boolean => {
         switch (event.type) {
           case "secret_published":
             return true;
@@ -192,7 +199,19 @@ export function getCacheInstance(ctx: Ctx, cache: Cache2): CacheInstance {
             return false;
         }
       };
-      return (cache.eventsByStream.get("documents") || []).filter(secretPhublishedFilter);
+      return (cache.eventsByStream.get("documents") || []).filter(secretPublishedFilter);
+    },
+    getGlobalPermissions: (): GlobalPermissions => {
+      logger.trace("Getting global permissions from cache");
+      // if all values in all keys are empty, it means that the cache is empty
+      if (Object.values(cache.globalPermissions.permissions).every((x) => x.length === 0)) {
+        const globalPermissions = sourceGlobalPermissions(
+          ctx,
+          cache.eventsByStream.get("global") || [],
+        );
+        cache.globalPermissions = globalPermissions.globalPermissions;
+      }
+      return JSON.parse(JSON.stringify(cache.globalPermissions));
     },
   };
 }
@@ -241,29 +260,28 @@ export async function invalidateCache(conn: ConnToken): Promise<void> {
 
 async function grabWriteLock(cache: Cache2): Promise<void> {
   return new Promise((resolve) => {
-    // If nobody has the lock, take it and resolve immediately
-    if (!cache.isWriteLocked) {
-      // Safe because JS doesn't interrupt you on synchronous operations,
-      // so no need for compare-and-swap or anything like that.
+    // If nobody has the lock and no one is waiting, take it and resolve immediately
+    if (!cache.isWriteLocked && cache.lockQueue.length === 0) {
       cache.isWriteLocked = true;
       return resolve();
     }
 
-    // Otherwise, wait until somebody releases the lock and try again
-    const tryAcquire = (): void => {
-      if (!cache.isWriteLocked) {
-        cache.isWriteLocked = true;
-        cache.ee.removeListener("release", tryAcquire);
-        return resolve();
-      }
-    };
-    cache.ee.on("release", tryAcquire);
+    // Otherwise, add to queue
+    cache.lockQueue.push(resolve);
   });
 }
 
 function releaseWriteLock(cache: Cache2): void {
-  cache.isWriteLocked = false;
-  setImmediate(() => cache.ee.emit("release"));
+  // If there is someone in the queue, give them the lock
+  if (cache.lockQueue.length > 0) {
+    const nextResolve = cache.lockQueue.shift();
+    if (nextResolve) {
+      nextResolve();
+    }
+  } else {
+    // If no one is waiting, release the lock
+    cache.isWriteLocked = false;
+  }
 }
 
 async function findStartIndex(
@@ -377,6 +395,14 @@ async function updateCache(ctx: Ctx, conn: ConnToken, onlyStreamName?: string): 
       cache.eventsByStream.delete(streamName);
     }
     addEventsToCache(cache, streamName, businessEvents);
+
+    if (streamName === "global" && newItems.length > 0) {
+      const globalPermissions = sourceGlobalPermissions(
+        ctx,
+        cache.eventsByStream.get(streamName) || [],
+      );
+      cache.globalPermissions = globalPermissions.globalPermissions;
+    }
 
     if (logger.levelVal >= logger.levels.values.warn) {
       parsedEvents.filter(Result.isErr).forEach((x) => logger.warn(x));

@@ -23,6 +23,7 @@ services:
       CERT_CA_PATH: ${CERT_CA_PATH}
       CERT_KEY_PATH: ${CERT_KEY_PATH}
       AUTOSTART: ${AUTOSTART}
+      MULTICHAIN_FEED_ENABLED: ${MULTICHAIN_FEED_ENABLED}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.11
@@ -112,6 +113,9 @@ services:
       JWT_SECRET: ${JWT_SECRET}
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
+      SMTP_SSL: ${SMTP_SSL}
+      SMTP_USER: ${SMTP_USER}
+      SMTP_PASSWORD: ${SMTP_PASSWORD}
       DB_HOST: ${DB_HOST}
       DB_PORT: ${DB_PORT}
       DB_NAME: ${DB_NAME}
@@ -119,6 +123,7 @@ services:
       AUTHENTICATION: ${AUTHENTICATION}
       LOG_LEVEL: ${EMAIL_LOG_LEVEL}
       RATE_LIMIT: ${RATE_LIMIT}
+      EMAIL_FROM: ${EMAIL_FROM}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.5

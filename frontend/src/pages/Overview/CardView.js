@@ -2,6 +2,7 @@ import React from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import ContentAdd from "@mui/icons-material/Add";
+import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
@@ -22,6 +23,14 @@ import BudgetsList from "./BudgetsList";
 import ProjectCard from "./ProjectCard";
 
 import "./CardView.scss";
+
+const webpVersion = (imagePath) => {
+  // if imagePath matches Thumbnail_*.jpg, replace .jpg with .webp
+  if (imagePath.match(/Thumbnail_\d+.jpg/)) {
+    return imagePath.replace(".jpg", ".webp");
+  }
+  return imagePath;
+};
 
 const displayTags = ({ tags, storeSearchTerm, showNavSearchBar, searchTermArray }) => {
   return tags.map((tag) => (
@@ -62,7 +71,7 @@ const getTableEntries = ({
     } = data;
     const budgets = <BudgetsList budgets={projectedBudgets} />;
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
-    const imagePath = !_isEmpty(thumbnail) ? thumbnail : "Default_thumbnail.jpg";
+    const imagePath = !_isEmpty(thumbnail) ? webpVersion(thumbnail) : "Default_thumbnail.jpg";
     const dateString = unixTsToString(creationUnixTs);
     const isOpen = status === "open";
     const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
@@ -121,36 +130,50 @@ const CardView = (props) => {
   const tableEntries = getTableEntries(props);
   return (
     <>
-      <TablePagination
-        className="card-view-pagination"
-        data-test="card-pagination-north"
-        component="div"
-        count={pagination?.totalRecords}
-        page={page - 1}
-        onPageChange={handleChangePage}
-        rowsPerPage={pagination?.limit}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
-        labelRowsPerPage={strings.project.cards_per_page}
-      />
+      <div className="card-view-actions">
+        <TablePagination
+          className="card-view-pagination"
+          data-test="card-pagination-north"
+          component="div"
+          count={pagination?.totalRecords}
+          page={page - 1}
+          onPageChange={handleChangePage}
+          rowsPerPage={pagination?.limit}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+          labelRowsPerPage={strings.project.cards_per_page}
+        />
+        <Box className="add-project">
+          <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
+            <Fab
+              className="project-add-button"
+              aria-label="create"
+              disabled={!canCreateProject(allowedIntents) || isRoot}
+              onClick={() => showCreationDialog()}
+              color="primary"
+              data-test="add-project-button"
+            >
+              <ContentAdd />
+            </Fab>
+          </Tooltip>
+        </Box>
+      </div>
       <div aria-label="projects" className="projects-table-entries">
         {tableEntries}
         <Card data-test="project-creation" className="add-project-card">
           <div className="add-project-content">
             <CardActions>
-              <Tooltip id="tooltip-pcreate" title={strings.common.create}>
-                <div>
-                  <Fab
-                    className="content-add-button"
-                    aria-label="create"
-                    disabled={!canCreateProject(allowedIntents) || isRoot}
-                    onClick={() => showCreationDialog()}
-                    color="primary"
-                    data-test="create-project-button"
-                  >
-                    <ContentAdd />
-                  </Fab>
-                </div>
+              <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
+                <Fab
+                  className="content-add-button"
+                  aria-label="create"
+                  disabled={!canCreateProject(allowedIntents) || isRoot}
+                  onClick={() => showCreationDialog()}
+                  color="primary"
+                  data-test="create-project-button"
+                >
+                  <ContentAdd />
+                </Fab>
               </Tooltip>
             </CardActions>
           </div>

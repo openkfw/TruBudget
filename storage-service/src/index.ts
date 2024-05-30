@@ -9,6 +9,7 @@ import {
 } from "trubudget-logging-service";
 import helmet from "helmet";
 import config from "./config";
+
 import {
   deleteDocument,
   downloadDocument,
@@ -55,7 +56,12 @@ export const log = createPinoLogger("Storage-Service");
 // Setup
 const app = express();
 app.use(cors());
-app.use(createPinoExpressLogger(log));
+app.use(
+  createPinoExpressLogger(log, {
+    silenceLoggingOnFrequentRoutes: config.silenceLoggingOnFrequentRoutes,
+    shortRoutesLogging: config.shortRoutesLogging,
+  }),
+);
 app.options(config.allowOrigin, cors());
 
 app.use(helmet());
@@ -148,7 +154,7 @@ app.post(
 
     const docId: string = req.query.docId;
     const { content, fileName } = req.body;
-
+    
     (async (): Promise<void> => {
       log.debug({ req }, "Uploading document");
       const result = await uploadDocument(docId, content, {
@@ -248,6 +254,20 @@ app.delete(
     });
   },
 );
+
+app.use(function (
+  err: Error,
+  req: express.Request,
+  res: express.Response,
+  _next: express.NextFunction,
+) {
+  // set locals, only providing error in development
+  log.error("Error handler: " + err.message || "UNDEFINED ERROR");
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  console.log(err.stack);
+});
 
 app.listen(config.port, async () => {
   log.info(`Starting TruBudget storage server on ${config.port}`);

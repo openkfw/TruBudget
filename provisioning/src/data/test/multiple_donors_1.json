@@ -1,6 +1,7 @@
 {
   "displayName": "Multiple Donors I",
   "description": "Financed by a single organization: ACME pays everything, with disbursements in multiple currencies.",
+  "thumbnail": "/Thumbnail_0003.webp",
   "projectedBudgets": [
     {
       "organization": "ACME",

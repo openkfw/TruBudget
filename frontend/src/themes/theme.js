@@ -5,6 +5,9 @@ import blue from "@mui/material/colors/indigo";
 import { experimental_extendTheme as extendTheme } from "@mui/material/styles";
 
 export const muiTheme = extendTheme({
+  transitions: {
+    create: () => "100ms"
+  },
   palette: {
     primary: blue,
     secondary: red,

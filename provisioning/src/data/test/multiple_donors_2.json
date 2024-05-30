@@ -1,6 +1,7 @@
 {
   "displayName": "Multiple Donors II",
   "description": "Financed by a multiple organizations, each using their own currency. Disbursements always use the (local) contract currency.",
+  "thumbnail": "/Thumbnail_0042.webp",
   "projectedBudgets": [
     {
       "organization": "ACME Bank",
