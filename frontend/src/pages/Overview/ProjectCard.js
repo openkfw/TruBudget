@@ -54,6 +54,14 @@ const ProjectCard = ({
   const theme = useTheme();
   const navigate = useNavigate();
 
+  const trimSpecialCharacters = (string) => {
+    return string
+      .replace(/&nbsp;/g, "")
+      .replace(/&amp;/g, "&")
+      .replace(/&gt;/g, ">")
+      .replace(/&lt;/g, "<");
+  };
+
   return (
     <Card aria-label="project" key={index} className="project-card" data-test={`project-card-${id}`}>
       <CardMedia className="project-card-media" image={imagePath} />
@@ -88,7 +96,7 @@ const ProjectCard = ({
               <Highlighter
                 highlightStyle={{ backgroundColor: theme.palette.primary.light }}
                 searchWords={searchTermArray}
-                textToHighlight={displayName}
+                textToHighlight={trimSpecialCharacters(displayName)}
               />
             </div>
           }

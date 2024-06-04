@@ -19,7 +19,7 @@ import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 
-import { statusMapping, toAmountString } from "../../helper";
+import { statusMapping, toAmountString, trimSpecialChars } from "../../helper";
 import strings from "../../localizeStrings";
 import {
   canUpdateSubProject,
@@ -102,7 +102,7 @@ const getTableEntries = ({
               data-test="highlighted-displayname"
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
               searchWords={searchTermArray}
-              textToHighlight={displayName}
+              textToHighlight={trimSpecialChars(displayName)}
             />
           </TableCell>
           <TableCell className="sub-project-projected-budget">{amountString}</TableCell>

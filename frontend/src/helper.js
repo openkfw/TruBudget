@@ -260,3 +260,7 @@ export const getLoginErrorFromResponse = (status, data) => {
       return strings.common.incorrect_username_or_password;
   }
 };
+
+export const trimSpecialChars = (string) => {
+  return string.replace(/&nbsp;/g, "").replace(/&amp;/g, "&");
+};
