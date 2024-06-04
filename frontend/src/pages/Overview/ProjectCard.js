@@ -22,6 +22,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useTheme } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
 
+import { trimSpecialChars } from "../../helper";
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
@@ -53,14 +54,6 @@ const ProjectCard = ({
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
-
-  const trimSpecialCharacters = (string) => {
-    return string
-      .replace(/&nbsp;/g, "")
-      .replace(/&amp;/g, "&")
-      .replace(/&gt;/g, ">")
-      .replace(/&lt;/g, "<");
-  };
 
   return (
     <Card aria-label="project" key={index} className="project-card" data-test={`project-card-${id}`}>
@@ -96,7 +89,7 @@ const ProjectCard = ({
               <Highlighter
                 highlightStyle={{ backgroundColor: theme.palette.primary.light }}
                 searchWords={searchTermArray}
-                textToHighlight={trimSpecialCharacters(displayName)}
+                textToHighlight={trimSpecialChars(displayName)}
               />
             </div>
           }
