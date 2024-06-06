@@ -18,6 +18,34 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Removed -->
 
 <!-- ### Fixed -->
+  
+  
+## [2.11.0] - 2024-05-30
+
+### Added
+  
+- Add create project button in card view [#1851](https://github.com/openkfw/TruBudget/issues/1851)
+
+- Helper text to default assignee [#1841](https://github.com/openkfw/TruBudget/issues/1841)
+- Option to rebuild only one service [#1839](https://github.com/openkfw/TruBudget/issues/1839)
+- Absolute units change to relative in styles [#1822](https://github.com/openkfw/TruBudget/issues/1822)
+- Inconsistent log levels [#1816](https://github.com/openkfw/TruBudget/issues/1816)
+- e2e: Upgrade cypress base to 22.0.0 [#1810](https://github.com/openkfw/TruBudget/issues/1810)
+
+### Changed
+
+- Transition time change to open dropdown/select reduced [#1812](https://github.com/openkfw/TruBudget/issues/1812)
+
+### Fixed
+
+- API: MaxListenersExceededWarning: Possible EventEmitter memory leak [#1845](https://github.com/openkfw/TruBudget/issues/1845)
+- Eliminate workflow item dialog window stretching [#1843](https://github.com/openkfw/TruBudget/issues/1843)
+- API: Cache global permissions [#1836](https://github.com/openkfw/TruBudget/issues/1836)
+- UI Regression: No space at the bottom of tables [#1833](https://github.com/openkfw/TruBudget/issues/1833)
+- multichain-feed not working (?) [#1817](https://github.com/openkfw/TruBudget/issues/1817)
+- ui: Image compression backward compatibility bug [#1814](https://github.com/openkfw/TruBudget/issues/1814)
+- ci/cd: npm ci fails after merge when creating release [#1483](https://github.com/openkfw/TruBudget/issues/1483)
+
 
 ## [2.10.0] - 2024-04-26
 
@@ -1134,7 +1162,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.10.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.11.0...main
+[2.11.0]: https://github.com/openkfw/TruBudget/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.9.0
 [2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.8.0...v2.9.0
