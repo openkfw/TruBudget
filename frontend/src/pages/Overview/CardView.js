@@ -2,6 +2,7 @@ import React from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import ContentAdd from "@mui/icons-material/Add";
+import { Box } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
@@ -129,36 +130,50 @@ const CardView = (props) => {
   const tableEntries = getTableEntries(props);
   return (
     <>
-      <TablePagination
-        className="card-view-pagination"
-        data-test="card-pagination-north"
-        component="div"
-        count={pagination?.totalRecords}
-        page={page - 1}
-        onPageChange={handleChangePage}
-        rowsPerPage={pagination?.limit}
-        onRowsPerPageChange={handleChangeRowsPerPage}
-        rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
-        labelRowsPerPage={strings.project.cards_per_page}
-      />
+      <div className="card-view-actions">
+        <TablePagination
+          className="card-view-pagination"
+          data-test="card-pagination-north"
+          component="div"
+          count={pagination?.totalRecords}
+          page={page - 1}
+          onPageChange={handleChangePage}
+          rowsPerPage={pagination?.limit}
+          onRowsPerPageChange={handleChangeRowsPerPage}
+          rowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+          labelRowsPerPage={strings.project.cards_per_page}
+        />
+        <Box className="add-project">
+          <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
+            <Fab
+              className="project-add-button"
+              aria-label="create"
+              disabled={!canCreateProject(allowedIntents) || isRoot}
+              onClick={() => showCreationDialog()}
+              color="primary"
+              data-test="add-project-button"
+            >
+              <ContentAdd />
+            </Fab>
+          </Tooltip>
+        </Box>
+      </div>
       <div aria-label="projects" className="projects-table-entries">
         {tableEntries}
         <Card data-test="project-creation" className="add-project-card">
           <div className="add-project-content">
             <CardActions>
-              <Tooltip id="tooltip-pcreate" title={strings.common.create}>
-                <div>
-                  <Fab
-                    className="content-add-button"
-                    aria-label="create"
-                    disabled={!canCreateProject(allowedIntents) || isRoot}
-                    onClick={() => showCreationDialog()}
-                    color="primary"
-                    data-test="create-project-button"
-                  >
-                    <ContentAdd />
-                  </Fab>
-                </div>
+              <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
+                <Fab
+                  className="content-add-button"
+                  aria-label="create"
+                  disabled={!canCreateProject(allowedIntents) || isRoot}
+                  onClick={() => showCreationDialog()}
+                  color="primary"
+                  data-test="create-project-button"
+                >
+                  <ContentAdd />
+                </Fab>
               </Tooltip>
             </CardActions>
           </div>

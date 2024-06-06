@@ -8,6 +8,7 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import PermissionIcon from "@mui/icons-material/LockOpen";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import LaunchIcon from "@mui/icons-material/ZoomIn";
+import { Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import Fab from "@mui/material/Fab";
@@ -534,7 +535,7 @@ const TableView = (props) => {
   return (
     <>
       <Box className="create-project-box">
-        <div>
+        <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
           <Fab
             className="project-add-button"
             aria-label="create"
@@ -545,7 +546,7 @@ const TableView = (props) => {
           >
             <ContentAdd />
           </Fab>
-        </div>
+        </Tooltip>
       </Box>
       <DataTable
         columns={columns}

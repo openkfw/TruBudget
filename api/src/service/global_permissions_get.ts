@@ -15,8 +15,8 @@ export async function getGlobalPermissions(
   logger.debug("Getting Global Permissions");
   return Cache.withCache(conn, ctx, async (cache) =>
     GlobalPermissionsGet.getGlobalPermissions(ctx, serviceUser, {
-      getGlobalPermissionsEvents: async () => {
-        return cache.getGlobalEvents();
+      getGlobalPermissionsFromCache: async () => {
+        return cache.getGlobalPermissions();
       },
     }),
   );

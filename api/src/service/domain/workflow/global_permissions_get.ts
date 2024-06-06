@@ -1,15 +1,13 @@
 import { Ctx } from "lib/ctx";
 import logger from "lib/logger";
 import Intent from "../../../authz/intents";
-import { BusinessEvent } from "../business_event";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import * as GlobalPermissions from "./global_permissions";
 import { identitiesAuthorizedFor } from "./global_permissions";
-import { sourceGlobalPermissions } from "./global_permissions_eventsourcing";
 
 interface Repository {
-  getGlobalPermissionsEvents(): Promise<BusinessEvent[]>;
+  getGlobalPermissionsFromCache(): Promise<GlobalPermissions.GlobalPermissions>;
 }
 
 export async function getGlobalPermissions(
@@ -17,13 +15,11 @@ export async function getGlobalPermissions(
   user: ServiceUser,
   repository: Repository,
 ): Promise<GlobalPermissions.GlobalPermissions> {
-  const allEvents = await repository.getGlobalPermissionsEvents();
-  // Errors are ignored here:
-  const { globalPermissions } = sourceGlobalPermissions(ctx, allEvents);
+  const cachedGlobalPermissions = await repository.getGlobalPermissionsFromCache();
 
-  filterPermissions(globalPermissions, user);
+  filterPermissions(cachedGlobalPermissions, user);
 
-  return globalPermissions;
+  return cachedGlobalPermissions;
 }
 
 function filterPermissions(
