@@ -432,9 +432,11 @@ export const WorkflowItem = ({
                 <div className="info-cell">{infoButton}</div>
                 <div className="info-cell">{attachmentButton}</div>
                 <div className={workflowSelectable ? "workflow-cell" : "workflow-cell not-selectable"}>
-                  <Typography variant="body2" className="typographs">
-                    {displayName}
-                  </Typography>
+                  <Tooltip id="workflow-title" title={displayName}>
+                    <Typography variant="body2" className="workflow-item-title">
+                      {displayName}
+                    </Typography>
+                  </Tooltip>
                 </div>
                 <div className={workflowSelectable ? "workflow-cell" : "workflow-cell not-selectable"}>
                   <Typography variant="body2" className="typographs" component="div" data-test="workflowitem-amount">
