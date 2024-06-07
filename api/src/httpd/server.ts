@@ -1,29 +1,38 @@
+// eslint-disable-next-line import/order
 import { useAzureTelemetry } from "./instrumentation";
 useAzureTelemetry(); // has to be imported before fastify and called
 
+import { IncomingMessage, Server, ServerResponse } from "http";
+import * as path from "path";
+
+import fastifyCookie, { FastifyCookieOptions } from "@fastify/cookie";
+import fastifyCors from "@fastify/cors";
+import fastifyHelmet from "@fastify/helmet";
+import fastifyJwt from "@fastify/jwt";
+import * as fastifyMultipart from "@fastify/multipart";
+import fastifyRateLimit from "@fastify/rate-limit";
+import fastifyStatic from "@fastify/static";
+import fastifySwagger from "@fastify/swagger";
+import fastifySwaggerUi from "@fastify/swagger-ui";
 import Ajv from "ajv";
 import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import fastifyMetricsPlugin from "fastify-metrics";
-import { IncomingMessage, Server, ServerResponse } from "http";
-import { AugmentedFastifyInstance } from "../types";
-import logger from "../lib/logger";
-import { AuthenticatedRequest } from "./lib";
-import fastifyCookie, { FastifyCookieOptions } from "@fastify/cookie";
-import fastifyHelmet from "@fastify/helmet";
-import fastifySwagger from "@fastify/swagger";
-import fastifySwaggerUi from "@fastify/swagger-ui";
-import fastifyStatic from "@fastify/static";
-import fastifyCors from "@fastify/cors";
-import fastifyJwt from "@fastify/jwt";
-import fastifyRateLimit from "@fastify/rate-limit";
-import * as path from "path";
-import { ConnToken } from "service";
 import { Ctx } from "lib/ctx";
-import { ServiceUser } from "service/domain/organization/service_user";
-import { Identity } from "service/domain/organization/identity";
-import * as Result from "../result";
-import * as Group from "../service/domain/organization/group";
+import { ConnToken } from "service";
+
 import { JwtConfig } from "../config";
+import logger from "../lib/logger";
+import * as Result from "../result";
+import {
+  MAX_DOCUMENT_SIZE_BASE64,
+  MAX_DOCUMENT_SIZE_BINARY,
+} from "../service/domain/document/document";
+import * as Group from "../service/domain/organization/group";
+import { Identity } from "../service/domain/organization/identity";
+import { ServiceUser } from "../service/domain/organization/service_user";
+import { AugmentedFastifyInstance } from "../types";
+
+import { AuthenticatedRequest } from "./lib";
 
 const DEFAULT_API_VERSION = "1.0";
 
@@ -202,7 +211,7 @@ export const createBasicApp = (
 ): FastifyInstance => {
   const server: FastifyInstance<Server, IncomingMessage, ServerResponse> = fastify({
     logger,
-    bodyLimit: 104857600,
+    bodyLimit: MAX_DOCUMENT_SIZE_BASE64,
   });
 
   registerSwagger(server, urlPrefix, apiPort);
@@ -242,6 +251,12 @@ export const createBasicApp = (
       timeWindow: "1 minute",
     });
   }
+
+  server.register(fastifyMultipart, {
+    limits: { fileSize: MAX_DOCUMENT_SIZE_BINARY },
+    // routes that use Multipart Form:
+    prefix: "/v2/subproject.createWorkflowitem",
+  });
 
   return server;
 };

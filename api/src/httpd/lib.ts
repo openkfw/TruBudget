@@ -1,4 +1,5 @@
 import { FastifyRequest } from "fastify";
+
 import { AuthToken } from "../authz/token";
 import { TruBudgetError } from "../error";
 import logger from "../lib/logger";

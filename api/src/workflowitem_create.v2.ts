@@ -1,3 +1,4 @@
+import { MultipartFile } from "@fastify/multipart";
 import Joi = require("joi");
 import { VError } from "verror";
 
@@ -20,11 +21,49 @@ import Type, { workflowitemTypeSchema } from "./service/domain/workflowitem_type
 import * as WorkflowitemCreate from "./service/workflowitem_create";
 import { AugmentedFastifyInstance } from "./types";
 
+const parseMultiPartFile = async (part: MultipartFile): Promise<any> => {
+  const id = "";
+  const buffer = await part.toBuffer();
+  // TODO downstream functionality expects base64, but we should work with buffer directly in the future
+  const base64 = buffer.toString("base64");
+  const fileName = part.filename;
+  return { id, base64, fileName };
+};
+
+const parseMultiPartRequest = async (request: AuthenticatedRequest): Promise<any> => {
+  let data = {};
+  let uploadedDocuments: any[] = [];
+  const parts = request.parts();
+  for await (const part of parts) {
+    if (part.type === "file") {
+      uploadedDocuments.push(await parseMultiPartFile(part));
+    } else {
+      if (part.fieldname === "apiVersion") {
+        continue;
+      } else if (part.fieldname === "tags") {
+        if (part.value === "") {
+          data[part.fieldname] = [];
+        } else {
+          data[part.fieldname] = (part.value as string).split(",");
+        }
+        continue;
+      }
+      if (part.value === "null") {
+        data[part.fieldname] = undefined;
+        continue;
+      }
+      data[part.fieldname] = part.value;
+    }
+  }
+  data["documents"] = uploadedDocuments;
+  return data;
+};
+
 /**
  * Represents the request body of the endpoint
  */
-interface RequestBodyV1 {
-  apiVersion: "1.0";
+interface CreateWorkflowV2RequestBody {
+  apiVersion: "2.0";
   data: {
     projectId: Project.Id;
     subprojectId: Subproject.Id;
@@ -45,8 +84,8 @@ interface RequestBodyV1 {
   };
 }
 
-const requestBodyV1Schema = Joi.object({
-  apiVersion: Joi.valid("1.0").required(),
+const requestBodyV2Schema = Joi.object({
+  apiVersion: Joi.valid("2.0").required(),
   data: Joi.object({
     projectId: Project.idSchema,
     subprojectId: Subproject.idSchema,
@@ -58,7 +97,7 @@ const requestBodyV1Schema = Joi.object({
     amount: moneyAmountSchema,
     amountType: amountTypeSchema.required(),
     billingDate: safeStringSchema,
-    dueDate: Joi.string().allow(""),
+    dueDate: Joi.string().allow("").optional().isoDate(),
     exchangeRate: conversionRateSchema,
     documents: Joi.array().items(uploadedDocumentSchema),
     additionalData: Joi.object(),
@@ -67,8 +106,8 @@ const requestBodyV1Schema = Joi.object({
   }).required(),
 });
 
-type RequestBody = RequestBodyV1;
-const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
+type RequestBody = CreateWorkflowV2RequestBody;
+const requestBodySchema = requestBodyV2Schema;
 
 /**
  * Validates the request body of the http request
@@ -77,12 +116,12 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
  */
 function validateRequestBody(body: unknown): Result.Type<RequestBody> {
-  const { error, value } = requestBodySchema.validate(body);
+  const { error, value } = requestBodySchema.validate(body, { stripUnknown: true });
   return !error ? value : error;
 }
 
 /**
- * Creates the swagger schema for the `/subproject.createWorkflowitem` endpoint
+ * Creates the swagger schema for the `/v2/subproject.createWorkflowitem` endpoint
  *
  * @param server fastify server
  * @returns the swagger schema for this endpoint
@@ -92,60 +131,41 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
     preValidation: [server.authenticate],
     schema: {
       description:
-        "Create a workflowitem and associate it to the given subproject.\n.\n" +
+        "Create a workflowitem, upload related files, and associate it to the given subproject.\n.\n" +
+        "Request body must be multipart/form-data. The following fields are required:\n\n" +
+        "- `projectId` (string): the id of the project\n" +
+        "- `subprojectId` (string): the id of the subproject\n" +
+        "- `displayName` (string): the name of the workflowitem\n" +
+        "- `amountType` (string): the type of the amount\n\n" +
+        "The following fields are optional:\n\n" +
+        "- `status` (string): the status of the workflowitem\n" +
+        "- `description` (string): the description of the workflowitem\n" +
+        "- `assignee` (string): the assignee of the workflowitem\n" +
+        "- `currency` (string): the currency of the workflowitem\n" +
+        "- `amount` (string): the amount of the workflowitem\n" +
+        "- `billingDate` (string): the billing date of the workflowitem\n" +
+        "- `dueDate` (string): the due date of the workflowitem\n" +
+        "- `exchangeRate` (string): the exchange rate of the workflowitem\n" +
+        "- `documents` (array): an array of documents to be uploaded\n" +
+        "- `additionalData` (object): additional data\n" +
+        "- `workflowitemType` (string): the type of the workflowitem\n" +
+        "- `tags` (array): an array of tags\n\n" +
         "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
-        "The only possible values for 'status' are: 'open' and 'closed'",
-      tags: ["subproject"],
+        "The only possible values for 'status' are: 'open' and 'closed'\n\n",
+      tags: ["subproject", "v2"],
       summary: "Create a workflowitem",
       security: [
         {
           bearerToken: [],
         },
       ],
-      body: {
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            additionalProperties: false,
-            required: ["projectId", "subprojectId", "displayName", "amountType"],
-            properties: {
-              projectId: { type: "string", example: "d0e8c69eg298c87e3899119e025eff1f" },
-              subprojectId: { type: "string", example: "er58c69eg298c87e3899119e025eff1f" },
-              status: { type: "string", example: "open" },
-              displayName: { type: "string", example: "classroom" },
-              description: { type: "string", example: "build classroom" },
-              amount: { type: ["string", "null"], example: "500" },
-              assignee: { type: "string", example: "aSmith" },
-              currency: { type: ["string", "null"], example: "EUR" },
-              amountType: { type: "string", example: "disbursed" },
-              billingDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              dueDate: { type: "string", example: "2018-12-11T00:00:00.000Z" },
-              exchangeRate: { type: "string", example: "1.0" },
-              documents: {
-                type: "array",
-                items: {
-                  type: "object",
-                  properties: {
-                    base64: { type: "string", example: "dGVzdCBiYXNlNjRTdHJpbmc=" },
-                    fileName: { type: "string", example: "test-document" },
-                  },
-                },
-              },
-              additionalData: { type: "object", additionalProperties: true },
-              workflowitemType: { type: "string", example: "general" },
-              tags: { type: "array", items: { type: "string", example: "test" } },
-            },
-          },
-        },
-      },
+      consumes: ["multipart/form-data"],
       response: {
         200: {
           description: "successful response",
           type: "object",
           properties: {
-            apiVersion: { type: "string", example: "1.0" },
+            apiVersion: { type: "string", example: "2.0" },
             data: {
               type: "object",
               properties: {
@@ -188,7 +208,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
 }
 
 /**
- * Creates an http handler that handles incoming http requests for the `/subproject.createWorkflowitem` route
+ * Creates an http handler that handles incoming http requests for the `/v2/subproject.createWorkflowitem` route
  *
  * @param server the current fastify server instance
  * @param urlPrefix the prefix of the http url
@@ -201,22 +221,26 @@ export function addHttpHandler(
 ): void {
   server.register(async function () {
     server.post(
-      `${urlPrefix}/subproject.createWorkflowitem`,
+      `${urlPrefix}/v2/subproject.createWorkflowitem`,
       mkSwaggerSchema(server),
-      (request, reply) => {
+      async (request: AuthenticatedRequest, reply) => {
+        let body = {
+          apiVersion: "2.0",
+          data: await parseMultiPartRequest(request),
+        };
+
         const ctx: Ctx = { requestId: request.id, source: "http" };
 
         const user = extractUser(request as AuthenticatedRequest);
 
-        const bodyResult = validateRequestBody(request.body);
+        const bodyResult = validateRequestBody(body);
 
         if (Result.isErr(bodyResult)) {
           const { code, body } = toHttpError(
             new VError(bodyResult, "failed to create workflowitem"),
           );
-          reply.status(code).send(body);
           request.log.error({ err: bodyResult }, "Invalid request body");
-          return;
+          return reply.status(code).send(body);
         }
 
         const reqData: WorkflowitemCreate.RequestData = {
@@ -238,27 +262,25 @@ export function addHttpHandler(
           tags: bodyResult.data.tags,
         };
 
-        service
-          .createWorkflowitem(ctx, user, reqData)
-          .then((resourceIdsResult) => {
-            if (Result.isErr(resourceIdsResult)) {
-              throw new VError(resourceIdsResult, "subproject.createWorkflowitem failed");
-            }
-            const resourceIds = resourceIdsResult;
-            const code = 200;
-            const body = {
-              apiVersion: "1.0",
-              data: {
-                ...resourceIds,
-              },
-            };
-            reply.status(code).send(body);
-          })
-          .catch((err) => {
-            const { code, body } = toHttpError(err);
-            reply.status(code).send(body);
-            request.log.error({ err }, "Error while creating Workflowitem");
-          });
+        try {
+          const resourceIdsResult = await service.createWorkflowitem(ctx, user, reqData);
+          if (Result.isErr(resourceIdsResult)) {
+            throw new VError(resourceIdsResult, "v2/subproject.createWorkflowitem failed");
+          }
+
+          const code = 200;
+          const body = {
+            apiVersion: "2.0",
+            data: {
+              ...resourceIdsResult,
+            },
+          };
+          reply.status(code).send(body);
+        } catch (err) {
+          const { code, body } = toHttpError(err);
+          reply.status(code).send(body);
+          request.log.error({ err }, "Error while creating Workflowitem");
+        }
       },
     );
   });
