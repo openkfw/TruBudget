@@ -26,6 +26,7 @@ interface InitialData {
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
   tags?: string[];
+  customImage?: string;
 }
 
 const initialDataSchema = Joi.object({
@@ -39,6 +40,7 @@ const initialDataSchema = Joi.object({
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
   tags: Joi.array().items(Project.tagsSchema),
+  customImage: Joi.string(),
 }).options({ stripUnknown: true });
 
 export interface Event {

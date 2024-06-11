@@ -13,10 +13,13 @@ import Subheader from "@mui/material/ListSubheader";
 import strings from "../../localizeStrings";
 
 import { images } from "./images";
+import ImageUploader from "./ImageUploader";
 
 import "./ImageSelector.scss";
 
-const ImageSelector = ({ onTouchTap, selectedImage }) => {
+const ImageSelector = ({ onTouchTap, selectedImage, customImage, setImage, removeImage }) => {
+  const displayCustomImage = customImage && customImage !== "";
+  const imagesToDisplay = displayCustomImage ? [{ src: customImage }, ...images] : images;
   return (
     <>
       <div className="root">
@@ -32,7 +35,7 @@ const ImageSelector = ({ onTouchTap, selectedImage }) => {
             transform: "translateZ(0)"
           }}
         >
-          {images.map((image) => (
+          {imagesToDisplay.map((image, index) => (
             <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src} className="image-list-item">
               <img alt={image.src} src={image.src} />
               <ImageListItemBar
@@ -56,6 +59,9 @@ const ImageSelector = ({ onTouchTap, selectedImage }) => {
             </ImageListItem>
           ))}
         </ImageList>
+      </div>
+      <div>
+        <ImageUploader setImage={setImage} removeImage={removeImage} image={customImage} />
       </div>
     </>
   );

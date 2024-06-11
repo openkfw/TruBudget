@@ -35,6 +35,7 @@ interface RequestBodyV1 {
       }>;
       additionalData?: object;
       tags?: string[];
+      customImage?: string;
     };
   };
 }
@@ -52,6 +53,7 @@ const requestBodyV1Schema = Joi.object({
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
       tags: Joi.array().items(safeStringSchema),
+      customImage: Joi.string(),
     }).required(),
   }).required(),
 });
@@ -123,6 +125,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                   },
                   additionalData: { type: "object", additionalProperties: true },
                   tags: { type: "array", items: { type: "string", example: "test" } },
+                  customImage: { type: "string", example: "aW1hZ2U=" },
                 },
               },
             },
