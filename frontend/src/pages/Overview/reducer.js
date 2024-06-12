@@ -212,7 +212,9 @@ export default function overviewReducer(state = defaultState, action) {
       );
     }
     case ADD_PROJECT_CUSTOM_IMAGE: {
-      return state.setIn(["projectToAdd", "customImage"], action.customImage);
+      return state
+        .setIn(["projectToAdd", "customImage"], action.customImage)
+        .setIn(["projectToAdd", "thumbnail"], action.customImage);
     }
     case REMOVE_PROJECT_CUSTOM_IMAGE: {
       return state.setIn(["projectToAdd", "customImage"], "");

@@ -29,7 +29,7 @@ const ProjectDialogContent = (props) => {
         selectedImage={props.projectToAdd.thumbnail}
         setImage={props.addCustomImage}
         removeImage={props.removeCustomImage}
-        image={props.projectToAdd.customImage}
+        customImage={props.projectToAdd.customImage}
       />
       <Divider />
       <div>

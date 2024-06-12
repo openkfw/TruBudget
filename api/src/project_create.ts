@@ -4,7 +4,7 @@ import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
+import { safeBase64Schema, safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import * as AdditionalData from "./service/domain/additional_data";
 import { ServiceUser } from "./service/domain/organization/service_user";
@@ -49,7 +49,7 @@ const requestBodyV1Schema = Joi.object({
       displayName: safeStringSchema.required(),
       description: safeStringSchema.allow(""),
       assignee: safeIdSchema,
-      thumbnail: safeStringSchema,
+      thumbnail: safeBase64Schema,
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
       tags: Joi.array().items(safeStringSchema),

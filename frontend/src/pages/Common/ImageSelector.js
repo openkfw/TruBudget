@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 
 import FilledStar from "@mui/icons-material/Star";
 import NotFilledStar from "@mui/icons-material/StarBorder";
@@ -18,14 +18,21 @@ import ImageUploader from "./ImageUploader";
 import "./ImageSelector.scss";
 
 const ImageSelector = ({ onTouchTap, selectedImage, customImage, setImage, removeImage }) => {
+  const customImageGalleryRef = useRef(null);
+
   const displayCustomImage = customImage && customImage !== "";
   const imagesToDisplay = displayCustomImage ? [{ src: customImage }, ...images] : images;
+
+  useEffect(() => {
+    customImageGalleryRef.current.scroll({ top: 0, behavior: "smooth" });
+  }, [customImage]);
+
   return (
     <>
       <div className="root">
         <Subheader className="sub-header">{strings.common.thumbnail}</Subheader>
       </div>
-      <div className="root">
+      <div className="root" id="project-detail-cover-image-gallery">
         <ImageList
           rowHeight={150}
           sx={{
@@ -34,6 +41,7 @@ const ImageSelector = ({ onTouchTap, selectedImage, customImage, setImage, remov
             // Promote the list into its own layer in Chrome. This costs memory, but helps keeping high FPS.
             transform: "translateZ(0)"
           }}
+          ref={customImageGalleryRef}
         >
           {imagesToDisplay.map((image, index) => (
             <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src} className="image-list-item">
@@ -60,7 +68,8 @@ const ImageSelector = ({ onTouchTap, selectedImage, customImage, setImage, remov
           ))}
         </ImageList>
       </div>
-      <div>
+      <div className="image-uploader">
+        <div>select picture from gallery or upload custom picture</div>
         <ImageUploader setImage={setImage} removeImage={removeImage} image={customImage} />
       </div>
     </>
