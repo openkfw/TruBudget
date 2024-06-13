@@ -34,7 +34,6 @@ export interface RequestData {
   projectedBudgets?: ProjectedBudget[];
   additionalData?: AdditionalData.AdditionalData;
   tags?: string[];
-  customImage?: string;
 }
 
 const requestDataSchema = Joi.object({
@@ -83,7 +82,6 @@ export async function createProject(
       permissions: newDefaultPermissionsFor(creatingUser),
       additionalData: data.additionalData || {},
       tags: data.tags || [],
-      customImage: data.customImage || "",
     },
     new Date().toISOString(),
     creatingUser.metadata,
