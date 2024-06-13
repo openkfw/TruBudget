@@ -1,5 +1,7 @@
 @import "../index.scss";
 
 .document-empty-state-bg {
+  display: flex;
+  justify-content: center;
   background-color: #f3f3f3;
 }
