@@ -189,10 +189,10 @@ const WorkflowDetails = ({
   return (
     <Dialog
       open={showWorkflowDetails}
-      className="dialog"
       TransitionProps={{
         onExited: closeWorkflowitemDetailsDialog
       }}
+      PaperProps={{ sx: { minWidth: "80%" } }}
     >
       <DialogTitle data-test="workflowInfoDialog">{strings.workflow.workflowitem_details}</DialogTitle>
       <DialogContent className="dialog-content">
