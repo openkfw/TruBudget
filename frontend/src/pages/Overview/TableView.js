@@ -16,7 +16,7 @@ import FormControlLabel from "@mui/material/FormControlLabel";
 import FormGroup from "@mui/material/FormGroup";
 import Typography from "@mui/material/Typography";
 
-import { isEmptyDeep, stringToUnixTs, unixTsToString } from "../../helper";
+import { isEmptyDeep, stringToUnixTs, trimSpecialChars, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import {
   canCreateProject,
@@ -135,7 +135,7 @@ const rawColumns = [
     sortable: true,
     compact: false,
     minWidth: "15rem",
-    cell: (row) => <Typography data-test="project-name">{row.data.projectName}</Typography>
+    cell: (row) => <Typography data-test="project-name">{trimSpecialChars(row.data.projectName)}</Typography>
   },
   {
     id: "project_status_column",

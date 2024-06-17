@@ -22,6 +22,7 @@ import ListItemText from "@mui/material/ListItemText";
 import { useTheme } from "@mui/material/styles";
 import Tooltip from "@mui/material/Tooltip";
 
+import { trimSpecialChars } from "../../helper";
 import strings from "../../localizeStrings";
 import { canViewProjectDetails } from "../../permissions";
 import ActionButton from "../Common/ActionButton";
@@ -88,7 +89,7 @@ const ProjectCard = ({
               <Highlighter
                 highlightStyle={{ backgroundColor: theme.palette.primary.light }}
                 searchWords={searchTermArray}
-                textToHighlight={displayName}
+                textToHighlight={trimSpecialChars(displayName)}
               />
             </div>
           }

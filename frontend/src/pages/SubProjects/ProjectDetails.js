@@ -23,7 +23,14 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-import { formattedTag, statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
+import {
+  formattedTag,
+  statusIconMapping,
+  statusMapping,
+  toAmountString,
+  trimSpecialChars,
+  unixTsToString
+} from "../../helper.js";
 import strings from "../../localizeStrings";
 import ProjectAnalyticsDialog from "../Analytics/ProjectAnalyticsDialog";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
@@ -79,7 +86,7 @@ const ProjectDetails = (props) => {
                 <Avatar>{projectName[0]}</Avatar>
               </ListItemAvatar>
             ) : null}
-            <ListItemText primary={projectName} secondary={projectComment} />
+            <ListItemText primary={trimSpecialChars(projectName)} secondary={projectComment} />
           </ListItem>
           <ListItem>
             <ListItemAvatar>

@@ -261,6 +261,10 @@ export const getLoginErrorFromResponse = (status, data) => {
   }
 };
 
+export const trimSpecialChars = (string) => {
+  return string.replace(/&nbsp;/g, "").replace(/&amp;/g, "&");
+};
+
 export function base64ToBlob(base64, type = "application/octet-stream") {
   const binaryString = atob(base64);
   const len = binaryString.length;
