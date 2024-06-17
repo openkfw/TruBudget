@@ -18,6 +18,8 @@ import {
   uploadDocument,
 } from "./storage";
 
+const MAX_FILE_SIZE = "150mb"; // 150MB because 100MB file uploaded in frontend becomes ~140MB in base64
+
 interface DocumentUploadRequest extends express.Request {
   query: {
     docId: string;
@@ -94,7 +96,7 @@ app.use(
     },
   }),
 );
-app.use(express.json({ limit: "75mb" }));
+app.use(express.json({ limit: MAX_FILE_SIZE }));
 app.use(
   express.urlencoded({
     extended: true,

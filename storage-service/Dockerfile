@@ -10,7 +10,9 @@ COPY tsconfig.json .
 
 RUN npm run build
 
-# Use node user to execute the application. Node user is not in su list
+# Change ownership to node user
+RUN chown -R node:node /home/node
+# Switch to node user
 USER node
 
 CMD npm start

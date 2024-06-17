@@ -4,7 +4,7 @@ import { connect } from "react-redux";
 import { toJS } from "../../helper";
 import { withRouter } from "../../wrappers/withRouter";
 import withInitialLoading from "../Loading/withInitialLoading";
-import { storeSnackbarMessage } from "../Notifications/actions";
+import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
 
 import {
@@ -204,7 +204,8 @@ const mapDispatchToProps = (dispatch) => {
     fetchVersions: () => dispatch(fetchVersions()),
     setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable)),
     addWorkflowitemTag: (tag) => dispatch(addWorkflowitemTag(tag)),
-    removeWorkflowitemTag: (tag) => dispatch(removeWorkflowitemTag(tag))
+    removeWorkflowitemTag: (tag) => dispatch(removeWorkflowitemTag(tag)),
+    showErrorSnackbar: () => dispatch(showSnackbar(true))
   };
 };
 
