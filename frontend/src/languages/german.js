@@ -197,7 +197,7 @@ const de = {
       "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
     workflowitem_assignee: "Vorausgewählter Verantwortlicher",
     organization_info: "Organization",
-    total_budget_info: "Total budget",
+    total_budget_info: "Beteiligter Stakeholder",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
     default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
