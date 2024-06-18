@@ -123,7 +123,7 @@ const en = {
     tag: "Tag",
     task_status: "Task status",
     thumbnail: "Thumbnail",
-    total_budget: "Total Budget",
+    total_budget: "Participating Stakeholder",
     type: "Type",
     update: "Update",
     username: "Login ID",
@@ -282,7 +282,7 @@ const en = {
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
     workflowitem_assignee: "Default assignee",
     organization_info: "Organization",
-    total_budget_info: "Total budget",
+    total_budget_info: "Participating Stakeholder",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
     default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
@@ -430,7 +430,7 @@ const en = {
     projected_budget_ratio: "Projected Budget Ratio",
     projected_budgets_distribution: "Projected Budgets Distribution",
     subproject_analytics: "Subproject Analytics",
-    total_budget_distribution: "Total Budget Distribution",
+    total_budget_distribution: "Participating Stakeholder Distribution",
     total: "Total:"
   },
 
