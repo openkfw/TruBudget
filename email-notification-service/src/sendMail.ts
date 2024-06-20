@@ -4,7 +4,11 @@ import * as Mail from "nodemailer/lib/mailer";
 import config from "./config";
 import logger from "./logger";
 
-const sendMail = async (emailAddresses: string | string[]): Promise<void> => {
+const sendMail = async (
+  emailAddresses: string | string[],
+  subject?: string,
+  emailText?: string,
+): Promise<void> => {
   const transportOptions: SMTPTransport.Options = {
     host: config.smtpServer.host,
     port: config.smtpServer.port,
@@ -28,12 +32,12 @@ const sendMail = async (emailAddresses: string | string[]): Promise<void> => {
       "Sending email with transport options",
     );
     const transporter = nodemailer.createTransport(transportOptions);
-
     const info: SentMessageInfo = await transporter.sendMail({
       from: config.email.from,
       to: emailAddresses,
-      subject: config.email.subject,
-      text: config.email.text,
+      subject: subject || config.email.subject,
+      text: emailText || config.email.text,
+      html: `<a>${emailText}<a/>`,
     } as Mail.Options);
 
     logger.info(`Email sent to ${emailAddresses}: ${info.messageId}`);

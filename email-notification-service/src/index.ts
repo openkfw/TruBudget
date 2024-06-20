@@ -13,9 +13,11 @@ import sendMail from "./sendMail";
 import {
   NotificationRequest,
   NotificationResponseBody,
+  ResetPasswordRequest,
   User,
   UserEditRequest,
   UserEditResponseBody,
+  UserGetEmailAddressByEmailRequest,
   UserGetEmailAddressRequest,
 } from "./types";
 import isBodyValid from "./validation";
@@ -263,6 +265,48 @@ emailService.get(
   },
 );
 
+emailService.get(
+  "/user.getEmailAddressByEmail",
+  query("email").escape(),
+  (req: UserGetEmailAddressByEmailRequest, res: express.Response) => {
+    const isDataValid = isBodyValid("/user.getEmailAddressByEmail", req.query);
+    logger.trace("Validating data");
+
+    if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
+      res.status(400).send({
+        message: "The request body validation failed",
+      });
+      return;
+    }
+    if (!isAllowed(req.query.email, res)) {
+      const message = `JWT-Token is not valid to insert an email address of user ${req.query.email}`;
+      logger.error(message);
+      res.status(401).send({
+        message,
+      });
+      return;
+    }
+
+    const email: string = req.query.email;
+    (async (): Promise<void> => {
+      const user = await db.getEmailAddressAndUserId(email);
+      if (user) {
+        logger.trace("GET email address " + user.email + " for user " + user.id);
+        res.send({
+          user,
+        });
+      } else {
+        logger.info("Email address" + email + " not found");
+        res.status(404).send(null);
+      }
+    })().catch((error) => {
+      logger.error({ err: error }, "Error while getting email address");
+      res.status(500).send(error);
+    });
+  },
+);
+
 emailService.post(
   "/notification.send",
   body("data.user.id").escape(),
@@ -308,6 +352,50 @@ emailService.post(
           body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
           res.status(404).send(body);
         }
+      } catch (error) {
+        logger.error(`Error while send notification: ${error}`);
+        res.status(500).send(error);
+      }
+    })();
+  },
+);
+
+emailService.post(
+  "/resetPassword",
+  body("data.user.*").escape(),
+  (req: ResetPasswordRequest, res: express.Response) => {
+    logger.trace("Validating data");
+    const isDataValid = isBodyValid("/resetPassword", req.body.data);
+    if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
+      res.status(400).send({
+        message: "The request body validation failed",
+      });
+      return;
+    }
+    logger.info(req.body);
+    const { id, email, emailText } = req.body.data.user;
+    // authenticate
+    if (config.authentication === "jwt") {
+      // Only the notification watcher of the Trubudget blockchain may send notifications
+      if (res.locals.id !== "notification-watcher") {
+        const message = `${res.locals.id} is not allowed to send a notification to ${id}`;
+        logger.error(message);
+        res.status(401).send({
+          message,
+        });
+        return;
+      }
+    }
+
+    (async (): Promise<void> => {
+      try {
+        await sendMail(email, "Trubudget password reset", emailText);
+        logger.trace("Notification sent to " + email);
+        const body: NotificationResponseBody = {
+          notification: { recipient: id, status: "sent", emailAddress: email },
+        };
+        res.status(200).send(body);
       } catch (error) {
         logger.error(`Error while send notification: ${error}`);
         res.status(500).send(error);

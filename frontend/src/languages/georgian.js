@@ -153,7 +153,7 @@ const ka = {
     edit_permissions: "ნებართვების რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
-    invalid_password: "პაროლი არასწორია",
+    invalid_password: "პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს, დიდ ასოს და რიცხვს",
     new_group: "ახალი ჯგუფი",
     new_user_password_confirmation: "დაადასტურე ახალი პაროლი",
     new_user_password: "ახალი პაროლი",

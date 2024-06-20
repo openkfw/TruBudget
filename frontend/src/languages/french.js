@@ -202,7 +202,8 @@ const fr = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -293,7 +294,7 @@ const fr = {
     edit_permissions: "Éditer les autorisations",
     group_created: "Groupe créé avec succès",
     groups: "Groupes",
-    invalid_password: "Mot de passe invalide",
+    invalid_password: "Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule et un chiffre",
     new_group: "Nouveau groupe d'utilisateurs",
     new_user_password_confirmation: "Confirmer le nouveau mot de passe",
     new_user_password: "Nouveau mot de passe",

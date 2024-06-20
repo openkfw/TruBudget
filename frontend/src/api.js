@@ -526,6 +526,19 @@ class Api {
     return instance.get(path, { withCredentials: true });
   };
 
+  sendForgotPasswordEmail = (emailAddress) => {
+    const path = this.getEmailServiceUrl(`user.getEmailAddressByEmail?email=${emailAddress}`);
+    return instance.get(path);
+  };
+
+  sendMail = (email) => {
+    const data = {
+      user: { id: "kekw", email, emailText: "http://localhost:3000/reset-password?id=kekw&resetToken=rofl" }
+    };
+    const path = this.getEmailServiceUrl("resetPassword");
+    return instance.post(path, data, { withCredentials: true });
+  };
+
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
     return instance.get(
       removeEmptyQueryParams(

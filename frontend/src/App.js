@@ -10,6 +10,8 @@ import { Experimental_CssVarsProvider as CssVarsProvider, StyledEngineProvider }
 
 import "./logging/console";
 
+import ForgotPasswordContainer from "./pages/ForgotPassword/ForgotPasswordContainer";
+import ResetPasswordContainer from "./pages/ForgotPassword/ResetPasswordContainer";
 import withInitialLoading from "./pages/Loading/withInitialLoading";
 import LoginPageContainer from "./pages/Login/LoginPageContainer";
 import PrivateRoute from "./pages/Login/PrivateRoute";
@@ -22,6 +24,8 @@ import { history, store } from "./store";
 dayjs.extend(isSameOrAfter);
 dayjs.extend(relativeTime);
 const LoginElement = withRouter(withInitialLoading(LoginPageContainer));
+const ForgotPasswordElement = withRouter(withInitialLoading(ForgotPasswordContainer));
+const ResetPasswordElement = withRouter(withInitialLoading(ResetPasswordContainer));
 
 export default function App() {
   return (
@@ -32,6 +36,8 @@ export default function App() {
             <LiveNotificationContainer />
             <Routes>
               <Route key={1} exact path="/login" element={<LoginElement />} />
+              <Route key={2} exact path="/forgot-password" element={<ForgotPasswordElement />} />
+              <Route key={3} path="/reset-password" element={<ResetPasswordElement />} />
               <Route
                 path="*"
                 element={

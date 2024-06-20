@@ -55,7 +55,8 @@ import {
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  SEND_FORGOT_PASSWORD_EMAIL
 } from "./pages/Login/actions";
 import {
   CREATE_BACKUP,
@@ -3325,6 +3326,38 @@ function* checkExportServiceSaga({ showLoading = true }) {
   );
 }
 
+export function* forgotPasswordSaga({ email }) {
+  function* sendForgotPasswordEmail() {
+    const data = yield callApi(api.sendMail, email);
+    yield console.log("kek", data);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: "E-mail with instructions how to reset your password was sent."
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: false,
+      isWarning: false
+    });
+  }
+
+  function* onError(error) {
+    const errorMessage = getLoginErrorFromResponse(error.response.status, error.response.data);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+  }
+  yield execute(sendForgotPasswordEmail, true, onError);
+}
+
 export default function* rootSaga() {
   try {
     yield all([
@@ -3347,6 +3380,7 @@ export default function* rootSaga() {
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
       yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga),
+      yield takeLatest(SEND_FORGOT_PASSWORD_EMAIL, forgotPasswordSaga),
 
       // Users
       yield takeEvery(CHECK_AND_CHANGE_USER_PASSWORD, checkAndChangeUserPasswordSaga),

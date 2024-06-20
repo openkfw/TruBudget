@@ -51,6 +51,7 @@ const en = {
     edited: "Edited",
     email: "Email",
     finish: "Finish",
+    forgotPassword: "Forgot Your Password?",
     global: "global",
     grant: "grant",
     hash: "Hash",
@@ -153,7 +154,7 @@ const en = {
     edit_permissions: "Edit permissions",
     group_created: "Group successfully created",
     groups: "Groups",
-    invalid_password: "Password invalid",
+    invalid_password: "Password must contain at least 8 characters, capital letter and number",
     new_group: "New Group",
     new_user_password_confirmation: "Confirm new password",
     new_user_password: "New password",
@@ -284,7 +285,8 @@ const en = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {

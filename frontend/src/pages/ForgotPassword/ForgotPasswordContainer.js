@@ -1,24 +1,22 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
 
+import config from "../../config";
 import { appInsights } from "../../telemetry";
-
-import config from "./../../config";
 import {
   checkEmailService,
-  checkExportService,
   initLanguage,
   loginLoading,
-  loginWithCredentials,
   loginWithToken,
-  logout,
+  sendForgotPasswordEmail,
   setLanguage,
-  storePassword,
-  storeUsername
-} from "./actions";
-import LoginPage from "./LoginPage";
+  storeEmail
+} from "../Login/actions";
+import { setValidEmailAddressInput } from "../Navbar/actions";
 
-class LoginPageContainer extends Component {
+import ForgotPassword from "./ForgotPassword";
+
+class ForgotPasswordContainer extends Component {
   componentDidMount() {
     this.props.initLanguage();
     this.checkIfRedirect();
@@ -26,9 +24,6 @@ class LoginPageContainer extends Component {
     // process.env exists when using node.js
     if (window?.injectedEnv?.REACT_APP_EMAIL_SERVICE_ENABLED === "true" || config.email.isEnabled) {
       this.props.checkEmailService();
-    }
-    if (window?.injectedEnv?.REACT_APP_EXPORT_SERVICE_ENABLED === "true" || config.export.isEnabled) {
-      this.props.checkExportService();
     }
   }
 
@@ -63,35 +58,33 @@ class LoginPageContainer extends Component {
   }
 
   render() {
-    return <LoginPage {...this.props} />;
+    return <ForgotPassword {...this.props} />;
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     initLanguage: () => dispatch(initLanguage()),
-    storeUsername: (username) => dispatch(storeUsername(username)),
-    storePassword: (password) => dispatch(storePassword(password)),
-    logout: () => dispatch(logout()),
-    loginWithCredentials: (username, password) => dispatch(loginWithCredentials(username, password)),
+    storeEmail: (email) => dispatch(storeEmail(email)),
     loginWithToken: (token) => dispatch(loginWithToken(token)),
     setLoginLoading: (showLoading) => dispatch(loginLoading(showLoading)),
     setLanguage: (language) => dispatch(setLanguage(language)),
     checkEmailService: () => dispatch(checkEmailService(false)),
-    checkExportService: () => dispatch(checkExportService(false))
+    sendForgotPasswordEmail: (email) => dispatch(sendForgotPasswordEmail(email)),
+    setValidEmailAddressInput: (valid) => dispatch(setValidEmailAddressInput(valid))
   };
 };
 
 const mapStateToProps = (state) => {
   return {
     userId: state.getIn(["login", "id"]),
-    username: state.getIn(["login", "username"]),
+    email: state.getIn(["login", "email"]),
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
-    password: state.getIn(["login", "password"]),
     language: state.getIn(["login", "language"]),
-    loginError: state.getIn(["login", "loginError"]),
-    loading: state.getIn(["login", "loading"])
+    loading: state.getIn(["login", "loading"]),
+    emailServiceAvailable: state.getIn(["login", "emailServiceAvailable"]),
+    isEmailAddressInputValid: state.getIn(["navbar", "isEmailAddressInputValid"])
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPageContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ForgotPasswordContainer);
