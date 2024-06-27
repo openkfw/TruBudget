@@ -1,11 +1,13 @@
-import { Ctx } from "lib/ctx";
-import logger from "../../../lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
+
 import { GenericDocument } from "./document";
 import * as DocumentShared from "./document_shared";
 import * as DocumentUploaded from "./document_uploaded";

@@ -1,7 +1,7 @@
 {
   "name": "email-notification",
   "description": "Sends notification-emails to provided SMTP server to identities saved in a database of choice.",
-  "version": "2.11.0",
+  "version": "2.12.0",
   "private": true,
   "repository": {
     "type": "git",

@@ -3,6 +3,7 @@ import { parse } from "content-disposition-attachment";
 import _isEmpty from "lodash/isEmpty";
 
 import config from "./config";
+import { base64ToBlob } from "./helper";
 import strings from "./localizeStrings";
 
 const devMode = config.envMode === "development";
@@ -18,7 +19,9 @@ class Api {
     // Move all parameters into data object
     instance.defaults.transformRequest = [
       (data, _headers) => {
-        if (typeof data === "object") {
+        if (data instanceof FormData) {
+          return data;
+        } else if (typeof data === "object") {
           return {
             apiVersion: API_VERSION,
             data: {
@@ -331,6 +334,41 @@ class Api {
           };
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
+    });
+  };
+
+  createWorkflowItemV2 = (payload) => {
+    const { currency, amount, exchangeRate, documents, ...minimalPayload } = payload;
+    const payloadToSend =
+      payload.amountType === "N/A"
+        ? minimalPayload
+        : {
+            ...minimalPayload,
+            currency,
+            amount,
+            exchangeRate: exchangeRate.toString()
+          };
+
+    const formData = new FormData();
+
+    formData.append("apiVersion", "2.0");
+
+    for (const key in payloadToSend) {
+      formData.append(key, payloadToSend[key]);
+    }
+
+    if (documents && documents.length > 0) {
+      for (let i = 0; i < documents.length; i++) {
+        if (documents[i].base64) {
+          const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
+          formData.append("documents", blob, documents[i].fileName);
+        }
+      }
+    }
+    return instance.post(`/v2/subproject.createWorkflowitem`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
     });
   };
 
