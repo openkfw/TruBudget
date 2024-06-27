@@ -24,7 +24,7 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-import { statusIconMapping, statusMapping, toAmountString, unixTsToString } from "../../helper.js";
+import { statusIconMapping, statusMapping, toAmountString, trimSpecialChars, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
@@ -84,7 +84,7 @@ const SubProjectDetails = ({
                 <Avatar>{displayName[0]}</Avatar>
               </ListItemAvatar>
             ) : null}
-            <ListItemText primary={displayName} secondary={description} />
+            <ListItemText primary={trimSpecialChars(displayName)} secondary={description} />
           </ListItem>
           <ListItem>
             <ListItemAvatar>

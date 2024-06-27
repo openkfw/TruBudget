@@ -1,10 +1,11 @@
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
-import * as PublicKeyGet from "./domain/organization/public_key_get";
 import { PublicKeyBase64 } from "./domain/organization/public_key";
-import logger from "lib/logger";
+import * as PublicKeyGet from "./domain/organization/public_key_get";
 
 export async function getPublicKey(
   conn: ConnToken,

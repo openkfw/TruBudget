@@ -2,9 +2,11 @@ import { Ctx } from "lib/ctx";
 import deepcopy from "lib/deepcopy";
 import logger from "lib/logger";
 import { VError } from "verror";
+
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+
 import * as Project from "./project";
 import * as ProjectAssigned from "./project_assigned";
 import * as ProjectClosed from "./project_closed";
@@ -16,6 +18,7 @@ import * as ProjectProjectedBudgetUpdated from "./project_projected_budget_updat
 import { ProjectTraceEvent } from "./project_trace_event";
 import * as ProjectUpdated from "./project_updated";
 
+/** deprecated */
 export function sourceProjects(
   ctx: Ctx,
   events: BusinessEvent[],

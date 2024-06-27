@@ -834,7 +834,16 @@ export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
         subprojectId: subprojectId,
         additionalActions
       });
-      const { data } = yield* executeOriginalAction(api.createWorkflowItem, originalAction, workflowitemData);
+      // use v1 endpoint (json) if there are documents that are links, v2 (multipart) if files
+      let createWorkflowEndpoint = api.createWorkflowItemV2;
+      if (
+        workflowitemData.documents &&
+        workflowitemData.documents.length > 0 &&
+        workflowitemData.documents.some((doc) => doc.link)
+      ) {
+        createWorkflowEndpoint = api.createWorkflowItem;
+      }
+      const { data } = yield* executeOriginalAction(createWorkflowEndpoint, originalAction, workflowitemData);
       yield put({
         type: CREATE_WORKFLOW_SUCCESS,
         workflowitemId: data.workflowitem.id

@@ -1,8 +1,10 @@
-import logger from "../lib/logger";
 import { VError } from "verror";
+
 import { encryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import * as Cache from "./cache2";
 import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
@@ -12,9 +14,9 @@ import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserQuery from "./domain/organization/user_query";
+import * as ProjectCacheHelper from "./project_cache_helper";
 import * as PublicKeyGet from "./public_key_get";
 import { store } from "./store";
-import * as ProjectCacheHelper from "./project_cache_helper";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 

@@ -236,7 +236,7 @@ describe("Workflowitem create", function () {
   it("When the subproject type is any, the workflowitem type is not fixed", function () {
     cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
     cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.intercept(apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+    cy.intercept(apiRoute + `/v2/subproject.createWorkflowitem`).as("workflowitemCreated");
 
     //Create a subproject
     cy.visit(`/projects/${projectId}`);
@@ -304,7 +304,7 @@ describe("Workflowitem create", function () {
   it("When no validator is set in a subproject, the workflowitem assignee can be changed", function () {
     cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
     cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.intercept(apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+    cy.intercept(apiRoute + `/v2/subproject.createWorkflowitem`).as("workflowitemCreated");
 
     //Create a subproject
     cy.visit(`/projects/${projectId}`);
@@ -339,7 +339,7 @@ describe("Workflowitem create", function () {
   it("When the workflowitem type is restricted, there are no post actions", function () {
     cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
     cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.intercept(apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
+    cy.intercept(apiRoute + `/v2/subproject.createWorkflowitem`).as("workflowitemCreated");
 
     //Create a subproject
     cy.visit(`/projects/${projectId}`);

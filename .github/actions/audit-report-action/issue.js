@@ -127,7 +127,18 @@ function createMarkdownList(vulnerabilities, vulnerabilityIdProjectMapping, cate
     }
   }
 
-  md += `\nLast scan date: ${new Date(Date.now()).toLocaleDateString()}\n\n\n`;
+  const currentDate = new Date;
+  const currentDateFormatted = [
+    currentDate.getFullYear(),
+    currentDate.getMonth()+1,
+    currentDate.getDate()
+  ].join('-')+' '+
+  [
+    currentDate.getHours(),
+    currentDate.getMinutes(),
+    currentDate.getSeconds()
+  ].join(':');
+  md += `\nLast scan date: ${currentDateFormatted}\n\n\n`;
 
   return md;
 }

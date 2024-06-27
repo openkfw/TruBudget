@@ -18,13 +18,17 @@ import { DocumentEmptyState } from "./DocumentEmptyStates";
 
 import "./DocumentUpload.scss";
 
+const MAX_DOCUMENT_SIZE_BINARY = 100 * 1024 * 1024; // 100 MB
+
 const uriValidation = Yup.string().url().required();
 
 const DocumentUpload = ({
   storeWorkflowDocument,
   storeWorkflowDocumentExternalLink,
   workflowDocuments,
-  storageServiceAvailable
+  storageServiceAvailable,
+  storeSnackbarMessage,
+  showErrorSnackbar
 }) => {
   const defaultDocumentUrl = "https://";
   const defaultDocumentName = "";
@@ -136,10 +140,18 @@ const DocumentUpload = ({
                 onChange={(event) => {
                   if (event.target.files) {
                     const file = event.target.files[0];
+                    if (file.size > MAX_DOCUMENT_SIZE_BINARY) {
+                      storeSnackbarMessage(
+                        `File size exceeds the limit of ${Math.round(MAX_DOCUMENT_SIZE_BINARY / (1024 * 1024))} MB`
+                      );
+                      showErrorSnackbar();
+                      return;
+                    }
                     const reader = new FileReader();
                     reader.onloadend = (e) => {
                       if (e.target.result !== undefined) {
                         const dataUrl = e.target.result.split(";base64,")[1];
+                        // data in redux store needs to be serializable, so we store base64 string
                         storeWorkflowDocument(dataUrl, file.name);
                       }
                     };
