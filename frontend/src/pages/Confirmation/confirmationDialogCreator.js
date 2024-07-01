@@ -1,6 +1,7 @@
 import React from "react";
 import _isEmpty from "lodash/isEmpty";
 
+import WarningIcon from "@mui/icons-material/Warning";
 import { Typography } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
@@ -482,22 +483,40 @@ const _createAdditionalActionsText = (intent, payload) => {
 
 const _createCloseProjectText = () => {
   const dialogText = strings.confirmation.project_close_text;
+  const dialogWarning = strings.confirmation.project_close_warning;
   const closeTitle = strings.confirmation.project_close;
 
   return {
     closeTitle,
-    closeContent: <Typography>{dialogText}</Typography>,
+    closeContent: (
+      <>
+        <Typography className="subtitle">
+          <WarningIcon />
+          {dialogWarning}
+        </Typography>
+        <Typography>{dialogText}</Typography>
+      </>
+    ),
     closeConfirmButtonText: closeTitle
   };
 };
 
 const _createCloseSubProjectText = () => {
   const dialogText = strings.confirmation.subproject_close_text;
+  const dialogWarning = strings.confirmation.subproject_close_warning;
   const closeTitle = strings.confirmation.subproject_close;
 
   return {
     closeTitle,
-    closeContent: <Typography>{dialogText}</Typography>,
+    closeContent: (
+      <>
+        <Typography className="subtitle">
+          <WarningIcon />
+          {dialogWarning}
+        </Typography>
+        <Typography>{dialogText}</Typography>
+      </>
+    ),
     closeConfirmButtonText: closeTitle
   };
 };
