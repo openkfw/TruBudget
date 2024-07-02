@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import _isEmpty from "lodash/isEmpty";
 
-import { compareObjects, fromAmountString, isEmptyDeep, shortenedDisplayName } from "../../helper";
+import { compareObjects, fromAmountString, isEmptyDeep, shortenedDisplayName, trimSpecialChars } from "../../helper";
 import strings from "../../localizeStrings";
 import CreationDialog from "../Common/CreationDialog";
 
@@ -36,7 +36,9 @@ const handleCreate = (props) => {
   );
   onDialogCancel();
 
-  storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
+  storeSnackbarMessage(
+    strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(trimSpecialChars(displayName)))
+  );
 };
 
 const handleEdit = (props) => {
@@ -56,7 +58,10 @@ const handleEdit = (props) => {
       changes.deletedProjectedBudgets
     );
     storeSnackbarMessage(
-      strings.formatString(strings.snackbar.update_succeed_message, shortenedDisplayName(subprojectToAdd.displayName))
+      strings.formatString(
+        strings.snackbar.update_succeed_message,
+        shortenedDisplayName(trimSpecialChars(subprojectToAdd.displayName))
+      )
     );
   }
 

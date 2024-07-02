@@ -2,6 +2,7 @@ import React from "react";
 
 import Divider from "@mui/material/Divider";
 
+import { trimSpecialChars } from "../../helper";
 import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
@@ -15,7 +16,7 @@ const ProjectDialogContent = (props) => {
         <Identifier
           nameLabel={strings.project.project_title}
           nameHintText={strings.project.project_title_description}
-          name={props.projectToAdd.displayName}
+          name={trimSpecialChars(props.projectToAdd.displayName)}
           nameOnChange={props.storeProjectName}
           commentLabel={strings.project.project_comment}
           commentHintText={strings.common.comment_description}

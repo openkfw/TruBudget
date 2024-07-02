@@ -5,7 +5,7 @@ import { Alert, IconButton } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 
-import { getCurrencies } from "../../helper";
+import { getCurrencies, trimSpecialChars } from "../../helper";
 import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import { CustomInfoTooltip } from "../Common/CustomInfoTooltip";
@@ -46,7 +46,7 @@ const SubProjectDialogContent = (props) => {
         <Identifier
           nameLabel={strings.subproject.subproject_title}
           nameHintText={strings.subproject.subproject_title_description}
-          name={props.subprojectToAdd.displayName}
+          name={trimSpecialChars(props.subprojectToAdd.displayName)}
           nameOnChange={props.storeSubProjectName}
           commentLabel={strings.subproject.subproject_comment}
           commentHintText={strings.common.comment_description}

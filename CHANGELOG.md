@@ -19,6 +19,19 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
   
+## [2.12.0] - 2024-06-27
+
+### Added
+  
+- Display full datetime in security report in wiki [#1877](https://github.com/openkfw/TruBudget/issues/1877)
+- Upload documents up to 75MB [#1832](https://github.com/openkfw/TruBudget/issues/1832)
+- Add missing variable in compose MULTICHAIN_FEED_ENABLED [#1820](https://github.com/openkfw/TruBudget/issues/1820)
+
+### Fixed
+
+- Layout bug for validation of documents [#1861](https://github.com/openkfw/TruBudget/issues/1861)
+- When an Ampersand is used ("&") in the project title, it is escaped as html [#1853](https://github.com/openkfw/TruBudget/issues/1853)
+- Long workflow item titles break layout [#1850](https://github.com/openkfw/TruBudget/issues/1850)
   
 ## [2.11.0] - 2024-05-30
 
@@ -46,7 +59,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - ui: Image compression backward compatibility bug [#1814](https://github.com/openkfw/TruBudget/issues/1814)
 - ci/cd: npm ci fails after merge when creating release [#1483](https://github.com/openkfw/TruBudget/issues/1483)
 
-
 ## [2.10.0] - 2024-04-26
 
 ### Added
@@ -73,7 +85,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Fixed email-service not working with authentication turned on [#1769](https://github.com/openkfw/TruBudget/issues/1769)
 - Breadcrumb position [#1786](https://github.com/openkfw/TruBudget/issues/1786)
 
-    
 ## [2.9.0] - 2024-03-25
 
 <!-- ## Unreleased -->
@@ -91,7 +102,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - HSTS Headers [#1657](https://api.github.com/repos/openkfw/TruBudget/issues/1657)
 - New set of backdrop images for the UI [#1647](https://api.github.com/repos/openkfw/TruBudget/issues/1647)
 
-
 ### Changed
 
 - Documentation regarding Beta-Node [#1701](https://api.github.com/repos/openkfw/TruBudget/issues/1701)
@@ -106,7 +116,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Remove additional information about the server in requests [#1655](https://api.github.com/repos/openkfw/TruBudget/issues/1655)
 
 <!-- ### Fixed -->
-
 
 ## [2.8.0] - 2024-02-28
 
@@ -125,7 +134,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 - Fixed search query in workflowitems not processed from URL [#1627](https://github.com/openkfw/TruBudget/issues/1627)
 
-
 ## [2.7.0] - 2024-01-31
 
 ### Added
@@ -141,9 +149,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Increase length of user ID [#887](https://github.com/openkfw/TruBudget/issues/887)
 
 ### Fixed
+
 - Fix error of incorrectly displayed redacted workflowitem at workflow screen [#1563](https://github.com/openkfw/TruBudget/issues/1563)
 - Migration script fix allows to migrate documents to storage service in a migration to 2.x [#1333](https://github.com/openkfw/TruBudget/issues/1333)
-
 
 ## [2.6.0] - 2023-12-19
 
@@ -158,8 +166,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Live update of projects is paused when search functionality is used in table view. Otherwise search results were reset. [#1539](https://github.com/openkfw/TruBudget/pull/1539)
 - Input fields for usernames are wider [#1566](https://github.com/openkfw/TruBudget/pull/1566)
 
+### Fixed
 
-### Fixed 
 - A bug which led to random sorting of workflowitems[#1565](https://github.com/openkfw/TruBudget/pull/1565)
 - Bug which caused TruBudget to not update user permissions [#1553](https://github.com/openkfw/TruBudget/pull/1553)
 - Bug which reset search results in TableView[#1539](https://github.com/openkfw/TruBudget/pull/1539)
@@ -176,8 +184,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Session token cookie is invalidated on user logout. [#1507](https://github.com/openkfw/TruBudget/issues/1507)
 - Add an improvement to the api caching strategy, where snapshots are periodically written to the chain to improve performance during eventsourcing. [#1108](https://github.com/openkfw/TruBudget/issues/1108)
 
-
 ### Fixed
+
 - Add multiple fixes to the e2e-tests and testing library cypress. [#1532](https://github.com/openkfw/TruBudget/issues/1532)[#1535](https://github.com/openkfw/TruBudget/issues/1535)
 
 ## [2.4.0] - 2023-10-31
@@ -197,6 +205,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [2.3.0] - 2023-10-13
 
 ### Fixed
+
 - Fixed a bug where the menu items on the left navbar did not look clickable. [#1444](https://github.com/openkfw/TruBudget/issues/1444)
 - Fixed a bug where the wrong error message was shown on failed login. [#1424](https://github.com/openkfw/TruBudget/issues/1424)
 
@@ -217,16 +226,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Updated MinIO image to version RELEASE.2023-09-04T19-57-37Z due to [security vulnerabilities](https://www.cvedetails.com/vulnerability-list/vendor_id-18671/Minio.html).
 If you install TruBudget freshly, this is not an issue for you. If you update to this version, you might consider [migrating your data or downgrading MinIO](./storage-service/doc/migrate-minio.md).
 
-
 - Replaced API in-memory caching with data snapshots saved on blockchain for projects, subprojects and workflowitems. [#1108](https://github.com/openkfw/TruBudget/issues/1108)
-
 
 ## [2.2.1] - 2023-07-06
 
 ### Fixed
 
 - Fixed a problem in the Analytics page due to failing request to exchange rate API [#1405](https://github.com/openkfw/TruBudget/issues/1405)
-
 
 ## [2.2.0] - 2023-06-14
 
@@ -268,7 +274,6 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Fixed the overflow in the notification badge [#1257](https://github.com/openkfw/TruBudget/issues/1257)
 - Fixed a bug where third party exchange rate requests would cause an unhandled error [#1109](https://github.com/openkfw/TruBudget/issues/1109)
 
-
 ## [2.1.0] - 2022-08-11
 
 ### Added
@@ -302,7 +307,7 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - All services use `PORT` environment variable to describe their own service port [#999](https://github.com/openkfw/TruBudget/issues/999)
 - All services use `[SERVICE_NAME]_ENABLED=true` to describe an enabled service [#999](https://github.com/openkfw/TruBudget/issues/999)
 - Renamed `RPC...` environment variables to `MULTICHAIN_RPC...` e.g. `RPC_PORT` to `MULTICHAIN_RPC_PORT` [#999](https://github.com/openkfw/TruBudget/issues/999)
-- All services serve a liveness and readiness endpoint [#1122] (https://github.com/openkfw/TruBudget/issues/1122)
+- All services serve a liveness and readiness endpoint [#1122] (<https://github.com/openkfw/TruBudget/issues/1122>)
 - Add stricter validation for strings, ids and passwords [#1029](https://github.com/openkfw/TruBudget/issues/1029)
 - Additional check for backup version in backup endpoint [#1076](https://github.com/openkfw/TruBudget/issues/1076)
 - Group.addUser supports more than one user [#725](https://github.com/openkfw/TruBudget/issues/725)
@@ -1162,11 +1167,10 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.11.0...main
+[2.12.0]: https://github.com/openkfw/TruBudget/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/openkfw/TruBudget/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.10.0
 [2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.9.0
-[2.9.0]: https://github.com/openkfw/TruBudget/compare/v2.8.0...v2.9.0
 [2.8.0]: https://github.com/openkfw/TruBudget/compare/v2.7.0...v2.8.0
 [2.7.0]: https://github.com/openkfw/TruBudget/compare/v2.6.0...v2.7.0
 [2.6.0]: https://github.com/openkfw/TruBudget/compare/v2.5.0...v2.6.0
