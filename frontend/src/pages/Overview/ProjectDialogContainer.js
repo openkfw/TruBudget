@@ -6,12 +6,14 @@ import withInitialLoading from "../Loading/withInitialLoading";
 import { storeSnackbarMessage } from "../Notifications/actions";
 
 import {
+  addCustomImage,
   addProjectProjectedBudget,
   addProjectTag,
   createProject,
   editProject,
   editProjectProjectedBudgetAmount,
   hideProjectDialog,
+  removeCustomImage,
   removeProjectTag,
   setCurrentStep,
   storeDeletedProjectedBudget,
@@ -55,7 +57,9 @@ const mapDispatchToProps = (dispatch) => {
     storeDeletedProjectedBudget: (projectedBudgets) => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     addProjectTag: (tag) => dispatch(addProjectTag(tag)),
-    removeProjectTag: (tag) => dispatch(removeProjectTag(tag))
+    removeProjectTag: (tag) => dispatch(removeProjectTag(tag)),
+    addCustomImage: (imageBase64) => dispatch(addCustomImage(imageBase64)),
+    removeCustomImage: (imageBase64) => dispatch(removeCustomImage(imageBase64))
   };
 };
 

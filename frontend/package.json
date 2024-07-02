@@ -38,6 +38,7 @@
     "array-move": "^4.0.0",
     "axios": "^1.6.8",
     "better-npm-audit": "^3.7.3",
+    "browser-image-compression": "^2.0.2",
     "chart.js": "^4.3.0",
     "content-disposition-attachment": "^0.3.1",
     "date-fns": "^2.30.0",

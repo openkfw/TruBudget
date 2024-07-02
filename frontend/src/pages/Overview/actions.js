@@ -48,6 +48,9 @@ export const REVOKE_PROJECT_PERMISSION_FAILURE = "REVOKE_PROJECT_PERMISSION_FAIL
 export const ADD_PROJECT_TAG = "ADD_PROJECT_TAG";
 export const REMOVE_PROJECT_TAG = "REMOVE_PROJECT_TAG";
 
+export const ADD_PROJECT_CUSTOM_IMAGE = "ADD_PROJECT_CUSTOM_IMAGE";
+export const REMOVE_PROJECT_CUSTOM_IMAGE = "REMOVE_PROJECT_CUSTOM_IMAGE";
+
 export const ADD_TEMPORARY_PROJECT_PERMISSION = "ADD_TEMPORARY_PROJECT_PERMISSION";
 export const REMOVE_TEMPORARY_PROJECT_PERMISSION = " REMOVE_TEMPORARY_PROJECT_PERMISSION";
 
@@ -263,6 +266,20 @@ export function removeProjectTag(tag) {
   return {
     type: REMOVE_PROJECT_TAG,
     tag
+  };
+}
+
+export function addCustomImage(imageBase64) {
+  return {
+    type: ADD_PROJECT_CUSTOM_IMAGE,
+    customImage: imageBase64
+  };
+}
+
+export function removeCustomImage(imageBase64) {
+  return {
+    type: REMOVE_PROJECT_CUSTOM_IMAGE,
+    customImage: imageBase64
   };
 }
 
