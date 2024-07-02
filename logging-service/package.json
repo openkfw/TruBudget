@@ -1,6 +1,6 @@
 {
   "name": "trubudget-logging-service",
-  "version": "2.7.1",
+  "version": "2.7.2",
   "description": "This is module exports function that creates a pino logger instance with a common configuration for the trubudget project",
   "main": "index.js",
   "repository": {
