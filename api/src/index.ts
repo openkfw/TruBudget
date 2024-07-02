@@ -1,5 +1,7 @@
 // eslint-disable-next-line import/order
 import { AxiosRequestConfig } from "axios";
+import cluster from "node:cluster";
+import * as os from "os";
 
 import "module-alias/register";
 
@@ -908,69 +910,84 @@ Server.addGroupsPreHandler(server, db, GroupQueryService.getGroupsForUser);
 /*
  * Run the server.
  */
+if (cluster.isPrimary) {
+  logger.warn(`Master ${process.pid} is running`);
 
-server.listen({ port, host: "0.0.0.0" }, async (err) => {
-  if (err) {
-    logger.fatal({ err }, "Connection could not be established. Aborting.");
-    logger.trace();
-    process.exit(1);
+  const numCPUs = os.cpus().length;
+  for (let i = 0; i < numCPUs; i++) {
+    cluster.fork();
   }
 
-  const retryIntervalMs = 5000;
-
-  while (!(await isReady(multichainClient))) {
-    logger.info(
-      `MultiChain connection/permissions not ready yet. Trying again in ${retryIntervalMs / 1000}s`,
-    );
-    await timeout(retryIntervalMs);
-  }
-
-  while (
-    !(await ensureOrganizationStream(multichainClient, organization!, organizationVaultSecret!)
-      .then((adr) => {
-        logger.debug({ adr }, "Ensured Organisation Address");
-        return true;
-      })
-      .catch((err) => {
-        logger.warn(
-          { err, multichainClient, organization },
-          `Failed to create organization stream. Trying again in ${retryIntervalMs / 1000}s`,
-        );
-        return false;
-      }))
-  ) {
-    await timeout(retryIntervalMs);
-  }
-  logger.debug({ multichainClient, organization }, "Organization stream present");
-
-  while (!(await registerSelf())) {
-    logger.info(
-      { multichainClient, organization },
-      `Failed to register node. Trying again in ${retryIntervalMs / 1000}s`,
-    );
-    await timeout(retryIntervalMs);
-  }
-  logger.debug({ params: { multichainClient, organization } }, "Node registered in nodes stream");
-
-  const ensurePublicKeyPublishedResult = await ensurePublicKeyPublished(db, organization);
-  if (Result.isErr(ensurePublicKeyPublishedResult)) {
-    logger.fatal(ensurePublicKeyPublishedResult);
-    process.exit(1);
-  }
-  if (documentFeatureEnabled) {
-    const storageServiceUrlResult = await ensureStorageServiceUrlPublished(db, organization);
-    if (Result.isErr(storageServiceUrlResult)) {
-      logger.fatal(storageServiceUrlResult);
+  cluster.on("exit", (worker, code, signal) => {
+    logger.warn(`worker ${worker.process.pid} died`);
+    // Fork a new worker
+    cluster.fork();
+  });
+} else {
+  server.listen({ port, host: "0.0.0.0" }, async (err) => {
+    if (err) {
+      logger.fatal({ err }, "Connection could not be established. Aborting.");
+      logger.trace();
       process.exit(1);
     }
-  }
 
-  // Logging peerinfo runs immidiately and then every 24H on every API (use DAY_MS)
-  checkNodes(multichainClient);
-  setInterval(async () => {
+    const retryIntervalMs = 5000;
+
+    while (!(await isReady(multichainClient))) {
+      logger.info(
+        `MultiChain connection/permissions not ready yet. \
+         Trying again in ${retryIntervalMs / 1000}s`,
+      );
+      await timeout(retryIntervalMs);
+    }
+
+    while (
+      !(await ensureOrganizationStream(multichainClient, organization!, organizationVaultSecret!)
+        .then((adr) => {
+          logger.debug({ adr }, "Ensured Organisation Address");
+          return true;
+        })
+        .catch((err) => {
+          logger.warn(
+            { err, multichainClient, organization },
+            `Failed to create organization stream. Trying again in ${retryIntervalMs / 1000}s`,
+          );
+          return false;
+        }))
+    ) {
+      await timeout(retryIntervalMs);
+    }
+    logger.debug({ multichainClient, organization }, "Organization stream present");
+
+    while (!(await registerSelf())) {
+      logger.info(
+        { multichainClient, organization },
+        `Failed to register node. Trying again in ${retryIntervalMs / 1000}s`,
+      );
+      await timeout(retryIntervalMs);
+    }
+    logger.debug({ params: { multichainClient, organization } }, "Node registered in nodes stream");
+
+    const ensurePublicKeyPublishedResult = await ensurePublicKeyPublished(db, organization);
+    if (Result.isErr(ensurePublicKeyPublishedResult)) {
+      logger.fatal(ensurePublicKeyPublishedResult);
+      process.exit(1);
+    }
+    if (documentFeatureEnabled) {
+      const storageServiceUrlResult = await ensureStorageServiceUrlPublished(db, organization);
+      if (Result.isErr(storageServiceUrlResult)) {
+        logger.fatal(storageServiceUrlResult);
+        process.exit(1);
+      }
+    }
+
+    // Logging peerinfo runs immidiately and then every 24H on every API (use DAY_MS)
     checkNodes(multichainClient);
-  }, DAY_MS);
-});
+    setInterval(async () => {
+      checkNodes(multichainClient);
+    }, DAY_MS);
+  });
+}
 
 /**
  * Gets the current Rpc {@link ConnectionSettings} and strips down the RPC password
