@@ -16,6 +16,7 @@ const ka = {
     actions: "ქმედებები",
     add_tag_text: "დაამატე თაგი პროექტს",
     add: "დამატება",
+    add_without_budget: "დაამატეთ ბიუჯეტის გარეშე",
     added: "დამატებულია",
     additional_data: "დამატებითი ინფორმაცია",
     amount: "რაოდენობა",

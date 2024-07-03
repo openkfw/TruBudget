@@ -15,6 +15,7 @@ const de = {
     action: "Action",
     actions: "Actions",
     add: "Hinzufügen",
+    add_without_budget: "Hinzufügen ohne Budget",
     added: "Hinzugefügt",
     additional_data: "Zusätzliche Daten",
     amount: "Betrag",

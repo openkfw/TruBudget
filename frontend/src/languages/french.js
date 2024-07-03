@@ -16,6 +16,7 @@ const fr = {
     actions: "Actions",
     add_tag_text: "Ajouter un tag au projet",
     add: "Ajouter",
+    add_without_budget: "Ajouter sans budget",
     added: "Ajouté",
     additional_data: "Données Supplémentaires",
     amount: "Montant",

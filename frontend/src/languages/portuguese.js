@@ -16,6 +16,7 @@ const pt = {
     actions: "Ações",
     add_tag_text: "Adicionar tag ao projeto",
     add: "Adicionar",
+    add_without_budget: "Adicionar sem orçamento",
     added: "Adicionado",
     additional_data: "Dados Adicionais",
     amount: "Valor",

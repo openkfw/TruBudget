@@ -16,6 +16,7 @@ const en = {
     actions: "Actions",
     add_tag_text: "Add tag to project",
     add: "Add",
+    add_without_budget: "Add without budget",
     added: "Added",
     additional_data: "Additional Data",
     amount: "Amount",
