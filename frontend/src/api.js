@@ -10,6 +10,12 @@ const devMode = config.envMode === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
 
+const isAuthProxyEnabled = window?.injectedEnv?.REACT_APP_AUTHPROXY_ENABLED === "true" || config.authProxy.enabled;
+const authProxySignoutUri = (window?.injectedEnv?.REACT_APP_AUTHPROXY_URL || config.authProxy.url).replace(
+  "signin",
+  "signout"
+);
+
 // eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (API Version ${API_VERSION})`);
 
@@ -91,7 +97,12 @@ class Api {
       token
     });
 
-  logout = () => instance.post(`/user.logout`, {});
+  logout = () => {
+    if (isAuthProxyEnabled) {
+      window.open(`${authProxySignoutUri}`, "_blank");
+    }
+    return instance.post(`/user.logout`, {});
+  };
 
   disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
