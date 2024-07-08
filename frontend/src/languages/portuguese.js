@@ -100,6 +100,7 @@ const pt = {
     on: "Ligado",
     ok: "Ok",
     not_projected: "Não projetado",
+    ongoing: "Em andamento",
     open: "Aberto",
     organization: "Organização",
     password: "Senha",
@@ -286,7 +287,8 @@ const pt = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -402,7 +404,8 @@ const pt = {
     project_close_warning: "Se você fechar o projeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     subproject_close: "Fechar subprojecto",
     subproject_close_text: "Tem a certeza de que quer encerrar este subprojecto?",
-    subproject_close_warning: "Se você fechar o subprojeto, não poderá mais fazer alterações ou adicionar informações a ele.",
+    subproject_close_warning:
+      "Se você fechar o subprojeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",

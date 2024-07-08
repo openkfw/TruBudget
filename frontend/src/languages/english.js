@@ -99,6 +99,7 @@ const en = {
     on: "On",
     ok: "Ok",
     not_projected: "Not projected",
+    ongoing: "Ongoing",
     open: "Open",
     organization: "Organization",
     password: "Password",

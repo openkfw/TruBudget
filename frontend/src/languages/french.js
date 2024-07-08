@@ -100,6 +100,7 @@ const fr = {
     on: "Activé",
     ok: "Ok",
     not_projected: "Non estimé",
+    ongoing: "En cours",
     open: "Ouvert",
     organization: "Organisation",
     password: "Mot de passe",
