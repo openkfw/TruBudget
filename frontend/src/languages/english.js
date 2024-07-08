@@ -298,7 +298,7 @@ const en = {
     search_text: "Search workflowitems",
     workflow_budget_allocated: "allocated",
     workflow_budget_disbursed: "paid",
-    workflow_budget_na: "Not applicable",
+    workflow_budget_na: "not applicable",
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "Paid",
     workflow_budget_status_na: "N/A",

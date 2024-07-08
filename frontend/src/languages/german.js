@@ -213,7 +213,7 @@ const de = {
     exchange_rate: "Wechselkurs",
     search_text: "Workflowitems durchsuchen",
     workflow_budget_allocated: "Zugeteilt",
-    workflow_budget_disbursed: "ausgezahlt",
+    workflow_budget_disbursed: "Ausgezahlt",
     workflow_budget_na: "Nicht anwendbar",
     workflow_budget_status_allocated: "Zugeteilt",
     workflow_budget_status_disbursed: "Ausgezahlt",
