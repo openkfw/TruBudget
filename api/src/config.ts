@@ -41,8 +41,26 @@ interface ProcessEnvVars {
   AUTHPROXY_JWS_SIGNATURE: string;
   SNAPSHOT_EVENT_INTERVAL: string;
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: string;
+  DB_USER: string;
+  DB_PASSWORD: string;
+  DB_HOST: string;
+  DB_DATABASE: string;
+  DB_PORT: string;
+  DB_SSL: string;
+  DB_SCHEMA: string;
+  REFRESH_TOKENS_TABLE: string;
+  REFRESH_TOKEN_STORAGE: string; // "db" || "memory" || undefined
 }
 
+interface DatabaseConfig {
+  user: string;
+  password: string;
+  host: string;
+  database: string;
+  port: number;
+  ssl: boolean;
+  schema: string;
+}
 /**
  * Shows the type of an API configuration
  * @notExported
@@ -87,6 +105,11 @@ interface Config {
     authProxyCookie: string;
     jwsSignature: string | undefined;
   };
+  db: DatabaseConfig;
+  dbType: string;
+  sqlDebug: boolean | undefined;
+  refreshTokensTable: string | undefined;
+  refreshTokenStorage: string | undefined;
   snapshotEventInterval: number;
   azureMonitorConnectionString: string;
   silenceLoggingOnFrequentRoutes: boolean;
@@ -147,6 +170,21 @@ export const config: Config = {
     authProxyCookie: "authorizationToken",
     jwsSignature: process.env.AUTHPROXY_JWS_SIGNATURE || undefined,
   },
+  db: {
+    user: process.env.DB_USER || "postgres",
+    password: process.env.DB_PASSWORD || "test",
+    host: process.env.DB_HOST || "localhost",
+    database: process.env.DB_NAME || "trubudget_email_service",
+    port: Number(process.env.DB_PORT) || 5432,
+    ssl: Boolean(process.env.DB_SSL) || false,
+    schema: process.env.DB_SCHEMA || "public",
+  },
+  dbType: process.env.DB_TYPE || "pg",
+  sqlDebug: Boolean(process.env.SQL_DEBUG) || false,
+  refreshTokensTable: process.env.REFRESH_TOKENS_TABLE || "refresh_token",
+  refreshTokenStorage: ["db", "memory"].includes(process.env.REFRESH_TOKEN_STORAGE)
+    ? process.env.REFRESH_TOKEN_STORAGE
+    : undefined,
   snapshotEventInterval: Number(process.env.SNAPSHOT_EVENT_INTERVAL) || 3,
   azureMonitorConnectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
   silenceLoggingOnFrequentRoutes:

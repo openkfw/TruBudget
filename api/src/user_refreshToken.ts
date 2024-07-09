@@ -1,18 +1,17 @@
-import { FastifyInstance } from "fastify";
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
-import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
 import { JwtConfig } from "./config";
-
-export const MAX_GROUPS_LENGTH = 3000;
+import { AugmentedFastifyInstance } from "types";
+import { MAX_GROUPS_LENGTH } from "user_authenticate";
+import { AuthenticatedRequest } from "httpd/lib";
 
 /**
  * Represents the request body of the endpoint
@@ -20,20 +19,14 @@ export const MAX_GROUPS_LENGTH = 3000;
 interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
-    user: {
-      id: string;
-      password: string;
-    };
+    refreshToken: string;
   };
 }
 
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
   data: Joi.object({
-    user: Joi.object({
-      id: safeIdSchema.required(),
-      password: safeStringSchema.required(),
-    }).required(),
+    refreshToken: Joi.string().required(),
   }).required(),
 });
 
@@ -51,128 +44,100 @@ function validateRequestBody(body: unknown): Result.Type<RequestBody> {
   return !error ? value : error;
 }
 
-interface LoginResponse {
-  id: string;
-  displayName: string;
-  organization: string;
-  allowedIntents: string[];
-  groups: Array<{
-    groupId: string;
-    displayName: string;
-  }>;
-}
-
 /**
- * The swagger schema for the `/user.authenticate` endpoint
+ * The swagger schema for the `/user.refreshtoken` endpoint
+ * @param server fastify server
+ * @returns the swagger schema for this endpoint
  */
-const swaggerSchema = {
-  preValidation: [],
-  schema: {
-    description:
-      "Authenticate and retrieve a token in return. This token can then be supplied in the " +
-      "HTTP Authorization header, which is expected by most of the other. " +
-      "\nIf a token is required write 'Bearer' into the 'API Token' field of an endpoint " +
-      "you want to test and copy the token afterwards like in the following example:\n " +
-      ".\n" +
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
-    tags: ["default", "user"],
-    summary: "Authenticate with user and password",
-    body: {
-      type: "object",
-      required: ["apiVersion", "data"],
-      properties: {
-        apiVersion: { type: "string", example: "1.0" },
-        data: {
-          type: "object",
-          required: ["user"],
-          properties: {
-            user: {
-              type: "object",
-              required: ["id", "password"],
-              properties: {
-                id: { type: "string", example: "mstein" },
-                password: { type: "string", example: "test" },
+function swaggerSchema(server: AugmentedFastifyInstance): Object {
+  return {
+    preValidation: [server.authenticate],
+    schema: {
+      description:
+        "Authenticate using refresh token and retrieve a token in return. This token can then be supplied in the " +
+        "HTTP Authorization header, which is expected by most of the other. " +
+        "\nIf a token is required write 'Bearer' into the 'API Token' field of an endpoint " +
+        "you want to test and copy the token afterwards like in the following example:\n " +
+        ".\n" +
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
+      tags: ["default", "refreshtoken"],
+      summary: "Authenticate with token and refresh token",
+      body: {
+        type: "object",
+        required: ["apiVersion", "data"],
+        properties: {
+          apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+            required: ["refreshtoken"],
+            properties: {
+              refreshtoken: {
+                type: "string",
               },
             },
           },
         },
       },
-    },
-    response: {
-      200: {
-        description: "successful response",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            properties: {
-              user: {
-                type: "object",
-                properties: {
-                  id: { type: "string", example: "aSmith" },
-                  displayName: { type: "string", example: "Alice Smith" },
-                  organization: { type: "string", example: "Alice's Solutions & Co" },
-                  allowedIntents: { type: "array", items: { type: "string" } },
-                  groups: {
-                    type: "array",
-                    items: {
-                      type: "object",
-                      properties: {
-                        groupId: { type: "string", example: "Manager" },
-                        displayName: { type: "string", example: "All Manager Group" },
-                      },
-                    },
-                  },
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                user: {
+                  type: "object",
+                },
+              },
+            },
+          },
+        },
+        400: {
+          description: "Authentication failed",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            error: {
+              type: "object",
+              properties: {
+                code: { type: "number" },
+                message: {
+                  type: "string",
+                  example: "Authentication failed.",
+                },
+              },
+            },
+          },
+        },
+        403: {
+          description: "Not Authorized",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            error: {
+              type: "object",
+              properties: {
+                code: { type: "number" },
+                message: {
+                  type: "string",
+                  example: "Not Authorized.",
                 },
               },
             },
           },
         },
       },
-      400: {
-        description: "Authentication failed",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          error: {
-            type: "object",
-            properties: {
-              code: { type: "number" },
-              message: {
-                type: "string",
-                example: "Authentication failed.",
-              },
-            },
-          },
-        },
-      },
-      403: {
-        description: "Not Authorized",
-        type: "object",
-        properties: {
-          apiVersion: { type: "string", example: "1.0" },
-          error: {
-            type: "object",
-            properties: {
-              code: { type: "number" },
-              message: {
-                type: "string",
-                example: "Not Authorized.",
-              },
-            },
-          },
-        },
-      },
     },
-  },
-};
+  };
+}
 
 /**
  * Represents the service that authenticates a user
  */
 interface Service {
-  authenticate(ctx: Ctx, userId: string, password: string): Promise<Result.Type<AuthToken>>;
+  validateRefreshToken(ctx: Ctx, userId: string, refreshToken: string | undefined): Promise<Result.Type<AuthToken>>;
   getGroupsForUser(
     ctx: Ctx,
     serviceUser: ServiceUser,
@@ -188,12 +153,12 @@ interface Service {
  * @param service the service {@link Service} object used to offer an interface to the domain logic
  */
 export function addHttpHandler(
-  server: FastifyInstance,
+  server: AugmentedFastifyInstance,
   urlPrefix: string,
   service: Service,
   jwt: JwtConfig,
 ): void {
-  server.post(`${urlPrefix}/user.authenticate`, swaggerSchema, async (request, reply) => {
+  server.post(`${urlPrefix}/user.refreshtoken`, swaggerSchema(server), async (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
     const bodyResult = validateRequestBody(request.body);
 
@@ -208,7 +173,7 @@ export function addHttpHandler(
     switch (bodyResult.apiVersion) {
       case "1.0": {
         const data = bodyResult.data;
-        invokeService = service.authenticate(ctx, data.user.id, data.user.password);
+        invokeService = service.validateRefreshToken(ctx, (request as AuthenticatedRequest).user.userId, request.cookies["refreshToken"]);
         break;
       }
       default:
@@ -233,8 +198,6 @@ export function addHttpHandler(
         jwt.secretOrPrivateKey,
         jwt.algorithm as "HS256" | "RS256",
       );
-      // store refresh token
-      
 
       const groupsResult = await service.getGroupsForUser(
         ctx,
@@ -244,20 +207,10 @@ export function addHttpHandler(
       if (Result.isErr(groupsResult)) {
         throw new VError(groupsResult, "authentication failed");
       }
-      const groups = groupsResult;
 
-      const loginResponse: LoginResponse = {
-        id: token.userId,
-        displayName: token.displayName,
-        organization: token.organization,
-        allowedIntents: token.allowedIntents,
-        groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
-      };
       const body = {
         apiVersion: "1.0",
-        data: {
-          user: loginResponse,
-        },
+        data: {},
       };
       reply
         .setCookie("token", signedJwt, {
