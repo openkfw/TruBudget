@@ -56,11 +56,9 @@ export interface UserGetEmailAddressByEmailRequest extends express.Request {
 export interface ResetPasswordRequest extends express.Request {
   body: {
     data: {
-      user: {
-        id: string;
-        email: string;
-        emailText: string;
-      };
+      id: string;
+      email: string;
+      emailText: string;
     };
   };
 }

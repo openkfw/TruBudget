@@ -15,7 +15,7 @@ import Password from "../Common/Password";
 
 import "./ForgotPassword.scss";
 
-const ResetPassword = ({ loading }) => {
+const ResetPassword = ({ loading, resetUserPassword }) => {
   const [newPassword, setNewPassword] = useState("");
   const [newPasswordConfirmation, setNewPasswordConfirmation] = useState("");
   const [passwordInvalid, setPasswordInvalid] = useState(false);
@@ -34,14 +34,12 @@ const ResetPassword = ({ loading }) => {
       setPasswordInvalid(false);
       setNewPasswordsMatch(false);
     } else {
-      // Password is valid
       if (!newPasswordValid) {
         setPasswordInvalid(true);
       } else {
         setPasswordInvalid(false);
         setNewPasswordsMatch(true);
-        console.log("lol");
-        // checkAndChangeUserPassword(props.userId, editId, userPassword, newPassword);
+        resetUserPassword(userId, newPassword, token);
       }
     }
   };

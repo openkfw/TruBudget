@@ -45,19 +45,17 @@ schemes
     }),
   )
   .set(
-    "/user.getEmailAddressByEmail",
+    "/user.getUserByEmail",
     Joi.object({
       email: Joi.string().required(),
     }),
   )
   .set(
-    "/resetPassword",
+    "/sendResetPasswordEmail",
     Joi.object({
-      user: Joi.object({
-        id: Joi.string().required(),
-        email: Joi.string().email().required(),
-        emailText: Joi.string().required(),
-      }),
+      id: Joi.string().required(),
+      email: Joi.string().email().required(),
+      emailText: Joi.string().required(),
     }),
   );
 

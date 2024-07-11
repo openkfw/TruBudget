@@ -2,7 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { appInsights } from "../../telemetry";
-import { initLanguage, loginLoading, loginWithToken, setLanguage } from "../Login/actions";
+import { initLanguage, loginLoading, loginWithToken, resetUserPassword, setLanguage } from "../Login/actions";
 
 import ResetPassword from "./ResetPassword";
 
@@ -61,8 +61,8 @@ const mapDispatchToProps = (dispatch) => {
     initLanguage: () => dispatch(initLanguage()),
     loginWithToken: (token) => dispatch(loginWithToken(token)),
     setLoginLoading: (showLoading) => dispatch(loginLoading(showLoading)),
-    setLanguage: (language) => dispatch(setLanguage(language))
-    // createNewPassword: () => dispatch(createNewPassword(userId, newPassword))
+    setLanguage: (language) => dispatch(setLanguage(language)),
+    resetUserPassword: (username, newPassword, token) => dispatch(resetUserPassword(username, newPassword, token))
   };
 };
 

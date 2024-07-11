@@ -13,7 +13,7 @@ export async function changeUserPassword(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
-  issuerOrganization: string,
+  issuerOrganization: string | null,
   requestData: UserPasswordChange.RequestData,
 ): Promise<Result.Type<void>> {
   logger.debug({ req: requestData }, "Changing user password");

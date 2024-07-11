@@ -78,8 +78,9 @@ const ForgotPassword = ({
                   disabled={!emailServiceAvailable}
                   onClick={() => {
                     if (isEmailAddressValid(email)) {
+                      const url = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
                       setValidEmailAddressInput(true);
-                      sendForgotPasswordEmail(email);
+                      sendForgotPasswordEmail(email, url);
                     } else {
                       setValidEmailAddressInput(false);
                     }

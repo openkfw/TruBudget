@@ -35,6 +35,7 @@ export const CHECK_EXPORT_SERVICE_SUCCESS = "CHECK_EXPORT_SERVICE_SUCCESS";
 export const CHECK_EXPORT_SERVICE_FAILURE = "CHECK_EXPORT_SERVICE_FAILURE";
 
 export const SEND_FORGOT_PASSWORD_EMAIL = "SEND_FORGOT_PASSWORD_EMAIL";
+export const RESET_USER_PASSWORD = "RESET_USER_PASSWORD";
 
 export function fetchUser(showLoading = false) {
   return {
@@ -145,9 +146,19 @@ export function storeEmail(email) {
   };
 }
 
-export function sendForgotPasswordEmail(email) {
+export function sendForgotPasswordEmail(email, url) {
+  const data = { email, url };
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL,
-    email
+    data
+  };
+}
+
+export function resetUserPassword(username, newPassword, token) {
+  return {
+    type: RESET_USER_PASSWORD,
+    username,
+    newPassword,
+    token
   };
 }

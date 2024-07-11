@@ -266,24 +266,16 @@ emailService.get(
 );
 
 emailService.get(
-  "/user.getEmailAddressByEmail",
+  "/user.getUserByEmail",
   query("email").escape(),
   (req: UserGetEmailAddressByEmailRequest, res: express.Response) => {
-    const isDataValid = isBodyValid("/user.getEmailAddressByEmail", req.query);
+    const isDataValid = isBodyValid("/user.getUserByEmail", req.query);
     logger.trace("Validating data");
 
     if (!isDataValid) {
       logger.error("Validation error. Data not valid!");
       res.status(400).send({
         message: "The request body validation failed",
-      });
-      return;
-    }
-    if (!isAllowed(req.query.email, res)) {
-      const message = `JWT-Token is not valid to insert an email address of user ${req.query.email}`;
-      logger.error(message);
-      res.status(401).send({
-        message,
       });
       return;
     }
@@ -298,7 +290,9 @@ emailService.get(
         });
       } else {
         logger.info("Email address" + email + " not found");
-        res.status(404).send(null);
+        res.status(400).send({
+          message: "Incorrect e-mail address",
+        });
       }
     })().catch((error) => {
       logger.error({ err: error }, "Error while getting email address");
@@ -361,11 +355,11 @@ emailService.post(
 );
 
 emailService.post(
-  "/resetPassword",
-  body("data.user.*").escape(),
+  "/sendResetPasswordEmail",
+  body("data.*").escape(),
   (req: ResetPasswordRequest, res: express.Response) => {
     logger.trace("Validating data");
-    const isDataValid = isBodyValid("/resetPassword", req.body.data);
+    const isDataValid = isBodyValid("/sendResetPasswordEmail", req.body.data);
     if (!isDataValid) {
       logger.error("Validation error. Data not valid!");
       res.status(400).send({
@@ -374,19 +368,7 @@ emailService.post(
       return;
     }
     logger.info(req.body);
-    const { id, email, emailText } = req.body.data.user;
-    // authenticate
-    if (config.authentication === "jwt") {
-      // Only the notification watcher of the Trubudget blockchain may send notifications
-      if (res.locals.id !== "notification-watcher") {
-        const message = `${res.locals.id} is not allowed to send a notification to ${id}`;
-        logger.error(message);
-        res.status(401).send({
-          message,
-        });
-        return;
-      }
-    }
+    const { id, email, emailText } = req.body.data;
 
     (async (): Promise<void> => {
       try {
