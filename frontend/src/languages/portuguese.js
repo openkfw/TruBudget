@@ -32,6 +32,7 @@ const pt = {
     cancel: "Cancelar",
     close: "Fechar",
     closed: "Fechado",
+    clear_selection: "seleção clara",
     comment_description: "Adicione comentário",
     comment: "Comentário",
     completion: "Conclusão",

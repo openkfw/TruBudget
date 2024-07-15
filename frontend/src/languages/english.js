@@ -32,6 +32,7 @@ const en = {
     cancel: "Cancel",
     close: "Close",
     closed: "Closed",
+    clear_selection: "clear selection",
     comment_description: "Add some comments",
     comment: "Comment",
     completion: "Completion",

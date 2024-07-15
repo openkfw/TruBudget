@@ -312,20 +312,21 @@ const Budget = (props) => {
             disabled={isEditing}
             error={!isSaveable}
             errorText={strings.common.projected_budget_exists}
+            clearableSelection={true}
           >
             {getCurrencyMenuItems(currencies)}
           </DropDown>
           <Button
             className="add-org-button"
             variant="contained"
-            color="secondary"
+            color="primary"
             data-test="add-projected-budget"
             disabled={
               !isSaveable ||
               !isValidBudgetAmountAdd ||
               !organization ||
               (budgetAmountAdd && !currency) ||
-              (!budgetAmountAdd && currency)
+              (!budgetAmountAdd && !!currency)
             }
             onClick={saveProjectedBudget}
           >

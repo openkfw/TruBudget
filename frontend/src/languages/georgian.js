@@ -32,6 +32,7 @@ const ka = {
     cancel: "გაუქმება",
     close: "დახურვა",
     closed: "დახურულია",
+    clear_selection: "მკაფიო შერჩევა",
     comment_description: "კომენტარის დამატება",
     comment: "კომენტარი",
     completion: "დასრულება",

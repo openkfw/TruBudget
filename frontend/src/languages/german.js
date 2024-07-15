@@ -33,6 +33,7 @@ const de = {
     cancel: "Abbrechen",
     close: "Schließen",
     closed: "Geschlossen",
+    clear_selection: "Auswahl aufheben",
     comment: "Kommentar",
     comment_description: "Schreibe Kommentare",
     completion: "Fertigstellung",
