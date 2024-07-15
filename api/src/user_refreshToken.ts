@@ -8,9 +8,12 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
-import { JwtConfig } from "./config";
+import { JwtConfig, config } from "./config";
 import { AugmentedFastifyInstance } from "types";
-import { MAX_GROUPS_LENGTH } from "user_authenticate";
+import {
+  MAX_GROUPS_LENGTH,
+  accessTokenExpirationInMinutesWithrefreshToken,
+} from "user_authenticate";
 import { AuthenticatedRequest } from "httpd/lib";
 
 /**
@@ -19,15 +22,13 @@ import { AuthenticatedRequest } from "httpd/lib";
 interface RequestBodyV1 {
   apiVersion: "1.0";
   data: {
-    refreshToken: string;
+    accessTokenExp?: number;
   };
 }
 
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    refreshToken: Joi.string().required(),
-  }).required(),
+  data: Joi.object(),
 });
 
 type RequestBody = RequestBodyV1;
@@ -62,6 +63,11 @@ function swaggerSchema(server: AugmentedFastifyInstance): Object {
         "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...",
       tags: ["default", "refreshtoken"],
       summary: "Authenticate with token and refresh token",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
       body: {
         type: "object",
         required: ["apiVersion", "data"],
@@ -69,12 +75,6 @@ function swaggerSchema(server: AugmentedFastifyInstance): Object {
           apiVersion: { type: "string", example: "1.0" },
           data: {
             type: "object",
-            required: ["refreshtoken"],
-            properties: {
-              refreshtoken: {
-                type: "string",
-              },
-            },
           },
         },
       },
@@ -137,7 +137,11 @@ function swaggerSchema(server: AugmentedFastifyInstance): Object {
  * Represents the service that authenticates a user
  */
 interface Service {
-  validateRefreshToken(ctx: Ctx, userId: string, refreshToken: string | undefined): Promise<Result.Type<AuthToken>>;
+  validateRefreshToken(
+    ctx: Ctx,
+    userId: string,
+    refreshToken: string | undefined,
+  ): Promise<Result.Type<AuthToken>>;
   getGroupsForUser(
     ctx: Ctx,
     serviceUser: ServiceUser,
@@ -159,11 +163,13 @@ export function addHttpHandler(
   jwt: JwtConfig,
 ): void {
   server.post(`${urlPrefix}/user.refreshtoken`, swaggerSchema(server), async (request, reply) => {
+    request.log.info("lalalalalalalal");
+    request.log.info(Object.keys(request));
     const ctx: Ctx = { requestId: request.id, source: "http" };
     const bodyResult = validateRequestBody(request.body);
 
     if (Result.isErr(bodyResult)) {
-      const { code, body } = toHttpError(new VError(bodyResult, "authentication failed"));
+      const { code, body } = toHttpError(new VError(bodyResult, "authentication failed 1"));
       request.log.error({ err: bodyResult }, "Invalid request body");
       reply.status(code).send(body);
       return;
@@ -173,7 +179,11 @@ export function addHttpHandler(
     switch (bodyResult.apiVersion) {
       case "1.0": {
         const data = bodyResult.data;
-        invokeService = service.validateRefreshToken(ctx, (request as AuthenticatedRequest).user.userId, request.cookies["refreshToken"]);
+        invokeService = service.validateRefreshToken(
+          ctx,
+          (request as AuthenticatedRequest).user.userId,
+          request.cookies["refreshToken"],
+        );
         break;
       }
       default:
@@ -185,7 +195,7 @@ export function addHttpHandler(
     try {
       const tokenResult = await invokeService;
       if (Result.isErr(tokenResult)) {
-        throw new VError(tokenResult, "authentication failed");
+        throw new VError(tokenResult, "authentication failed 2");
       }
       const token = tokenResult;
       const signedJwt = createJWT(
@@ -205,22 +215,21 @@ export function addHttpHandler(
         token.userId,
       );
       if (Result.isErr(groupsResult)) {
-        throw new VError(groupsResult, "authentication failed");
+        throw new VError(groupsResult, "authentication failed 3");
       }
 
-      const body = {
+      const body: RequestBodyV1 = {
         apiVersion: "1.0",
         data: {},
       };
+      // conditionally add token expiration to payload
+      if (["db", "memory"].includes(config.refreshTokenStorage as string)) {
+        body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
+      }
+
       reply
         .setCookie("token", signedJwt, {
           path: "/",
-          secure: process.env.NODE_ENV !== "development",
-          httpOnly: true,
-          sameSite: "strict",
-        })
-        .setCookie("refreshToken", refreshToken, {
-          path: "/user.refreshtoken",
           secure: process.env.NODE_ENV !== "development",
           httpOnly: true,
           sameSite: "strict",

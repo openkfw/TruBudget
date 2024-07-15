@@ -355,8 +355,10 @@ UserAuthenticateAPI.addHttpHandler(
       ),
     getGroupsForUser: (ctx, serviceUser, userId) =>
       GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
-    storeRefreshToken: (userId, refreshToken) =>
-      dbConnection.
+    // storeRefreshToken: (userId, refreshToken) =>
+    //   {
+
+    //   }
   },
   jwt,
 );

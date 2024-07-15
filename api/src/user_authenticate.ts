@@ -10,9 +10,11 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
-import { JwtConfig } from "./config";
+import { JwtConfig, config } from "./config";
+import { saveValue } from "./lib/keyValueStore";
 
 export const MAX_GROUPS_LENGTH = 3000;
+export const accessTokenExpirationInMinutesWithrefreshToken = 10;
 
 /**
  * Represents the request body of the endpoint
@@ -24,6 +26,14 @@ interface RequestBodyV1 {
       id: string;
       password: string;
     };
+  };
+}
+
+interface RequestResponse {
+  apiVersion: string;
+  data: {
+    user: LoginResponse;
+    accessTokenExp?: number;
   };
 }
 
@@ -107,6 +117,9 @@ const swaggerSchema = {
           data: {
             type: "object",
             properties: {
+              accessTokenExp: {
+                type: "number",
+              },
               user: {
                 type: "object",
                 properties: {
@@ -234,7 +247,11 @@ export function addHttpHandler(
         jwt.algorithm as "HS256" | "RS256",
       );
       // store refresh token
-      
+      if (config.refreshTokenStorage === "memory") {
+        saveValue(`refreshToken${token.userId}`, {
+          refreshToken,
+        });
+      }
 
       const groupsResult = await service.getGroupsForUser(
         ctx,
@@ -253,12 +270,18 @@ export function addHttpHandler(
         allowedIntents: token.allowedIntents,
         groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
       };
-      const body = {
+
+      const body: RequestResponse = {
         apiVersion: "1.0",
         data: {
           user: loginResponse,
         },
       };
+      // conditionally add token expiration to payload
+      if (["db", "memory"].includes(config.refreshTokenStorage as string)) {
+        body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
+      }
+
       reply
         .setCookie("token", signedJwt, {
           path: "/",
@@ -267,7 +290,7 @@ export function addHttpHandler(
           sameSite: "strict",
         })
         .setCookie("refreshToken", refreshToken, {
-          path: "/user.refreshtoken",
+          path: "/api/user.refreshtoken",
           secure: process.env.NODE_ENV !== "development",
           httpOnly: true,
           sameSite: "strict",
@@ -299,6 +322,9 @@ function createJWT(
   }
 
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
+  const expiresIn = ["db", "memory"].includes(config.refreshTokenStorage as string)
+    ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
+    : "8h";
   return jsonwebtoken.sign(
     {
       userId: token.userId,
@@ -308,7 +334,7 @@ function createJWT(
       groups: setGroups(),
     },
     secretOrPrivateKey,
-    { expiresIn: "8h", algorithm },
+    { expiresIn, algorithm },
   );
 }
 

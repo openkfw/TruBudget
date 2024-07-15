@@ -33,6 +33,9 @@ export const CHECK_EXPORT_SERVICE = "CHECK_EXPORT_SERVICE";
 export const CHECK_EXPORT_SERVICE_SUCCESS = "CHECK_EXPORT_SERVICE_SUCCESS";
 export const CHECK_EXPORT_SERVICE_FAILURE = "CHECK_EXPORT_SERVICE_FAILURE";
 
+export const REFRESH_TOKEN = "REFRESH_TOKEN";
+export const REFRESH_TOKEN_SUCCESS = "REFRESH_TOKEN_SUCCESS";
+
 export function fetchUser(showLoading = false) {
   return {
     type: FETCH_USER,
@@ -131,5 +134,11 @@ export function checkExportService(showLoading) {
   return {
     type: CHECK_EXPORT_SERVICE,
     showLoading
+  };
+}
+
+export function refreshToken() {
+  return {
+    type: REFRESH_TOKEN
   };
 }

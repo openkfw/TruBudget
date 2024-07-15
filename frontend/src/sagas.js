@@ -55,7 +55,9 @@ import {
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  REFRESH_TOKEN,
+  REFRESH_TOKEN_SUCCESS
 } from "./pages/Login/actions";
 import {
   CREATE_BACKUP,
@@ -324,6 +326,15 @@ const getPaginationState = (state) => {
 
 const getSearchTermState = (state) => {
   return state.getIn(["navbar", "searchTerm"]);
+};
+
+const saveRefreshTokenToLocalStorage = (data) => {
+  if (data?.accessTokenExp) {
+    const now = new Date();
+    // 5 minutes before access token expires
+    const shortlyBeforeAccessTokenExpiration = now.getTime() + data?.accessTokenExp - 1000 * 60 * 5;
+    localStorage.setItem("access_token_exp", shortlyBeforeAccessTokenExpiration);
+  }
 };
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
@@ -1214,6 +1225,7 @@ export function* loginSaga({ user }) {
       ...data,
       isUserLoggedIn: true
     });
+    saveRefreshTokenToLocalStorage(data);
     yield call(() => fetchNotificationCountsSaga(false));
     yield put({
       type: SNACKBAR_MESSAGE,
@@ -1629,6 +1641,16 @@ export function* logoutSaga() {
     yield callApi(api.logout);
     yield put({
       type: LOGOUT_SUCCESS
+    });
+  });
+}
+
+export function* refreshTokenSaga() {
+  yield execute(function* () {
+    const { data } = yield callApi(api.refreshToken);
+    saveRefreshTokenToLocalStorage(data);
+    yield put({
+      type: REFRESH_TOKEN_SUCCESS
     });
   });
 }
@@ -3341,6 +3363,7 @@ export default function* rootSaga() {
       yield takeLatest(LOGIN_AD, loginTokenSaga),
       yield takeLatest(LOGIN, loginSaga),
       yield takeEvery(LOGOUT, logoutSaga),
+      yield takeLatest(REFRESH_TOKEN, refreshTokenSaga),
       yield takeEvery(CREATE_USER, createUserSaga),
       yield takeEvery(GRANT_ALL_USER_PERMISSIONS, grantAllUserPermissionsSaga),
       yield takeEvery(FETCH_USER, fetchUserSaga),
