@@ -11,6 +11,7 @@ import {
 } from "../Navbar/actions";
 
 import {
+  ADD_PROJECT_CUSTOM_IMAGE,
   ADD_PROJECT_PROJECTED_BUDGET,
   ADD_PROJECT_TAG,
   ADD_TEMPORARY_PROJECT_PERMISSION,
@@ -29,6 +30,7 @@ import {
   PROJECT_DELETED_PROJECTED_BUDGET,
   PROJECT_NAME,
   PROJECT_THUMBNAIL,
+  REMOVE_PROJECT_CUSTOM_IMAGE,
   REMOVE_PROJECT_TAG,
   REMOVE_TEMPORARY_PROJECT_PERMISSION,
   SET_PAGE,
@@ -208,6 +210,14 @@ export default function overviewReducer(state = defaultState, action) {
         ["projectToAdd", "tags"],
         tags.filter((tag) => tag !== action.tag)
       );
+    }
+    case ADD_PROJECT_CUSTOM_IMAGE: {
+      return state
+        .setIn(["projectToAdd", "customImage"], action.customImage)
+        .setIn(["projectToAdd", "thumbnail"], action.customImage);
+    }
+    case REMOVE_PROJECT_CUSTOM_IMAGE: {
+      return state.setIn(["projectToAdd", "customImage"], "");
     }
     case PROJECT_THUMBNAIL:
       return state.setIn(["projectToAdd", "thumbnail"], action.thumbnail);

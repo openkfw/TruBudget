@@ -25,7 +25,13 @@ const ProjectDialogContent = (props) => {
         />
       </div>
       <Divider />
-      <ImageSelector onTouchTap={props.storeProjectThumbnail} selectedImage={props.projectToAdd.thumbnail} />
+      <ImageSelector
+        onTouchTap={props.storeProjectThumbnail}
+        selectedImage={props.projectToAdd.thumbnail}
+        setImage={props.addCustomImage}
+        removeImage={props.removeCustomImage}
+        customImage={props.projectToAdd.customImage}
+      />
       <Divider />
       <div>
         <Budget
