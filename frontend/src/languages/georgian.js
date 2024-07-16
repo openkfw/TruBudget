@@ -302,7 +302,7 @@ const ka = {
     exchange_rate: "გაცვლითი კურსი",
     workflow_budget_allocated: "გამოყოფილი",
     workflow_budget_disbursed: "გადახდილი",
-    workflow_budget_na: "Not applicable",
+    workflow_budget_na: "არ მიესადაგება",
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "გადახდილი",
     workflow_budget_status_na: "N/A",
