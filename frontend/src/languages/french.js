@@ -671,6 +671,10 @@ const fr = {
     toBeDone: "A faire"
   },
 
+  picture: {
+    select: "Sélectionner ou télécharger une image personnalisée"
+  },
+
   language: {
     english: "Anglais",
     french: "Français",

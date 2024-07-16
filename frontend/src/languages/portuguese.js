@@ -669,6 +669,10 @@ const pt = {
     toBeDone: "A fazer"
   },
 
+  picture: {
+    select: "Selecione ou faça o upload de uma imagem personalizada"
+  },
+
   language: {
     english: "English",
     french: "Français",
