@@ -10,7 +10,7 @@ jobs:
     if: always()
     strategy:
       matrix:
-        tags: ["main", "v2.8.0"]
+        tags: ["main", "v2.10.0", "v2.11.0"]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 18.x
@@ -53,7 +53,7 @@ jobs:
   audit-libraries: 
     strategy:
       matrix:
-        releases: ["main", "v2.8.0"]
+        releases: ["main", "v2.10.0", "v2.11.0"]
     runs-on: ubuntu-latest
     if: always()
     steps:
