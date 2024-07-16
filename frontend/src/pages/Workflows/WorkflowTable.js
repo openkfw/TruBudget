@@ -115,6 +115,9 @@ const WorkflowTableHeader = (props) => {
             <Typography variant="body1">{strings.common.budget}</Typography>
           </div>
           <div className="columns">
+            <Typography variant="body1">{strings.common.status}</Typography>
+          </div>
+          <div className="columns">
             <Typography variant="body1">{strings.workflow.assignee}</Typography>
           </div>
           <div className="columns">

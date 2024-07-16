@@ -119,6 +119,8 @@ export const statusMapping = (status) => {
       return strings.common.closed;
     case "rejected":
       return strings.common.rejected;
+    case "ongoing":
+      return strings.common.ongoing;
     case "open":
       return strings.common.open;
     default:

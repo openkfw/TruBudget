@@ -27,6 +27,7 @@ import { canAssignWorkflowItem, canUpdateWorkflowItem, canViewWorkflowItemPermis
 import ActionButton from "../Common/ActionButton";
 import StyledBadge from "../Common/StyledBadge";
 
+import { ChipStatus } from "./ChipStatus.js";
 import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 import "./WorkflowItem.scss";
@@ -398,6 +399,18 @@ export const WorkflowItem = ({
   const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
   const canCloseWorkflow = currentUser === assignee && workflowSelectable && status !== "closed";
 
+  const calculateStatus = (status, workflowSelectable, workflowSortEnabled) => {
+    if (workflowSortEnabled) {
+      return status;
+    } else {
+      if (status === "open" && workflowSelectable) {
+        return "ongoing";
+      } else {
+        return status;
+      }
+    }
+  };
+
   return (
     <div className="workflow-item-container" data-test={`workflowitem-container-${id}`}>
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
@@ -444,6 +457,9 @@ export const WorkflowItem = ({
                       ? amountTypes(amountType)
                       : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
                   </Typography>
+                </div>
+                <div className="workflow-cell">
+                  <ChipStatus status={calculateStatus(status, workflowSelectable, workflowSortEnabled)} />
                 </div>
                 <div className="workflow-cell" data-test="outside">
                   <WorkflowAssigneeContainer
