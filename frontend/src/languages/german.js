@@ -93,6 +93,7 @@ const de = {
     off: "Aus",
     on: "An",
     ok: "Ok",
+    ongoing: "Laufend",
     open: "Offen",
     organization: "Organisation",
     password: "Passwort",

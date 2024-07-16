@@ -99,6 +99,7 @@ const ka = {
     on: "ჩართული",
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
+    ongoing: "მიმდინარე",
     open: "Open",
     organization: "ორგანიზაცია",
     password: "პაროლი",
