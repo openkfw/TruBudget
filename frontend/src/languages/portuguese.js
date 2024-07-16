@@ -16,6 +16,7 @@ const pt = {
     actions: "Ações",
     add_tag_text: "Adicionar tag ao projeto",
     add: "Adicionar",
+    add_without_budget: "Adicionar sem orçamento",
     added: "Adicionado",
     additional_data: "Dados Adicionais",
     amount: "Valor",
@@ -31,6 +32,7 @@ const pt = {
     cancel: "Cancelar",
     close: "Fechar",
     closed: "Fechado",
+    clear_selection: "seleção clara",
     comment_description: "Adicione comentário",
     comment: "Comentário",
     completion: "Conclusão",
@@ -100,6 +102,7 @@ const pt = {
     on: "Ligado",
     ok: "Ok",
     not_projected: "Não projetado",
+    ongoing: "Em andamento",
     open: "Aberto",
     organization: "Organização",
     password: "Senha",
@@ -286,7 +289,8 @@ const pt = {
     organization_info: "Organization",
     total_budget_info: "Parte interessada participante",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -299,9 +303,9 @@ const pt = {
       "Este botão agora está desativado. Saia do modo de classificação para criar novos itens de fluxo de trabalho",
     exchange_rate: "Taxa de câmbio",
     search_text: "Buscar",
-    workflow_budget_allocated: "Alocado",
+    workflow_budget_allocated: "alocado",
     workflow_budget_disbursed: "pago",
-    workflow_budget_na: "Não se aplica",
+    workflow_budget_na: "não se aplica",
     workflow_budget_status_allocated: "Atribuído",
     workflow_budget_status_disbursed: "Pago",
     workflow_budget_status_na: "N/A",
@@ -399,8 +403,11 @@ const pt = {
     post_actions_dialog_text: "Tem certeza de que deseja criar o workflowitem",
     project_close: "Fechar projecto",
     project_close_text: "Tem a certeza de que quer encerrar este projecto?",
+    project_close_warning: "Se você fechar o projeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     subproject_close: "Fechar subprojecto",
     subproject_close_text: "Tem a certeza de que quer encerrar este subprojecto?",
+    subproject_close_warning:
+      "Se você fechar o subprojeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",
@@ -660,6 +667,10 @@ const pt = {
     warning: "Advertência",
     done: "feito",
     toBeDone: "A fazer"
+  },
+
+  picture: {
+    select: "Selecione ou faça o upload de uma imagem personalizada"
   },
 
   language: {

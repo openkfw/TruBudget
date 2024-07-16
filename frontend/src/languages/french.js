@@ -16,6 +16,7 @@ const fr = {
     actions: "Actions",
     add_tag_text: "Ajouter un tag au projet",
     add: "Ajouter",
+    add_without_budget: "Ajouter sans budget",
     added: "Ajouté",
     additional_data: "Données Supplémentaires",
     amount: "Montant",
@@ -31,6 +32,7 @@ const fr = {
     cancel: "Annuler",
     close: "Fermer",
     closed: "Fermé",
+    clear_selection: "sélection claire",
     comment_description: "Ajouter des commentaires",
     comment: "Commentaire",
     completion: "Achèvement",
@@ -88,9 +90,9 @@ const fr = {
     no_organizations: "Aucune demande de nouvelles organisations n'a été trouvée",
     no_permissions: "Vous n'êtes pas autorisé à effectuer cette action",
     no_resources: "Aucun champ n'a été ajouté à cette ressource",
-    no_subprojects: "Aucun composante trouvé",
+    no_subprojects: "Aucune composante trouvée",
     no_users: "Aucun utilisateur trouvé",
-    no_users_text: "Ajoutez un nouvel utilisateur en appuyant sur le touche plus.",
+    no_users_text: "Ajoutez un nouvel utilisateur en appuyant sur la touche plus.",
     no_workflow_items: "Aucune étape de workflow ",
     not_assigned_budget: "Budget non-engagé",
     not_assigned: "Non engagé",
@@ -100,6 +102,7 @@ const fr = {
     on: "Activé",
     ok: "Ok",
     not_projected: "Non estimé",
+    ongoing: "En cours",
     open: "Ouvert",
     organization: "Organisation",
     password: "Mot de passe",
@@ -202,7 +205,8 @@ const fr = {
     organization_info: "Organization",
     total_budget_info: "Partie prenante participante",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -215,7 +219,7 @@ const fr = {
       "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
     exchange_rate: "taux de change",
     search_text: "rechercher des éléments",
-    workflow_budget_allocated: "Engagé",
+    workflow_budget_allocated: "engagé",
     workflow_budget_disbursed: "payé",
     workflow_budget_na: "N/A",
     workflow_budget_status_allocated: "Engagé",
@@ -398,8 +402,10 @@ const fr = {
     post_actions_dialog_text: "Après la création, les actions suivantes sont exécutées",
     project_close: "Fermer projet",
     project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
+    project_close_warning: "Si vous fermez le projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     subproject_close: "Fermer la composante",
     subproject_close_text: "Vous êtes sûr de vouloir fermer cette composante ?",
+    subproject_close_warning: "Si vous fermez le sous-projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
     workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",
@@ -663,6 +669,10 @@ const fr = {
     warning: "avertissement",
     done: "fait",
     toBeDone: "A faire"
+  },
+
+  picture: {
+    select: "Sélectionner ou télécharger une image personnalisée"
   },
 
   language: {
