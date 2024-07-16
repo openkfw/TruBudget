@@ -69,7 +69,7 @@ const ImageSelector = ({ onTouchTap, selectedImage, customImage, setImage, remov
         </ImageList>
       </div>
       <div className="image-uploader">
-        <div>select picture from gallery or upload custom picture</div>
+        <div>{strings.picture.select}</div>
         <ImageUploader setImage={setImage} removeImage={removeImage} image={customImage} />
       </div>
     </>
