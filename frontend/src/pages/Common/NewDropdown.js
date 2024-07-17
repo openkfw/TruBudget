@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 
 import CloseIcon from "@mui/icons-material/Close";
+import { Link } from "@mui/material";
 import FormControl from "@mui/material/FormControl";
 import FormHelperText from "@mui/material/FormHelperText";
 import InputLabel from "@mui/material/InputLabel";
@@ -24,10 +25,17 @@ const Dropdown = (props) => {
     error,
     errorText,
     className,
-    formClassName
+    formClassName,
+    clearableSelection
   } = props;
 
   const [isOpen, setIsOpen] = useState(false);
+
+  const resetSelection = useCallback(() => {
+    onChange("");
+    setIsOpen(false);
+    return false;
+  }, [onChange]);
 
   return (
     <form className={formClassName} autoComplete="off">
@@ -65,6 +73,14 @@ const Dropdown = (props) => {
             SelectDisplayProps={{ "data-test": `dropdown-${id}-click`, "data-disabled": disabled }}
           >
             <div className="dropdown-close-button-container">
+              {!!clearableSelection && (
+                <div>
+                  <Link onClick={resetSelection} component="button" underline="none">
+                    {strings.common.clear_selection}
+                  </Link>
+                </div>
+              )}
+
               <div className="close-button">
                 <ActionButton
                   ariaLabel="close"
