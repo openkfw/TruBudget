@@ -16,6 +16,7 @@ const en = {
     actions: "Actions",
     add_tag_text: "Add tag to project",
     add: "Add",
+    add_without_budget: "Add without budget",
     added: "Added",
     additional_data: "Additional Data",
     amount: "Amount",
@@ -31,6 +32,7 @@ const en = {
     cancel: "Cancel",
     close: "Close",
     closed: "Closed",
+    clear_selection: "clear selection",
     comment_description: "Add some comments",
     comment: "Comment",
     completion: "Completion",
@@ -99,6 +101,7 @@ const en = {
     on: "On",
     ok: "Ok",
     not_projected: "Not projected",
+    ongoing: "Ongoing",
     open: "Open",
     organization: "Organization",
     password: "Password",
@@ -284,7 +287,8 @@ const en = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -298,7 +302,7 @@ const en = {
     search_text: "Search workflowitems",
     workflow_budget_allocated: "allocated",
     workflow_budget_disbursed: "paid",
-    workflow_budget_na: "Not applicable",
+    workflow_budget_na: "not applicable",
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "Paid",
     workflow_budget_status_na: "N/A",
@@ -657,6 +661,10 @@ const en = {
     warning: "Warning",
     done: "Done",
     toBeDone: "To Be Done"
+  },
+
+  picture: {
+    select: "Select a picture from the gallery or upload a custom picture"
   },
 
   language: {

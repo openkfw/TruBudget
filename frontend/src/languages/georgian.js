@@ -16,6 +16,7 @@ const ka = {
     actions: "ქმედებები",
     add_tag_text: "დაამატე თაგი პროექტს",
     add: "დამატება",
+    add_without_budget: "დაამატეთ ბიუჯეტის გარეშე",
     added: "დამატებულია",
     additional_data: "დამატებითი ინფორმაცია",
     amount: "რაოდენობა",
@@ -31,6 +32,7 @@ const ka = {
     cancel: "გაუქმება",
     close: "დახურვა",
     closed: "დახურულია",
+    clear_selection: "მკაფიო შერჩევა",
     comment_description: "კომენტარის დამატება",
     comment: "კომენტარი",
     completion: "დასრულება",
@@ -99,6 +101,7 @@ const ka = {
     on: "ჩართული",
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
+    ongoing: "მიმდინარე",
     open: "Open",
     organization: "ორგანიზაცია",
     password: "პაროლი",
@@ -286,7 +289,8 @@ const ka = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -301,7 +305,7 @@ const ka = {
     exchange_rate: "გაცვლითი კურსი",
     workflow_budget_allocated: "გამოყოფილი",
     workflow_budget_disbursed: "გადახდილი",
-    workflow_budget_na: "Not applicable",
+    workflow_budget_na: "არ მიესადაგება",
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "გადახდილი",
     workflow_budget_status_na: "N/A",
@@ -660,6 +664,10 @@ const ka = {
     warning: "გაფრთხილება",
     done: "შესრულებულია",
     toBeDone: "უნდა გაკეთდეს"
+  },
+
+  picture: {
+    select: "აირჩიეთ სურათი გალერეიდან ან ატვირთეთ მორგებული სურათი."
   },
 
   language: {

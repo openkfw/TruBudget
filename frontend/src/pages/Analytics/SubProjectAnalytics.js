@@ -13,7 +13,7 @@ import Typography from "@mui/material/Typography";
 
 import "chart.js/auto";
 
-import { toAmountString, toJS } from "../../helper";
+import { toAmountString, toCurrencyCode, toJS } from "../../helper";
 import strings from "../../localizeStrings";
 
 import { getSubProjectKPIs, resetKPIs } from "./actions";
@@ -83,12 +83,16 @@ class SubprojectAnalytics extends React.Component {
                   {projectedBudgets.map((budget) => (
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell>{budget.organization}</TableCell>
-                      <TableCell align="right">{toAmountString(budget.value)}</TableCell>
-                      <TableCell align="right">{budget.currencyCode}</TableCell>
+                      <TableCell align="right">{toAmountString(budget.value, undefined, true)}</TableCell>
+                      <TableCell align="right">{toCurrencyCode(budget?.value, budget.currencyCode, true)}</TableCell>
                       <TableCell align="right">
-                        {this.convertToSelectedCurrency(1, budget.currencyCode).toFixed(4)}
+                        {budget?.value === 0 || budget?.value === "0"
+                          ? ""
+                          : this.convertToSelectedCurrency(1, budget.currencyCode).toFixed(4)}
                       </TableCell>
-                      <TableCell align="right">{toAmountString(budget.convertedAmount, indicatedCurrency)}</TableCell>
+                      <TableCell align="right">
+                        {toAmountString(budget.convertedAmount, indicatedCurrency, true)}
+                      </TableCell>
                     </TableRow>
                   ))}
                   <TableRow>

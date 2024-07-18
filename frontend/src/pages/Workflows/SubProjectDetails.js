@@ -24,7 +24,7 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-import { statusIconMapping, statusMapping, toAmountString, trimSpecialChars, unixTsToString } from "../../helper.js";
+import { statusIconMapping, statusMapping, toAmountString, toCurrencyCode, trimSpecialChars, unixTsToString } from "../../helper.js";
 import strings from "../../localizeStrings";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
@@ -137,10 +137,10 @@ const SubProjectDetails = ({
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell className="sub-project-table-cell">{budget.organization}</TableCell>
                       <TableCell className="sub-project-table-cell" align="right">
-                        {toAmountString(budget.value)}
+                        {toAmountString(budget.value, undefined, true)}
                       </TableCell>
                       <TableCell className="sub-project-table-cell" align="right">
-                        {budget.currencyCode}
+                        {toCurrencyCode(budget.value, budget.currencyCode, true)}
                       </TableCell>
                     </TableRow>
                   ))}
