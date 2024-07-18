@@ -234,6 +234,7 @@ const en = {
     environment: "Environment",
     loading: "Loading ...",
     login_button_title: "Login",
+    login_authproxy_button_title: "Login with Auth Proxy",
     production_env: "Prod",
     test_env: "Test",
     frontend_name: "TruBudget",
@@ -398,10 +399,12 @@ const en = {
     post_actions_dialog_text: "After creation following actions are executed",
     project_close: "Close project",
     project_close_text: "Are you sure, you want to close this project?",
-    project_close_warning: "If you close the project, you will no longer be able to make changes or add information to it.",
+    project_close_warning:
+      "If you close the project, you will no longer be able to make changes or add information to it.",
     subproject_close: "Close subproject",
     subproject_close_text: "Are you sure, you want to close this subproject?",
-    subproject_close_warning: "If you close the subproject, you will no longer be able to make changes or add information to it.",
+    subproject_close_warning:
+      "If you close the subproject, you will no longer be able to make changes or add information to it.",
     user_group: "User/Group",
     workflowitem_close: "Close workflowitem",
     workflowitem_close_text: "Do you want to accept and close this workflowitem?",

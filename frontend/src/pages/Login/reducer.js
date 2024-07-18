@@ -20,6 +20,7 @@ import {
   FETCH_EMAIL_ADDRESS_SUCCESS,
   FETCH_USER_SUCCESS,
   INIT_LANGUAGE,
+  LOGIN_AD_SUCCESS,
   LOGIN_ERROR,
   LOGIN_LOADING,
   LOGIN_SUCCESS,
@@ -44,6 +45,7 @@ export const defaultState = fromJS({
   groups: [],
   id: "",
   isUserLoggedIn: false,
+  isUsingAuthproxy: false,
   language: "en-gb",
   loading: false,
   loginError: false,
@@ -130,6 +132,11 @@ export default function loginReducer(state = defaultState, action) {
         username: defaultState.get("username"),
         password: defaultState.get("password"),
         loginError: false
+      });
+    }
+    case LOGIN_AD_SUCCESS: {
+      return state.merge({
+        isUsingAuthproxy: action.isUsingAuthproxy
       });
     }
     case ADMIN_LOGIN_SUCCESS:

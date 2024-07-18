@@ -235,6 +235,7 @@ const ka = {
     environment: "Environment",
     loading: "იტვირთება ...",
     login_button_title: "შესვლა",
+    login_authproxy_button_title: "შესვლა Auth Proxy",
     production_env: "Prod",
     test_env: "ტესტი",
     frontend_name: "TruBudget",
@@ -404,7 +405,8 @@ const ka = {
     project_close_warning: "თუ პროექტს დახურავთ, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
     subproject_close: "ქვეპროექტის დახურვა",
     subproject_close_text: "დარწმუნებული ხართ, გსურთ ამ ქვეპროექტის დახურვა?",
-    subproject_close_warning: "თუ დახურავთ ქვეპროექტს, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
+    subproject_close_warning:
+      "თუ დახურავთ ქვეპროექტს, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
     user_group: "მომხმარებელი/ჯგუფი",
     workflowitem_close: "სამუშაო ნაკადის დახურვა",
     workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?",

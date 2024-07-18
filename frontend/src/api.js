@@ -5,6 +5,7 @@ import _isEmpty from "lodash/isEmpty";
 import config from "./config";
 import { base64ToBlob } from "./helper";
 import strings from "./localizeStrings";
+import { store } from "./store";
 
 const devMode = config.envMode === "development";
 const API_VERSION = "1.0";
@@ -99,7 +100,10 @@ class Api {
 
   logout = () => {
     if (isAuthProxyEnabled) {
-      window.open(`${authProxySignoutUri}`, "_blank");
+      const isUsingAuthproxy = store?.getState()?.get("login")?.toJS()?.isUsingAuthproxy;
+      if (isUsingAuthproxy && authProxySignoutUri) {
+        window.open(`${authProxySignoutUri}`, "_blank");
+      }
     }
     return instance.post(`/user.logout`, {});
   };

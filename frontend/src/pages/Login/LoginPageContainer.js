@@ -87,6 +87,7 @@ const mapStateToProps = (state) => {
     userId: state.getIn(["login", "id"]),
     username: state.getIn(["login", "username"]),
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
+    isUsingAuthproxy: state.getIn(["login", "isUsingAuthproxy"]),
     password: state.getIn(["login", "password"]),
     language: state.getIn(["login", "language"]),
     loginError: state.getIn(["login", "loginError"]),

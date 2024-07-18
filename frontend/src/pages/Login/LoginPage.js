@@ -94,7 +94,7 @@ const LoginPage = ({
                       variant="contained"
                       id="orgaloginbutton"
                     >
-                      LOGIN WITH AUTH PROXY
+                      {strings.login.login_authproxy_button_title}
                     </Button>
                   </div>
                 </Grid>

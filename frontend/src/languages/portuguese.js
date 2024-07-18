@@ -235,6 +235,7 @@ const pt = {
     environment: "Ambiente",
     loading: "Carregando ...",
     login_button_title: "Login",
+    login_authproxy_button_title: "Login com Auth Proxy",
     production_env: "Produção",
     test_env: "Teste",
     frontend_name: "TruBudget",
