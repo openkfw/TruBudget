@@ -156,7 +156,7 @@ app.post(
 
     const docId: string = req.query.docId;
     const { content, fileName } = req.body;
-    
+
     (async (): Promise<void> => {
       log.debug({ req }, "Uploading document");
       const result = await uploadDocument(docId, content, {
@@ -165,12 +165,7 @@ app.post(
       });
       res.send({ docId, secret: result }).end();
     })().catch((err) => {
-      if (err.code === "NoSuchBucket") {
-        req.log.error(
-          { err },
-          "NoSuchBucket at /upload. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
-        );
-      }
+      req.log.error({ err }, "Error while uploading document");
       res.status(500).send(err).end();
     });
   },
@@ -205,12 +200,7 @@ app.get(
         res.send(result).end();
       }
     })().catch((err) => {
-      if (err.code === "NoSuchBucket") {
-        req.log.error(
-          { err },
-          "NoSuchBucket at /download. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
-        );
-      }
+      req.log.error({ err }, "Error while downloading document");
       res.status(404).end();
     });
   },
@@ -246,12 +236,7 @@ app.delete(
         res.send(204).end();
       }
     })().catch((err) => {
-      if (err.code === "NoSuchBucket") {
-        req.log.error(
-          { err },
-          "NoSuchBucket at /delete. Please restart storage-service to create a new bucket at minio/container in Azure blob storage",
-        );
-      }
+      req.log.error({ err }, "Error while deleting document");
       res.status(404).end();
     });
   },
