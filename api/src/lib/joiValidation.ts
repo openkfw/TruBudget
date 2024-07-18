@@ -28,3 +28,5 @@ export const safePasswordSchema = isProductionEnvironment()
       .regex(/^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/)
       .min(8)
   : JoiBase.string().trim().htmlStrip();
+
+export const safeBase64Schema = JoiBase.string().regex(/^[A-Za-z0-9+-_\/=\.]+$/);

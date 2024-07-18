@@ -15,7 +15,6 @@ describe("Scroll Back To Top", { testIsolation: false }, () => {
 
   it("On button click, scroll back to top ", () => {
     cy.get("[data-test=backToTop-button]").click();
-    cy.focused().click();
     cy.get("[data-test=backToTop-button]").should("not.be.visible");
   });
 });

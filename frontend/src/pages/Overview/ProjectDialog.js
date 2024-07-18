@@ -38,7 +38,8 @@ const handleEdit = (props) => {
         thumbnail: changes.thumbnail,
         projectedBudgets: changes.projectedBudgets,
         additionalData: changes.additionalData,
-        tags: changes.tags
+        tags: changes.tags,
+        customImage: changes.customImage
       },
       changes.deletedProjectedBudgets
     );
