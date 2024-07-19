@@ -329,7 +329,6 @@ const getSearchTermState = (state) => {
 };
 
 const saveRefreshTokenToLocalStorage = (data) => {
-  console.log("storing token expiration");
   if (data?.accessTokenExp) {
     const now = new Date();
     // 2 minutes before access token expires

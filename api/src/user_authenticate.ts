@@ -243,11 +243,6 @@ export function addHttpHandler(
         jwt.secretOrPrivateKey,
         jwt.algorithm as "HS256" | "RS256",
       );
-      const refreshToken = createRefreshJWTToken(
-        token.userId,
-        jwt.secretOrPrivateKey,
-        jwt.algorithm as "HS256" | "RS256",
-      );
 
       // store refresh token
       const now = new Date();
@@ -255,6 +250,12 @@ export function addHttpHandler(
       const refreshTokenExpiration = new Date(
         now.getTime() + 1000 * 60 * 60 * 24 * refreshTokenExpirationInDays,
       );
+      const refreshToken = createRefreshJWTToken(
+        { userId: token.userId, expirationAt: refreshTokenExpiration },
+        jwt.secretOrPrivateKey,
+        jwt.algorithm as "HS256" | "RS256",
+      );
+
       if (config.refreshTokenStorage === "memory") {
         saveValue(
           `refreshToken.${refreshToken}`,
@@ -369,16 +370,13 @@ function createJWT(
  * @returns a string containing the encoded JWT token
  */
 function createRefreshJWTToken(
-  userId: string,
+  payload: {},
   key: string,
   algorithm: JwtConfig["algorithm"] = "HS256",
 ): string {
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
-  return jsonwebtoken.sign(
-    {
-      userId,
-    },
-    secretOrPrivateKey,
-    { expiresIn: `${refreshTokenExpirationInDays}d`, algorithm },
-  );
+  return jsonwebtoken.sign(payload, secretOrPrivateKey, {
+    expiresIn: `${refreshTokenExpirationInDays}d`,
+    algorithm,
+  });
 }
