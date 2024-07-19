@@ -16,6 +16,7 @@ const fr = {
     actions: "Actions",
     add_tag_text: "Ajouter un tag au projet",
     add: "Ajouter",
+    add_without_budget: "Ajouter sans budget",
     added: "Ajouté",
     additional_data: "Données Supplémentaires",
     amount: "Montant",
@@ -32,6 +33,7 @@ const fr = {
     cancel: "Annuler",
     close: "Fermer",
     closed: "Fermé",
+    clear_selection: "sélection claire",
     comment_description: "Ajouter des commentaires",
     comment: "Commentaire",
     completion: "Achèvement",
@@ -102,6 +104,7 @@ const fr = {
     on: "Activé",
     ok: "Ok",
     not_projected: "Non estimé",
+    ongoing: "En cours",
     open: "Ouvert",
     organization: "Organisation",
     password: "Mot de passe",
@@ -234,7 +237,7 @@ const fr = {
       "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
     exchange_rate: "taux de change",
     search_text: "rechercher des éléments",
-    workflow_budget_allocated: "Engagé",
+    workflow_budget_allocated: "engagé",
     workflow_budget_disbursed: "payé",
     workflow_budget_na: "N/A",
     workflow_budget_status_allocated: "Engagé",
@@ -686,6 +689,10 @@ const fr = {
     warning: "avertissement",
     done: "fait",
     toBeDone: "A faire"
+  },
+
+  picture: {
+    select: "Sélectionner ou télécharger une image personnalisée"
   },
 
   language: {

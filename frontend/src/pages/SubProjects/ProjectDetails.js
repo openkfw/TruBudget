@@ -28,6 +28,7 @@ import {
   statusIconMapping,
   statusMapping,
   toAmountString,
+  toCurrencyCode,
   trimSpecialChars,
   unixTsToString
 } from "../../helper.js";
@@ -130,10 +131,10 @@ const ProjectDetails = (props) => {
                     <TableRow key={budget.organization + budget.currencyCode}>
                       <TableCell className="project-table-cell">{budget.organization}</TableCell>
                       <TableCell className="project-table-cell" align="right">
-                        {toAmountString(budget.value)}
+                        {toAmountString(budget.value, undefined, true)}
                       </TableCell>
                       <TableCell className="project-table-cell" align="right">
-                        {budget.currencyCode}
+                        {toCurrencyCode(budget.value, budget.currencyCode, true)}
                       </TableCell>
                     </TableRow>
                   ))}

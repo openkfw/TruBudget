@@ -15,6 +15,7 @@ const de = {
     action: "Action",
     actions: "Actions",
     add: "Hinzufügen",
+    add_without_budget: "Hinzufügen ohne Budget",
     added: "Hinzugefügt",
     additional_data: "Zusätzliche Daten",
     amount: "Betrag",
@@ -33,6 +34,7 @@ const de = {
     cancel: "Abbrechen",
     close: "Schließen",
     closed: "Geschlossen",
+    clear_selection: "Auswahl aufheben",
     comment: "Kommentar",
     comment_description: "Schreibe Kommentare",
     completion: "Fertigstellung",
@@ -95,6 +97,7 @@ const de = {
     off: "Aus",
     on: "An",
     ok: "Ok",
+    ongoing: "Laufend",
     open: "Offen",
     organization: "Organisation",
     password: "Passwort",
@@ -232,7 +235,7 @@ const de = {
     exchange_rate: "Wechselkurs",
     search_text: "Workflowitems durchsuchen",
     workflow_budget_allocated: "Zugeteilt",
-    workflow_budget_disbursed: "ausgezahlt",
+    workflow_budget_disbursed: "Ausgezahlt",
     workflow_budget_na: "Nicht anwendbar",
     workflow_budget_status_allocated: "Zugeteilt",
     workflow_budget_status_disbursed: "Ausgezahlt",
@@ -680,6 +683,10 @@ const de = {
     warning: "Warnung",
     done: "Fertig",
     toBeDone: "Ist noch offen"
+  },
+
+  picture: {
+    select: "Wählen Sie ein Bild aus oder laden Sie ein eigenes hoch"
   },
 
   language: {

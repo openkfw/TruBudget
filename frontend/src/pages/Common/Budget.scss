@@ -47,8 +47,18 @@
 .add-org-button {
   margin-top: 0.5rem;
   margin-bottom: 0.3rem;
+  width: 12.5rem;
+  height: 3.125rem;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  overflow: hidden;
   @include tablet {
     width: 50%;
+  }
+  @media (min-width: 1024px) and (max-width: 1250px) {
+    font-size: 0.6rem;
   }
 }
 
