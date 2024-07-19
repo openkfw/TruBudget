@@ -329,10 +329,11 @@ const getSearchTermState = (state) => {
 };
 
 const saveRefreshTokenToLocalStorage = (data) => {
+  console.log("storing token expiration");
   if (data?.accessTokenExp) {
     const now = new Date();
-    // 5 minutes before access token expires
-    const shortlyBeforeAccessTokenExpiration = now.getTime() + data?.accessTokenExp - 1000 * 60 * 5;
+    // 2 minutes before access token expires
+    const shortlyBeforeAccessTokenExpiration = now.getTime() + data?.accessTokenExp - 1000 * 60 * 2;
     localStorage.setItem("access_token_exp", shortlyBeforeAccessTokenExpiration);
   }
 };

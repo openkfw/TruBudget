@@ -87,8 +87,8 @@ function swaggerSchema(server: AugmentedFastifyInstance): Object {
             data: {
               type: "object",
               properties: {
-                user: {
-                  type: "object",
+                accessTokenExp: {
+                  type: "number",
                 },
               },
             },
@@ -163,8 +163,6 @@ export function addHttpHandler(
   jwt: JwtConfig,
 ): void {
   server.post(`${urlPrefix}/user.refreshtoken`, swaggerSchema(server), async (request, reply) => {
-    request.log.info("lalalalalalalal");
-    request.log.info(Object.keys(request));
     const ctx: Ctx = { requestId: request.id, source: "http" };
     const bodyResult = validateRequestBody(request.body);
 
@@ -223,7 +221,9 @@ export function addHttpHandler(
         data: {},
       };
       // conditionally add token expiration to payload
+      request.log.warn(`checking  accessTokenExp ${config.refreshTokenStorage}`);
       if (["db", "memory"].includes(config.refreshTokenStorage as string)) {
+        request.log.warn("adding accessTokenExp");
         body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
       }
 

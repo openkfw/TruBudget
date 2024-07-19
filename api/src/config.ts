@@ -41,14 +41,14 @@ interface ProcessEnvVars {
   AUTHPROXY_JWS_SIGNATURE: string;
   SNAPSHOT_EVENT_INTERVAL: string;
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: string;
-  DB_USER: string;
-  DB_PASSWORD: string;
-  DB_HOST: string;
-  DB_DATABASE: string;
-  DB_PORT: string;
-  DB_SSL: string;
-  DB_SCHEMA: string;
-  REFRESH_TOKENS_TABLE: string;
+  API_DB_USER: string;
+  API_DB_PASSWORD: string;
+  API_DB_HOST: string;
+  API_DB_DATABASE: string;
+  API_DB_PORT: string;
+  API_DB_SSL: string;
+  API_DB_SCHEMA: string;
+  API_REFRESH_TOKENS_TABLE: string;
   REFRESH_TOKEN_STORAGE: string; // "db" || "memory" || undefined
 }
 
@@ -171,17 +171,17 @@ export const config: Config = {
     jwsSignature: process.env.AUTHPROXY_JWS_SIGNATURE || undefined,
   },
   db: {
-    user: process.env.DB_USER || "postgres",
-    password: process.env.DB_PASSWORD || "test",
-    host: process.env.DB_HOST || "localhost",
-    database: process.env.DB_NAME || "trubudget_email_service",
-    port: Number(process.env.DB_PORT) || 5432,
-    ssl: Boolean(process.env.DB_SSL) || false,
-    schema: process.env.DB_SCHEMA || "public",
+    user: process.env.API_DB_USER || "postgres",
+    password: process.env.API_DB_PASSWORD || "test",
+    host: process.env.API_DB_HOST || "localhost",
+    database: process.env.API_DB_NAME || "trubudget_email_service",
+    port: Number(process.env.API_DB_PORT) || 5432,
+    ssl: process.env.API_DB_SSL === "true",
+    schema: process.env.API_DB_SCHEMA || "public",
   },
   dbType: process.env.DB_TYPE || "pg",
   sqlDebug: Boolean(process.env.SQL_DEBUG) || false,
-  refreshTokensTable: process.env.REFRESH_TOKENS_TABLE || "refresh_token",
+  refreshTokensTable: process.env.API_REFRESH_TOKENS_TABLE || "refresh_token",
   refreshTokenStorage: ["db", "memory"].includes(process.env.REFRESH_TOKEN_STORAGE)
     ? process.env.REFRESH_TOKEN_STORAGE
     : undefined,

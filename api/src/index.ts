@@ -355,10 +355,8 @@ UserAuthenticateAPI.addHttpHandler(
       ),
     getGroupsForUser: (ctx, serviceUser, userId) =>
       GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
-    // storeRefreshToken: (userId, refreshToken) =>
-    //   {
-
-    //   }
+    storeRefreshToken: async (userId, refreshToken, validUntil) =>
+      dbConnection?.insertRefreshToken(userId, refreshToken, validUntil),
   },
   jwt,
 );
@@ -393,8 +391,8 @@ if (config.refreshTokenStorage) {
         UserAuthenticateRefreshTokenService.validateRefreshToken(
           organization,
           organizationVaultSecret,
-          rootSecret,
           db,
+          dbConnection as DbConnector,
           ctx,
           userId,
           refreshToken,
@@ -406,7 +404,15 @@ if (config.refreshTokenStorage) {
   );
 }
 
-UserLogoutAPI.addHttpHandler(server, URL_PREFIX);
+export interface UserLogoutAPIService {
+  clearRefreshToken(
+    refreshToken: string,
+  ): Promise<Result.Type<void>>;
+}
+UserLogoutAPI.addHttpHandler(server, URL_PREFIX, {
+  clearRefreshToken: async (refreshToken) =>
+    dbConnection?.deleteRefreshToken(refreshToken),
+});
 
 UserCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createUser: (ctx, issuer, reqData) =>

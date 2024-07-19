@@ -20,6 +20,7 @@ import { verifyToken } from "../lib/token";
 import { UserMetadata } from "./domain/metadata";
 import { NotFound } from "./domain/errors/not_found";
 import { getValue } from "../lib/keyValueStore";
+import DbConnector from "lib/db";
 
 export interface UserLoginResponse {
   id: string;
@@ -33,23 +34,32 @@ export interface UserLoginResponse {
 export async function validateRefreshToken(
   organization: string,
   organizationSecret: string,
-  rootSecret: string,
   conn: ConnToken,
+  dbConnection: DbConnector,
   ctx: Ctx,
   userId: string,
   refreshToken: string | undefined,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
   logger.debug({ organization }, "Authenticating user by refresh token");
-  let storedRefreshToken: { refreshToken: string } | undefined;
+  let storedRefreshToken: { userId: string; validUntil: number } | undefined;
 
   if (config.refreshTokenStorage === "memory") {
-    storedRefreshToken = getValue(`refreshToken${userId}`) as { refreshToken: string } | undefined;
+    storedRefreshToken = getValue(`refreshToken.${refreshToken}`) as
+      | { userId: string; validUntil: number }
+      | undefined;
+  } else if (config.refreshTokenStorage === "db") {
+    storedRefreshToken = (await dbConnection.getRefreshToken(refreshToken as string)) as
+      | { userId: string; validUntil: number }
+      | undefined;
+    const now = new Date();
+    if (!storedRefreshToken?.validUntil || now.getTime() > storedRefreshToken?.validUntil) {
+      return new AuthenticationFailed({ ctx, organization, userId }, "Refresh token expired");
+    }
   } else {
     return new VError("Unknown refresh storage type");
   }
-  logger.warn(storedRefreshToken);
 
-  if (!storedRefreshToken || storedRefreshToken?.refreshToken !== refreshToken) {
+  if (!storedRefreshToken || storedRefreshToken?.userId !== userId) {
     return new AuthenticationFailed({ ctx, organization, userId }, "No stored refresh token found");
   }
 
@@ -60,8 +70,6 @@ export async function validateRefreshToken(
     const tokenResult = await getRootUserAuthData(conn, ctx, organization);
     return Result.mapErr(tokenResult, (err) => new VError(err, "root authentication failed"));
   } else {
-    logger.warn("here we are");
-
     const tokenResult = await getUserAuthData(conn, ctx, organization, organizationSecret, userId);
     return Result.mapErr(
       tokenResult,

@@ -27,8 +27,9 @@ const ProjectElement = withInitialLoading(SubProjectContainer);
 const NotificationsElement = withInitialLoading(NotificationPageContainer);
 
 const verifyTokenExpiration = () => {
-  const exp = localStorage.getItem("access_token_exp");
+  const exp = parseInt(localStorage.getItem("access_token_exp"));
   const now = new Date();
+  console.log("Now and then", now.getTime(), exp);
 
   return exp && now.getTime() > exp;
 };

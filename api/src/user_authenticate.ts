@@ -14,7 +14,8 @@ import { JwtConfig, config } from "./config";
 import { saveValue } from "./lib/keyValueStore";
 
 export const MAX_GROUPS_LENGTH = 3000;
-export const accessTokenExpirationInMinutesWithrefreshToken = 10;
+export const accessTokenExpirationInMinutesWithrefreshToken = 3;
+export const refreshTokenExpirationInDays = 8;
 
 /**
  * Represents the request body of the endpoint
@@ -191,6 +192,7 @@ interface Service {
     serviceUser: ServiceUser,
     userId: string,
   ): Promise<Result.Type<Group[]>>;
+  storeRefreshToken(userId: string, refreshToken: string, validUntil: number): Promise<void>;
 }
 
 /**
@@ -246,11 +248,27 @@ export function addHttpHandler(
         jwt.secretOrPrivateKey,
         jwt.algorithm as "HS256" | "RS256",
       );
+
       // store refresh token
+      const now = new Date();
+      // time in miliseconds of refresh token expiration
+      const refreshTokenExpiration = new Date(
+        now.getTime() + 1000 * 60 * 60 * 24 * refreshTokenExpirationInDays,
+      );
       if (config.refreshTokenStorage === "memory") {
-        saveValue(`refreshToken${token.userId}`, {
+        saveValue(
+          `refreshToken.${refreshToken}`,
+          {
+            userId: token.userId,
+          },
+          refreshTokenExpiration,
+        );
+      } else if (config.refreshTokenStorage === "db") {
+        await service.storeRefreshToken(
+          token.userId,
           refreshToken,
-        });
+          refreshTokenExpiration.getTime(),
+        );
       }
 
       const groupsResult = await service.getGroupsForUser(
@@ -291,6 +309,12 @@ export function addHttpHandler(
         })
         .setCookie("refreshToken", refreshToken, {
           path: "/api/user.refreshtoken",
+          secure: process.env.NODE_ENV !== "development",
+          httpOnly: true,
+          sameSite: "strict",
+        })
+        .setCookie("refreshToken", refreshToken, {
+          path: "/api/user.logout",
           secure: process.env.NODE_ENV !== "development",
           httpOnly: true,
           sameSite: "strict",
@@ -355,6 +379,6 @@ function createRefreshJWTToken(
       userId,
     },
     secretOrPrivateKey,
-    { expiresIn: "8d", algorithm },
+    { expiresIn: `${refreshTokenExpirationInDays}d`, algorithm },
   );
 }

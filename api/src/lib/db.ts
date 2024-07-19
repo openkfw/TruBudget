@@ -4,8 +4,10 @@ import logger from "./logger";
 
 const config = configFunction();
 
-interface EmailAddress {
-  email_address: string;
+interface RefreshTokenEntry {
+  user_id: string;
+  refresh_token: string;
+  valid_until: string;
 }
 
 class DbConnector {
@@ -70,59 +72,60 @@ class DbConnector {
     return { status: 200, statusText: "Ready" };
   };
 
-  public upsetRefreshToken = async (
+  public insertRefreshToken = async (
     userId: string,
     refreshToken: string,
-    validUntil: string,
+    validUntil: number,
   ): Promise<void> => {
     const client = await this.getDb();
     try {
-      await client(config.refreshTokensTable)
-        .insert({
-          [`${this.userIdColumnName}`]: userId,
-          [`${this.refreshTokenColumnName}`]: refreshToken,
-          [`${this.validityColumnName}`]: validUntil,
-        })
-        .onConflict(this.userIdColumnName)
-        .merge();
-      logger.info(`Upsert refresh token for user '${userId}' valid until '${validUntil}'`);
+      await client(config.refreshTokensTable).insert({
+        [`${this.userIdColumnName}`]: userId,
+        [`${this.refreshTokenColumnName}`]: refreshToken,
+        [`${this.validityColumnName}`]: validUntil,
+      });
+      logger.info(`Insert refresh token for user '${userId}' valid until '${validUntil}'`);
     } catch (error) {
       logger.error(error);
       throw error;
     }
   };
 
-  public deleteRefreshToken = async (userId: string): Promise<void> => {
+  public deleteRefreshToken = async (refreshToken: string): Promise<void> => {
     const client = await this.getDb();
     try {
       await client(config.refreshTokensTable)
         .where({
-          [`${this.userIdColumnName}`]: userId,
+          [`${this.refreshTokenColumnName}`]: refreshToken,
         })
         .del();
-      logger.info(`Delete refresh token for user '${userId}'`);
+      logger.info(`Delete refresh token '${refreshToken}' succesfull`);
     } catch (error) {
       logger.error(error);
       throw error;
     }
   };
 
-  public getRefreshToken = async (userId: string): Promise<string> => {
+  public getRefreshToken = async (
+    refreshToken: string,
+  ): Promise<{ userId: string; validUntil: string } | undefined> => {
     try {
       const client = await this.getDb();
-      logger.trace({ userId }, "Getting refresh token from user by id");
-      const emailAddresses: EmailAddress[] = await client(config.refreshTokensTable)
-        .select(this.refreshTokenColumnName)
-        .where({ [`${this.userIdColumnName}`]: `${userId}` });
-      if (emailAddresses.length > 0 && emailAddresses[0].email_address) {
-        return emailAddresses[0].email_address;
+      logger.trace({ refreshToken }, "Getting refresh token from user by id");
+      const refreshTokenLines: RefreshTokenEntry[] = await client(config.refreshTokensTable)
+        .select([this.validityColumnName, this.refreshTokenColumnName, this.userIdColumnName])
+        .where({ [`${this.refreshTokenColumnName}`]: `${refreshToken}` });
+      if (refreshTokenLines.length > 0 && refreshTokenLines[0][this.validityColumnName]) {
+        return {
+          userId: refreshTokenLines[0][this.userIdColumnName],
+          validUntil: refreshTokenLines[0][this.validityColumnName],
+        };
       }
     } catch (error) {
       logger.error(error);
       throw error;
     }
-    logger.debug(`No refresh token found for user ${userId}`);
-    return "";
+    logger.debug(`No refresh token found for user ${refreshToken}`);
   };
 
   private initializeConnection = (): Knex => {
@@ -140,10 +143,11 @@ class DbConnector {
   };
 
   private createTable = async (): Promise<void> => {
-    logger.debug("Creating user table");
+    logger.debug("Creating refresh tokens table");
     await this.pool.schema.createTable(config.refreshTokensTable as string, (table) => {
-      table.string(this.userIdColumnName).notNullable().unique();
-      table.string(this.refreshTokenColumnName).notNullable();
+      table.string(this.userIdColumnName, 200).notNullable();
+      table.string(this.refreshTokenColumnName).notNullable().unique();
+      table.bigInteger(this.validityColumnName);
     });
     logger.info(`Table '${config.refreshTokensTable}' created.`);
   };
