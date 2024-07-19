@@ -25,6 +25,7 @@ const fr = {
     assigned: "Engagé",
     assignees: "Responsable(s)",
     back: "Retour",
+    backToLogin: "Retour connexion",
     bank: "Banque",
     budget_distribution: "Affectation budgétaire",
     budget: "Budget",
@@ -51,6 +52,7 @@ const fr = {
     edited: "Modifié",
     email: "Email",
     finish: "Terminer",
+    genericError: "Quelque chose s'est mal passé.",
     global: "global",
     grant: "Accorder",
     hash: "Hachage",
@@ -153,6 +155,22 @@ const fr = {
     frontend_description:
       "Une plateforme collaborative pour une gestion transparente et sécurisée des financements extérieurs.",
     user_not_found: "Your user account has not been found. Please contact the administrator."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "L'adresse e-mail que vous avez saisie est incorrecte",
+    link: "Mot de passe oublié?",
+    emailSent: "Un e-mail contenant des instructions sur la façon de réinitialiser votre mot de passe a été envoyé.",
+    subHeader:
+      "Veuillez saisir votre adresse e-mail afin de recevoir des instructions supplémentaires sur la façon de réinitialiser votre mot de passe.",
+    unavailableService: "Le service de messagerie n'est pas disponible pour le moment, veuillez réessayer plus tard."
+  },
+
+  resetPassword: {
+    invalidToken: "Le jeton d'authentification a expiré. Veuillez répéter le processus de mot de passe oublié.",
+    passwordResetSuccess: "Le mot de passe a été réinitialisé avec succès. Veuillez accéder à la page de connexion.",
+    setPasswordButton: "Definir un nouveau mot de passe",
+    subHeader: "Veuillez définir votre nouveau mot de passe."
   },
 
   project: {
@@ -399,10 +417,12 @@ const fr = {
     post_actions_dialog_text: "Après la création, les actions suivantes sont exécutées",
     project_close: "Fermer projet",
     project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
-    project_close_warning: "Si vous fermez le projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
+    project_close_warning:
+      "Si vous fermez le projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     subproject_close: "Fermer la composante",
     subproject_close_text: "Vous êtes sûr de vouloir fermer cette composante ?",
-    subproject_close_warning: "Si vous fermez le sous-projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
+    subproject_close_warning:
+      "Si vous fermez le sous-projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
     workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",

@@ -565,8 +565,8 @@ class Api {
     return instance.get(path, { withCredentials: true });
   };
 
-  sendForgotPasswordEmail = (email, url) => {
-    const data = { email, url };
+  sendForgotPasswordEmail = (email, url, lang) => {
+    const data = { email, url, lang };
     return instance.post(`/user.forgotPassword`, data);
   };
 

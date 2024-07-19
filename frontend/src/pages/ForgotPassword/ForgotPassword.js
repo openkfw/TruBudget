@@ -18,6 +18,7 @@ import TextInputWithIcon from "../Common/TextInputWithIcon";
 import "./ForgotPassword.scss";
 
 const ForgotPassword = ({
+  language,
   loading,
   emailServiceAvailable,
   storeEmail,
@@ -31,10 +32,7 @@ const ForgotPassword = ({
       <Card className="forgot-password-card">
         <div className="forgot-password-card-content">
           <div className="forgot-password-card-header">
-            <CardHeader
-              title={strings.login.frontend_name}
-              subheader="Please enter your email in order to receive an e-mail with further instructions."
-            />
+            <CardHeader title={strings.login.frontend_name} subheader={strings.forgotPassword.subHeader} />
           </div>
         </div>
         <Divider />
@@ -66,12 +64,12 @@ const ForgotPassword = ({
               )}
               <Box className="message-box">
                 {!emailServiceAvailable ? (
-                  <Alert severity="error">E-mail service is unavailable at this time, please try again later.</Alert>
+                  <Alert severity="error">{strings.forgotPassword.unavailableService}</Alert>
                 ) : null}
               </Box>
               <Box className="forgot-password-card-footer">
                 <Button component={Link} to="/login" variant="text">
-                  back to login
+                  {strings.common.backToLogin}
                 </Button>
                 <Button
                   aria-label="forgotPasswordButton"
@@ -80,7 +78,7 @@ const ForgotPassword = ({
                     if (isEmailAddressValid(email)) {
                       const url = window.location.href.substring(0, window.location.href.lastIndexOf("/"));
                       setValidEmailAddressInput(true);
-                      sendForgotPasswordEmail(email, url);
+                      sendForgotPasswordEmail(email, url, language.substring(0, 2));
                     } else {
                       setValidEmailAddressInput(false);
                     }
@@ -88,7 +86,7 @@ const ForgotPassword = ({
                   variant="contained"
                   id="forgotPasswordButton"
                 >
-                  Send email
+                  {strings.common.submit}
                 </Button>
               </Box>
             </Grid>

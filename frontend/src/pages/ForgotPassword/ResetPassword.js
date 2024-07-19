@@ -49,7 +49,7 @@ const ResetPassword = ({ loading, resetUserPassword }) => {
       <Card className="forgot-password-card">
         <div className="forgot-password-card-content">
           <div className="forgot-password-card-header">
-            <CardHeader title={strings.login.frontend_name} subheader="Please set your new password." />
+            <CardHeader title={strings.login.frontend_name} subheader={strings.resetPassword.subHeader} />
           </div>
         </div>
         <Divider />
@@ -80,7 +80,7 @@ const ResetPassword = ({ loading, resetUserPassword }) => {
               <Box className="message-box"></Box>
               <Box className="forgot-password-card-footer">
                 <Button component={Link} to="/login" variant="text">
-                  back to login
+                  {strings.common.backToLogin}
                 </Button>
                 <Button
                   aria-label="resetPasswordButton"
@@ -88,7 +88,7 @@ const ResetPassword = ({ loading, resetUserPassword }) => {
                   variant="contained"
                   id="resetPasswordButton"
                 >
-                  Set New Password
+                  {strings.resetPassword.setPasswordButton}
                 </Button>
               </Box>
             </Grid>

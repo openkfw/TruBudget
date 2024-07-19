@@ -24,6 +24,7 @@ const de = {
     assigned_budget: "Zugewiesenes Budget",
     assignees: "Verantwortliche",
     back: "Zurück",
+    backToLogin: "Zurück zur Anmeldung",
     bank: "Bank",
     budget: "Budget",
     budget_distribution: "Budget Verteilung",
@@ -52,6 +53,7 @@ const de = {
     edited: "Geändert",
     email: "E-Mail",
     finish: "Fertig",
+    genericError: "Etwas ist schief gelaufen.",
     global: "Global",
     grant: "Erteilen",
     hash: "Hash",
@@ -155,6 +157,22 @@ const de = {
     user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
+  forgotPassword: {
+    incorrectEmail: "Die von Ihnen eingegebene E-Mail-Adresse ist falsch",
+    link: "Haben Sie Ihr Passwort vergessen?",
+    emailSent: "Eine E-Mail mit Anweisungen zum Zurücksetzen Ihres Passworts wurde gesendet.",
+    subHeader:
+      "Bitte geben Sie Ihre E-Mail-Adresse ein, um weitere Anweisungen zum Zurücksetzen Ihres Passworts zu erhalten.",
+    unavailableService: "Der E-Mail-Dienst ist derzeit nicht verfügbar. Bitte versuchen Sie es später erneut."
+  },
+
+  resetPassword: {
+    invalidToken: "Authentifizierungstoken abgelaufen. Bitte wiederholen Sie den Vorgang bei vergessenem Passwort.",
+    passwordResetSuccess: "Passwort erfolgreich zurückgesetzt. Bitte fahren Sie mit der Anmeldeseite fort.",
+    setPasswordButton: "Neues Passwort festlegen",
+    subHeader: "Bitte legen Sie Ihr neues Passwort fest."
+  },
+
   project: {
     add_new_project: "Neues Project hinzufügen",
     assignee: "Verantwortlicher",
@@ -199,7 +217,8 @@ const de = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -398,10 +417,12 @@ const de = {
     post_actions_dialog_text: "Nach Erstellung des Workflowitems werden folgende Aktionen ausgeführt",
     project_close: "Projekt schließen",
     project_close_text: "Sind Sie sicher, dass Sie dieses Projekt schließen wollen?",
-    project_close_warning: "Wenn Sie das Projekt schließen, können Sie keine Änderungen mehr vornehmen oder Informationen hinzufügen.",
+    project_close_warning:
+      "Wenn Sie das Projekt schließen, können Sie keine Änderungen mehr vornehmen oder Informationen hinzufügen.",
     subproject_close: "Subprojekt schließen",
     subproject_close_text: "Sind Sie sicher, dass Sie dieses Subprojekt schließen wollen?",
-    subproject_close_warning: "Wenn Sie das Subprojekt schließen, können Sie keine Änderungen mehr vornehmen oder Informationen hinzufügen.",
+    subproject_close_warning:
+      "Wenn Sie das Subprojekt schließen, können Sie keine Änderungen mehr vornehmen oder Informationen hinzufügen.",
     user_group: "Benutzer/Gruppe",
     workflowitem_close: "Workflowitem schließen",
     workflowitem_close_text: "Sind Sie sicher, dass Sie dieses Workflow-Item schließen wollen?",

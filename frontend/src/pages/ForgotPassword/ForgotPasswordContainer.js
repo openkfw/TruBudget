@@ -70,7 +70,7 @@ const mapDispatchToProps = (dispatch) => {
     setLoginLoading: (showLoading) => dispatch(loginLoading(showLoading)),
     setLanguage: (language) => dispatch(setLanguage(language)),
     checkEmailService: () => dispatch(checkEmailService(false)),
-    sendForgotPasswordEmail: (email, url) => dispatch(sendForgotPasswordEmail(email, url)),
+    sendForgotPasswordEmail: (email, url, language) => dispatch(sendForgotPasswordEmail(email, url, language)),
     setValidEmailAddressInput: (valid) => dispatch(setValidEmailAddressInput(valid))
   };
 };

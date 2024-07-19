@@ -6,7 +6,6 @@ import { JwtConfig, config } from "config";
 import { Type } from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { Permissions } from "service/domain/permissions";
-import { toHttpError } from "http_errors";
 
 const API_VERSION = "1.0";
 
@@ -17,11 +16,12 @@ interface RequestBody {
   data: {
     email: string;
     url: string;
+    lang: string;
   };
 }
 
 /**
- * Creates the swagger schema for the `v2/user.forgotPassword` endpoint
+ * Creates the swagger schema for the `user.forgotPassword` endpoint
  * This is a comment.
  *
  * @param server fastify server
@@ -44,6 +44,7 @@ function mkSwaggerSchema(): Object {
             properties: {
               email: { type: "string", example: "test@test.com" },
               url: { type: "string", example: "http://localhost" },
+              lang: { type: "string", example: "en" },
             },
           },
         },
@@ -87,7 +88,7 @@ export function addHttpHandler(
     server.post(`${urlPrefix}/user.forgotPassword`, mkSwaggerSchema(), async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
       const body = request.body as RequestBody;
-      const { email, url } = body.data;
+      const { email, url, lang } = body.data;
       const { emailService } = config;
       const getUserByEmailUrl = "user.getUserByEmail?email=";
       const sendResetPasswordUrl = "sendResetPasswordEmail";
@@ -97,40 +98,30 @@ export function addHttpHandler(
           `http://${emailService.host}:${emailService.port}/${getUserByEmailUrl}${email}`,
         );
 
-        if (data) {
-          const { user } = data;
-          const userPermissions = await service.getUserPermissions(
-            ctx,
-            { id: user.id, groups: [""], address: "" },
-            user.id,
-          );
+        const { user } = data;
+        const userPermissions = await service.getUserPermissions(
+          ctx,
+          { id: user.id, groups: [""], address: "" },
+          user.id,
+        );
 
-          if (userPermissions["user.authenticate"].includes(user.id)) {
-            const signedJwt = createJWT(
-              { userId: user.id, intent: "user.changePassword" },
-              jwt.secretOrPrivateKey,
-              jwt.algorithm,
-            );
-            const emailText = `${url}/reset-password?id=${user.id}&resetToken=${signedJwt}`;
-            await axios.post(
-              `http://${emailService.host}:${emailService.port}/${sendResetPasswordUrl}`,
-              { data: { ...user, emailText } },
-            );
-            reply.status(200).send({
-              apiVersion: API_VERSION,
-              data: {
-                message: "Reset password e-mail sent",
-              },
-            });
-          } else {
-            reply.status(400).send({
-              apiVersion: API_VERSION,
-              error: {
-                code: 400,
-                message: "Incorrect e-mail address",
-              },
-            });
-          }
+        if (userPermissions["user.authenticate"].includes(user.id)) {
+          const signedJwt = createJWT(
+            { userId: user.id, intent: "user.changePassword" },
+            jwt.secretOrPrivateKey,
+            jwt.algorithm,
+          );
+          const link = `${url}/reset-password?id=${user.id}&resetToken=${signedJwt}`;
+          await axios.post(
+            `http://${emailService.host}:${emailService.port}/${sendResetPasswordUrl}`,
+            { data: { ...user, link, lang } },
+          );
+          reply.status(200).send({
+            apiVersion: API_VERSION,
+            data: {
+              message: "Reset password e-mail sent",
+            },
+          });
         } else {
           reply.status(400).send({
             apiVersion: API_VERSION,
@@ -141,9 +132,17 @@ export function addHttpHandler(
           });
         }
       } catch (error) {
-        const { code, body } = toHttpError(error, API_VERSION);
+        const { status } = error.response;
+        const message =
+          status === 400 ? "Incorrect e-mail address" : "Error while sending reset password email";
         request.log.error({ error }, "Error while sending reset password email");
-        reply.status(code).send(body);
+        reply.status(status).send({
+          apiVersion: API_VERSION,
+          error: {
+            code: status,
+            message,
+          },
+        });
       }
     });
   });

@@ -5,6 +5,9 @@ import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import helmet from "helmet";
+import * as fs from "fs";
+import * as path from "path";
+import { compile } from "handlebars";
 import config from "./config";
 import DbConnector from "./db";
 import logger from "./logger";
@@ -21,6 +24,13 @@ import {
   UserGetEmailAddressRequest,
 } from "./types";
 import isBodyValid from "./validation";
+import {
+  passwordResetEmailHeader,
+  passwordResetEmailText,
+  passwordResetLinkTitle,
+  passwordResetSubject,
+  passwordResetEmailFooter,
+} from "./constants";
 
 if (config.email.from === undefined) {
   logger.warn(
@@ -368,11 +378,27 @@ emailService.post(
       return;
     }
     logger.info(req.body);
-    const { id, email, emailText } = req.body.data;
+    const { id, email, link, lang } = req.body.data;
 
     (async (): Promise<void> => {
       try {
-        await sendMail(email, "Trubudget password reset", emailText);
+        const emailText = `${passwordResetEmailHeader[lang]}${id},/n/n${passwordResetEmailText[lang]}/n/n${link}/n/n${passwordResetEmailFooter}/nTrubudget`;
+
+        const __dirname = path.resolve();
+        const filePath = path.join(__dirname, "src/email-templates/resetPasswordEmail.html");
+        const source = fs.readFileSync(filePath, "utf-8");
+        const template = compile(source);
+        const replacements = {
+          lang,
+          header: passwordResetEmailHeader[lang],
+          user: id,
+          text: passwordResetEmailText[lang],
+          resetPasswordUrl: link,
+          resetPasswordUrlTitle: passwordResetLinkTitle[lang],
+          footer: passwordResetEmailFooter[lang],
+        };
+        const htmlTemplateToSend = template(replacements);
+        await sendMail(email, passwordResetSubject[lang], emailText, htmlTemplateToSend);
         logger.trace("Notification sent to " + email);
         const body: NotificationResponseBody = {
           notification: { recipient: id, status: "sent", emailAddress: email },

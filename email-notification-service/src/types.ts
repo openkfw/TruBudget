@@ -58,7 +58,8 @@ export interface ResetPasswordRequest extends express.Request {
     data: {
       id: string;
       email: string;
-      emailText: string;
+      link: string;
+      lang: string;
     };
   };
 }

@@ -8,6 +8,7 @@ const sendMail = async (
   emailAddresses: string | string[],
   subject?: string,
   emailText?: string,
+  template?: unknown,
 ): Promise<void> => {
   const transportOptions: SMTPTransport.Options = {
     host: config.smtpServer.host,
@@ -37,7 +38,7 @@ const sendMail = async (
       to: emailAddresses,
       subject: subject || config.email.subject,
       text: emailText || config.email.text,
-      html: `<a>${emailText}<a/>`,
+      html: template,
     } as Mail.Options);
 
     logger.info(`Email sent to ${emailAddresses}: ${info.messageId}`);

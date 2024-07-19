@@ -1421,14 +1421,31 @@ export function* changeUserPasswordSaga({ username, newPassword }) {
 }
 
 export function* resetUserPasswordSaga({ username, newPassword, token }) {
-  yield execute(function* () {
+  function* resetUserPassword() {
     yield callApi(api.resetPassword, username, newPassword, token);
     yield put({
       type: SNACKBAR_MESSAGE,
-      message: "Password successfully reset. Please proceed to login page."
+      message: strings.resetPassword.passwordResetSuccess
     });
     yield showSnackbarSuccess();
-  }, true);
+  }
+
+  function* onError(error) {
+    const errorMessage =
+      error.response.status === 401 ? strings.resetPassword.invalidToken : strings.common.genericError;
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+  }
+
+  yield execute(resetUserPassword, false, onError);
 }
 
 export function* checkUserPasswordSaga({ username, password }) {
@@ -3349,10 +3366,10 @@ function* checkExportServiceSaga({ showLoading = true }) {
 
 export function* forgotPasswordSaga({ data }) {
   function* sendForgotPasswordEmail() {
-    yield callApi(api.sendForgotPasswordEmail, data.email, data.url);
+    yield callApi(api.sendForgotPasswordEmail, data.email, data.url, data.lang);
     yield put({
       type: SNACKBAR_MESSAGE,
-      message: "E-mail with instructions how to reset your password was sent."
+      message: strings.forgotPassword.emailSent
     });
     yield put({
       type: SHOW_SNACKBAR,
@@ -3363,7 +3380,8 @@ export function* forgotPasswordSaga({ data }) {
   }
 
   function* onError(error) {
-    const errorMessage = getLoginErrorFromResponse(error.response.status, error.response.data);
+    const errorMessage =
+      error.response.status === 400 ? strings.forgotPassword.incorrectEmail : strings.common.genericError;
     yield put({
       type: SNACKBAR_MESSAGE,
       message: errorMessage

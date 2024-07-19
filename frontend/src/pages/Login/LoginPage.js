@@ -64,7 +64,7 @@ const LoginPage = ({
               />
               <Box className="forgot-password">
                 <Button component={Link} to="/forgot-password" variant="text" size="small">
-                  {strings.common.forgotPassword}
+                  {strings.forgotPassword.link}
                 </Button>
               </Box>
               <div className="login-card-footer">

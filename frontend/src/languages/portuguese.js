@@ -25,6 +25,7 @@ const pt = {
     assigned: "Atribuído",
     assignees: "Responsável",
     back: "Voltar",
+    backToLogin: "Voltar ao login",
     bank: "Banco",
     budget_distribution: "Distribuição do orçamento",
     budget: "Orçamento",
@@ -51,6 +52,7 @@ const pt = {
     edited: "Editado",
     email: "Email",
     finish: "Finalizar",
+    genericError: "Algo correu mal.",
     global: "global",
     grant: "Conceder",
     hash: "Hash",
@@ -239,6 +241,22 @@ const pt = {
     user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
+  forgotPassword: {
+    incorrectEmail: "O endereço de e-mail que introduziu está incorreto",
+    link: "Esqueceu-se da sua senha?",
+    emailSent: "E-mail com instruções sobre como redefinir a sua palavra-passe foi enviado.",
+    subHeader:
+      "Por favor, introduza o seu endereço de e-mail para receber mais instruções sobre como redefinir a sua palavra-passe.",
+    unavailableService: "O serviço de e-mail não está disponível de momento."
+  },
+
+  resetPassword: {
+    invalidToken: "O token de autenticação expirou. Por favor, repita o processo de esquecimento da palavra-passe.",
+    passwordResetSuccess: "Palavra-passe redefinida com sucesso. Por favor, prossiga para a página de login.",
+    setPasswordButton: "Definir nova palavra-passe",
+    subHeader: "Por favor, defina a sua nova palavra-passe."
+  },
+
   project: {
     add_new_project: "Criar novo projeto",
     assignee: "Proprietário",
@@ -403,7 +421,8 @@ const pt = {
     project_close_warning: "Se você fechar o projeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     subproject_close: "Fechar subprojecto",
     subproject_close_text: "Tem a certeza de que quer encerrar este subprojecto?",
-    subproject_close_warning: "Se você fechar o subprojeto, não poderá mais fazer alterações ou adicionar informações a ele.",
+    subproject_close_warning:
+      "Se você fechar o subprojeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",

@@ -146,8 +146,8 @@ export function storeEmail(email) {
   };
 }
 
-export function sendForgotPasswordEmail(email, url) {
-  const data = { email, url };
+export function sendForgotPasswordEmail(email, url, lang) {
+  const data = { email, url, lang };
   return {
     type: SEND_FORGOT_PASSWORD_EMAIL,
     data

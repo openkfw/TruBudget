@@ -55,7 +55,8 @@ schemes
     Joi.object({
       id: Joi.string().required(),
       email: Joi.string().email().required(),
-      emailText: Joi.string().required(),
+      link: Joi.string().required(),
+      lang: Joi.string().required(),
     }),
   );
 
