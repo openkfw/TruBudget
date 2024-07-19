@@ -26,7 +26,6 @@ export const clearExpiredKeys = (): void => {
   Object.keys(store).forEach((key) => {
     // key is expired
     if (store?.[key]?.exp && nowMs > store?.[key]?.exp) {
-      console.log("Clearing value" + key);
       clearValue(key);
     }
   });
