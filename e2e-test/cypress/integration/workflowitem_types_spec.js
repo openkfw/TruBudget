@@ -19,21 +19,11 @@ describe("Workflowitem types", function () {
     cy.visit(`/projects/${projectId}/${subprojectId}`);
   });
 
-  it("Creating restricted workflowitem is possible", function () {
+  it("Creating restricted workflowitem is not possible", function () {
     cy.get("[data-test=createWorkflowitem]").click();
     cy.get("[data-test=nameinput] input").type("restricted");
 
-    // Select workflowitem type
-    cy.get("[data-test=dropdown-types-click]").should("be.visible").click();
-    cy.get("[data-value=restricted]").click();
-    cy.get("[data-test=next]").click();
-    cy.get("[data-test=submit]").click();
-
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
-
-    // Check workflowitem details
-    cy.get(`[data-test*=workflowitem-info-button]`).last().click();
-    cy.get("[data-test=workflowitemInfoType]").should("contain", "restricted");
+    cy.get("[data-test=dropdown-types-click]").get("[data-disabled=true]").should("be.visible");
   });
 
   it("A workflowitem of type restricted grants and revokes permissions when it's assigned", function () {
