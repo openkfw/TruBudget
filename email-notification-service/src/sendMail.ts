@@ -20,18 +20,7 @@ const sendMail = async (
     },
   };
   try {
-    const transportOptionsForLog = { ...transportOptions };
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (transportOptionsForLog.auth && transportOptionsForLog.auth.pass) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      transportOptionsForLog.auth.pass = "*****";
-    }
-    logger.debug(
-      { transportOptions: transportOptionsForLog },
-      "Sending email with transport options",
-    );
+    logger.debug({ transportOptions }, "Sending email with transport options");
     const transporter = nodemailer.createTransport(transportOptions);
     const info: SentMessageInfo = await transporter.sendMail({
       from: config.email.from,
