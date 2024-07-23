@@ -2,7 +2,7 @@ import { AugmentedFastifyInstance } from "./types";
 import { Ctx } from "./lib/ctx";
 import * as jsonwebtoken from "jsonwebtoken";
 import axios from "axios";
-import { JwtConfig, config } from "config";
+import { JwtConfig, config } from "./config";
 import { Type } from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { Permissions } from "service/domain/permissions";
