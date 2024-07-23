@@ -38,7 +38,7 @@ interface Repository {
 export async function changeUserPassword(
   ctx: Ctx,
   issuer: ServiceUser,
-  issuerOrganization: string,
+  issuerOrganization: string | null,
   data: RequestData,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
@@ -73,7 +73,7 @@ export async function changeUserPassword(
   const user = userResult;
 
   logger.trace({ issuer }, "Checking if issuer and revokee belong to the same organization");
-  if (userResult.organization !== issuerOrganization) {
+  if (issuerOrganization && userResult.organization !== issuerOrganization) {
     return new NotAuthorized({
       ctx,
       userId: issuer.id,
