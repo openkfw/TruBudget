@@ -6,6 +6,11 @@ interface EmailAddress {
   email_address: string;
 }
 
+interface User {
+  id: string;
+  email: string;
+}
+
 class DbConnector {
   private pool: Knex;
 
@@ -150,6 +155,25 @@ class DbConnector {
     return "";
   };
 
+  public getEmailAddressAndUserId = async (email: string): Promise<User | null> => {
+    try {
+      const client = await this.getDb();
+      logger.trace("Getting email address and user id");
+      const user: User = await client(config.userTable)
+        .select(`${this.idTableName}`, `${this.emailAddressTableName} as email`)
+        .where({ [`${this.emailAddressTableName}`]: `${email}` })
+        .first();
+      if (user) {
+        return user;
+      }
+    } catch (error) {
+      logger.error(error);
+      throw error;
+    }
+    logger.debug("No such email address found");
+    return null;
+  };
+
   private initializeConnection = (): Knex => {
     logger.info("Initialize database connection");
     logger.info(config);
@@ -168,7 +192,7 @@ class DbConnector {
     logger.debug("Creating user table");
     await this.pool.schema.createTable(config.userTable, (table) => {
       table.string(this.idTableName).notNullable().unique();
-      table.string(this.emailAddressTableName).notNullable();
+      table.string(this.emailAddressTableName).notNullable().unique();
     });
     logger.info(`Table '${config.userTable}' created.`);
   };

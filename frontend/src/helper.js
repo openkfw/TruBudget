@@ -273,6 +273,21 @@ export const getLoginErrorFromResponse = (status, data) => {
   }
 };
 
+export const validatePassword = (newPassword) => {
+  const minLength = 8;
+
+  return newPassword.length >= minLength && /[a-zA-Z]/.test(newPassword) && /[0-9]/.test(newPassword);
+};
+
+export const getPasswordErrorText = (newPasswordsMatch, passwordInvalid) => {
+  if (passwordInvalid) {
+    return strings.users.invalid_password;
+  } else if (!newPasswordsMatch) {
+    return strings.users.no_password_match;
+  } else {
+    return "";
+  }
+};
 export const trimSpecialChars = (string) => {
   return string.replace(/&nbsp;/g, "").replace(/&amp;/g, "&");
 };

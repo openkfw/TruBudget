@@ -4,7 +4,12 @@ import * as Mail from "nodemailer/lib/mailer";
 import config from "./config";
 import logger from "./logger";
 
-const sendMail = async (emailAddresses: string | string[]): Promise<void> => {
+const sendMail = async (
+  emailAddresses: string | string[],
+  subject?: string,
+  emailText?: string,
+  template?: unknown,
+): Promise<void> => {
   const transportOptions: SMTPTransport.Options = {
     host: config.smtpServer.host,
     port: config.smtpServer.port,
@@ -15,25 +20,14 @@ const sendMail = async (emailAddresses: string | string[]): Promise<void> => {
     },
   };
   try {
-    const transportOptionsForLog = { ...transportOptions };
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    if (transportOptionsForLog.auth && transportOptionsForLog.auth.pass) {
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-ignore
-      transportOptionsForLog.auth.pass = "*****";
-    }
-    logger.debug(
-      { transportOptions: transportOptionsForLog },
-      "Sending email with transport options",
-    );
+    logger.debug({ transportOptions }, "Sending email with transport options");
     const transporter = nodemailer.createTransport(transportOptions);
-
     const info: SentMessageInfo = await transporter.sendMail({
       from: config.email.from,
       to: emailAddresses,
-      subject: config.email.subject,
-      text: config.email.text,
+      subject: subject || config.email.subject,
+      text: emailText || config.email.text,
+      html: template,
     } as Mail.Options);
 
     logger.info(`Email sent to ${emailAddresses}: ${info.messageId}`);

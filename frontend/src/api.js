@@ -127,11 +127,12 @@ class Api {
 
   listUser = () => instance.get(`/user.list`);
 
-  changeUserPassword = (userId, newPassword) =>
-    instance.post(`/user.changePassword`, {
+  changeUserPassword = (userId, newPassword) => {
+    return instance.post(`/user.changePassword`, {
       userId,
       newPassword
     });
+  };
 
   listUserAssignments = (userId) => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
 
@@ -562,6 +563,25 @@ class Api {
   getEmailAddress = (id) => {
     const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
     return instance.get(path, { withCredentials: true });
+  };
+
+  sendForgotPasswordEmail = (email, url, lang) => {
+    const data = { email, url, lang };
+    return instance.post(`/user.forgotPassword`, data);
+  };
+
+  resetPassword = (userId, newPassword, token) => {
+    instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    const data = { userId, newPassword };
+    return instance.post(`/user.resetPassword`, data);
+  };
+
+  sendMail = (email) => {
+    const data = {
+      email
+    };
+    const path = this.getEmailServiceUrl("resetPassword");
+    return instance.post(path, data, { withCredentials: true });
   };
 
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
