@@ -1,7 +1,6 @@
 import React from "react";
 
-import CancelIcon from "@mui/icons-material/Cancel";
-import { Alert, IconButton } from "@mui/material";
+import { Alert } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -40,6 +39,12 @@ const getDropdownMenuItems = (types) => {
 const SubProjectDialogContent = (props) => {
   const currencies = getCurrencies();
 
+  // creation of restricted workflow item types is deprecated
+  // all new subprojects will have general workflow item types
+  if (!props.editDialogShown) {
+    props.storeFixedWorkflowitemType("general");
+  }
+
   return (
     <div data-test="subproject-dialog-content">
       <div>
@@ -69,26 +74,17 @@ const SubProjectDialogContent = (props) => {
               </div>
 
               <div className="sub-project-dialog-input-container">
+                {/* workflow item type selection {general|restricted} deprecated */}
                 <Dropdown
+                  disabled
                   className="dropdown"
                   floatingLabel={strings.subproject.fixed_workflowitem_type}
-                  value={props.selectedWorkflowitemType}
+                  value={"general"}
                   onChange={(value) => props.storeFixedWorkflowitemType(value)}
                   id="types"
                 >
                   {getDropdownMenuItems(subprojectWorkflowItemTypes)}
                 </Dropdown>
-                {props.selectedWorkflowitemType ? (
-                  <IconButton
-                    aria-label="cancel"
-                    data-test={"clear-workflowitem-type"}
-                    className="clear-button"
-                    onClick={() => props.storeFixedWorkflowitemType("")}
-                    size="large"
-                  >
-                    <CancelIcon color="action" style={{ fontSize: "x-large" }} />
-                  </IconButton>
-                ) : null}
               </div>
 
               <div className="sub-project-dialog-input-container">
