@@ -7,7 +7,7 @@
 
 TruBudget - a trusted public expenditure tool. A collaborative workflow tool and secured platform to track and coordinate the implementation of donor-funded investment projects.
 
-To fully understand the idea and motivation behind Trubudget, watch following video: https://www.youtube.com/watch?v=rnTsPjhTVj0
+To fully understand the idea and motivation behind Trubudget, watch following video: <https://www.youtube.com/watch?v=rnTsPjhTVj0>
 
 If you have any questions refer to the [Frequently Asked Questions (FAQ)](#frequently-asked-questions) section below or [start a new discussion](https://github.com/openkfw/TruBudget/discussions/new)
 
@@ -24,13 +24,13 @@ If you want to try out TruBudget locally, you need to install [Docker](https://w
 For a very **quick and easy** TruBudget setup, run:
 
 ```bash
-cp scripts/operation/.env_example scripts/operation/.env
+cp scripts/operation/.env.example scripts/operation/.env
 bash scripts/operation/start-trubudget.sh --slim
 ```
 
 More information for the operation setup can be found in the [README.md](./scripts/operation/README.md)
 
-It may take a while to build and start all containers. The frontend should then be available at http://localhost:3000.
+It may take a while to build and start all containers. The frontend should then be available at <http://localhost:3000>.
 
 ## Installation
 
