@@ -26,6 +26,7 @@ const en = {
     assigned: "Assigned",
     assignees: "Assignee(s)",
     back: "Back",
+    backToLogin: "Back to login",
     bank: "Bank",
     budget_distribution: "Budget distribution",
     budget: "Budget",
@@ -53,6 +54,7 @@ const en = {
     edited: "Edited",
     email: "Email",
     finish: "Finish",
+    genericError: "Something went wrong.",
     global: "global",
     grant: "grant",
     hash: "Hash",
@@ -156,7 +158,7 @@ const en = {
     edit_permissions: "Edit permissions",
     group_created: "Group successfully created",
     groups: "Groups",
-    invalid_password: "Password invalid",
+    invalid_password: "Password must contain at least 8 characters, capital letter and number",
     new_group: "New Group",
     new_user_password_confirmation: "Confirm new password",
     new_user_password: "New password",
@@ -240,6 +242,21 @@ const en = {
     frontend_name: "TruBudget",
     frontend_description: "A blockchain-based solution for budget expenditure",
     user_not_found: "Your user account has not been found. Please contact the administrator."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "E-mail address you entered is incorrect",
+    link: "Forgot Your Password?",
+    emailSent: "E-mail with instructions how to reset your password was sent.",
+    subHeader: "Please enter your e-mail address in order to receive further instructions how to reset your password.",
+    unavailableService: "E-mail service is unavailable at this time, please try again later."
+  },
+
+  resetPassword: {
+    invalidToken: "Authentication token expired. Please repeat the forgot password process.",
+    passwordResetSuccess: "Password successfully reset. Please proceed to login page.",
+    setPasswordButton: "Set New Password",
+    subHeader: "Please set your new password."
   },
 
   project: {

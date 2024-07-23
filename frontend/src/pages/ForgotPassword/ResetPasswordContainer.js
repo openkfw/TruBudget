@@ -2,34 +2,15 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 
 import { appInsights } from "../../telemetry";
+import { initLanguage, loginLoading, loginWithToken, resetUserPassword, setLanguage } from "../Login/actions";
 
-import config from "./../../config";
-import {
-  checkEmailService,
-  checkExportService,
-  initLanguage,
-  loginLoading,
-  loginWithCredentials,
-  loginWithToken,
-  logout,
-  setLanguage,
-  storePassword,
-  storeUsername
-} from "./actions";
-import LoginPage from "./LoginPage";
+import ResetPassword from "./ResetPassword";
 
-class LoginPageContainer extends Component {
+class ResetPasswordContainer extends Component {
   componentDidMount() {
     this.props.initLanguage();
     this.checkIfRedirect();
-    // window.injectedEnv exists when deploying via docker and nginx
-    // process.env exists when using node.js
-    if (window?.injectedEnv?.REACT_APP_EMAIL_SERVICE_ENABLED === "true" || config.email.isEnabled) {
-      this.props.checkEmailService();
-    }
-    if (window?.injectedEnv?.REACT_APP_EXPORT_SERVICE_ENABLED === "true" || config.export.isEnabled) {
-      this.props.checkExportService();
-    }
+    this.checkResetPasswordUrl();
   }
 
   componentDidUpdate() {
@@ -62,37 +43,36 @@ class LoginPageContainer extends Component {
     }
   }
 
+  checkResetPasswordUrl() {
+    const userId = new URLSearchParams(this.props.location.search).get("id");
+    const token = new URLSearchParams(this.props.location.search).get("resetToken");
+    if (!userId || !token) {
+      setTimeout(() => this.props.router.navigate("/login"));
+    }
+  }
+
   render() {
-    return <LoginPage {...this.props} />;
+    return <ResetPassword {...this.props} />;
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
     initLanguage: () => dispatch(initLanguage()),
-    storeUsername: (username) => dispatch(storeUsername(username)),
-    storePassword: (password) => dispatch(storePassword(password)),
-    logout: () => dispatch(logout()),
-    loginWithCredentials: (username, password) => dispatch(loginWithCredentials(username, password)),
     loginWithToken: (token) => dispatch(loginWithToken(token)),
     setLoginLoading: (showLoading) => dispatch(loginLoading(showLoading)),
     setLanguage: (language) => dispatch(setLanguage(language)),
-    checkEmailService: () => dispatch(checkEmailService(false)),
-    checkExportService: () => dispatch(checkExportService(false))
+    resetUserPassword: (username, newPassword, token) => dispatch(resetUserPassword(username, newPassword, token))
   };
 };
 
 const mapStateToProps = (state) => {
   return {
     userId: state.getIn(["login", "id"]),
-    username: state.getIn(["login", "username"]),
     isUserLoggedIn: state.getIn(["login", "isUserLoggedIn"]),
-    isUsingAuthproxy: state.getIn(["login", "isUsingAuthproxy"]),
-    password: state.getIn(["login", "password"]),
     language: state.getIn(["login", "language"]),
-    loginError: state.getIn(["login", "loginError"]),
     loading: state.getIn(["login", "loading"])
   };
 };
 
-export default connect(mapStateToProps, mapDispatchToProps)(LoginPageContainer);
+export default connect(mapStateToProps, mapDispatchToProps)(ResetPasswordContainer);

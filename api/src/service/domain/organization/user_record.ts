@@ -11,6 +11,7 @@ import { UserTraceEvent, userTraceEventSchema } from "./user_trace_event";
 
 export type Id = string;
 export const idSchema = Joi.string().max(64);
+export const emailSchema = Joi.string().max(64);
 
 export interface UserRecord {
   id: string;

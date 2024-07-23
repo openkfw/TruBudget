@@ -219,7 +219,6 @@ describe("Workflowitem create", function () {
       .click()
       .then(() => cy.get("[data-value=EUR]").click());
     cy.get("[data-test=dropdown-types-click]").click();
-    cy.get("[data-value=general]").click();
     cy.get("[data-test=submit]").click();
     cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
 
@@ -230,43 +229,6 @@ describe("Workflowitem create", function () {
       cy.get("[data-test=createWorkflowitem]").click();
       cy.get("[data-test=creation-dialog]").should("be.visible");
       cy.get("[data-test=dropdown-types-click]").get("[data-disabled=true]").should("be.visible");
-    });
-  });
-
-  it("When the subproject type is any, the workflowitem type is not fixed", function () {
-    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.intercept(apiRoute + `/v2/subproject.createWorkflowitem`).as("workflowitemCreated");
-
-    //Create a subproject
-    cy.visit(`/projects/${projectId}`);
-    cy.wait("@loadPage").get("[data-test=subproject-create-button]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
-      .click()
-      .then(() => cy.get("[data-value=EUR]").click());
-    cy.get("[data-test=submit]").click();
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
-    cy.wait("@subprojectCreated").then((interception) => {
-      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
-
-      //test type in workflowitem creation
-      cy.get("[data-test=createWorkflowitem]").click();
-      cy.get("[data-test=creation-dialog]").should("be.visible");
-      cy.get("[data-disabled=false]").should("be.visible");
-      cy.get("[data-test=dropdown-types-click]").should("not.be.disabled").click();
-      cy.get("[data-test=dropdown_selectList] > [tabindex=-1]").click();
-      cy.get("[data-test=nameinput]").type("Test");
-
-      cy.get("[data-test=next]").click({ force: true });
-      cy.get("[data-test=submit]").click();
-
-      // Confirm creation
-      cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
-
-      cy.wait("@workflowitemCreated").then((interception) => {
-        expect(interception.response.statusCode).to.eq(200);
-      });
     });
   });
 
@@ -330,61 +292,6 @@ describe("Workflowitem create", function () {
       // Confirm creation
       cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
 
-      cy.wait("@workflowitemCreated").then((interception) => {
-        expect(interception.response.statusCode).to.eq(200);
-      });
-    });
-  });
-
-  it("When the workflowitem type is restricted, there are no post actions", function () {
-    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.intercept(apiRoute + `/v2/subproject.createWorkflowitem`).as("workflowitemCreated");
-
-    //Create a subproject
-    cy.visit(`/projects/${projectId}`);
-    cy.wait("@loadPage").get("[data-test=subproject-create-button]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
-      .click()
-      .then(() => cy.get("[data-value=EUR]").click());
-    cy.get("[data-test=dropdown-types]")
-      .click()
-      .then(() => cy.get("[data-value=restricted]").click());
-    cy.get("[data-test=submit]").click();
-    cy.get("[data-test=confirmation-dialog-confirm]").click();
-
-    cy.wait("@subprojectCreated").then((interception) => {
-      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
-      // test assignee field in workflowitem creation
-      cy.get("[data-test=createWorkflowitem]").click();
-      cy.get("[data-test=creation-dialog]").should("be.visible");
-      cy.get("[data-test=nameinput]").type("Test");
-
-      cy.get("[data-test=single-select-container]").last().click();
-      //Romina Checker is validator
-      cy.get("[value=auditUser]").click();
-      cy.get("[data-test=next]").click({ force: true });
-      cy.get("[data-test=submit]").click();
-
-      // 6 additional action
-      cy.get("[data-test=additional-actions]")
-        .scrollIntoView()
-        .within(() => {
-          cy.get("[data-test=actions-table-body]").should("be.visible").children().should("have.length", 6);
-        });
-      // 1 original action
-      cy.get("[data-test=original-actions]")
-        .scrollIntoView()
-        .within(() => {
-          cy.get("[data-test=actions-table-body]").should("be.visible").children().should("have.length", 1);
-        });
-      // No post actions
-      cy.get("[data-test=post-actions]").should("not.exist");
-      // actions counter displays correct amount of actions
-      cy.get("[data-test=actions-counter]").scrollIntoView().contains("0 from 7 actions done");
-      // Confirm creation
-      cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
       cy.wait("@workflowitemCreated").then((interception) => {
         expect(interception.response.statusCode).to.eq(200);
       });

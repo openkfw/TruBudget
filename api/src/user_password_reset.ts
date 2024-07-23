@@ -1,14 +1,17 @@
 import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+import { verify } from "jsonwebtoken";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safePasswordSchema } from "./lib/joiValidation";
-import * as Result from "./result";
+import { Type, isErr } from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import * as UserChangePassword from "./service/domain/organization/user_password_change";
+import { RequestData } from "./service/domain/organization/user_password_change";
 import Joi = require("joi");
+import { JwtConfig } from "config";
+
+const API_VERSION = "1.0";
 
 /**
  * Represents the request body of the endpoint
@@ -36,9 +39,9 @@ const requestBodySchema = Joi.alternatives([requestBodyV1Schema]);
  * Validates the request body of the http request
  *
  * @param body the request body
- * @returns the request body wrapped in a {@link Result.Type}. Contains either the object or an error
+ * @returns the request body wrapped in a {@link Type}. Contains either the object or an error
  */
-function validateRequestBody(body: unknown): Result.Type<RequestBody> {
+function validateRequestBody(body: unknown): Type<RequestBody> {
   const { error, value } = requestBodySchema.validate(body);
   return !error ? value : error;
 }
@@ -53,12 +56,17 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   return {
     preValidation: [server.authenticate],
     schema: {
-      description: "Change a user's password",
+      description: "Reset users password",
       tags: ["user"],
-      summary: "Change a user's password",
+      summary: "Reset users password",
       security: [
         {
-          bearerToken: [],
+          bearerToken: {
+            type: "apiKey",
+            description: "Authorization token",
+            name: "Authorization",
+            in: "header",
+          },
         },
       ],
       body: {
@@ -100,9 +108,9 @@ interface Service {
   changeUserPassword(
     ctx: Ctx,
     serviceUser: ServiceUser,
-    issuerOrganization: string,
-    requestData: UserChangePassword.RequestData,
-  ): Promise<Result.Type<void>>;
+    issuerOrganization: string | null,
+    requestData: RequestData,
+  ): Promise<Type<void>>;
 }
 
 /**
@@ -116,23 +124,25 @@ export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
   service: Service,
+  jwt: JwtConfig,
 ): void {
   server.register(async function () {
-    server.post(`${urlPrefix}/user.changePassword`, mkSwaggerSchema(server), (request, reply) => {
+    server.post(`${urlPrefix}/user.resetPassword`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
-
-      const serviceUser: ServiceUser = {
-        id: (request as AuthenticatedRequest).user.userId,
-        groups: (request as AuthenticatedRequest).user.groups,
-        address: (request as AuthenticatedRequest).user.address,
-      };
+      const token = request.headers.authorization?.substring(7) as string;
+      const secretOrPrivateKey =
+        jwt.algorithm === "RS256"
+          ? Buffer.from(jwt.secretOrPrivateKey, "base64")
+          : jwt.secretOrPrivateKey;
+      verify(token, secretOrPrivateKey, {
+        algorithms: [jwt.algorithm],
+      });
 
       const bodyResult = validateRequestBody(request.body);
-      const issuerOrganization: string = (request as AuthenticatedRequest).user.organization;
 
-      if (Result.isErr(bodyResult)) {
+      if (isErr(bodyResult)) {
         const { code, body } = toHttpError(
-          new VError(bodyResult, "failed to change users password"),
+          new VError(bodyResult, "failed to reset users password"),
         );
         request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
@@ -140,16 +150,20 @@ export function addHttpHandler(
       }
 
       const data = bodyResult.data;
-      const reqData = {
-        userId: data.userId,
-        newPassword: data.newPassword,
+      const { userId } = data;
+
+      const serviceUser: ServiceUser = {
+        id: userId,
+        groups: [""],
+        address: "",
       };
+      const issuerOrganization = null;
 
       service
-        .changeUserPassword(ctx, serviceUser, issuerOrganization, reqData)
+        .changeUserPassword(ctx, serviceUser, issuerOrganization, data)
         .then((result) => {
-          if (Result.isErr(result)) {
-            throw new VError(result, "user.changePassword failed");
+          if (isErr(result)) {
+            throw new VError(result, "user.resetPassword failed");
           }
           const code = 200;
           const body = {
@@ -160,7 +174,7 @@ export function addHttpHandler(
         })
         .catch((err) => {
           const { code, body } = toHttpError(err);
-          request.log.error({ err }, "Error while changing user password");
+          request.log.error({ err }, "Error while reseting user password");
           reply.status(code).send(body);
         });
     });

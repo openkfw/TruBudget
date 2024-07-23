@@ -26,6 +26,7 @@ const fr = {
     assigned: "Engagé",
     assignees: "Responsable(s)",
     back: "Retour",
+    backToLogin: "Retour connexion",
     bank: "Banque",
     budget_distribution: "Affectation budgétaire",
     budget: "Budget",
@@ -53,6 +54,7 @@ const fr = {
     edited: "Modifié",
     email: "Email",
     finish: "Terminer",
+    genericError: "Quelque chose s'est mal passé.",
     global: "global",
     grant: "Accorder",
     hash: "Hachage",
@@ -157,6 +159,22 @@ const fr = {
     frontend_description:
       "Une plateforme collaborative pour une gestion transparente et sécurisée des financements extérieurs.",
     user_not_found: "Your user account has not been found. Please contact the administrator."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "L'adresse e-mail que vous avez saisie est incorrecte",
+    link: "Mot de passe oublié?",
+    emailSent: "Un e-mail contenant des instructions sur la façon de réinitialiser votre mot de passe a été envoyé.",
+    subHeader:
+      "Veuillez saisir votre adresse e-mail afin de recevoir des instructions supplémentaires sur la façon de réinitialiser votre mot de passe.",
+    unavailableService: "Le service de messagerie n'est pas disponible pour le moment, veuillez réessayer plus tard."
+  },
+
+  resetPassword: {
+    invalidToken: "Le jeton d'authentification a expiré. Veuillez répéter le processus de mot de passe oublié.",
+    passwordResetSuccess: "Le mot de passe a été réinitialisé avec succès. Veuillez accéder à la page de connexion.",
+    setPasswordButton: "Definir un nouveau mot de passe",
+    subHeader: "Veuillez définir votre nouveau mot de passe."
   },
 
   project: {
@@ -298,7 +316,7 @@ const fr = {
     edit_permissions: "Éditer les autorisations",
     group_created: "Groupe créé avec succès",
     groups: "Groupes",
-    invalid_password: "Mot de passe invalide",
+    invalid_password: "Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule et un chiffre",
     new_group: "Nouveau groupe d'utilisateurs",
     new_user_password_confirmation: "Confirmer le nouveau mot de passe",
     new_user_password: "Nouveau mot de passe",

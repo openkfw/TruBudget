@@ -15,6 +15,7 @@ import {
 } from "./RpcClient.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
+import { trace } from "@opentelemetry/api";
 
 const count = new Map();
 const durations = new Map();
@@ -68,8 +69,11 @@ export class RpcClient {
 
   private timeStamp;
 
+  private tracer;
+
   constructor(settings: ConnectionSettings) {
     logger.debug("Setting up RpcClient");
+    this.tracer = trace.getTracer("RpcClient");
     const protocol = `${settings.protocol || "http"}`;
     const host = settings.host || "localhost";
     const port = settings.port || 8570;
@@ -144,6 +148,7 @@ export class RpcClient {
     address?: String,
     offchain?: Boolean,
   ): any {
+    const span = this.tracer.startSpan(`RpcClient.invokePublish: ${stream}`);
     const startTime = process.hrtime();
 
     // Decide if the item should be encrypted first
@@ -178,12 +183,16 @@ export class RpcClient {
           resolve(responseData);
         })
         .catch((error: AxiosError | Error) => {
+          span.recordException(error);
           let response: RpcError | undefined = this.handleError(
             error,
             request.method,
             request.params,
           );
           reject(response);
+        })
+        .finally(() => {
+          span.end();
         });
     });
   }
@@ -196,6 +205,7 @@ export class RpcClient {
    * @returns return value also depends on the speicific method, can be listitems, permissions, or others
    */
   public invoke(method: string, ...params: any[]): any {
+    const span = this.tracer.startSpan(`RpcClient.invoke: ${method}`);
     const startTime = process.hrtime();
 
     const request: RpcRequest = {
@@ -240,6 +250,7 @@ export class RpcClient {
           }
         })
         .catch((error: AxiosError | Error) => {
+          span.recordException(error);
           logger.trace(
             `Caught error during invoke of ${method} with params ${params}. Handling error ${JSON.stringify(
               error,
@@ -247,6 +258,9 @@ export class RpcClient {
           );
           let response: RpcError | undefined = this.handleError(error, method, params);
           reject(response);
+        })
+        .finally(() => {
+          span.end();
         });
     });
   }

@@ -26,6 +26,7 @@ const pt = {
     assigned: "Atribuído",
     assignees: "Responsável",
     back: "Voltar",
+    backToLogin: "Voltar ao login",
     bank: "Banco",
     budget_distribution: "Distribuição do orçamento",
     budget: "Orçamento",
@@ -53,6 +54,7 @@ const pt = {
     edited: "Editado",
     email: "Email",
     finish: "Finalizar",
+    genericError: "Algo correu mal.",
     global: "global",
     grant: "Conceder",
     hash: "Hash",
@@ -157,7 +159,7 @@ const pt = {
     edit_permissions: "Editar permissões",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
-    invalid_password: "Sehna inválida",
+    invalid_password: "A senha deve conter pelo menos 8 caracteres, letra maiúscula e número",
     new_group: "Novo grupo de usuários",
     new_user_password_confirmation: "Confirme a Nova Senha",
     new_user_password: "Nova Senha",
@@ -241,6 +243,22 @@ const pt = {
     frontend_name: "TruBudget",
     frontend_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias",
     user_not_found: "Your user account has not been found. Please contact the administrator."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "O endereço de e-mail que introduziu está incorreto",
+    link: "Esqueceu-se da sua senha?",
+    emailSent: "E-mail com instruções sobre como redefinir a sua palavra-passe foi enviado.",
+    subHeader:
+      "Por favor, introduza o seu endereço de e-mail para receber mais instruções sobre como redefinir a sua palavra-passe.",
+    unavailableService: "O serviço de e-mail não está disponível de momento."
+  },
+
+  resetPassword: {
+    invalidToken: "O token de autenticação expirou. Por favor, repita o processo de esquecimento da palavra-passe.",
+    passwordResetSuccess: "Palavra-passe redefinida com sucesso. Por favor, prossiga para a página de login.",
+    setPasswordButton: "Definir nova palavra-passe",
+    subHeader: "Por favor, defina a sua nova palavra-passe."
   },
 
   project: {

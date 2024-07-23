@@ -26,6 +26,7 @@ const ka = {
     assigned: "Assigned",
     assignees: "Assignee(s)",
     back: "უკან დაბრუნება",
+    backToLogin: "უკან შესვლა",
     bank: "ბანკი",
     budget_distribution: "ბიუჯეტის განაწილება",
     budget: "ბიუჯეტი",
@@ -53,6 +54,7 @@ const ka = {
     edited: "რედაქტირებულია",
     email: "Email",
     finish: "დასრულება",
+    genericError: "Რაღაც არასწორად წავიდა.",
     global: "გლობალური",
     grant: "მინიჭება",
     hash: "ჰაში",
@@ -156,7 +158,7 @@ const ka = {
     edit_permissions: "ნებართვების რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
-    invalid_password: "პაროლი არასწორია",
+    invalid_password: "პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს, დიდ ასოს და რიცხვს",
     new_group: "ახალი ჯგუფი",
     new_user_password_confirmation: "დაადასტურე ახალი პაროლი",
     new_user_password: "ახალი პაროლი",
@@ -241,6 +243,22 @@ const ka = {
     frontend_name: "TruBudget",
     frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა",
     user_not_found: "Your user account has not been found. Please contact the administrator."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "თქვენ მიერ შეყვანილი ელ. ფოსტის მისამართი არასწორია",
+    link: "Დაგავიწყდათ პაროლი?",
+    emailSent: "გაიგზავნა ელ.წერილი ინსტრუქციებით, თუ როგორ უნდა აღადგინოთ პაროლი.",
+    subHeader:
+      "გთხოვთ, შეიყვანოთ თქვენი ელფოსტის მისამართი, რათა მიიღოთ დამატებითი ინსტრუქციები თქვენი პაროლის აღდგენის შესახებ.",
+    unavailableService: "ელფოსტის სერვისი ამჟამად მიუწვდომელია, გთხოვთ, სცადოთ მოგვიანებით."
+  },
+
+  resetPassword: {
+    invalidToken: "ავთენტიფიკაციის ჟეტონს ვადა გაუვიდა. გთხოვთ გაიმეოროთ დავიწყებული პაროლის პროცესი.",
+    passwordResetSuccess: "პაროლი წარმატებით გადაკეთდა. გთხოვთ, გადახვიდეთ შესვლის გვერდზე.",
+    setPasswordButton: "დააყენეთ ახალი პაროლი",
+    subHeader: "გთხოვთ დააყენოთ თქვენი ახალი პაროლი."
   },
 
   project: {

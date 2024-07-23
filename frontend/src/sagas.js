@@ -56,7 +56,9 @@ import {
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  RESET_USER_PASSWORD,
+  SEND_FORGOT_PASSWORD_EMAIL
 } from "./pages/Login/actions";
 import {
   CREATE_BACKUP,
@@ -1421,6 +1423,34 @@ export function* changeUserPasswordSaga({ username, newPassword }) {
     });
     yield showSnackbarSuccess();
   }, true);
+}
+
+export function* resetUserPasswordSaga({ username, newPassword, token }) {
+  function* resetUserPassword() {
+    yield callApi(api.resetPassword, username, newPassword, token);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.resetPassword.passwordResetSuccess
+    });
+    yield showSnackbarSuccess();
+  }
+
+  function* onError(error) {
+    const errorMessage =
+      error.response.status === 401 ? strings.resetPassword.invalidToken : strings.common.genericError;
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+  }
+
+  yield execute(resetUserPassword, false, onError);
 }
 
 export function* checkUserPasswordSaga({ username, password }) {
@@ -3339,6 +3369,38 @@ function* checkExportServiceSaga({ showLoading = true }) {
   );
 }
 
+export function* forgotPasswordSaga({ data }) {
+  function* sendForgotPasswordEmail() {
+    yield callApi(api.sendForgotPasswordEmail, data.email, data.url, data.lang);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.forgotPassword.emailSent
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: false,
+      isWarning: false
+    });
+  }
+
+  function* onError(error) {
+    const errorMessage =
+      error.response.status === 400 ? strings.forgotPassword.incorrectEmail : strings.common.genericError;
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+  }
+  yield execute(sendForgotPasswordEmail, true, onError);
+}
+
 export default function* rootSaga() {
   try {
     yield all([
@@ -3361,6 +3423,8 @@ export default function* rootSaga() {
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
       yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga),
+      yield takeLatest(SEND_FORGOT_PASSWORD_EMAIL, forgotPasswordSaga),
+      yield takeLatest(RESET_USER_PASSWORD, resetUserPasswordSaga),
 
       // Users
       yield takeEvery(CHECK_AND_CHANGE_USER_PASSWORD, checkAndChangeUserPasswordSaga),
