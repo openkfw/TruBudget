@@ -43,6 +43,21 @@ schemes
         id: Joi.string().required(),
       }),
     }),
+  )
+  .set(
+    "/user.getUserByEmail",
+    Joi.object({
+      email: Joi.string().required(),
+    }),
+  )
+  .set(
+    "/sendResetPasswordEmail",
+    Joi.object({
+      id: Joi.string().required(),
+      email: Joi.string().email().required(),
+      link: Joi.string().required(),
+      lang: Joi.string().required(),
+    }),
   );
 
 const isBodyValid = (request, payload): boolean => {

@@ -31,6 +31,8 @@ interface ProcessEnvVars {
   STORAGE_SERVICE_HOST: string;
   STORAGE_SERVICE_PORT: string;
   STORAGE_SERVICE_EXTERNAL_URL: string;
+  EMAIL_HOST: string;
+  EMAIL_PORT: string;
   ACCESS_CONTROL_ALLOW_ORIGIN: string;
   NODE_ENV: string;
   ENCRYPTION_PASSWORD: string;
@@ -95,6 +97,10 @@ interface Config {
     port: number;
     externalUrl: string;
   };
+  emailService: {
+    host: string;
+    port: number;
+  };
   encryptionPassword: string | undefined;
   signingMethod: string;
   nodeEnv: string | undefined;
@@ -155,6 +161,10 @@ export const config: Config = {
     host: process.env.STORAGE_SERVICE_HOST || "localhost",
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
     externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL || "",
+  },
+  emailService: {
+    host: process.env.EMAIL_HOST || "localhost",
+    port: Number(process.env.EMAIL_PORT) || 8089,
   },
   encryptionPassword:
     process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,

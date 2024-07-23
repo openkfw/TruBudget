@@ -16,6 +16,7 @@ const ka = {
     actions: "ქმედებები",
     add_tag_text: "დაამატე თაგი პროექტს",
     add: "დამატება",
+    add_without_budget: "დაამატეთ ბიუჯეტის გარეშე",
     added: "დამატებულია",
     additional_data: "დამატებითი ინფორმაცია",
     amount: "რაოდენობა",
@@ -25,12 +26,14 @@ const ka = {
     assigned: "Assigned",
     assignees: "Assignee(s)",
     back: "უკან დაბრუნება",
+    backToLogin: "უკან შესვლა",
     bank: "ბანკი",
     budget_distribution: "ბიუჯეტის განაწილება",
     budget: "ბიუჯეტი",
     cancel: "გაუქმება",
     close: "დახურვა",
     closed: "დახურულია",
+    clear_selection: "მკაფიო შერჩევა",
     comment_description: "კომენტარის დამატება",
     comment: "კომენტარი",
     completion: "დასრულება",
@@ -51,6 +54,7 @@ const ka = {
     edited: "რედაქტირებულია",
     email: "Email",
     finish: "დასრულება",
+    genericError: "Რაღაც არასწორად წავიდა.",
     global: "გლობალური",
     grant: "მინიჭება",
     hash: "ჰაში",
@@ -99,6 +103,7 @@ const ka = {
     on: "ჩართული",
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
+    ongoing: "მიმდინარე",
     open: "Open",
     organization: "ორგანიზაცია",
     password: "პაროლი",
@@ -153,7 +158,7 @@ const ka = {
     edit_permissions: "ნებართვების რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
-    invalid_password: "პაროლი არასწორია",
+    invalid_password: "პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს, დიდ ასოს და რიცხვს",
     new_group: "ახალი ჯგუფი",
     new_user_password_confirmation: "დაადასტურე ახალი პაროლი",
     new_user_password: "ახალი პაროლი",
@@ -239,6 +244,22 @@ const ka = {
     user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
+  forgotPassword: {
+    incorrectEmail: "თქვენ მიერ შეყვანილი ელ. ფოსტის მისამართი არასწორია",
+    link: "Დაგავიწყდათ პაროლი?",
+    emailSent: "გაიგზავნა ელ.წერილი ინსტრუქციებით, თუ როგორ უნდა აღადგინოთ პაროლი.",
+    subHeader:
+      "გთხოვთ, შეიყვანოთ თქვენი ელფოსტის მისამართი, რათა მიიღოთ დამატებითი ინსტრუქციები თქვენი პაროლის აღდგენის შესახებ.",
+    unavailableService: "ელფოსტის სერვისი ამჟამად მიუწვდომელია, გთხოვთ, სცადოთ მოგვიანებით."
+  },
+
+  resetPassword: {
+    invalidToken: "ავთენტიფიკაციის ჟეტონს ვადა გაუვიდა. გთხოვთ გაიმეოროთ დავიწყებული პაროლის პროცესი.",
+    passwordResetSuccess: "პაროლი წარმატებით გადაკეთდა. გთხოვთ, გადახვიდეთ შესვლის გვერდზე.",
+    setPasswordButton: "დააყენეთ ახალი პაროლი",
+    subHeader: "გთხოვთ დააყენოთ თქვენი ახალი პაროლი."
+  },
+
   project: {
     add_new_project: "ახალი პროექტის დამატება",
     assignee: "მფლობელი",
@@ -286,7 +307,8 @@ const ka = {
     organization_info: "Organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning2:
+      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -301,7 +323,7 @@ const ka = {
     exchange_rate: "გაცვლითი კურსი",
     workflow_budget_allocated: "გამოყოფილი",
     workflow_budget_disbursed: "გადახდილი",
-    workflow_budget_na: "Not applicable",
+    workflow_budget_na: "არ მიესადაგება",
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "გადახდილი",
     workflow_budget_status_na: "N/A",
@@ -400,7 +422,8 @@ const ka = {
     project_close_warning: "თუ პროექტს დახურავთ, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
     subproject_close: "ქვეპროექტის დახურვა",
     subproject_close_text: "დარწმუნებული ხართ, გსურთ ამ ქვეპროექტის დახურვა?",
-    subproject_close_warning: "თუ დახურავთ ქვეპროექტს, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
+    subproject_close_warning:
+      "თუ დახურავთ ქვეპროექტს, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
     user_group: "მომხმარებელი/ჯგუფი",
     workflowitem_close: "სამუშაო ნაკადის დახურვა",
     workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?",
@@ -660,6 +683,10 @@ const ka = {
     warning: "გაფრთხილება",
     done: "შესრულებულია",
     toBeDone: "უნდა გაკეთდეს"
+  },
+
+  picture: {
+    select: "აირჩიეთ სურათი გალერეიდან ან ატვირთეთ მორგებული სურათი."
   },
 
   language: {

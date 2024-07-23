@@ -133,6 +133,8 @@ import * as UserDisableAPI from "./user_disable";
 import * as UserEnableAPI from "./user_enable";
 import * as UserListAPI from "./user_list";
 import * as UserAssignmentsAPI from "./user_listAssignments";
+import * as UserForgotPasswordAPI from "./user_forgot_password";
+import * as UserResetPasswordAPI from "./user_password_reset";
 import * as UserLogoutAPI from "./user_logout";
 import * as UserPasswordChangeAPI from "./user_password_change";
 import * as UserPermissionGrantAPI from "./user_permission_grant";
@@ -438,6 +440,26 @@ UserListAPI.addHttpHandler(server, URL_PREFIX, {
   listUsers: (ctx, issuer) => UserQueryService.getUsers(db, ctx, issuer),
   listGroups: (ctx, issuer) => GroupQueryService.getGroups(db, ctx, issuer),
 });
+
+UserForgotPasswordAPI.addHttpHandler(
+  server,
+  URL_PREFIX,
+  {
+    getUserPermissions: (ctx, user, userId) =>
+      UserPermissionsListService.getUserPermissions(db, ctx, user, userId),
+  },
+  jwt,
+);
+
+UserResetPasswordAPI.addHttpHandler(
+  server,
+  URL_PREFIX,
+  {
+    changeUserPassword: (ctx, serviceUser, orga, requestData) =>
+      UserPasswordChangeService.changeUserPassword(db, ctx, serviceUser, orga, requestData),
+  },
+  jwt,
+);
 
 UserPasswordChangeAPI.addHttpHandler(server, URL_PREFIX, {
   changeUserPassword: (ctx, issuer, orga, reqData) =>

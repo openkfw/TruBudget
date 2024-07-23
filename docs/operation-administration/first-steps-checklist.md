@@ -4,6 +4,7 @@ To engage in the discussion with a typical IT team for the installation of TruBu
 
 - Which infrastructure is preferred in the existing IT landscape? Is it an installation on bare metal servers, on virtual machines or is there a container runtime (e.g. via docker) available?
 - Are there any specific networking requirements to host an application that is available to the users and connects through the internet (e.g. DMZ)
+
 - Would TruBudget be run in a cloud environment and if so which one (e.g. Amazon Web Services, Microsoft Azure or Google cloud platform)
 - How are SSL certificate provisioned to ensure an `https` connection
 - What are existing firewalls to connect TruBudget to other nodes and what is the effort to update them?

@@ -10,27 +10,11 @@ import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogTitle from "@mui/material/DialogTitle";
 
-import { formatString } from "../../helper";
+import { formatString, getPasswordErrorText, validatePassword } from "../../helper";
 import strings from "../../localizeStrings";
 import Password from "../Common/Password";
 
 import "./PasswordDialog.scss";
-
-const validate = (newPassword) => {
-  const minLength = 8;
-
-  return newPassword.length >= minLength && /[a-zA-Z]/.test(newPassword) && /[0-9]/.test(newPassword);
-};
-
-const getFailedText = (newPasswordsMatch, passwordInvalid) => {
-  if (passwordInvalid) {
-    return strings.users.invalid_password;
-  } else if (!newPasswordsMatch) {
-    return strings.users.no_password_match;
-  } else {
-    return "";
-  }
-};
 
 const getDialogActions = (submitDisabled, hidePasswordDialog, handleSubmit) => {
   const cancelButton = (
@@ -101,12 +85,12 @@ const PasswordDialog = (props) => {
     };
   }, [passwordDialogShown]);
 
-  const failedText = getFailedText(newPasswordsMatch, passwordInvalid);
+  const failedText = getPasswordErrorText(newPasswordsMatch, passwordInvalid);
   const newPasswordFailed = !newPasswordsMatch || passwordInvalid;
 
   const title = formatString(strings.users.change_password_for, editId);
   const handleSubmit = () => {
-    const newPasswordValid = validate(newPassword);
+    const newPasswordValid = validatePassword(newPassword);
     storeSnackbarMessage(strings.users.password_change_success);
     if (newPassword !== newPasswordConfirmation) {
       setPasswordInvalid(false);

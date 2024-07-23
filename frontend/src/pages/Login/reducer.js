@@ -25,6 +25,7 @@ import {
   LOGIN_SUCCESS,
   LOGOUT_SUCCESS,
   SET_LANGUAGE,
+  STORE_EMAIL,
   STORE_PASSWORD,
   STORE_USERNAME
 } from "./actions";
@@ -51,7 +52,8 @@ export const defaultState = fromJS({
   password: "",
   user: [],
   userDisplayNameMap: {},
-  username: ""
+  username: "",
+  email: ""
 });
 
 const setTimeLocale = (language) => {
@@ -153,6 +155,8 @@ export default function loginReducer(state = defaultState, action) {
       return state.merge({
         loading: action.showLoading
       });
+    case STORE_EMAIL:
+      return state.set("email", action.email);
     default:
       return state;
   }

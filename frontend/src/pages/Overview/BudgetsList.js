@@ -21,7 +21,7 @@ const BudgetsList = ({ budgets }) => {
             <Tooltip title={b.organization}>
               <Chip
                 avatar={<Avatar>{b.organization.slice(0, 1)}</Avatar>}
-                label={toAmountString(b.value, b.currencyCode)}
+                label={toAmountString(b.value, b.currencyCode, true)}
               />
             </Tooltip>
           </Box>

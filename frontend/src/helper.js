@@ -81,7 +81,10 @@ export const getCurrencies = () => {
   });
 };
 
-export const toAmountString = (amount, currency) => {
+export const toAmountString = (amount, currency, showBlankIfNull = false) => {
+  if (showBlankIfNull && (amount === "0" || amount === 0)) {
+    return "-";
+  }
   if (_isString(amount) && amount.trim().length <= 0) {
     return "";
   }
@@ -95,6 +98,13 @@ export const toAmountString = (amount, currency) => {
   }
 
   return accounting.formatMoney(amount, getCurrencyFormat(currency));
+};
+
+export const toCurrencyCode = (amount, currency, showBlankIfNull = false) => {
+  if (showBlankIfNull && (amount === "0" || amount === 0)) {
+    return "";
+  }
+  return currency;
 };
 
 export const validateLanguagePattern = (amount) => {
@@ -119,6 +129,8 @@ export const statusMapping = (status) => {
       return strings.common.closed;
     case "rejected":
       return strings.common.rejected;
+    case "ongoing":
+      return strings.common.ongoing;
     case "open":
       return strings.common.open;
     default:
@@ -261,6 +273,21 @@ export const getLoginErrorFromResponse = (status, data) => {
   }
 };
 
+export const validatePassword = (newPassword) => {
+  const minLength = 8;
+
+  return newPassword.length >= minLength && /[a-zA-Z]/.test(newPassword) && /[0-9]/.test(newPassword);
+};
+
+export const getPasswordErrorText = (newPasswordsMatch, passwordInvalid) => {
+  if (passwordInvalid) {
+    return strings.users.invalid_password;
+  } else if (!newPasswordsMatch) {
+    return strings.users.no_password_match;
+  } else {
+    return "";
+  }
+};
 export const trimSpecialChars = (string) => {
   return string.replace(/&nbsp;/g, "").replace(/&amp;/g, "&");
 };

@@ -58,7 +58,7 @@ const renderProjectedBudgetAmount = ({
           helperText={!isValidBudgetAmountEdit ? strings.common.invalid_format : ""}
         />
       ) : (
-        toAmountString(projectedBudget.value, projectedBudget.currencyCode)
+        toAmountString(projectedBudget.value, projectedBudget.currencyCode, true)
       )}
     </TableCell>
   );
@@ -182,8 +182,8 @@ const Budget = (props) => {
   const saveProjectedBudget = useCallback(() => {
     const projectedBudgetToAdd = {
       organization: organization,
-      value: fromAmountString(budgetAmountAdd).toString(10),
-      currencyCode: currency
+      value: budgetAmountAdd ? fromAmountString(budgetAmountAdd).toString(10) : 0,
+      currencyCode: currency || "EUR"
     };
     addProjectedBudget(projectedBudgetToAdd);
     setBudgetAmountAdd("");
@@ -312,18 +312,25 @@ const Budget = (props) => {
             disabled={isEditing}
             error={!isSaveable}
             errorText={strings.common.projected_budget_exists}
+            clearableSelection={true}
           >
             {getCurrencyMenuItems(currencies)}
           </DropDown>
           <Button
             className="add-org-button"
             variant="contained"
-            color="secondary"
+            color="primary"
             data-test="add-projected-budget"
-            disabled={!budgetAmountAdd || !currency || !organization || !isSaveable || !isValidBudgetAmountAdd}
+            disabled={
+              !isSaveable ||
+              !isValidBudgetAmountAdd ||
+              !organization ||
+              (budgetAmountAdd && !currency) ||
+              (!budgetAmountAdd && !!currency)
+            }
             onClick={saveProjectedBudget}
           >
-            {`${strings.common.add}`}
+            {`${budgetAmountAdd ? strings.common.add : strings.common.add_without_budget}`}
           </Button>
         </div>
       </div>

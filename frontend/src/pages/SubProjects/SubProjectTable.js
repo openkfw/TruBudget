@@ -49,7 +49,7 @@ const displaySubprojectBudget = (budgets) => {
           title={
             <div>
               {consolidatedBudgets[currencyCode].map((b, i) => (
-                <div key={`tt-pb-sp-${i}`}>{`${b.organization}: ${toAmountString(b.value, currencyCode)}`}</div>
+                <div key={`tt-pb-sp-${i}`}>{`${b.organization}: ${toAmountString(b.value, currencyCode, true)}`}</div>
               ))}
             </div>
           }
@@ -62,8 +62,10 @@ const displaySubprojectBudget = (budgets) => {
             }
             label={toAmountString(
               consolidatedBudgets[currencyCode].reduce((acc, next) => acc + parseFloat(next.value), 0),
-              currencyCode
+              currencyCode,
+              true
             )}
+            f
           />
         </Tooltip>
       </div>
