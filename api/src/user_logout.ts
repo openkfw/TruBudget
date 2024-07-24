@@ -7,7 +7,7 @@ import * as Result from "./result";
 import Joi = require("joi");
 import { config } from "./config";
 import { clearValue } from "lib/keyValueStore";
-import { UserLogoutAPIService } from "index";
+import { UserLogoutAPIService } from "./index";
 
 /**
  * Represents the request body of the endpoint

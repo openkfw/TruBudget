@@ -9,11 +9,11 @@ import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import Joi = require("joi");
 import { JwtConfig, config } from "./config";
-import { AugmentedFastifyInstance } from "types";
+import { AugmentedFastifyInstance } from "./types";
 import {
   MAX_GROUPS_LENGTH,
   accessTokenExpirationInMinutesWithrefreshToken,
-} from "user_authenticate";
+} from "./user_authenticate";
 import { AuthenticatedRequest } from "httpd/lib";
 
 /**
