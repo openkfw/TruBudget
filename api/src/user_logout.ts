@@ -5,7 +5,7 @@ import { toHttpError } from "./http_errors";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import Joi = require("joi");
-import { config } from "config";
+import { config } from "./config";
 import { clearValue } from "lib/keyValueStore";
 import { UserLogoutAPIService } from "index";
 
