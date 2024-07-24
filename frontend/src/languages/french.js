@@ -153,12 +153,15 @@ const fr = {
     loading: "Chargement ...",
     login_button_title: "Connexion",
     login_authproxy_button_title: "Connexion avec Auth Proxy",
+
     production_env: "Prod",
     test_env: "Test",
     frontend_name: "TruBudget",
     frontend_description:
       "Une plateforme collaborative pour une gestion transparente et sécurisée des financements extérieurs.",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Votre compte utilisateur n'a pas été trouvé. Veuillez contacter l'administrateur.",
+    popup_blocker_warning:
+      "Impossible de se déconnecter du service d'authentification externe. Veuillez autoriser les fenêtres contextuelles ou visiter\n{0}\n pour vous déconnecter en toute sécurité."
   },
 
   forgotPassword: {

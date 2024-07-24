@@ -241,7 +241,9 @@ const en = {
     test_env: "Test",
     frontend_name: "TruBudget",
     frontend_description: "A blockchain-based solution for budget expenditure",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Your user account has not been found. Please contact the administrator.",
+    popup_blocker_warning:
+      "Could not log out from external authentication service. Please allow popup windows, or visit\n{0}\n to securely log out."
   },
 
   forgotPassword: {

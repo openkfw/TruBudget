@@ -3,7 +3,7 @@ import { parse } from "content-disposition-attachment";
 import _isEmpty from "lodash/isEmpty";
 
 import config from "./config";
-import { base64ToBlob } from "./helper";
+import { base64ToBlob, formatString } from "./helper";
 import strings from "./localizeStrings";
 import { store } from "./store";
 
@@ -12,6 +12,7 @@ const API_VERSION = "1.0";
 const instance = axios.create();
 
 const isAuthProxyEnabled = window?.injectedEnv?.REACT_APP_AUTHPROXY_ENABLED === "true" || config.authProxy.enabled;
+
 const authProxySignoutUri = (window?.injectedEnv?.REACT_APP_AUTHPROXY_URL || config.authProxy.url).replace(
   "signin",
   "signout"
@@ -102,7 +103,11 @@ class Api {
     if (isAuthProxyEnabled) {
       const isUsingAuthproxy = store?.getState()?.get("login")?.toJS()?.isUsingAuthproxy;
       if (isUsingAuthproxy && authProxySignoutUri) {
-        window.open(`${authProxySignoutUri}`, "_blank");
+        let logoutWindow = window.open(`${authProxySignoutUri}`, "_blank");
+
+        if (!logoutWindow || logoutWindow.closed || typeof logoutWindow.closed == "undefined") {
+          alert(formatString(strings.login.popup_blocker_warning, authProxySignoutUri));
+        }
       }
     }
     return instance.post(`/user.logout`, {});
