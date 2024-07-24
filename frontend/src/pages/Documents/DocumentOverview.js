@@ -105,6 +105,32 @@ class DocumentOverview extends Component {
     );
   };
 
+  generateLinkDocToHashUploadButton = (validated, projectId, subprojectId, workflowitemId, document) => {
+    const { id, available } = document;
+
+    return (
+      <Button {...this.getPropsForValidationButton(validated, available)} data-test="validation-button">
+        <ValidationIcon />
+        {this.getValidationText(validated)}
+        <Input
+          id="docvalidation"
+          type="file"
+          className="document-validation-input"
+          onChange={(event) => {
+            if (event.target.files[0]) {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              reader.onloadend = async (e) => {
+                
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
+      </Button>
+    );
+  };
+
   generateDocumentList = () => {
     const {
       workflowitemId,
@@ -144,6 +170,7 @@ class DocumentOverview extends Component {
               {document.id &&
                 document.hash &&
                 this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
+              {/* {document.id && document.link && this.generateLinkDocToHashUploadButton(validated, projectId, subprojectId, workflowitemId, document)} */}
               {document.id &&
                 document.hash &&
                 this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)}
