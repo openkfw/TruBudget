@@ -145,7 +145,7 @@ export function checkExportService(showLoading) {
 export function refreshToken() {
   return {
     type: REFRESH_TOKEN
-  }
+  };
 }
 
 export function storeEmail(email) {
