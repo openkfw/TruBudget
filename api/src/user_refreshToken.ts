@@ -14,7 +14,7 @@ import {
   MAX_GROUPS_LENGTH,
   accessTokenExpirationInMinutesWithrefreshToken,
 } from "./user_authenticate";
-import { AuthenticatedRequest } from "httpd/lib";
+import { AuthenticatedRequest } from "./httpd/lib";
 
 /**
  * Represents the request body of the endpoint
@@ -222,7 +222,7 @@ export function addHttpHandler(
       };
       // conditionally add token expiration to payload
       request.log.warn(`checking  accessTokenExp ${config.refreshTokenStorage}`);
-      if (["db", "memory"].includes(config.refreshTokenStorage as string)) {
+      if (config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)) {
         request.log.warn("adding accessTokenExp");
         body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
       }

@@ -155,7 +155,7 @@ import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_docume
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
-import DbConnector from "lib/db";
+import DbConnector from "./lib/db";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;

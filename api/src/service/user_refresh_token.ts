@@ -20,7 +20,8 @@ import { verifyToken } from "../lib/token";
 import { UserMetadata } from "./domain/metadata";
 import { NotFound } from "./domain/errors/not_found";
 import { getValue } from "../lib/keyValueStore";
-import DbConnector from "lib/db";
+import DbConnector from "../lib/db";
+import { TokenBody } from "./user_authenticate";
 
 export interface UserLoginResponse {
   id: string;
@@ -219,7 +220,10 @@ export async function authenticateWithToken(
 
   let verifiedToken;
   try {
-    const base64SigningKey = config.authProxy.jwsSignature as string;
+    if (!config.authProxy.jwsSignature) {
+      return new VError("jwsSignature not set in authProxy config");
+    }
+    const base64SigningKey = config.authProxy.jwsSignature;
     verifiedToken = verifyToken(token, Buffer.from(base64SigningKey, "base64"), "RS256");
   } catch (err) {
     const cause = new VError(err, "There was a problem verifying the authorization token");
@@ -227,12 +231,12 @@ export async function authenticateWithToken(
   }
 
   // extract id and metadata
-  const body = verifiedToken?.body.toJSON();
-  const userId = body?.sub as string;
+  const body: TokenBody = verifiedToken?.body.toJSON();
+  const userId = body?.sub;
   const metadata = body.metadata;
-  const externalId = (metadata.externalId as string) || "";
-  const kid = (metadata.kid as string) || "";
-  const csrfFromCookie = body?.csrf as string;
+  const externalId = (metadata.externalId) || "";
+  const kid = (metadata.kid) || "";
+  const csrfFromCookie = body?.csrf;
 
   // cookie value does not match with value from http request params
   if (csrfFromCookie !== csrf) {

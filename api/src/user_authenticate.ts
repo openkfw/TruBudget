@@ -297,7 +297,7 @@ export function addHttpHandler(
         },
       };
       // conditionally add token expiration to payload
-      if (["db", "memory"].includes(config.refreshTokenStorage as string)) {
+      if (config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)) {
         body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
       }
 
@@ -347,7 +347,7 @@ function createJWT(
   }
 
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
-  const expiresIn = ["db", "memory"].includes(config.refreshTokenStorage as string)
+  const expiresIn = config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)
     ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
     : "8h";
   return jsonwebtoken.sign(

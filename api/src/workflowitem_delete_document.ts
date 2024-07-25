@@ -7,7 +7,7 @@ import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import { extractUser } from "./handlerUtils";
-import { AuthenticatedRequest } from "httpd/lib";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Service } from "./service/workflowitem_document_delete";
 
 /**

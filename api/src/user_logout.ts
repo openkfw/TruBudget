@@ -126,12 +126,12 @@ export function addHttpHandler(
     }
 
     try {
-      const currentRefreshToken = request.cookies["refreshToken"] as string;
+      const currentRefreshToken = request.cookies["refreshToken"];
 
       // delete refresh token from storage
-      if (config.refreshTokenStorage === "memory") {
+      if (currentRefreshToken && config.refreshTokenStorage === "memory") {
         clearValue(`refreshToken.${currentRefreshToken}`);
-      } else if (config.refreshTokenStorage === "db") {
+      } else if (currentRefreshToken && config.refreshTokenStorage === "db") {
         await service.clearRefreshToken(currentRefreshToken);
       }
       const body = {

@@ -1,8 +1,6 @@
 import { Knex, knex } from "knex";
-import configFunction from "../config";
+import { config } from "../config";
 import logger from "./logger";
-
-const config = configFunction();
 
 interface RefreshTokenEntry {
   user_id: string;
@@ -33,7 +31,10 @@ class DbConnector {
       logger.trace("Initializing DB connection(s) ...");
       this.pool = this.initializeConnection();
     }
-    if (!(await this.pool.schema.hasTable(config.refreshTokensTable as string))) {
+    if (!config.refreshTokensTable) {
+      throw new Error("refreshTokensTable ENV variable not set.");
+    }
+    if (!(await this.pool.schema.hasTable(config.refreshTokensTable))) {
       logger.trace("No tables found - creating them now!");
       await this.createTable();
     }
@@ -50,7 +51,10 @@ class DbConnector {
   public healthCheck = async (): Promise<void> => {
     logger.debug("Starting health check");
     const client = await this.getDb();
-    const tablesToCheck: string[] = [config.refreshTokensTable as string];
+    if (!config.refreshTokensTable) {
+      throw new Error("refreshTokensTable ENV variable not set in healthCheck.");
+    }
+    const tablesToCheck: string[] = [config.refreshTokensTable];
     const tablePromises = Promise.all(
       tablesToCheck.map((table) => {
         logger.trace({ table }, "Checking table");
@@ -108,7 +112,7 @@ class DbConnector {
 
   public getRefreshToken = async (
     refreshToken: string,
-  ): Promise<{ userId: string; validUntil: string } | undefined> => {
+  ): Promise<{ userId: string; validUntil: number } | undefined> => {
     try {
       const client = await this.getDb();
       logger.trace({ refreshToken }, "Getting refresh token from user by id");
