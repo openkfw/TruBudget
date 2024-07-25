@@ -14,7 +14,7 @@ import { JwtConfig, config } from "./config";
 import { saveValue } from "./lib/keyValueStore";
 
 export const MAX_GROUPS_LENGTH = 3000;
-export const accessTokenExpirationInMinutesWithrefreshToken = 3;
+export const accessTokenExpirationInMinutesWithrefreshToken = 10;
 export const refreshTokenExpirationInDays = 8;
 
 /**
