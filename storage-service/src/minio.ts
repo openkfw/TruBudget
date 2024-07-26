@@ -12,6 +12,8 @@ import {
   sleep,
 } from "./storage";
 
+const region = process.env.MINIO_REGION || "us-east-1";
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 const minioClient: Minio.Client = new Minio.Client({
   endPoint: config.storage.host,
@@ -46,7 +48,7 @@ const makeBucket = (bucket: string, cb: Function): void => {
     }
 
     if (!exists) {
-      minioClient.makeBucket(bucket, "us-east-1", (err) => {
+      minioClient.makeBucket(bucket, region, (err) => {
         if (err) {
           log.error({ err }, "Error creating bucket.");
           return cb(err);
