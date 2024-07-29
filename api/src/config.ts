@@ -51,7 +51,7 @@ interface ProcessEnvVars {
   API_DB_SSL: string;
   API_DB_SCHEMA: string;
   API_REFRESH_TOKENS_TABLE: string;
-  REFRESH_TOKEN_STORAGE: string; // "db" || "memory" || undefined
+  REFRESH_TOKEN_STORAGE?: string; // "db" || "memory" || undefined
 }
 
 interface DatabaseConfig {
@@ -192,9 +192,11 @@ export const config: Config = {
   dbType: process.env.DB_TYPE || "pg",
   sqlDebug: Boolean(process.env.SQL_DEBUG) || false,
   refreshTokensTable: process.env.API_REFRESH_TOKENS_TABLE || "refresh_token",
-  refreshTokenStorage: ["db", "memory"].includes(process.env.REFRESH_TOKEN_STORAGE)
-    ? process.env.REFRESH_TOKEN_STORAGE
-    : undefined,
+  refreshTokenStorage:
+    process.env.REFRESH_TOKEN_STORAGE &&
+    ["db", "memory"].includes(process.env.REFRESH_TOKEN_STORAGE)
+      ? process.env.REFRESH_TOKEN_STORAGE
+      : undefined,
   snapshotEventInterval: Number(process.env.SNAPSHOT_EVENT_INTERVAL) || 3,
   azureMonitorConnectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
   silenceLoggingOnFrequentRoutes:

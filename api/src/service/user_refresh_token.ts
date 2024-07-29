@@ -49,9 +49,9 @@ export async function validateRefreshToken(
       | { userId: string; validUntil: number }
       | undefined;
   } else if (config.refreshTokenStorage === "db") {
-    storedRefreshToken = (await dbConnection.getRefreshToken(refreshToken as string)) as
-      | { userId: string; validUntil: number }
-      | undefined;
+    if (refreshToken) {
+      storedRefreshToken = await dbConnection.getRefreshToken(refreshToken);
+    }
     const now = new Date();
     if (!storedRefreshToken?.validUntil || now.getTime() > storedRefreshToken?.validUntil) {
       return new AuthenticationFailed({ ctx, organization, userId }, "Refresh token expired");
@@ -234,8 +234,8 @@ export async function authenticateWithToken(
   const body: TokenBody = verifiedToken?.body.toJSON();
   const userId = body?.sub;
   const metadata = body.metadata;
-  const externalId = (metadata.externalId) || "";
-  const kid = (metadata.kid) || "";
+  const externalId = metadata.externalId || "";
+  const kid = metadata.kid || "";
   const csrfFromCookie = body?.csrf;
 
   // cookie value does not match with value from http request params
