@@ -9,7 +9,7 @@ import { Type, isErr } from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { RequestData } from "./service/domain/organization/user_password_change";
 import Joi = require("joi");
-import { JwtConfig } from "config";
+import { JwtConfig } from "./config";
 
 const API_VERSION = "1.0";
 

@@ -34,6 +34,9 @@ export const CHECK_EXPORT_SERVICE = "CHECK_EXPORT_SERVICE";
 export const CHECK_EXPORT_SERVICE_SUCCESS = "CHECK_EXPORT_SERVICE_SUCCESS";
 export const CHECK_EXPORT_SERVICE_FAILURE = "CHECK_EXPORT_SERVICE_FAILURE";
 
+export const REFRESH_TOKEN = "REFRESH_TOKEN";
+export const REFRESH_TOKEN_SUCCESS = "REFRESH_TOKEN_SUCCESS";
+
 export const SEND_FORGOT_PASSWORD_EMAIL = "SEND_FORGOT_PASSWORD_EMAIL";
 export const RESET_USER_PASSWORD = "RESET_USER_PASSWORD";
 
@@ -136,6 +139,12 @@ export function checkExportService(showLoading) {
   return {
     type: CHECK_EXPORT_SERVICE,
     showLoading
+  };
+}
+
+export function refreshToken() {
+  return {
+    type: REFRESH_TOKEN
   };
 }
 

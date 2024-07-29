@@ -78,6 +78,10 @@ class Api {
    */
   getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${config.email.servicePort}` : "/email"}/${urlSlug}`;
 
+  checkAccessTokenExpiration = () => {
+    return localStorage.getItem("refresh_token_expiration");
+  };
+
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
       user: {
@@ -92,6 +96,8 @@ class Api {
     });
 
   logout = () => instance.post(`/user.logout`, {});
+
+  refreshToken = () => instance.post(`/user.refreshtoken`, {});
 
   disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
