@@ -150,7 +150,7 @@ class DbConnector {
     logger.debug("Creating refresh tokens table");
     await this.pool.schema.createTable(config.refreshTokensTable as string, (table) => {
       table.string(this.userIdColumnName, 200).notNullable();
-      table.string(this.refreshTokenColumnName).notNullable().unique();
+      table.text(this.refreshTokenColumnName).notNullable().unique();
       table.bigInteger(this.validityColumnName);
     });
     logger.info(`Table '${config.refreshTokensTable}' created.`);
