@@ -82,27 +82,41 @@ export const upload = async (
 };
 
 export const download = async (blobName: string): Promise<FileWithMeta> => {
-  const containerClient = blobServiceClient.getContainerClient(containerName);
-  const blobClient = containerClient.getBlobClient(blobName);
+  try {
+    const containerClient = blobServiceClient.getContainerClient(containerName);
+    log.trace(`Attempting to access container: ${containerName}`);
 
-  // Get blob content from position 0 to the end
-  // In Node.js, get downloaded data by accessing downloadBlockBlobResponse.readableStreamBody
-  const downloadBlockBlobResponse = await blobClient.download();
-  const downloaded = (
-    await streamToBuffer(downloadBlockBlobResponse.readableStreamBody)
-  ).toString();
+    const blobClient = containerClient.getBlobClient(blobName);
+    log.trace(`Attempting to access blob: ${blobName}`);
 
-  const properties = await blobClient.getProperties();
-  return {
-    data: downloaded,
-    meta: {
-      name: blobName,
-      "Content-Type": properties.contentType,
-      fileName: properties.metadata?.fileName || "",
-      docId: properties.metadata?.docId || "",
-      secret: properties.metadata?.secret,
-    },
-  };
+    // Get blob content from position 0 to the end
+    const downloadBlockBlobResponse = await blobClient.download();
+    log.trace(
+      `Blob download response status: ${downloadBlockBlobResponse._response.status}`,
+    );
+
+    const downloaded = (
+      await streamToBuffer(downloadBlockBlobResponse.readableStreamBody)
+    ).toString();
+
+    const properties = await blobClient.getProperties();
+    log.trace(`Blob properties: ${JSON.stringify(properties)}`);
+
+    // Assuming FileWithMeta is a type that includes the downloaded content and metadata
+    return {
+      data: downloaded,
+      meta: {
+        name: blobName,
+        "Content-Type": properties.contentType,
+        fileName: properties.metadata?.fileName || "",
+        docId: properties.metadata?.docId || "",
+        secret: properties.metadata?.secret,
+      },
+    };
+  } catch (error) {
+    log.error(`Error downloading blob: ${blobName}`, error);
+    throw error;
+  }
 };
 
 export const deleteDocument = async (blobName): Promise<void> => {
