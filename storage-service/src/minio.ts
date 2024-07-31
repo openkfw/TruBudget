@@ -4,13 +4,7 @@ import { v4 } from "uuid";
 import config from "./config";
 import { log } from "./index";
 import * as Stream from "stream";
-import {
-  FileWithMeta,
-  FullStat,
-  Metadata,
-  MetadataWithName,
-  sleep,
-} from "./storage";
+import { FileWithMeta, Metadata, MetadataWithName, sleep } from "./storage";
 
 const region = process.env.MINIO_REGION || "us-east-1";
 
@@ -98,10 +92,7 @@ export const upload = async (
   }
 };
 
-const download = async (
-  file: string,
-  cb: Function,
-): Promise<void> => {
+const download = async (file: string, cb: Function): Promise<void> => {
   let fileContent = "";
   let meta: MetadataWithName;
   try {
@@ -112,7 +103,7 @@ const download = async (
       fileContent += chunk;
     });
     dataStream.on("end", async () => {
-      meta = await getMetadataAsPromised(file);
+      meta = await getMetadata(file);
       cb(null, { data: fileContent, meta });
     });
     dataStream.on("error", function (err) {
@@ -138,32 +129,29 @@ export const deleteDocument = async (file: string): Promise<void> => {
   return minioClient.removeObject(bucketName, file);
 };
 
-const getMetadata = (fileHash: string, cb: Function): void => {
-  minioClient.statObject(bucketName, fileHash, (err, stat: FullStat) => {
-    if (err) {
-      log.error({ err }, "Error while getting Metadata");
-      return cb(err);
-    }
-    cb(null, stat.metaData);
-  });
-};
-
-export const getMetadataAsPromised = (
+interface BucketItemStatWithMeta extends Minio.BucketItemStat {
+  metaData: MetadataWithName;
+}
+export const getMetadata = async (
   fileHash: string,
 ): Promise<MetadataWithName> => {
-  return new Promise((resolve, reject) => {
-    getMetadata(fileHash, (err, metaData: MetadataWithName) => {
-      if (err) return reject(err);
+  try {
+    const stat = await minioClient.statObject(bucketName, fileHash);
+    const { metaData } = stat as BucketItemStatWithMeta;
 
-      resolve(metaData);
-    });
-  });
+    return metaData;
+  } catch (err) {
+    log.error({ err }, "Error while getting Metadata");
+    throw err;
+  }
 };
 
 export const getReadiness = async (): Promise<void> => {
-  minioClient.listBuckets(function (err, _buckets) {
+  try {
+    await minioClient.listBuckets();
+  } catch (err) {
     if (err) return log.error(err);
-  });
+  }
 };
 
 export const establishConnection = async (): Promise<void> => {
