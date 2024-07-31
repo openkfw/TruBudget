@@ -74,8 +74,10 @@ if [ "$REACT_APP_EMAIL_SERVICE_ENABLED" = true ]; then
 fi
 
 if [[ ! -z "${REACT_APP_EXCHANGE_RATE_URL}" ]]; then
-  echo "Adding the exchange rate API url to ${REACT_APP_EXCHANGE_RATE_URL}"
-  sed -i -e "s|https://data-api.ecb.europa.eu/service/data/EXR/|& $REACT_APP_EXCHANGE_RATE_URL|" /etc/nginx/conf.d/default.conf
+  # Remove the query string from the URL
+  FX_URL_WITHOUT_QUERY="${REACT_APP_EXCHANGE_RATE_URL%%\?*}"
+  echo "Adding ${FX_URL_WITHOUT_QUERY} to Content-Security-Policy header in nginx configuration."
+  sed -i -e "s|https://data-api.ecb.europa.eu/service/data/EXR/|& $FX_URL_WITHOUT_QUERY|" /etc/nginx/conf.d/default.conf
 fi
 
 

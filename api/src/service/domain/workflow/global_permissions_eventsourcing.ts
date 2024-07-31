@@ -60,7 +60,6 @@ function applyGrantPermission(
     entityType: "global",
     businessEvent: permissionGranted,
   };
-  globalPerms.log.push(traceEvent);
 }
 
 function applyRevokePermission(
@@ -91,5 +90,4 @@ function applyRevokePermission(
     entityType: "global",
     businessEvent: permissionRevoked,
   };
-  globalPerms.log.push(traceEvent);
 }

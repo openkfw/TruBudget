@@ -48,7 +48,7 @@ class LoginPageContainer extends Component {
     }
     if (this.props.isUserLoggedIn) {
       this.props.setLoginLoading(false);
-      this.props.router.navigate(path);
+      setTimeout(() => this.props.router.navigate(path));
     }
   }
 

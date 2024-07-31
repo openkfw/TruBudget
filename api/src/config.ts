@@ -31,6 +31,8 @@ interface ProcessEnvVars {
   STORAGE_SERVICE_HOST: string;
   STORAGE_SERVICE_PORT: string;
   STORAGE_SERVICE_EXTERNAL_URL: string;
+  EMAIL_HOST: string;
+  EMAIL_PORT: string;
   ACCESS_CONTROL_ALLOW_ORIGIN: string;
   NODE_ENV: string;
   ENCRYPTION_PASSWORD: string;
@@ -41,8 +43,26 @@ interface ProcessEnvVars {
   AUTHPROXY_JWS_SIGNATURE: string;
   SNAPSHOT_EVENT_INTERVAL: string;
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: string;
+  API_DB_USER: string;
+  API_DB_PASSWORD: string;
+  API_DB_HOST: string;
+  API_DB_DATABASE: string;
+  API_DB_PORT: string;
+  API_DB_SSL: string;
+  API_DB_SCHEMA: string;
+  API_REFRESH_TOKENS_TABLE: string;
+  REFRESH_TOKEN_STORAGE?: string; // "db" || "memory" || undefined
 }
 
+interface DatabaseConfig {
+  user: string;
+  password: string;
+  host: string;
+  database: string;
+  port: number;
+  ssl: boolean;
+  schema: string;
+}
 /**
  * Shows the type of an API configuration
  * @notExported
@@ -77,6 +97,10 @@ interface Config {
     port: number;
     externalUrl: string;
   };
+  emailService: {
+    host: string;
+    port: number;
+  };
   encryptionPassword: string | undefined;
   signingMethod: string;
   nodeEnv: string | undefined;
@@ -87,6 +111,11 @@ interface Config {
     authProxyCookie: string;
     jwsSignature: string | undefined;
   };
+  db: DatabaseConfig;
+  dbType: string;
+  sqlDebug: boolean | undefined;
+  refreshTokensTable: string | undefined;
+  refreshTokenStorage: string | undefined;
   snapshotEventInterval: number;
   azureMonitorConnectionString: string;
   silenceLoggingOnFrequentRoutes: boolean;
@@ -133,6 +162,10 @@ export const config: Config = {
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
     externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL || "",
   },
+  emailService: {
+    host: process.env.EMAIL_HOST || "localhost",
+    port: Number(process.env.EMAIL_PORT) || 8089,
+  },
   encryptionPassword:
     process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,
   signingMethod: process.env.SIGNING_METHOD || "node",
@@ -147,6 +180,23 @@ export const config: Config = {
     authProxyCookie: "authorizationToken",
     jwsSignature: process.env.AUTHPROXY_JWS_SIGNATURE || undefined,
   },
+  db: {
+    user: process.env.API_DB_USER || "postgres",
+    password: process.env.API_DB_PASSWORD || "test",
+    host: process.env.API_DB_HOST || "localhost",
+    database: process.env.API_DB_NAME || "trubudget_email_service",
+    port: Number(process.env.API_DB_PORT) || 5432,
+    ssl: process.env.API_DB_SSL === "true",
+    schema: process.env.API_DB_SCHEMA || "public",
+  },
+  dbType: process.env.DB_TYPE || "pg",
+  sqlDebug: Boolean(process.env.SQL_DEBUG) || false,
+  refreshTokensTable: process.env.API_REFRESH_TOKENS_TABLE || "refresh_token",
+  refreshTokenStorage:
+    process.env.REFRESH_TOKEN_STORAGE &&
+    ["db", "memory"].includes(process.env.REFRESH_TOKEN_STORAGE)
+      ? process.env.REFRESH_TOKEN_STORAGE
+      : undefined,
   snapshotEventInterval: Number(process.env.SNAPSHOT_EVENT_INTERVAL) || 3,
   azureMonitorConnectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
   silenceLoggingOnFrequentRoutes:

@@ -46,3 +46,20 @@ export interface UserGetEmailAddressRequest extends express.Request {
     id: string;
   };
 }
+
+export interface UserGetEmailAddressByEmailRequest extends express.Request {
+  query: {
+    email: string;
+  };
+}
+
+export interface ResetPasswordRequest extends express.Request {
+  body: {
+    data: {
+      id: string;
+      email: string;
+      link: string;
+      lang: string;
+    };
+  };
+}

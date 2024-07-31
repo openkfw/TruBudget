@@ -10,7 +10,7 @@ import * as Result from "./result";
 import * as WorkflowitemDocument from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { extractUser } from "./handlerUtils";
-import { AuthenticatedRequest } from "httpd/lib";
+import { AuthenticatedRequest } from "./httpd/lib";
 
 /**
  * Creates the swagger schema for the `/workflowitem.downloadDocument` endpoint

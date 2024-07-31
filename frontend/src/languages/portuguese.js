@@ -16,6 +16,7 @@ const pt = {
     actions: "Ações",
     add_tag_text: "Adicionar tag ao projeto",
     add: "Adicionar",
+    add_without_budget: "Adicionar sem orçamento",
     added: "Adicionado",
     additional_data: "Dados Adicionais",
     amount: "Valor",
@@ -25,12 +26,14 @@ const pt = {
     assigned: "Atribuído",
     assignees: "Responsável",
     back: "Voltar",
+    backToLogin: "Voltar ao login",
     bank: "Banco",
     budget_distribution: "Distribuição do orçamento",
     budget: "Orçamento",
     cancel: "Cancelar",
     close: "Fechar",
     closed: "Fechado",
+    clear_selection: "seleção clara",
     comment_description: "Adicione comentário",
     comment: "Comentário",
     completion: "Conclusão",
@@ -51,6 +54,7 @@ const pt = {
     edited: "Editado",
     email: "Email",
     finish: "Finalizar",
+    genericError: "Algo correu mal.",
     global: "global",
     grant: "Conceder",
     hash: "Hash",
@@ -100,6 +104,7 @@ const pt = {
     on: "Ligado",
     ok: "Ok",
     not_projected: "Não projetado",
+    ongoing: "Em andamento",
     open: "Aberto",
     organization: "Organização",
     password: "Senha",
@@ -154,7 +159,7 @@ const pt = {
     edit_permissions: "Editar permissões",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
-    invalid_password: "Sehna inválida",
+    invalid_password: "A senha deve conter pelo menos 8 caracteres, letra maiúscula e número",
     new_group: "Novo grupo de usuários",
     new_user_password_confirmation: "Confirme a Nova Senha",
     new_user_password: "Nova Senha",
@@ -239,6 +244,22 @@ const pt = {
     user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
+  forgotPassword: {
+    incorrectEmail: "O endereço de e-mail que introduziu está incorreto",
+    link: "Esqueceu-se da sua senha?",
+    emailSent: "E-mail com instruções sobre como redefinir a sua palavra-passe foi enviado.",
+    subHeader:
+      "Por favor, introduza o seu endereço de e-mail para receber mais instruções sobre como redefinir a sua palavra-passe.",
+    unavailableService: "O serviço de e-mail não está disponível de momento."
+  },
+
+  resetPassword: {
+    invalidToken: "O token de autenticação expirou. Por favor, repita o processo de esquecimento da palavra-passe.",
+    passwordResetSuccess: "Palavra-passe redefinida com sucesso. Por favor, prossiga para a página de login.",
+    setPasswordButton: "Definir nova palavra-passe",
+    subHeader: "Por favor, defina a sua nova palavra-passe."
+  },
+
   project: {
     add_new_project: "Criar novo projeto",
     assignee: "Proprietário",
@@ -285,8 +306,9 @@ const pt = {
     workflowitem_assignee: "Cessionário padrão",
     organization_info: "Organization",
     total_budget_info: "Total budget",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
+    default_assignee_warning2:
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -299,9 +321,9 @@ const pt = {
       "Este botão agora está desativado. Saia do modo de classificação para criar novos itens de fluxo de trabalho",
     exchange_rate: "Taxa de câmbio",
     search_text: "Buscar",
-    workflow_budget_allocated: "Alocado",
+    workflow_budget_allocated: "alocado",
     workflow_budget_disbursed: "pago",
-    workflow_budget_na: "Não se aplica",
+    workflow_budget_na: "não se aplica",
     workflow_budget_status_allocated: "Atribuído",
     workflow_budget_status_disbursed: "Pago",
     workflow_budget_status_na: "N/A",
@@ -399,8 +421,11 @@ const pt = {
     post_actions_dialog_text: "Tem certeza de que deseja criar o workflowitem",
     project_close: "Fechar projecto",
     project_close_text: "Tem a certeza de que quer encerrar este projecto?",
+    project_close_warning: "Se você fechar o projeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     subproject_close: "Fechar subprojecto",
     subproject_close_text: "Tem a certeza de que quer encerrar este subprojecto?",
+    subproject_close_warning:
+      "Se você fechar o subprojeto, não poderá mais fazer alterações ou adicionar informações a ele.",
     user_group: "Usuários/Grupo",
     workflowitem_close: "Fechar item de workflow",
     workflowitem_close_text: "Tem a certeza de que quer encerrar este item do fluxo de trabalho?",
@@ -660,6 +685,10 @@ const pt = {
     warning: "Advertência",
     done: "feito",
     toBeDone: "A fazer"
+  },
+
+  picture: {
+    select: "Selecione ou faça o upload de uma imagem personalizada"
   },
 
   language: {

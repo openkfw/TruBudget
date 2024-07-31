@@ -26,7 +26,7 @@ describe("Subproject creation", function() {
     cy.get("[data-test=subproject-create-button]").should("be.disabled");
   });
 
-  it("Check confirmation dialog without a selected default assignee", function() {
+  it("Check confirmation dialog without a selected fixed assignee", function() {
     cy.login();
     cy.visit(`/projects/${projectId}`);
     cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");

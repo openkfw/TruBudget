@@ -5,6 +5,9 @@ import rateLimit from "express-rate-limit";
 import cookieParser from "cookie-parser";
 import { createPinoExpressLogger } from "trubudget-logging-service";
 import helmet from "helmet";
+import * as fs from "fs";
+import * as path from "path";
+import { compile } from "handlebars";
 import config from "./config";
 import DbConnector from "./db";
 import logger from "./logger";
@@ -13,12 +16,21 @@ import sendMail from "./sendMail";
 import {
   NotificationRequest,
   NotificationResponseBody,
+  ResetPasswordRequest,
   User,
   UserEditRequest,
   UserEditResponseBody,
+  UserGetEmailAddressByEmailRequest,
   UserGetEmailAddressRequest,
 } from "./types";
 import isBodyValid from "./validation";
+import {
+  passwordResetEmailHeader,
+  passwordResetEmailText,
+  passwordResetLinkTitle,
+  passwordResetSubject,
+  passwordResetEmailFooter,
+} from "./constants";
 
 if (config.email.from === undefined) {
   logger.warn(
@@ -263,6 +275,42 @@ emailService.get(
   },
 );
 
+emailService.get(
+  "/user.getUserByEmail",
+  query("email").escape(),
+  (req: UserGetEmailAddressByEmailRequest, res: express.Response) => {
+    const isDataValid = isBodyValid("/user.getUserByEmail", req.query);
+    logger.trace("Validating data");
+
+    if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
+      res.status(400).send({
+        message: "The request body validation failed",
+      });
+      return;
+    }
+
+    const email: string = req.query.email;
+    (async (): Promise<void> => {
+      const user = await db.getEmailAddressAndUserId(email);
+      if (user) {
+        logger.trace("GET email address " + user.email + " for user " + user.id);
+        res.send({
+          user,
+        });
+      } else {
+        logger.info("Email address" + email + " not found");
+        res.status(400).send({
+          message: "Incorrect e-mail address",
+        });
+      }
+    })().catch((error) => {
+      logger.error({ err: error }, "Error while getting email address");
+      res.status(500).send(error);
+    });
+  },
+);
+
 emailService.post(
   "/notification.send",
   body("data.user.id").escape(),
@@ -308,6 +356,54 @@ emailService.post(
           body = { notification: { recipient: id, status: "deleted", emailAddress: "Not Found" } };
           res.status(404).send(body);
         }
+      } catch (error) {
+        logger.error(`Error while send notification: ${error}`);
+        res.status(500).send(error);
+      }
+    })();
+  },
+);
+
+emailService.post(
+  "/sendResetPasswordEmail",
+  body("data.*").escape(),
+  (req: ResetPasswordRequest, res: express.Response) => {
+    logger.trace("Validating data");
+    const isDataValid = isBodyValid("/sendResetPasswordEmail", req.body.data);
+    if (!isDataValid) {
+      logger.error("Validation error. Data not valid!");
+      res.status(400).send({
+        message: "The request body validation failed",
+      });
+      return;
+    }
+    logger.info(req.body);
+    const { id, email, link, lang } = req.body.data;
+
+    (async (): Promise<void> => {
+      try {
+        const emailText = `${passwordResetEmailHeader[lang]}${id},/n/n${passwordResetEmailText[lang]}/n/n${link}/n/n${passwordResetEmailFooter}/nTrubudget`;
+
+        const __dirname = path.resolve();
+        const filePath = path.join(__dirname, "src/email-templates/resetPasswordEmail.html");
+        const source = fs.readFileSync(filePath, "utf-8");
+        const template = compile(source);
+        const replacements = {
+          lang,
+          header: passwordResetEmailHeader[lang],
+          user: id,
+          text: passwordResetEmailText[lang],
+          resetPasswordUrl: link,
+          resetPasswordUrlTitle: passwordResetLinkTitle[lang],
+          footer: passwordResetEmailFooter[lang],
+        };
+        const htmlTemplateToSend = template(replacements);
+        await sendMail(email, passwordResetSubject[lang], emailText, htmlTemplateToSend);
+        logger.trace("Notification sent to " + email);
+        const body: NotificationResponseBody = {
+          notification: { recipient: id, status: "sent", emailAddress: email },
+        };
+        res.status(200).send(body);
       } catch (error) {
         logger.error(`Error while send notification: ${error}`);
         res.status(500).send(error);

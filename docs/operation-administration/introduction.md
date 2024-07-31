@@ -18,6 +18,7 @@ Welcome to the TruBudget operation and administration documentation! This guide 
   - [Multichain-CLI](./multichain-cli.md#multichain-cli) - Information on how to use the Multichain-CLI to interact with the blockchain
   - [Resource Requirements](./resource-requirements.md#running-trubudget) - Information on minimum resource requirements for running TruBudget
   - [Security](./security.md#security--trubudget)
+  - [Telemetry](./telemetry.md)
   - [Updating TruBudget](./update-trubudget.md#updating-trubudget) - Information on how to update and upgrade TruBudget to newer versions as well as create backups
 
 ## Introduction to Organizations and Nodes in TruBudget

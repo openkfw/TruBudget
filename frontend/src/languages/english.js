@@ -16,6 +16,7 @@ const en = {
     actions: "Actions",
     add_tag_text: "Add tag to project",
     add: "Add",
+    add_without_budget: "Add without budget",
     added: "Added",
     additional_data: "Additional Data",
     amount: "Amount",
@@ -25,12 +26,14 @@ const en = {
     assigned: "Assigned",
     assignees: "Assignee(s)",
     back: "Back",
+    backToLogin: "Back to login",
     bank: "Bank",
     budget_distribution: "Budget distribution",
     budget: "Budget",
     cancel: "Cancel",
     close: "Close",
     closed: "Closed",
+    clear_selection: "clear selection",
     comment_description: "Add some comments",
     comment: "Comment",
     completion: "Completion",
@@ -51,6 +54,7 @@ const en = {
     edited: "Edited",
     email: "Email",
     finish: "Finish",
+    genericError: "Something went wrong.",
     global: "global",
     grant: "grant",
     hash: "Hash",
@@ -99,6 +103,7 @@ const en = {
     on: "On",
     ok: "Ok",
     not_projected: "Not projected",
+    ongoing: "Ongoing",
     open: "Open",
     organization: "Organization",
     password: "Password",
@@ -153,7 +158,7 @@ const en = {
     edit_permissions: "Edit permissions",
     group_created: "Group successfully created",
     groups: "Groups",
-    invalid_password: "Password invalid",
+    invalid_password: "Password must contain at least 8 characters, capital letter and number",
     new_group: "New Group",
     new_user_password_confirmation: "Confirm new password",
     new_user_password: "New password",
@@ -238,6 +243,21 @@ const en = {
     user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
+  forgotPassword: {
+    incorrectEmail: "E-mail address you entered is incorrect",
+    link: "Forgot Your Password?",
+    emailSent: "E-mail with instructions how to reset your password was sent.",
+    subHeader: "Please enter your e-mail address in order to receive further instructions how to reset your password.",
+    unavailableService: "E-mail service is unavailable at this time, please try again later."
+  },
+
+  resetPassword: {
+    invalidToken: "Authentication token expired. Please repeat the forgot password process.",
+    passwordResetSuccess: "Password successfully reset. Please proceed to login page.",
+    setPasswordButton: "Set New Password",
+    subHeader: "Please set your new password."
+  },
+
   project: {
     add_new_project: "Add new project",
     assignee: "Owner",
@@ -280,11 +300,12 @@ const en = {
     subproject_general_workflowitem_type: "Only allow workflowitems of type general",
     subproject_restricted_workflowitem_type:
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    workflowitem_assignee: "Default assignee",
+    workflowitem_assignee: "Fixed assignee",
     organization_info: "Organization",
     total_budget_info: "Total budget",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
+    default_assignee_warning2:
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -298,7 +319,7 @@ const en = {
     search_text: "Search workflowitems",
     workflow_budget_allocated: "allocated",
     workflow_budget_disbursed: "paid",
-    workflow_budget_na: "Not applicable",
+    workflow_budget_na: "not applicable",
     workflow_budget_status_allocated: "Assigned",
     workflow_budget_status_disbursed: "Paid",
     workflow_budget_status_na: "N/A",
@@ -394,8 +415,12 @@ const en = {
     post_actions_dialog_text: "After creation following actions are executed",
     project_close: "Close project",
     project_close_text: "Are you sure, you want to close this project?",
+    project_close_warning:
+      "If you close the project, you will no longer be able to make changes or add information to it.",
     subproject_close: "Close subproject",
     subproject_close_text: "Are you sure, you want to close this subproject?",
+    subproject_close_warning:
+      "If you close the subproject, you will no longer be able to make changes or add information to it.",
     user_group: "User/Group",
     workflowitem_close: "Close workflowitem",
     workflowitem_close_text: "Do you want to accept and close this workflowitem?",
@@ -655,6 +680,10 @@ const en = {
     warning: "Warning",
     done: "Done",
     toBeDone: "To Be Done"
+  },
+
+  picture: {
+    select: "Select a picture from the gallery or upload a custom picture"
   },
 
   language: {

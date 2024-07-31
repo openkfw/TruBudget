@@ -132,7 +132,7 @@ export function addHttpHandler(
 
       if (Result.isErr(bodyResult)) {
         const { code, body } = toHttpError(
-          new VError(bodyResult, "failed to change user's password"),
+          new VError(bodyResult, "failed to change users password"),
         );
         request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
@@ -160,7 +160,7 @@ export function addHttpHandler(
         })
         .catch((err) => {
           const { code, body } = toHttpError(err);
-          request.log.error({ err }, "Error while chaning user password");
+          request.log.error({ err }, "Error while changing user password");
           reply.status(code).send(body);
         });
     });

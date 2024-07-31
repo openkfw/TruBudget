@@ -16,6 +16,7 @@ const fr = {
     actions: "Actions",
     add_tag_text: "Ajouter un tag au projet",
     add: "Ajouter",
+    add_without_budget: "Ajouter sans budget",
     added: "Ajouté",
     additional_data: "Données Supplémentaires",
     amount: "Montant",
@@ -25,12 +26,14 @@ const fr = {
     assigned: "Engagé",
     assignees: "Responsable(s)",
     back: "Retour",
+    backToLogin: "Retour connexion",
     bank: "Banque",
     budget_distribution: "Affectation budgétaire",
     budget: "Budget",
     cancel: "Annuler",
     close: "Fermer",
     closed: "Fermé",
+    clear_selection: "sélection claire",
     comment_description: "Ajouter des commentaires",
     comment: "Commentaire",
     completion: "Achèvement",
@@ -51,6 +54,7 @@ const fr = {
     edited: "Modifié",
     email: "Email",
     finish: "Terminer",
+    genericError: "Quelque chose s'est mal passé.",
     global: "global",
     grant: "Accorder",
     hash: "Hachage",
@@ -88,9 +92,9 @@ const fr = {
     no_organizations: "Aucune demande de nouvelles organisations n'a été trouvée",
     no_permissions: "Vous n'êtes pas autorisé à effectuer cette action",
     no_resources: "Aucun champ n'a été ajouté à cette ressource",
-    no_subprojects: "Aucun composante trouvé",
+    no_subprojects: "Aucune composante trouvée",
     no_users: "Aucun utilisateur trouvé",
-    no_users_text: "Ajoutez un nouvel utilisateur en appuyant sur le touche plus.",
+    no_users_text: "Ajoutez un nouvel utilisateur en appuyant sur la touche plus.",
     no_workflow_items: "Aucune étape de workflow ",
     not_assigned_budget: "Budget non-engagé",
     not_assigned: "Non engagé",
@@ -100,6 +104,7 @@ const fr = {
     on: "Activé",
     ok: "Ok",
     not_projected: "Non estimé",
+    ongoing: "En cours",
     open: "Ouvert",
     organization: "Organisation",
     password: "Mot de passe",
@@ -155,6 +160,22 @@ const fr = {
     user_not_found: "Your user account has not been found. Please contact the administrator."
   },
 
+  forgotPassword: {
+    incorrectEmail: "L'adresse e-mail que vous avez saisie est incorrecte",
+    link: "Mot de passe oublié?",
+    emailSent: "Un e-mail contenant des instructions sur la façon de réinitialiser votre mot de passe a été envoyé.",
+    subHeader:
+      "Veuillez saisir votre adresse e-mail afin de recevoir des instructions supplémentaires sur la façon de réinitialiser votre mot de passe.",
+    unavailableService: "Le service de messagerie n'est pas disponible pour le moment, veuillez réessayer plus tard."
+  },
+
+  resetPassword: {
+    invalidToken: "Le jeton d'authentification a expiré. Veuillez répéter le processus de mot de passe oublié.",
+    passwordResetSuccess: "Le mot de passe a été réinitialisé avec succès. Veuillez accéder à la page de connexion.",
+    setPasswordButton: "Definir un nouveau mot de passe",
+    subHeader: "Veuillez définir votre nouveau mot de passe."
+  },
+
   project: {
     add_new_project: "Ajouter un nouveau projet",
     assignee: "propriétaire",
@@ -198,11 +219,12 @@ const fr = {
     subproject_general_workflowitem_type: "Autoriser uniquement les éléments de workflow de type général",
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
-    workflowitem_assignee: "Default assignee",
+    workflowitem_assignee: "Fixed assignee",
     organization_info: "Organization",
     total_budget_info: "Total budget",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
-    default_assignee_warning2: "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
+    default_assignee_warning2:
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -215,7 +237,7 @@ const fr = {
       "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow",
     exchange_rate: "taux de change",
     search_text: "rechercher des éléments",
-    workflow_budget_allocated: "Engagé",
+    workflow_budget_allocated: "engagé",
     workflow_budget_disbursed: "payé",
     workflow_budget_na: "N/A",
     workflow_budget_status_allocated: "Engagé",
@@ -293,7 +315,7 @@ const fr = {
     edit_permissions: "Éditer les autorisations",
     group_created: "Groupe créé avec succès",
     groups: "Groupes",
-    invalid_password: "Mot de passe invalide",
+    invalid_password: "Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule et un chiffre",
     new_group: "Nouveau groupe d'utilisateurs",
     new_user_password_confirmation: "Confirmer le nouveau mot de passe",
     new_user_password: "Nouveau mot de passe",
@@ -398,8 +420,12 @@ const fr = {
     post_actions_dialog_text: "Après la création, les actions suivantes sont exécutées",
     project_close: "Fermer projet",
     project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
+    project_close_warning:
+      "Si vous fermez le projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     subproject_close: "Fermer la composante",
     subproject_close_text: "Vous êtes sûr de vouloir fermer cette composante ?",
+    subproject_close_warning:
+      "Si vous fermez le sous-projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
     workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",
@@ -663,6 +689,10 @@ const fr = {
     warning: "avertissement",
     done: "fait",
     toBeDone: "A faire"
+  },
+
+  picture: {
+    select: "Sélectionner ou télécharger une image personnalisée"
   },
 
   language: {

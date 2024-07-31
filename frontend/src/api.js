@@ -78,6 +78,10 @@ class Api {
    */
   getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${config.email.servicePort}` : "/email"}/${urlSlug}`;
 
+  checkAccessTokenExpiration = () => {
+    return localStorage.getItem("refresh_token_expiration");
+  };
+
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
       user: {
@@ -92,6 +96,8 @@ class Api {
     });
 
   logout = () => instance.post(`/user.logout`, {});
+
+  refreshToken = () => instance.post(`/user.refreshtoken`, {});
 
   disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
@@ -127,11 +133,12 @@ class Api {
 
   listUser = () => instance.get(`/user.list`);
 
-  changeUserPassword = (userId, newPassword) =>
-    instance.post(`/user.changePassword`, {
+  changeUserPassword = (userId, newPassword) => {
+    return instance.post(`/user.changePassword`, {
       userId,
       newPassword
     });
+  };
 
   listUserAssignments = (userId) => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
 
@@ -562,6 +569,25 @@ class Api {
   getEmailAddress = (id) => {
     const path = this.getEmailServiceUrl(`user.getEmailAddress?id=${id}`);
     return instance.get(path, { withCredentials: true });
+  };
+
+  sendForgotPasswordEmail = (email, url, lang) => {
+    const data = { email, url, lang };
+    return instance.post(`/user.forgotPassword`, data);
+  };
+
+  resetPassword = (userId, newPassword, token) => {
+    instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    const data = { userId, newPassword };
+    return instance.post(`/user.resetPassword`, data);
+  };
+
+  sendMail = (email) => {
+    const data = {
+      email
+    };
+    const path = this.getEmailServiceUrl("resetPassword");
+    return instance.post(path, data, { withCredentials: true });
   };
 
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {

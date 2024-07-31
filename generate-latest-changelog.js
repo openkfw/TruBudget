@@ -27,7 +27,7 @@ const run = async () => {
   }
 
   const octokit = new Octokit({
-    auth: process.env.GITHUB_TOKEN
+    auth: process.env.GITHUB_TOKEN,
   })
 
   const response = await octokit.request('GET /search/issues', {
