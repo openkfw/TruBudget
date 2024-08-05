@@ -195,29 +195,33 @@ const DocumentUpload = ({
           error={externalDocumentNameError}
           helperText={externalDocumentNameHelperText}
         />
-        <Button className="document-upload-button" component="div">
-          <UploadIcon />
-          {strings.workflow.workflow_upload_document}
-          <input
-            id="docupload"
-            type="file"
-            className="document-upload-input"
-            onChange={(event) => {
-              if (event.target.files[0]) {
-                const file = event.target.files[0];
-                const reader = new FileReader();
-                reader.onloadend = async (e) => {
-                  if (e.target.result !== undefined) {
-                    const dataBase64 = e.target.result.split(";base64,")[1];
-                    const newHash = await hashValue(dataBase64);
-                    setExternalDocumentHash(newHash);
-                  }
-                };
-                reader.readAsDataURL(file);
-              }
-            }}
-          />
-        </Button>
+        {externalDocumentHash ? (
+          "Hash created"
+        ) : (
+          <Button className="document-upload-button" component="div">
+            <UploadIcon />
+            Upload same document to create hash
+            <input
+              id="docupload"
+              type="file"
+              className="document-upload-input"
+              onChange={(event) => {
+                if (event.target.files[0]) {
+                  const file = event.target.files[0];
+                  const reader = new FileReader();
+                  reader.onloadend = async (e) => {
+                    if (e.target.result !== undefined) {
+                      const dataBase64 = e.target.result.split(";base64,")[1];
+                      const newHash = await hashValue(dataBase64);
+                      setExternalDocumentHash(newHash);
+                    }
+                  };
+                  reader.readAsDataURL(file);
+                }
+              }}
+            />
+          </Button>
+        )}
       </div>
       <div className="document-upload-flex-container">
         <Button
