@@ -331,7 +331,7 @@ services:
     depends_on:
       - alpha-api
     ports:
-      - "3005:80" # map nginx port 80 to localhost:3005
+      - "3005:80" # map nginx port 80 to localhost:3005 
 
 volumes:
   alphaVolume:
