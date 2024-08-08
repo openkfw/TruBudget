@@ -52,6 +52,7 @@ import {
   FETCH_USER_SUCCESS,
   LOGIN,
   LOGIN_AD,
+  LOGIN_AD_SUCCESS,
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
@@ -1272,6 +1273,10 @@ export function* loginTokenSaga({ token }) {
       type: LOGIN_SUCCESS,
       ...data,
       isUserLoggedIn: true
+    });
+    yield put({
+      type: LOGIN_AD_SUCCESS,
+      isUsingAuthproxy: true
     });
     yield call(() => fetchNotificationCountsSaga(false));
     yield put({

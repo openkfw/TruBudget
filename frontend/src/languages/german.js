@@ -153,11 +153,14 @@ const de = {
     environment: "Umgebung",
     loading: "Laden ...",
     login_button_title: "Login",
+    login_authproxy_button_title: "Login mit Auth Proxy",
     production_env: "Prod",
     test_env: "Test",
     frontend_name: "TruBudget",
     frontend_description: "Eine Blockchain-basierte Lösung für Budget Management",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Ihr Benutzerkonto wurde nicht gefunden. Bitte wenden Sie sich an den Administrator.",
+    popup_blocker_warning:
+      "Bitte deaktivieren Sie Ihren Popup-Blocker, um sich abzumelden, oder öffnen Sie die Seite in einem neuen Tab:\n{0}"
   },
 
   forgotPassword: {
