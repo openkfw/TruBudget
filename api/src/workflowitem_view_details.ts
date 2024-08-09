@@ -92,6 +92,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                                 type: "string",
                                 example: "https://www.example.com",
                               },
+                              linkedFileHash: {
+                                type: "string",
+                                example: "e14gk7gjduwbdwkjbd9b9uf9bfe9bf94ff949fbh93hfu",
+                              },
                               fileName: { type: "string", example: "myFile.pdf" },
                               id: {
                                 type: "string",

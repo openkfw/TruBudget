@@ -3,6 +3,12 @@ import { AxiosRequestConfig } from "axios";
 
 import "module-alias/register";
 
+import { Ctx } from "./lib/ctx";
+import { ServiceUser } from "./service/domain/organization/service_user";
+import * as WorkflowitemUpdate from "./service/workflowitem_update";
+import * as Project from "./service/domain/workflow/project";
+import * as Subproject from "./service/domain/workflow/subproject";
+import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import getValidConfig, { config } from "./config";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
@@ -407,13 +413,10 @@ if (config.refreshTokenStorage) {
 }
 
 export interface UserLogoutAPIService {
-  clearRefreshToken(
-    refreshToken: string,
-  ): Promise<Result.Type<void>>;
+  clearRefreshToken(refreshToken: string): Promise<Result.Type<void>>;
 }
 UserLogoutAPI.addHttpHandler(server, URL_PREFIX, {
-  clearRefreshToken: async (refreshToken) =>
-    dbConnection?.deleteRefreshToken(refreshToken),
+  clearRefreshToken: async (refreshToken) => dbConnection?.deleteRefreshToken(refreshToken),
 });
 
 UserCreateAPI.addHttpHandler(server, URL_PREFIX, {
@@ -880,6 +883,20 @@ WorkflowitemPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
       intent,
     ),
 });
+
+/**
+ * Represents the service that updates a workflowitem
+ */
+export interface WorkflowitemUpdateServiceInterface {
+  updateWorkflowitem(
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+    workflowitemId: Workflowitem.Id,
+    data: WorkflowitemUpdate.RequestData,
+  ): Promise<Result.Type<void>>;
+}
 
 WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>

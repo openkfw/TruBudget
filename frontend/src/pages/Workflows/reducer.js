@@ -353,7 +353,10 @@ export default function detailviewReducer(state = defaultState, action) {
       );
     case WORKFLOW_DOCUMENT_EXTERNAL_LINK:
       return state.updateIn(["workflowToAdd", "documents"], (documents) =>
-        Immutable.List([...documents, Immutable.Map({ link: action.link, fileName: action.fileName })])
+        Immutable.List([
+          ...documents,
+          Immutable.Map({ link: action.link, fileName: action.fileName, linkedFileHash: action.linkedFileHash })
+        ])
       );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
