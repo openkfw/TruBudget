@@ -3,9 +3,12 @@ import * as Yup from "yup";
 
 import AddLinkIcon from "@mui/icons-material/AddLink";
 import LinkIcon from "@mui/icons-material/Link";
+import PostAddIcon from "@mui/icons-material/PostAdd";
 import UploadIcon from "@mui/icons-material/Publish";
 import { Grid, Paper, TableHead, TextField, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
 import TableCell from "@mui/material/TableCell";
@@ -41,6 +44,7 @@ const DocumentUpload = ({
 }) => {
   const defaultDocumentUrl = "https://";
   const defaultDocumentName = "";
+  const [fileToUpload, setFileToUpload] = useState(null);
   const [externalDocumentUrl, setExternalDocumentUrl] = useState(defaultDocumentUrl);
   const [externalDocumentName, setExternalDocumentName] = useState(defaultDocumentName);
   const [externalDocumentHash, setExternalDocumentHash] = useState();
@@ -51,9 +55,15 @@ const DocumentUpload = ({
   const [externalDocumentNameUpdated, setExternalDocumentNameUpdated] = useState(false);
   const [externalDocumentNameHelperText, setExternalDocumentNameHelperText] = useState("");
 
-  const validateExternalDocumentUrl = (value) => {
+  const validateExternalDocumentUrl = async (value) => {
     // is not valid url
-    const { error } = uriValidation.validate(value);
+    let error;
+    try {
+      await uriValidation.validate(value);
+    } catch (err) {
+      error = err;
+    }
+
     if (error && value !== "") {
       setExternalDocumentUrlError(true);
       setExternalDocumentUrlHelperText("Incorrect entry.");
@@ -96,6 +106,11 @@ const DocumentUpload = ({
     setExternalDocumentUrl(defaultDocumentUrl);
     setExternalDocumentName(defaultDocumentName);
     setExternalDocumentHash();
+  };
+
+  const addFile = () => {
+    storeWorkflowDocument(fileToUpload?.dataUrl, fileToUpload?.name);
+    setFileToUpload(null);
   };
 
   const body = (
@@ -148,80 +163,103 @@ const DocumentUpload = ({
       <Grid container spacing={2}>
         {storageServiceAvailable && (
           <Grid item xs={6}>
-            <Paper>
+            <Paper className="paper-forms">
+              <h4>{strings.workflow.workflow_documents_upload_heading}</h4>
               <div className="document-upload-flex-container">
-                <Button className="document-upload-button" component="div">
-                  <UploadIcon />
-                  {strings.workflow.workflow_upload_document}
-                  <input
-                    id="docupload"
-                    type="file"
-                    className="document-upload-input"
-                    onChange={(event) => {
-                      if (event.target.files) {
-                        const file = event.target.files[0];
-                        if (file.size > MAX_DOCUMENT_SIZE_BINARY) {
-                          storeSnackbarMessage(
-                            `File size exceeds the limit of ${Math.round(MAX_DOCUMENT_SIZE_BINARY / (1024 * 1024))} MB`
-                          );
-                          showErrorSnackbar();
-                          return;
-                        }
-                        const reader = new FileReader();
-                        reader.onloadend = (e) => {
-                          if (e.target.result !== undefined) {
-                            const dataUrl = e.target.result.split(";base64,")[1];
-                            // data in redux store needs to be serializable, so we store base64 string
-                            storeWorkflowDocument(dataUrl, file.name);
+                {fileToUpload ? (
+                  strings.workflow.workflow_documents_file_prepared
+                ) : (
+                  <Button className="document-upload-button" component="div">
+                    <UploadIcon />
+                    {strings.workflow.workflow_upload_document}
+                    <input
+                      id="docupload"
+                      type="file"
+                      className="document-upload-input"
+                      onChange={(event) => {
+                        if (event.target.files) {
+                          const file = event.target.files[0];
+                          if (file.size > MAX_DOCUMENT_SIZE_BINARY) {
+                            storeSnackbarMessage(
+                              `${strings.workflow.workflow_documents_size_exceed} ${Math.round(
+                                MAX_DOCUMENT_SIZE_BINARY / (1024 * 1024)
+                              )} MB`
+                            );
+                            showErrorSnackbar();
+                            return;
                           }
-                        };
-                        if (file) {
-                          reader.readAsDataURL(file);
+                          const reader = new FileReader();
+                          reader.onloadend = (e) => {
+                            if (e.target.result !== undefined) {
+                              const dataUrl = e.target.result.split(";base64,")[1];
+                              // data in redux store needs to be serializable, so we store base64 string
+                              // storeWorkflowDocument(dataUrl, file.name);
+                              setFileToUpload({
+                                name: file.name,
+                                dataUrl
+                              });
+                            }
+                          };
+                          if (file) {
+                            reader.readAsDataURL(file);
+                          }
                         }
-                      }
-                    }}
-                  />
+                      }}
+                    />
+                  </Button>
+                )}
+              </div>
+
+              <div className="document-upload-flex-container" style={{ marginTop: "0.9rem" }}>
+                <Button onClick={addFile} className="document-upload-button" component="div" disabled={!fileToUpload}>
+                  <PostAddIcon />
+                  {strings.workflow.workflow_documents_add_file}
                 </Button>
               </div>
             </Paper>
           </Grid>
         )}
         <Grid item xs={6}>
-          <Paper>
-            <div style={{ margin: "0 10px" }}>
-              <Stack
-                component="form"
-                sx={{
-                  width: "25ch"
-                }}
-                spacing={2}
-                noValidate
-                autoComplete="off"
-              >
-                <TextField
-                  id="external-document-url"
-                  label="External link URL"
-                  value={externalDocumentUrl}
-                  onChange={handleExternalDocumentUrlChange}
-                  error={externalDocumentUrlError}
-                  helperText={externalDocumentUrlHelperText}
-                  className="document-external-link-input"
-                />
-                <TextField
-                  id="external-document-url"
-                  label="External document name"
-                  value={externalDocumentName}
-                  onChange={handleExternalDocumentNameChange}
-                  error={externalDocumentNameError}
-                  helperText={externalDocumentNameHelperText}
-                />
-              </Stack>
-              {externalDocumentHash ? (
-                "Hash created"
-              ) : (
+          <Paper className="paper-forms">
+            <h4>{strings.workflow.workflow_documents_add_link}</h4>
+
+            <Stack
+              component="form"
+              sx={{
+                width: "35ch"
+              }}
+              spacing={2}
+              noValidate
+              autoComplete="off"
+            >
+              <TextField
+                id="external-document-url"
+                label={strings.workflow.workflow_documents_link_url}
+                value={externalDocumentUrl}
+                onChange={handleExternalDocumentUrlChange}
+                error={externalDocumentUrlError}
+                helperText={externalDocumentUrlHelperText}
+                className="document-external-link-input"
+              />
+              <TextField
+                id="external-document-url"
+                label={strings.workflow.workflow_documents_link_name}
+                value={externalDocumentName}
+                onChange={handleExternalDocumentNameChange}
+                error={externalDocumentNameError}
+                helperText={externalDocumentNameHelperText}
+              />
+            </Stack>
+            {externalDocumentHash ? (
+              <div className="document-upload-flex-container">{strings.workflow.workflow_documents_file_prepared}</div>
+            ) : (
+              <FormControl className="document-external-link-input document-external-link-upload">
+                <InputLabel size="small" shrink={true} className="document-external-link-upload-label">
+                  {strings.workflow.workflow_documents_upload_same_document}
+                </InputLabel>
                 <Button className="document-upload-button" component="div">
                   <UploadIcon />
-                  Upload same document to create hash
+                  {strings.workflow.workflow_upload_document}
                   <input
                     id="docupload"
                     type="file"
@@ -242,8 +280,8 @@ const DocumentUpload = ({
                     }}
                   />
                 </Button>
-              )}
-            </div>
+              </FormControl>
+            )}
             <div className="document-upload-flex-container">
               <Button
                 onClick={addExternalLink}
@@ -257,7 +295,7 @@ const DocumentUpload = ({
                 }
               >
                 <AddLinkIcon />
-                Add external link
+                {strings.workflow.workflow_documents_add_link}
               </Button>
             </div>
           </Paper>
