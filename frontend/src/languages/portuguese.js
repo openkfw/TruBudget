@@ -237,11 +237,14 @@ const pt = {
     environment: "Ambiente",
     loading: "Carregando ...",
     login_button_title: "Login",
+    login_authproxy_button_title: "Login com Auth Proxy",
     production_env: "Produção",
     test_env: "Teste",
     frontend_name: "TruBudget",
     frontend_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Utilizador não encontrado. Entre em contacto com o seu administrador.",
+    popup_blocker_warning:
+      "Não é possível sair do serviço de autenticação externa. Ative os pop-ups ou visite o\n{0}\npara sair em segurança."
   },
 
   forgotPassword: {
@@ -306,9 +309,9 @@ const pt = {
     workflowitem_assignee: "Cessionário padrão",
     organization_info: "Organization",
     total_budget_info: "Total budget",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
-      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {

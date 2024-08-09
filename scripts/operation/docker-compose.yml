@@ -100,6 +100,15 @@ services:
       AUTHPROXY_ENABLED: ${AUTHPROXY_ENABLED}
       AUTHPROXY_JWS_SIGNATURE: ${AUTHPROXY_JWS_SIGNATURE}
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}
+      REFRESH_TOKEN_STORAGE: ${REFRESH_TOKEN_STORAGE}
+      API_DB_USER: ${API_DB_USER}
+      API_DB_PASSWORD: ${API_DB_PASSWORD}
+      API_DB_HOST: ${API_DB_HOST}
+      API_DB_DATABASE: ${API_DB_DATABASE}
+      API_DB_PORT: ${API_DB_PORT}
+      API_DB_SSL: ${API_DB_SSL}
+      API_DB_SCHEMA: ${API_DB_SCHEMA}
+      API_REFRESH_TOKENS_TABLE: ${API_REFRESH_TOKENS_TABLE}
     depends_on:
       - alpha-node
     networks:
@@ -322,7 +331,7 @@ services:
     depends_on:
       - alpha-api
     ports:
-      - "3005:80" # map nginx port 80 to localhost:3005
+      - "3005:80" # map nginx port 80 to localhost:3005 
 
 volumes:
   alphaVolume:

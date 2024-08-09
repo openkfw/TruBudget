@@ -3,13 +3,13 @@ import { AxiosRequestConfig } from "axios";
 
 import "module-alias/register";
 
-import getValidConfig from "./config";
 import { Ctx } from "./lib/ctx";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as WorkflowitemUpdate from "./service/workflowitem_update";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import getValidConfig, { config } from "./config";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
@@ -94,6 +94,7 @@ import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_pr
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
+import * as UserAuthenticateRefreshTokenService from "./service/user_refresh_token";
 import * as UserCreateService from "./service/user_create";
 import * as UserDisableService from "./service/user_disable";
 import * as UserEnableService from "./service/user_enable";
@@ -132,6 +133,7 @@ import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import { AugmentedFastifyInstance } from "./types";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserAuthenticateAdAPI from "./user_authenticateAd";
+import * as UserAuthenticateRefreshTokenAPI from "./user_refreshToken";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
 import * as UserEnableAPI from "./user_enable";
@@ -159,6 +161,7 @@ import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_docume
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
+import DbConnector from "./lib/db";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -230,6 +233,12 @@ if (documentFeatureEnabled) {
   };
 }
 const storageServiceClient = new StorageServiceClient(storageServiceSettings);
+
+// database connection
+let dbConnection: DbConnector | undefined;
+if (config.refreshTokenStorage === "db") {
+  dbConnection = new DbConnector();
+}
 
 const server = Server.createBasicApp(
   jwt,
@@ -354,6 +363,8 @@ UserAuthenticateAPI.addHttpHandler(
       ),
     getGroupsForUser: (ctx, serviceUser, userId) =>
       GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+    storeRefreshToken: async (userId, refreshToken, validUntil) =>
+      dbConnection?.insertRefreshToken(userId, refreshToken, validUntil),
   },
   jwt,
 );
@@ -379,7 +390,34 @@ if (authProxy.enabled) {
   );
 }
 
-UserLogoutAPI.addHttpHandler(server, URL_PREFIX);
+if (config.refreshTokenStorage) {
+  UserAuthenticateRefreshTokenAPI.addHttpHandler(
+    server,
+    URL_PREFIX,
+    {
+      validateRefreshToken: (ctx, userId, refreshToken) =>
+        UserAuthenticateRefreshTokenService.validateRefreshToken(
+          organization,
+          organizationVaultSecret,
+          db,
+          dbConnection as DbConnector,
+          ctx,
+          userId,
+          refreshToken,
+        ),
+      getGroupsForUser: (ctx, serviceUser, userId) =>
+        GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+    },
+    jwt,
+  );
+}
+
+export interface UserLogoutAPIService {
+  clearRefreshToken(refreshToken: string): Promise<Result.Type<void>>;
+}
+UserLogoutAPI.addHttpHandler(server, URL_PREFIX, {
+  clearRefreshToken: async (refreshToken) => dbConnection?.deleteRefreshToken(refreshToken),
+});
 
 UserCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createUser: (ctx, issuer, reqData) =>

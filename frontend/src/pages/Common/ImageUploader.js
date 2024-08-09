@@ -4,7 +4,7 @@ import imageCompression from "browser-image-compression";
 import PhotoCamera from "@mui/icons-material/PhotoCamera";
 import Button from "@mui/material/Button";
 
-const ImageUploader = ({ image, setImage, removeImage, maxSizeMB = 1, displayImage = false }) => {
+const ImageUploader = ({ image, setImage, maxSizeMB = 1, displayImage = false }) => {
   const compressImage = async (event, useWebWorker = true) => {
     const file = event.target.files[0];
 

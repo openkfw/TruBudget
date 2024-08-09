@@ -237,11 +237,14 @@ const ka = {
     environment: "Environment",
     loading: "იტვირთება ...",
     login_button_title: "შესვლა",
+    login_authproxy_button_title: "შესვლა Auth Proxy",
     production_env: "Prod",
     test_env: "ტესტი",
     frontend_name: "TruBudget",
     frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Your user account has not been found. Please contact the administrator.",
+    popup_blocker_warning:
+      "გარე ავთენტიფიკაციის სერვისიდან გამოსვლა ვერ მოხერხდა. გთხოვთ, დაუშვათ ამომხტარი ფანჯრები ან ეწვიეთ\n{0}\n, რათა უსაფრთხოდ უარი თქვან."
   },
 
   forgotPassword: {
@@ -303,12 +306,12 @@ const ka = {
     subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
     subproject_restricted_workflowitem_type:
       "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
-    workflowitem_assignee: "ნაგულისხმევი მიმღები",
+    workflowitem_assignee: "ფიქსირებული მიმწოდებელი",
     organization_info: "Organization",
     total_budget_info: "Total budget",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
-      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {

@@ -153,11 +153,14 @@ const de = {
     environment: "Umgebung",
     loading: "Laden ...",
     login_button_title: "Login",
+    login_authproxy_button_title: "Login mit Auth Proxy",
     production_env: "Prod",
     test_env: "Test",
     frontend_name: "TruBudget",
     frontend_description: "Eine Blockchain-basierte Lösung für Budget Management",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Ihr Benutzerkonto wurde nicht gefunden. Bitte wenden Sie sich an den Administrator.",
+    popup_blocker_warning:
+      "Bitte deaktivieren Sie Ihren Popup-Blocker, um sich abzumelden, oder öffnen Sie die Seite in einem neuen Tab:\n{0}"
   },
 
   forgotPassword: {
@@ -216,12 +219,12 @@ const de = {
     subproject_general_workflowitem_type: "Nur Workflow-Elemente vom Typ 'general' zulassen",
     subproject_restricted_workflowitem_type:
       "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
-    workflowitem_assignee: "Vorausgewählter Verantwortlicher",
+    workflowitem_assignee: "Fester Zuständiger",
     organization_info: "Organization",
     total_budget_info: "Total budget",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
-      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {

@@ -16,10 +16,12 @@ import { getselfaddress } from "./getselfaddress";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
 import { importprivkey } from "./importprivkey";
-import { hashPassword, isPasswordMatch } from "./password";
 import { verifyToken } from "../lib/token";
 import { UserMetadata } from "./domain/metadata";
 import { NotFound } from "./domain/errors/not_found";
+import { getValue } from "../lib/keyValueStore";
+import DbConnector from "../lib/db";
+import { TokenBody } from "./user_authenticate";
 
 export interface UserLoginResponse {
   id: string;
@@ -30,35 +32,46 @@ export interface UserLoginResponse {
   token: string;
 }
 
-export interface TokenBody {
-  sub: string;
-  metadata: { externalId: string; kid: string };
-  csrf: string;
-}
-
-export async function authenticate(
+export async function validateRefreshToken(
   organization: string,
   organizationSecret: string,
-  rootSecret: string,
   conn: ConnToken,
+  dbConnection: DbConnector,
   ctx: Ctx,
   userId: string,
-  password: string,
+  refreshToken: string | undefined,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
-  logger.debug({ userId, organization }, "Authenticating user");
+  logger.debug({ organization }, "Authenticating user by refresh token");
+  let storedRefreshToken: { userId: string; validUntil: number } | undefined;
+
+  if (config.refreshTokenStorage === "memory") {
+    storedRefreshToken = getValue(`refreshToken.${refreshToken}`) as
+      | { userId: string; validUntil: number }
+      | undefined;
+  } else if (config.refreshTokenStorage === "db") {
+    if (refreshToken) {
+      storedRefreshToken = await dbConnection.getRefreshToken(refreshToken);
+    }
+    const now = new Date();
+    if (!storedRefreshToken?.validUntil || now.getTime() > storedRefreshToken?.validUntil) {
+      return new AuthenticationFailed({ ctx, organization, userId }, "Refresh token expired");
+    }
+  } else {
+    return new VError("Unknown refresh storage type");
+  }
+
+  if (!storedRefreshToken || storedRefreshToken?.userId !== userId) {
+    return new AuthenticationFailed({ ctx, organization, userId }, "No stored refresh token found");
+  }
+
+  // return user data
+
   // The special "root" user is not on the chain:
   if (userId === "root") {
-    const tokenResult = await authenticateRoot(conn, ctx, organization, rootSecret, password);
+    const tokenResult = await getRootUserAuthData(conn, ctx, organization);
     return Result.mapErr(tokenResult, (err) => new VError(err, "root authentication failed"));
   } else {
-    const tokenResult = await authenticateUser(
-      conn,
-      ctx,
-      organization,
-      organizationSecret,
-      userId,
-      password,
-    );
+    const tokenResult = await getUserAuthData(conn, ctx, organization, organizationSecret, userId);
     return Result.mapErr(
       tokenResult,
       (err) => new VError(err, `authentication failed for ${userId}`),
@@ -66,12 +79,10 @@ export async function authenticate(
   }
 }
 
-async function authenticateRoot(
+async function getRootUserAuthData(
   conn: ConnToken,
   ctx: Ctx,
   organization: string,
-  rootSecret: string,
-  password: string,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
   logger.debug("Authenticating Root user");
 
@@ -81,12 +92,6 @@ async function authenticateRoot(
       { ctx, organization, userId: "root" },
       "Received request, but MultiChain connection/permissions not ready yet.",
     );
-  }
-  // Prevent timing attacks by using the constant-time compare function
-  // instead of simple string comparison:
-  const rootSecretHash = await hashPassword(rootSecret);
-  if (!(await isPasswordMatch(password, rootSecretHash))) {
-    return new AuthenticationFailed({ ctx, organization, userId: "root" });
   }
 
   const organizationAddressResult = await getOrganizationAddressOrError(conn, ctx, organization);
@@ -110,13 +115,12 @@ async function authenticateRoot(
   };
 }
 
-export async function authenticateUser(
+export async function getUserAuthData(
   conn: ConnToken,
   ctx: Ctx,
   organization: string,
   organizationSecret: string,
   userId: string,
-  password: string,
 ): Promise<Result.Type<AuthToken.AuthToken>> {
   // Use root as the service user to ensure we see all the data:
   const nodeAddress = await getselfaddress(conn.multichainClient);
@@ -125,10 +129,6 @@ export async function authenticateUser(
   const userRecord = await UserQuery.getUser(conn, ctx, rootUser, userId);
   if (Result.isErr(userRecord)) {
     return new AuthenticationFailed({ ctx, organization, userId }, userRecord);
-  }
-
-  if (!(await isPasswordMatch(password, userRecord.passwordHash))) {
-    return new AuthenticationFailed({ ctx, organization, userId });
   }
 
   // Check if user has user.authenticate intent
@@ -234,8 +234,8 @@ export async function authenticateWithToken(
   const body: TokenBody = verifiedToken?.body.toJSON();
   const userId = body?.sub;
   const metadata = body.metadata;
-  const externalId = (metadata.externalId) || "";
-  const kid = (metadata.kid) || "";
+  const externalId = metadata.externalId || "";
+  const kid = metadata.kid || "";
   const csrfFromCookie = body?.csrf;
 
   // cookie value does not match with value from http request params

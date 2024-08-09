@@ -3,12 +3,20 @@ import { parse } from "content-disposition-attachment";
 import _isEmpty from "lodash/isEmpty";
 
 import config from "./config";
-import { base64ToBlob } from "./helper";
+import { base64ToBlob, formatString } from "./helper";
 import strings from "./localizeStrings";
+import { store } from "./store";
 
 const devMode = config.envMode === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
+
+const isAuthProxyEnabled = window?.injectedEnv?.REACT_APP_AUTHPROXY_ENABLED === "true" || config.authProxy.enabled;
+
+const authProxySignoutUri = (window?.injectedEnv?.REACT_APP_AUTHPROXY_URL || config.authProxy.url).replace(
+  "signin",
+  "signout"
+);
 
 // eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (API Version ${API_VERSION})`);
@@ -78,6 +86,10 @@ class Api {
    */
   getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${config.email.servicePort}` : "/email"}/${urlSlug}`;
 
+  checkAccessTokenExpiration = () => {
+    return localStorage.getItem("refresh_token_expiration");
+  };
+
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
       user: {
@@ -91,7 +103,21 @@ class Api {
       token
     });
 
-  logout = () => instance.post(`/user.logout`, {});
+  logout = () => {
+    if (isAuthProxyEnabled) {
+      const isUsingAuthproxy = store?.getState()?.get("login")?.toJS()?.isUsingAuthproxy;
+      if (isUsingAuthproxy && authProxySignoutUri) {
+        let logoutWindow = window.open(`${authProxySignoutUri}`, "_blank");
+
+        if (!logoutWindow || logoutWindow.closed || typeof logoutWindow.closed == "undefined") {
+          alert(formatString(strings.login.popup_blocker_warning, authProxySignoutUri));
+        }
+      }
+    }
+    return instance.post(`/user.logout`, {});
+  };
+
+  refreshToken = () => instance.post(`/user.refreshtoken`, {});
 
   disableUser = (userId) =>
     instance.post(`/global.disableUser`, {

@@ -19,6 +19,31 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
   
+  
+## [2.13.0] - 2024-07-31
+
+### Added
+  
+- storage-service: missing error logs in storage-service server [#1918](https://github.com/openkfw/TruBudget/issues/1918)
+- Detailed status for workflow items [#1885](https://github.com/openkfw/TruBudget/issues/1885)
+- Display warning message when closing a project [#1871](https://github.com/openkfw/TruBudget/issues/1871)
+- Custom images for projects [#1864](https://github.com/openkfw/TruBudget/issues/1864)
+- api, ui: Implement refresh token [#1739](https://github.com/openkfw/TruBudget/issues/1739)
+- docs: Telemetry documentation [#1575](https://github.com/openkfw/TruBudget/issues/1575)
+- Adding a link "forgot your password?" on the login screen [#878](https://github.com/openkfw/TruBudget/issues/878)
+
+### Changed
+
+- Remove restricted workflows [#1899](https://github.com/openkfw/TruBudget/issues/1899)
+- Create all initial letters uniformly small for workflow item  [#1887](https://github.com/openkfw/TruBudget/issues/1887)
+- Changing the mandatory fields when creating a project/adding an organisation  [#1873](https://github.com/openkfw/TruBudget/issues/1873)
+- Change wording of "default assignee" to "fixed assignee" [#1865](https://github.com/openkfw/TruBudget/issues/1865)
+
+### Fixed
+
+- frontend: The source list for Content Security Policy directive 'connect-src' contains a source with an invalid path [#1911](https://github.com/openkfw/TruBudget/issues/1911)
+
+  
 ## [2.12.0] - 2024-06-27
 
 ### Added
@@ -1167,6 +1192,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.13.0...main
+[2.13.0]: https://github.com/openkfw/TruBudget/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/openkfw/TruBudget/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/openkfw/TruBudget/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.10.0
