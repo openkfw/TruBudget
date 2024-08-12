@@ -1,18 +1,18 @@
 # Project
 
 - [Project](#project)
-    - [View projects](#view-projects)
-    - [Filter projects](#filter-projects)
-    - [View project details](#view-project-details)
-    - [Create a project](#create-a-project)
-    - [Update a project](#update-a-project)
-    - [Assign an User/Group to a project](#assign-an-usergroup-to-a-project)
-    - [Close project](#close-project)
-    - [View the history of a project](#view-the-history-of-a-project)
-    - [Filter the history of a project](#filter-the-history-of-a-project)
-    - [Project tags](#project-tags)
-    - [Permissions on project](#permissions-on-project)
-    - [Create a subproject](#create-a-subproject)
+  - [View projects](#view-projects)
+  - [Filter projects](#filter-projects)
+  - [View project details](#view-project-details)
+  - [Create a project](#create-a-project)
+  - [Update a project](#update-a-project)
+  - [Assign an User/Group to a project](#assign-an-usergroup-to-a-project)
+  - [Close project](#close-project)
+  - [View the history of a project](#view-the-history-of-a-project)
+  - [Filter the history of a project](#filter-the-history-of-a-project)
+  - [Project tags](#project-tags)
+  - [Permissions on project](#permissions-on-project)
+  - [Create a subproject](#create-a-subproject)
 
 Projects are currently the highest layer of abstraction in TruBudget. They represent the overall intention of what you
 trying to achieve, like building a school in Malawi.
@@ -43,7 +43,7 @@ View all projects where the current user has view-permissions on.
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. Click the "Projects" menu point
 
-![show projects](./../img/view_projects.jpg)
+![show projects](./../img/view_projects.png)
 
 :::note
 
@@ -193,7 +193,7 @@ Assign a User or Group to a project to show which User or Group is responsible f
 7. Confirming the dialog first executes all additional actions listed if there are any, then assigns the user
 8. If no additional permissions have to be granted the user or group is assigned
 
-![change project assignee](./../img/change_project_assignee.jpg)
+![change project assignee](./../img/change_project_assignee.png)
 
 :::note
 
@@ -235,10 +235,10 @@ The history contains all activities done directly refer to the current project.
 4. Click the grey button below the '+' button on the right to open the right sidebar viewing the history of the current
    project.
 
-![show project history](./../img/view_project_history.jpg)
+![show project history](./../img/view_project_history.png)
 
 :::note
-The history of actions refer to workflowitems can only be viewed by the [history](./subproject.md) of a certain
+The history of actions refer to workflow items can only be viewed by the [history](./subproject.md) of a certain
 subproject
 :::
 
@@ -259,7 +259,7 @@ filter request.
    project
 5. Click on the top of the sidebar to open the expandable filter area
 
-![filter project history](./../img/filter_project_history.jpg)
+![filter project history](./../img/filter_project_history.png)
 
 ## Project tags
 
@@ -267,11 +267,12 @@ filter request.
 
 1. Click the button to add a new or edit an existing project
 2. Type the tag name in the "Tag" field
-3. Hit the "Enter" key or click the "Add" button next to the input field
-4. The tag is now visible below the input field
-5. [OPTIONAL] Hover click the "X" symbol next to the tag name to remove the tag
-6. Click "Submit" to save the tags to the project
-7. The tags are now visible on the overview page on the corresponding project card or on the project details page
+3. Tags should not contain names or personal data to remain conform with the GPDR.
+4. Hit the "Enter" key or click the "Add" button next to the input field
+5. The tag is now visible below the input field
+6. [OPTIONAL] Hover click the "X" symbol next to the tag name to remove the tag
+7. Click "Submit" to save the tags to the project
+8. The tags are now visible on the overview page on the corresponding project card or on the project details page
 
 :::note
 
