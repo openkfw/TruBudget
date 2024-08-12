@@ -237,11 +237,14 @@ const ka = {
     environment: "Environment",
     loading: "იტვირთება ...",
     login_button_title: "შესვლა",
+    login_authproxy_button_title: "შესვლა Auth Proxy",
     production_env: "Prod",
     test_env: "ტესტი",
     frontend_name: "TruBudget",
     frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Your user account has not been found. Please contact the administrator.",
+    popup_blocker_warning:
+      "გარე ავთენტიფიკაციის სერვისიდან გამოსვლა ვერ მოხერხდა. გთხოვთ, დაუშვათ ამომხტარი ფანჯრები ან ეწვიეთ\n{0}\n, რათა უსაფრთხოდ უარი თქვან."
   },
 
   forgotPassword: {
