@@ -6,6 +6,7 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "./workflowitem";
+import { DocumentReference } from "../document/document";
 
 interface Repository {
   getWorkflowitem(): Promise<Result.Type<Workflowitem.Workflowitem>>;
@@ -43,13 +44,40 @@ export async function getWorkflowitemDetails(
 async function setDocumentAvailability(
   documents: WorkflowitemDocument.DocumentOrExternalLinkReference[],
   repository: Repository,
-): Promise<WorkflowitemDocument.DocumentOrExternalLinkReference[]> {
-  const docsWithAvailability: WorkflowitemDocument.DocumentOrExternalLinkReference[] = [];
+): Promise<WorkflowitemDocument.DocumentWithAvailability[]> {
+  const docsWithAvailability: WorkflowitemDocument.DocumentWithAvailability[] = [];
 
   for (const doc of documents) {
     const result = await repository.downloadDocument(doc.id);
-    docsWithAvailability.push({ ...doc, available: Result.isOk(result) });
+    if (Result.isOk(result) && isDocumentReference(doc)) {
+      const actualHash = await WorkflowitemDocument.hashBase64String(result.base64);
+      const isIdentical = isSameHash(doc, actualHash);
+      if (!isIdentical) {
+        logger.warn(
+          `Document ${doc.id} has a different hash than expected. Expected: ${
+            (doc as DocumentReference).hash
+          }, actual: ${actualHash}`,
+        );
+      }
+      docsWithAvailability.push({
+        ...doc,
+        // todo should be available only if the hash is identical?
+        available: Result.isOk(result) && isIdentical,
+        isValidHash: isIdentical,
+      });
+    } else {
+      docsWithAvailability.push({ ...doc, available: Result.isOk(result) });
+    }
   }
 
   return docsWithAvailability;
+}
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function isDocumentReference(doc: any): doc is DocumentReference {
+  return doc && typeof doc.hash === "string";
+}
+
+function isSameHash(doc: DocumentReference, actualHash: string): boolean {
+  return doc.hash === actualHash;
 }
