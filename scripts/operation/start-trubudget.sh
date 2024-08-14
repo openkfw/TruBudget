@@ -40,6 +40,8 @@ orange=$(tput setaf 214)
 red=$(tput setaf 196)
 colorReset=$(tput sgr0)
 
+dockerCmd=$(which docker)
+
 echo "INFO: Building, Starting TruBudget for Operation"
 
 # Set default options
@@ -121,7 +123,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker compose -p trubudget-operation down
+        $dockerCmd compose -p trubudget-operation down
         exit 1
         ;;
 
@@ -258,7 +260,7 @@ else
     fi
 fi
 
-COMPOSE="docker compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
+COMPOSE="$dockerCmd compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."

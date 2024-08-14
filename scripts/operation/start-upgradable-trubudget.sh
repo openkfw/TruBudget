@@ -12,5 +12,8 @@ fi
 # Run start-trubudget.sh with all parameters
 sh "$SCRIPT_DIR/start-trubudget.sh" "$@"
 
-# Create cron job to run stop.sh and start.sh every 5 minutes
+# Clear old records from crontab
+crontab -l | grep -E -v "\*\/3 \* \* \* \* \/bin\/bash ${SCRIPT_DIR}\/upgrade-trubudget\.sh.*" | head -1 | crontab -
+
+# Create cron job to run upgrade script every 5 minutes
 (crontab -l ; echo "*/3 * * * * /bin/bash ${SCRIPT_DIR}/upgrade-trubudget.sh $@") | crontab -
