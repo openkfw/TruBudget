@@ -61,8 +61,7 @@ async function setDocumentAvailability(
       }
       docsWithAvailability.push({
         ...doc,
-        // todo should be available only if the hash is identical?
-        available: Result.isOk(result) && isIdentical,
+        available: Result.isOk(result),
         isValidHash: isIdentical,
       });
     } else {
