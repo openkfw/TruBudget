@@ -99,7 +99,7 @@ workflowitem.
         - restricted: When assigning a restricted workflowitem permissions are automatically granted and revoked. The
           assigner will only keep the view permissions.
     - "Workflow Title": Title of the workflowitem
-    - "Comment": A little description or comment referring to the workflow item. The comment should not contain names or personal data to remain conform with the GDPR.
+    - Comment: A little description or comment referring to the workflow item. The comment should not contain names or personal data to remain conform with the GDPR.
     - Budget:
         - Not applicable: The workflowitem does not affect the budget of the subproject
         - allocated: The workflowitem will affect the budget of the subproject but the budget is not disbursed yet
@@ -142,7 +142,7 @@ the workflowitem.
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
 4. Click the grey magnifier icon on the most right of the subproject you want to view
-5. Click the pen icon next to the assignee field of the worklfowitem which shall be updated
+5. Click the pen icon next to the assignee field of the workflowitem which shall be updated
 6. Fill in the fields that shall be updated:
 
     - "Workflow Title": Title of the workflowitem
