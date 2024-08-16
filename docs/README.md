@@ -17,20 +17,20 @@ Installation - How to install TruBudget
 - [Deploying using Docker](./operation-administration/installation/create-a-new-network/docker.md)
 - [Environment Variables](./operation-administration/introduction.md#environment-variables)
 - [Organizations and Nodes](./operation-administration/introduction.md#organizations-and-nodes-in-trubudget)
-- [Node connection process](./operation-administration/installation/create-a-new-network/connection-process.md)
+- [Node connection process](./operation-administration/installation/create-a-new-network/docker.md)
 - [Connect to an existing network](./operation-administration/installation/connect-to-an-existing-network/docker.md)
 - [Update TruBudget](./operation-administration/update-trubudget.md)
-- [Logging](./operation-administration/logging.md) - Information on the API log and how to handle it
+- [Logging](./operation-administration/logging-monitoring.md) - Information on the API log and how to handle it
 - [Security](./operation-administration/security.md) - Information on the security aspects of Trubudget
 - [Troubleshooting](./known-issues/intro.md) - How to solve known issues
 
 Contributing
 
 - [Developer Setup](./developer/developer-setup.md)
-- [Logging](./operation-administration/logging.md) - Information on the API log and how to handle it
+- [Logging](./operation-administration/logging-monitoring.md) - Information on the API log and how to handle it
 - [Troubleshooting](./known-issues/intro.md) - How to solve known issues
 
-[User Guide](./user-guide/README.md)
+[User Guide](./user-guide/index.md#introduction)
 
 - [Projects/Subprojects/Workflowitems](./user-guide/projects/project.md)
 - [Users and Groups](./user-guide/users-and-groups/user.md)
@@ -39,4 +39,4 @@ Contributing
 - [Notifications](./user-guide/notifications.md)
 - [Permissions](./user-guide/users-and-groups/permissions.md)
 
-[FAQ](./user-guide/README.md#faq) - Frequently asked questions
+[FAQ](./user-guide/index.md#faq) - Frequently asked questions
