@@ -14,6 +14,7 @@ import * as AuthToken from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
+import WorkflowMode, { workflowModeSchema } from "../workflow/types";
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
@@ -32,6 +33,7 @@ export interface RequestData {
   currency: CurrencyCode;
   projectedBudgets?: ProjectedBudget[];
   additionalData?: object;
+  workflowMode?: WorkflowMode;
 }
 
 const requestDataSchema = Joi.object({
@@ -46,6 +48,7 @@ const requestDataSchema = Joi.object({
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema,
   additionalData: AdditionalData.schema,
+  workflowMode: workflowModeSchema,
 });
 
 export function validate(input): RequestData {
@@ -126,6 +129,7 @@ export async function createSubproject(
       projectedBudgets: reqData.projectedBudgets || [],
       permissions: newDefaultPermissionsFor(issuer.id),
       additionalData: reqData.additionalData || {},
+      workflowMode: reqData.workflowMode || "ordered",
     },
     new Date().toISOString(),
     issuer.metadata,

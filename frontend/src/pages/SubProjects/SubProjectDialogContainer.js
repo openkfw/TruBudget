@@ -16,7 +16,8 @@ import {
   storeSubProjectComment,
   storeSubProjectCurrency,
   storeSubProjectName,
-  storeSubProjectValidator
+  storeSubProjectValidator,
+  storeWorkflowMode
 } from "./actions";
 import SubProjectDialog from "./SubProjectDialog";
 
@@ -46,27 +47,29 @@ const mapDispatchToProps = (dispatch) => {
   return {
     hideSubprojectDialog: () => dispatch(hideSubprojectDialog()),
     storeSubProjectName: (name) => dispatch(storeSubProjectName(name)),
-    createSubProject: (
+    createSubProject: ({
       projectId,
       projectDisplayName,
       subprojectDisplayName,
       description,
       currency,
-      projectedBudget,
       validator,
-      workflowitemType
-    ) =>
+      workflowitemType,
+      workflowMode,
+      projectedBudgets
+    }) =>
       dispatch(
-        createSubProject(
+        createSubProject({
           projectId,
           projectDisplayName,
           subprojectDisplayName,
           description,
           currency,
-          projectedBudget,
           validator,
-          workflowitemType
-        )
+          workflowitemType,
+          workflowMode,
+          projectedBudgets
+        })
       ),
     editSubproject: (pId, sId, changes, deletedBudgets) => dispatch(editSubproject(pId, sId, changes, deletedBudgets)),
     storeSubProjectComment: (comment) => dispatch(storeSubProjectComment(comment)),
@@ -77,7 +80,8 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(editSubProjectProjectedBudgetAmount(projectedBudget, budgetAmountEdit)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
     storeDeletedProjectedBudget: (projectedBudgets) => dispatch(storeDeletedProjectedBudget(projectedBudgets)),
-    storeFixedWorkflowitemType: (workflowitemType) => dispatch(storeFixedWorkflowitemType(workflowitemType))
+    storeFixedWorkflowitemType: (workflowitemType) => dispatch(storeFixedWorkflowitemType(workflowitemType)),
+    storeWorkflowMode: (workflowMode) => dispatch(storeWorkflowMode(workflowMode))
   };
 };
 

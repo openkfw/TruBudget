@@ -185,6 +185,7 @@ const defaultState = fromJS({
   rejectReason: "",
   isRejectReasonDialogShown: false,
   workflowTemplate: "",
+  workflowMode: "ordered",
   filteredWorkflowitems: [],
   searchTerm: "",
   searchOnlyTags: false,
@@ -197,22 +198,23 @@ export default function detailviewReducer(state = defaultState, action) {
     case FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS: {
       const { subproject, workflowitems, parentProject } = action;
       return state.merge({
-        id: subproject.data.id,
-        created: subproject.data.creationUnixTs,
-        displayName: subproject.data.displayName,
-        description: subproject.data.description,
-        subprojectValidator: subproject.data.validator,
-        hasSubprojectValidator: subproject.data.validator ? true : false,
-        fixedWorkflowitemType: subproject.data.workflowitemType,
-        hasFixedWorkflowitemType: subproject.data.workflowitemType ? true : false,
-        status: subproject.data.status,
-        currency: subproject.data.currency,
         allowedIntents: fromJS(subproject.allowedIntents),
         assignee: fromJS(subproject.data.assignee),
-        workflowItems: fromJS(workflowitems),
+        created: subproject.data.creationUnixTs,
+        currency: subproject.data.currency,
+        description: subproject.data.description,
+        displayName: subproject.data.displayName,
         filteredWorkflowitems: fromJS(workflowitems),
+        fixedWorkflowitemType: subproject.data.workflowitemType,
+        hasFixedWorkflowitemType: subproject.data.workflowitemType ? true : false,
+        hasSubprojectValidator: subproject.data.validator ? true : false,
+        id: subproject.data.id,
         parentProject: fromJS(parentProject),
-        projectedBudgets: fromJS(subproject.data.projectedBudgets)
+        projectedBudgets: fromJS(subproject.data.projectedBudgets),
+        status: subproject.data.status,
+        subprojectValidator: subproject.data.validator,
+        workflowItems: fromJS(workflowitems),
+        workflowMode: subproject.data.workflowMode
       });
     }
     case FETCH_WORKFLOWITEM_SUCCESS: {

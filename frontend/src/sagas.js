@@ -664,6 +664,7 @@ export function* createSubProjectSaga({
   currency,
   validator,
   workflowitemType,
+  workflowMode,
   projectedBudgets,
   showLoading
 }) {
@@ -674,8 +675,10 @@ export function* createSubProjectSaga({
     currency,
     validator,
     workflowitemType,
+    workflowMode,
     projectedBudgets
   };
+
   yield execute(function* () {
     const confirmed = yield select(getConfirmedState);
     const additionalActions = yield select(getAdditionalActionsState);
@@ -722,7 +725,8 @@ export function* createSubProjectSaga({
         currency,
         projectedBudgets,
         validator.id,
-        workflowitemType
+        workflowitemType,
+        workflowMode
       );
       yield put({
         type: CREATE_SUBPROJECT_SUCCESS,

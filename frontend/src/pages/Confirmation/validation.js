@@ -54,6 +54,7 @@ schemas
         currency: Yup.string().required(),
         description: Yup.string().ensure(),
         workflowitemType: Yup.string().oneOf(["restricted", "general", ""]),
+        workflowMode: Yup.string().oneOf(["ordered", "unordered", ""]),
         subprojectDisplayName: Yup.string().required()
       })
     })

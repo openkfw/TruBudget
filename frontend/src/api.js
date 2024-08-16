@@ -263,7 +263,8 @@ class Api {
     currency,
     projectedBudgets = [],
     validatorId = undefined,
-    workflowitemType = undefined
+    workflowitemType = undefined,
+    workflowMode = "ordered"
   ) => {
     if (_isEmpty(validatorId)) validatorId = undefined;
     if (_isEmpty(workflowitemType)) workflowitemType = undefined;
@@ -275,7 +276,8 @@ class Api {
         currency,
         projectedBudgets,
         validator: validatorId,
-        workflowitemType
+        workflowitemType,
+        workflowMode
       }
     });
   };

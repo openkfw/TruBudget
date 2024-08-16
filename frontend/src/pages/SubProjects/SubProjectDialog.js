@@ -17,23 +17,24 @@ const handleCreate = (props) => {
     storeSnackbarMessage,
     users
   } = props;
-  const { displayName, description, currency, workflowitemType, projectedBudgets } = subprojectToAdd;
+  const { displayName, description, currency, workflowitemType, workflowMode, projectedBudgets } = subprojectToAdd;
   const projectId = location.pathname.split("/")[2];
   const validator = {
     id: subprojectToAdd.validator,
     displayName: users.find((u) => u.id === subprojectToAdd.validator)?.displayName
   };
 
-  createSubProject(
+  createSubProject({
     projectId,
     projectDisplayName,
-    displayName,
+    subprojectDisplayName: displayName,
     description,
     currency,
     validator,
     workflowitemType,
-    projectedBudgets.map((b) => ({ ...b, value: fromAmountString(b.value).toString(10) }))
-  );
+    workflowMode,
+    projectedBudgets: projectedBudgets.map((b) => ({ ...b, value: fromAmountString(b.value).toString(10) }))
+  });
   onDialogCancel();
 
   storeSnackbarMessage(
@@ -78,7 +79,8 @@ const SubProjectDialog = (props) => {
     creationDialogShown,
     subProjects,
     storeSubProjectValidator,
-    storeFixedWorkflowitemType
+    storeFixedWorkflowitemType,
+    storeWorkflowMode
   } = props;
 
   useEffect(() => {
@@ -87,8 +89,16 @@ const SubProjectDialog = (props) => {
       const selectedSubproject = subProjects.find((s) => s.data.id === subprojectToAdd.id).data;
       storeSubProjectValidator(selectedSubproject.validator);
       storeFixedWorkflowitemType(selectedSubproject.workflowitemType);
+      storeWorkflowMode(selectedSubproject.workflowMode);
     }
-  }, [editDialogShown, subProjects, subprojectToAdd, storeSubProjectValidator, storeFixedWorkflowitemType]);
+  }, [
+    editDialogShown,
+    subProjects,
+    subprojectToAdd,
+    storeSubProjectValidator,
+    storeFixedWorkflowitemType,
+    storeWorkflowMode
+  ]);
 
   const changes = compareObjects(subProjects, subprojectToAdd);
   const hasChanges = !isEmptyDeep(changes);

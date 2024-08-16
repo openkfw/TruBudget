@@ -201,6 +201,9 @@ const de = {
   subproject: {
     assignee: "Verantwortlicher",
     fixed_workflowitem_type: "Fester Workflowitem Typ",
+    workflow_mode: "Workflow Modus",
+    workflow_mode_ordered: "Aktionsliste (geordnet)",
+    workflow_mode_unordered: "Freie Auswahl (ungeordnet)",
     subproject_add_title: "Neues Subprojekt",
     subproject_assigned_organization: "Verantwortliche Organisation",
     subproject_budget_amount: "Subprojekt Budget",

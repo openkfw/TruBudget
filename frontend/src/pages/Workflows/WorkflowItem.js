@@ -205,9 +205,9 @@ const getAttachmentButton = ({ openWorkflowDetails, projectId, subProjectId }, w
   );
 };
 
-const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, status) => {
+const isWorkflowSelectable = (currentWorkflowSelectable, workflowSortEnabled, status, workflowMode) => {
   const workflowSortable = status === "open";
-  return workflowSortEnabled ? workflowSortable : currentWorkflowSelectable;
+  return workflowSortEnabled ? workflowSortable : workflowMode === "unordered" ? true : currentWorkflowSelectable;
 };
 
 const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurrency) => {
@@ -285,7 +285,7 @@ const renderActionButtons = ({
       <div className="workflow-item-actions">
         <ActionButton
           ariaLabel="show additional data"
-          notVisible={additionalDataDisabled || status === "closed" || additionalDataDisabled}
+          notVisible={additionalDataDisabled || status === "closed"}
           onClick={additionalDataDisabled ? undefined : showAdditionalData}
           icon={<MoreIcon />}
           title={additionalDataDisabled ? "" : strings.common.additional_data}
@@ -376,7 +376,8 @@ export const WorkflowItem = ({
     storeWorkflowItemsBulkAction,
     selectedWorkflowItems,
     currency: targetCurrency,
-    disabled
+    disabled,
+    workflowMode
   } = props;
   const {
     id,
@@ -392,7 +393,7 @@ export const WorkflowItem = ({
     tags
   } = workflow.data;
   const allowedIntents = workflow.allowedIntents;
-  const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
+  const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status, workflowMode);
   const canEditWorkflow = canUpdateWorkflowItem(allowedIntents) && status !== "closed";
   const infoButton = getInfoButton(props, status, workflowSortEnabled, workflow.data);
   const attachmentButton = getAttachmentButton(props, workflow.data);
