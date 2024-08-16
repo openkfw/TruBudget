@@ -10,23 +10,17 @@ import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
-import * as fs from "fs";
+import axios from "axios";
 
 /**
  * Represents the request body of the endpoint
  */
 interface RequestBodyV1 {
   apiVersion: "1.0";
-  data: {
-    version: string;
-  };
 }
 
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
-  data: Joi.object({
-    version: Joi.string().required(),
-  }),
 });
 
 type RequestBody = RequestBodyV1;
@@ -53,9 +47,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
   return {
     preValidation: [server.authenticate],
     schema: {
-      description: "Upgrade app to new version.",
+      description: "Get latest app version available on dockerhub.",
       tags: ["global"],
-      summary: "Upgrade app",
+      summary: "Get latest app version",
       security: [
         {
           bearerToken: [],
@@ -63,16 +57,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
       ],
       body: {
         type: "object",
-        required: ["apiVersion", "data"],
+        required: ["apiVersion"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
-          data: {
-            type: "object",
-            required: ["version"],
-            properties: {
-              version: { type: "string", example: "2.15.0" },
-            },
-          },
         },
       },
       response: {
@@ -115,7 +102,7 @@ interface Service {
  */
 export function addHttpHandler(server: AugmentedFastifyInstance, urlPrefix: string): void {
   server.register(async function () {
-    server.post(`${urlPrefix}/app.upgrade`, mkSwaggerSchema(server), (request, reply) => {
+    server.post(`${urlPrefix}/app.latestVersion`, mkSwaggerSchema(server), (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
       const serviceUser: ServiceUser = {
@@ -147,17 +134,27 @@ export function addHttpHandler(server: AugmentedFastifyInstance, urlPrefix: stri
 
       switch (bodyResult.apiVersion) {
         case "1.0": {
-          const data = bodyResult.data;
-          fs.writeFileSync(__dirname + "/trubudget-config/upgrade_version.txt", data.version);
+          axios
+            .get("https://hub.docker.com/v2/repositories/trubudget%2Fapi/tags?page_size=10")
+            .then((response) => {
+              const tags = response.data.results;
+              const highestVersion: string | undefined = tags
+                .filter(
+                  (tag: { name: string }): boolean =>
+                    tag.name !== "latest" && /^v\d+\.\d+\.\d+$/.test(tag.name),
+                )
+                .map((tag: { name: string }): string => tag.name)
+                .find((): boolean => true);
+              const code = 200;
+              const body = {
+                apiVersion: "1.0",
+                data: {
+                  version: highestVersion,
+                },
+              };
+              reply.status(code).send(body);
+            });
 
-          const code = 200;
-          const body = {
-            apiVersion: "1.0",
-            data: {
-              version: bodyResult.data.version,
-            },
-          };
-          reply.status(code).send(body);
           break;
         }
         default:

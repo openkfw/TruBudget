@@ -4,6 +4,8 @@ import { AxiosRequestConfig } from "axios";
 import "module-alias/register";
 
 import getValidConfig, { config } from "./config";
+import * as AppLatestVersionAPI from "./app_latest_version";
+import * as AppUpgradeVersionAPI from "./app_upgrade";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
@@ -291,6 +293,13 @@ registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storage
 );
 
 /*
+ * APIs related to App versioning
+ */
+
+AppLatestVersionAPI.addHttpHandler(server, URL_PREFIX);
+AppUpgradeVersionAPI.addHttpHandler(server, URL_PREFIX);
+
+/*
  * APIs related to Global Permissions
  */
 
@@ -407,13 +416,10 @@ if (config.refreshTokenStorage) {
 }
 
 export interface UserLogoutAPIService {
-  clearRefreshToken(
-    refreshToken: string,
-  ): Promise<Result.Type<void>>;
+  clearRefreshToken(refreshToken: string): Promise<Result.Type<void>>;
 }
 UserLogoutAPI.addHttpHandler(server, URL_PREFIX, {
-  clearRefreshToken: async (refreshToken) =>
-    dbConnection?.deleteRefreshToken(refreshToken),
+  clearRefreshToken: async (refreshToken) => dbConnection?.deleteRefreshToken(refreshToken),
 });
 
 UserCreateAPI.addHttpHandler(server, URL_PREFIX, {

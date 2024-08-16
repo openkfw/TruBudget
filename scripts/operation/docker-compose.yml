@@ -112,6 +112,8 @@ services:
       API_REFRESH_TOKENS_TABLE: ${API_REFRESH_TOKENS_TABLE}
     depends_on:
       - alpha-node
+    volumes:
+      - "../../api/dist/trubudget-config:/home/node/src/trubudget-config:delegated"
     networks:
       mynetwork:
         ipv4_address: 172.21.0.4

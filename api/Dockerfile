@@ -7,6 +7,7 @@ COPY package-lock.json ./
 RUN npm ci
 
 COPY src src/
+COPY trubudget-config trubudget-config/
 COPY tsconfig.json .
 RUN npm run build
 

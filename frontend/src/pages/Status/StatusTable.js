@@ -1,6 +1,17 @@
-import React from "react";
+import React, { useCallback, useEffect, useState } from "react";
+import axios from "axios";
 
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material";
 
 import strings from "../../localizeStrings";
 
@@ -70,6 +81,31 @@ const StatusTable = (props) => {
     isFetchingExportVersion
   } = props;
 
+  const [latestVersion, setLatestVersion] = useState(null);
+
+  useEffect(() => {
+    axios
+      .post("/api/app.latestVersion", {
+        apiVersion: "1.0"
+      })
+      .then((response) => {
+        setLatestVersion(response.data.data.version);
+      });
+  }, []);
+
+  const upgradeApp = useCallback(() => {
+    axios
+      .post("/api/app.upgrade", {
+        apiVersion: "1.0",
+        data: {
+          version: latestVersion
+        }
+      })
+      .then((response) => {
+        console.log(response);
+      });
+  }, [latestVersion]);
+
   const isFetchingVersion = (serviceName) => {
     const standardServices = ["frontend", "api", "blockchain", "multichain"];
     if (
@@ -136,6 +172,13 @@ const StatusTable = (props) => {
   return (
     <div data-test="status-dashboard" className="table-container">
       <div className="custom-width">
+        <p>
+          New version of TruBudget is available. Backup your data and click{" "}
+          <Button onClick={upgradeApp} variant="contained">
+            Upgrade to {latestVersion}
+          </Button>
+        </p>
+        <p>This will turn off, upgrade and restart the application.</p>
         <Paper>
           <Table>
             <TableHead>

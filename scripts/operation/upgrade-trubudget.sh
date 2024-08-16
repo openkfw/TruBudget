@@ -5,7 +5,10 @@ echo "Checking for upgrades"
 # Get the directory name of the current script file
 SCRIPT_DIR="$(dirname -- $(cd "$(dirname -- "$0")" >/dev/null; pwd -P)/$(basename -- "$0"))"
 
-if [ -d "$SCRIPT_DIR/../../api/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../api/trubudget-config/upgrade_version.txt" ]; then
+# Check if the trubudget-config directory exists and the upgrade_version.txt file exists in docker container
+NEW_VERSION=$(docker exec -it trubudget-dev-alpha-api-1 cat /home/node/src/trubudget-config/upgrade_version.txt)
+
+if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../api/src/trubudget-config/upgrade_version.txt" ]; then
   # Define the path to your .env file
   ENV_FILE="$SCRIPT_DIR/.env"
 
@@ -13,7 +16,7 @@ if [ -d "$SCRIPT_DIR/../../api/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../ap
   cp $ENV_FILE $ENV_FILE.bak
 
   # Assign the provided version to a variable
-  NEW_VERSION=$(cat $SCRIPT_DIR/../../api/trubudget-config/upgrade_version.txt)
+  NEW_VERSION=$(cat $SCRIPT_DIR/../../api/src/trubudget-config/upgrade_version.txt)
 
   # Check if the version argument is provided
   if [ -z "$NEW_VERSION" ]; then
@@ -30,7 +33,7 @@ if [ -d "$SCRIPT_DIR/../../api/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../ap
   rm -f "${ENV_FILE}.bak"
 
   #Remove the upgrade.txt file
-  rm -f $SCRIPT_DIR/../../api/trubudget-config/upgrade.txt
+  rm -f $SCRIPT_DIR/../../api/src/trubudget-config/upgrade.txt
 
   # Restart the trubudget
   bash $SCRIPT_DIR/start-trubudget.sh $@
