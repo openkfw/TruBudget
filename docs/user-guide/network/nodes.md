@@ -18,7 +18,7 @@ The second tab shows the nodes that were declined by the current organization wh
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. Click the "Nodes" menu point
 
-![view nodes](./../img/view_nodes.jpg)
+![view nodes](./../img/view_nodes.png)
 
 3. Click the buttons to "approve" or "decline" requests
    ![approve decline nodes](./../img/approve_decline_nodes.jpg)
