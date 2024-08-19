@@ -29,6 +29,9 @@ const ka = {
     id: "ქვეპროექტის ID",
     name: "ქვეპროექტის სახელი",
     workflowitem_type: "Workflowitem ტიპი",
+    workflow_mode: "სამუშაო რეჟიმი",
+    workflow_mode_ordered: "სამუშაო სია (დალაგებული)",
+    workflow_mode_unordered: "სამუშაო სია (არ დალაგებული)",
     validator: "შემმოწმებელი",
   },
 
