@@ -29,13 +29,13 @@ A confirmation dialog can look differently depending on the permissions of users
 
 If the user has all required permissions and no additional actions have to be executed following dialog appears.
 
-![confirmation dialog without actions](./img/assign_confirmation.jpg)
+![confirmation dialog without actions](./img/assign_confirmation.png)
 
 #### Dialog with actions list
 
 If the user has all required permissions and additional actions have to be executed following dialog appears.
 
-![confirmation dialog with actions](./img/additional_actions_confirmation.jpg)
+![confirmation dialog with actions](./img/additional_actions_confirmation.png)
 
 #### Dialog without view permissions
 

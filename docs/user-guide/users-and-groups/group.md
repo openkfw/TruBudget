@@ -17,7 +17,7 @@ View all groups the current user is member of.
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. The user's groups are displayed in the "Groups" section of the side-navigation-bar
 
-![Show Users](./../img/show_current_groups.jpg)
+![Show Users](./../img/show_current_groups.png)
 
 :::note
 
@@ -36,7 +36,7 @@ View all groups.
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. Click the "Users" menu point
 
-![Show Users](./../img/show_Users.jpg)
+![Show Users](./../img/show_Users.png)
 
 :::note
 The list of available groups can only be viewed by administrators
@@ -44,7 +44,7 @@ The list of available groups can only be viewed by administrators
 
 3. Click the "Groups" tab on the Users page to display all available groups
 
-![Show Groups](./../img/show_groups.jpg)
+![Show Groups](./../img/show_groups.png)
 
 ## Create a Group
 
