@@ -104,13 +104,31 @@
 }
 
 .info-cell {
-  width: 8%;
+  width: 5%;
   display: flex;
   align-items: center;
 }
 
 .workflow-cell {
-  width: 25%;
+  width: 20%;
+  display: flex;
+  align-items: center;
+  &.not-selectable {
+    opacity: 0.3;
+  }
+}
+
+.budget-cell {
+  width: 15%;
+  display: flex;
+  align-items: center;
+  &.not-selectable {
+    opacity: 0.3;
+  }
+}
+
+.status-cell {
+  width: 10%;
   display: flex;
   align-items: center;
   &.not-selectable {
@@ -129,16 +147,16 @@
 }
 
 .action-cell {
-  width: 20%;
+  width: 10%;
   display: flex;
   align-items: center;
 }
 
 .tag-cell {
-  width: 8%;
+  width: 15%;
   display: flex;
   align-items: center;
-  margin-left: 1rem;
+  overflow-x: hidden;
 }
 
 .typographs {
@@ -226,4 +244,24 @@
 
 .hidden-icon-container {
   flex: 1;
+}
+
+.tags-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tag-chips {
+  width: 80%;
+  overflow-x: hidden;
+}
+
+.tags-popover {
+  padding: 5px;
+}
+
+.tags-popover > div {
+  margin: 1px;
 }
