@@ -20,6 +20,25 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Fixed -->
   
   
+## [2.14.0] - 2024-08-12
+
+<!-- ## Unreleased -->
+
+### Added
+  
+- User directory adapter: Login possible even though permissions/access was revoked [#1855](https://github.com/openkfw/TruBudget/issues/1855)
+
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+### Fixed
+
+- Typo in docker-compose [#1931](https://github.com/openkfw/TruBudget/issues/1931)  
+  
 ## [2.13.0] - 2024-07-31
 
 ### Added
@@ -1192,7 +1211,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.13.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.14.0...main
+[2.14.0]: https://github.com/openkfw/TruBudget/compare/v2.13.0...v2.14.0
 [2.13.0]: https://github.com/openkfw/TruBudget/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/openkfw/TruBudget/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/openkfw/TruBudget/compare/v2.10.0...v2.11.0
