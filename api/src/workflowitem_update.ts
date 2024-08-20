@@ -6,14 +6,14 @@ import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { UploadedDocumentOrLink, uploadedDocumentSchema } from "./service/domain/document/document";
-import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import * as WorkflowitemUpdated from "./service/domain/workflow/workflowitem_updated";
-import * as WorkflowitemUpdate from "./service/workflowitem_update";
+
 import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
+import { WorkflowitemUpdateServiceInterface } from "index";
 
 /**
  * Represents the request body of the endpoint
@@ -122,6 +122,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                       type: "string",
                       example: "https://www.example.com",
                     },
+                    linkedFileHash: {
+                      type: "string",
+                      example: "e41a7hduwdf724fbiq8f23fdi2ufg2ef",
+                    },
                   },
                 },
               },
@@ -148,20 +152,6 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
 }
 
 /**
- * Represents the service that updates a workflowitem
- */
-interface Service {
-  updateWorkflowitem(
-    ctx: Ctx,
-    user: ServiceUser,
-    projectId: Project.Id,
-    subprojectId: Subproject.Id,
-    workflowitemId: Workflowitem.Id,
-    data: WorkflowitemUpdate.RequestData,
-  ): Promise<Result.Type<void>>;
-}
-
-/**
  * Creates an http handler that handles incoming http requests for the `/workflowitem.update` route
  *
  * @param server the current fastify server instance
@@ -171,7 +161,7 @@ interface Service {
 export function addHttpHandler(
   server: AugmentedFastifyInstance,
   urlPrefix: string,
-  service: Service,
+  service: WorkflowitemUpdateServiceInterface,
 ): void {
   server.register(async function () {
     server.post(`${urlPrefix}/workflowitem.update`, mkSwaggerSchema(server), (request, reply) => {

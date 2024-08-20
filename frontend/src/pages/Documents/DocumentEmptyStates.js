@@ -16,7 +16,7 @@ const DocumentEmptyState = (props) => {
           <img
             src="/images-for-empty-state/workflow-items-empty-state.png"
             alt={strings.common.no_documents}
-            width="150vw"
+            width="200vw"
           />
         </ListItem>
         <ListItem>
