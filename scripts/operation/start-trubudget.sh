@@ -40,7 +40,11 @@ orange=$(tput setaf 214)
 red=$(tput setaf 196)
 colorReset=$(tput sgr0)
 
+# Find correct docker command
 dockerCmd=$(which docker)
+if [ -z "$dockerCmd" ]; then
+    dockerCmd="$1"
+fi
 
 echo "INFO: Building, Starting TruBudget for Operation"
 
@@ -146,6 +150,10 @@ while [ "$1" != "" ]; do
         ;;
 
     *) # unknown option
+        if [ $1 == $dockerCmd ]; then
+            shift
+            continue
+        fi
         echo "unknown argument: " $1
         echo "Exiting ..."
         exit 1

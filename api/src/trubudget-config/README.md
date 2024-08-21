@@ -8,7 +8,7 @@ This folder is used to store files that are essential for communicating with a c
 
 The primary purpose of this folder is to:
 
-- Store configuration files
+- Store configuration files. e.g. `upgrade_version.txt`
 - Log upgrade activities
 
 ## Usage

@@ -5,8 +5,11 @@ echo "Checking for upgrades"
 # Get the directory name of the current script file
 SCRIPT_DIR="$(dirname -- $(cd "$(dirname -- "$0")" >/dev/null; pwd -P)/$(basename -- "$0"))"
 
+# Find docker
+dockerCmd="$1"
+
 # Check if the trubudget-config directory exists and the upgrade_version.txt file exists in docker container
-NEW_VERSION=$(docker exec -it trubudget-dev-alpha-api-1 cat /home/node/src/trubudget-config/upgrade_version.txt)
+NEW_VERSION=$($dockerCmd exec trubudget-operation-alpha-api-1 cat /home/node/src/trubudget-config/upgrade_version.txt)
 
 if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../api/src/trubudget-config/upgrade_version.txt" ]; then
   # Define the path to your .env file
@@ -23,22 +26,30 @@ if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ -f "$SCRIPT_DIR/../.
     exit 0
   fi
 
+  if grep -q "TAG=$NEW_VERSION" "$ENV_FILE"; then
+      echo "Same version $NEW_VERSION is already running"
+
+      #Remove the upgrade.txt file
+      rm -f $SCRIPT_DIR/../../api/src/trubudget-config/upgrade_version.txt
+      exit 0
+  fi
+
   # Use sed to replace the line starting with TAG=
-  sed -E "s/^TAG=.*/TAG=$NEW_VERSION/" $ENV_FILE
+  cat $ENV_FILE | sed -e "s/^TAG=.*/TAG=$NEW_VERSION/" 2>&1 | tee $ENV_FILE
 
   # Print success message
   echo "Updated TAG to $NEW_VERSION in $ENV_FILE"
+
+  cat $ENV_FILE
 
   # Optionally, remove the backup file created by sed
   rm -f "${ENV_FILE}.bak"
 
   #Remove the upgrade.txt file
-  rm -f $SCRIPT_DIR/../../api/src/trubudget-config/upgrade.txt
+  rm -f $SCRIPT_DIR/../../api/src/trubudget-config/upgrade_version.txt
 
   # Restart the trubudget
   bash $SCRIPT_DIR/start-trubudget.sh $@
-
   
-
 fi
 
