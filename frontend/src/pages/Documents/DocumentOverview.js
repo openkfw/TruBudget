@@ -29,6 +29,9 @@ class DocumentOverview extends Component {
   constructor() {
     super();
     this.input = {};
+    this.state = {
+      validatedLinks: {}
+    };
   }
 
   hashValue = async (base64String) => {
@@ -105,6 +108,65 @@ class DocumentOverview extends Component {
     );
   };
 
+  generateLinkValidationButton = (document) => {
+    const { linkedFileHash, id } = document;
+
+    return (
+      <Button
+        {...this.getPropsForValidationButton(this.state.validatedLinks[id], !!linkedFileHash)}
+        data-test="validation-button"
+      >
+        <ValidationIcon />
+        {this.getValidationText(this.state.validatedLinks[id])}
+        <Input
+          id="docvalidation"
+          type="file"
+          className="document-validation-input"
+          onChange={(event) => {
+            if (event.target.files[0]) {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              reader.onloadend = async (e) => {
+                if (e.target.result !== undefined) {
+                  const dataBase64 = e.target.result.split(";base64,")[1];
+                  const newHash = await this.hashValue(dataBase64);
+                  this.setState((state) => ({
+                    validatedLinks: { ...state.validatedLinks, [id]: newHash === linkedFileHash }
+                  }));
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
+      </Button>
+    );
+  };
+
+  generateLinkDocToHashUploadButton = (validated, projectId, subprojectId, workflowitemId, document) => {
+    const { id, available } = document;
+
+    return (
+      <Button {...this.getPropsForValidationButton(validated, available)} data-test="validation-button">
+        <ValidationIcon />
+        {this.getValidationText(validated)}
+        <Input
+          id="docvalidation"
+          type="file"
+          className="document-validation-input"
+          onChange={(event) => {
+            if (event.target.files[0]) {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              reader.onloadend = async (e) => {};
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
+      </Button>
+    );
+  };
+
   generateDocumentList = () => {
     const {
       workflowitemId,
@@ -147,6 +209,8 @@ class DocumentOverview extends Component {
               {document.id &&
                 document.hash &&
                 this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
+              {document.id  && document.link && document.linkedFileHash && this.generateLinkValidationButton(document)}
+              {/* {document.id && document.link && this.generateLinkDocToHashUploadButton(validated, projectId, subprojectId, workflowitemId, document)} */}
               {document.id &&
                 document.hash &&
                 this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)}
