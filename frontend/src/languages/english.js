@@ -645,6 +645,7 @@ const en = {
     workflowitem_intent_grantPermission: "Grant workflowitem permission",
     workflowitem_intent_listPermissions: "View workflowitem permissions",
     workflowitem_intent_revokePermission: "Revoke workflowitem permission",
+    workflowitem_list: "View workflowitem",
     workflowitem_update: "Update workflowitem",
     workflowitem_view: "View workflowitem",
     write: "Write permissions"

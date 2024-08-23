@@ -655,6 +655,7 @@ const fr = {
     workflowitem_intent_grantPermission: "Accorder des autorisations sur l’étape de workflow",
     workflowitem_intent_listPermissions: "Afficher les autorisations sur l’étape de workflow",
     workflowitem_intent_revokePermission: "Révoquer des autorisations sur l’étape de workflow ",
+    workflowitem_list: "Voir l’étape de workflow",
     workflowitem_update: "Mettre à jour l’étape de workflow",
     workflowitem_view: "Voir l’étape de workflow",
     write: "Autorisations d'écriture"
