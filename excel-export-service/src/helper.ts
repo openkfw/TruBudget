@@ -27,6 +27,19 @@ export const workflowItemTypeMapping = (type): string => {
   }
 };
 
+export const workflowModeMapping = (type): string => {
+  log.debug({ type }, "Mapping workflow mode");
+
+  switch (type) {
+    case "ordered":
+      return strings.subproject.workflow_mode_ordered;
+    case "unordered":
+      return strings.subproject.workflow_mode_unordered;
+    default:
+      return strings.subproject.workflow_mode_ordered;
+  }
+};
+
 export const amountTypesMapping = (amountType): string => {
   log.debug({ amountType }, "Mapping ammount type");
 

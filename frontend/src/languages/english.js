@@ -284,6 +284,9 @@ const en = {
   subproject: {
     assignee: "Owner",
     fixed_workflowitem_type: "Fixed workflowitem type",
+    workflow_mode: "Workflow Mode",
+    workflow_mode_ordered: "Workflow (Ordered)",
+    workflow_mode_unordered: "Action List (Unordered)",
     subproject_add_title: "Add new subproject",
     subproject_assigned_organization: "Assigned organization",
     subproject_budget_amount: "Subproject  budget amount",

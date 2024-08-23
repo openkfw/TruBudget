@@ -203,6 +203,9 @@ const fr = {
   subproject: {
     assignee: "Responsable par défaut",
     fixed_workflowitem_type: "Type de workflow fixe",
+    workflow_mode: "Mode de workflow",
+    workflow_mode_ordered: "Workflow (ordonnée)",
+    workflow_mode_unordered: "Liste d'actions (non ordonnée)",
     subproject_add_title: "Ajouter une nouvelle composante",
     subproject_assigned_organization: "Organisation assignée",
 

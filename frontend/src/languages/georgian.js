@@ -286,6 +286,9 @@ const ka = {
   subproject: {
     assignee: "მფლობელი",
     fixed_workflowitem_type: "ფიქსირებული სამუშაო ნაკადის ტიპი",
+    workflow_mode: "სამუშაო რეჟიმი",
+    workflow_mode_ordered: "სამუშაო სია (დალაგებული)",
+    workflow_mode_unordered: "სამუშაო სია (არ დალაგებული)",
     subproject_add_title: "ახალი ქვეპროექტის დამატება",
     subproject_assigned_organization: "Assigned organization",
 

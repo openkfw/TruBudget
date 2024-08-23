@@ -29,6 +29,10 @@ const pt = {
     id: "ID de Subprojeto",
     name: "Nome de Subprojeto",
     workflowitem_type: "Categoria do item de workflow",
+    workflow_mode: "Modo de fluxo de trabalho",
+    workflow_mode_ordered: "Seleção ordenada",
+    workflow_mode_unordered: "Seleção não ordenada",
+    subproject_add_title: "Criar novo subprojeto",
     validator: "Validador",
   },
 

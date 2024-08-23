@@ -29,6 +29,10 @@ const fr = {
     id: "ID de la composante",
     name: "Nom de la composante",
     workflowitem_type: "Type de l'étape de workflow",
+    workflow_mode: "Mode de workflow",
+    workflow_mode_ordered: "Liste d'actions (ordonnée)",
+    workflow_mode_unordered: "Liste d'actions (non ordonnée)",
+    subproject_add_title: "Ajouter une nouvelle composante",
     validator: "Validateur",
   },
 
