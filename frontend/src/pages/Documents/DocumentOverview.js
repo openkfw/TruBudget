@@ -181,7 +181,10 @@ class DocumentOverview extends Component {
     const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {
       let validated = undefined;
-      const { id, fileName, hash } = document;
+      const { id, fileName, hash, isValidHash } = document;
+      const fingerPrintClassName =
+        isValidHash === false ? "finger-print-container invalid-hash" : "finger-print-container";
+      const fingerPrintText = isValidHash === false ? `Invalid hash ${hash}. File corrupt.` : hash;
       validated = validatedDocuments[id];
 
       return (
@@ -195,9 +198,9 @@ class DocumentOverview extends Component {
                 <div className="document-link">{document.link}</div>
               </Tooltip>
             ) : (
-              <div className="finger-print-container">
+              <div className={fingerPrintClassName}>
                 <FingerPrint className="finger-print" />
-                <OverflowTooltip text={hash} maxWidth="4.375rem" />
+                <OverflowTooltip text={fingerPrintText} />
               </div>
             )}
           </TableCell>

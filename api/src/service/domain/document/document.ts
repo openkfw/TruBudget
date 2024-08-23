@@ -46,6 +46,11 @@ export interface ExternalLinkReference {
 
 export type DocumentOrExternalLinkReference = DocumentReference | ExternalLinkReference;
 
+export type DocumentWithAvailability = DocumentOrExternalLinkReference & {
+  isValidHash?: boolean;
+  message?: string;
+};
+
 export const documentReferenceSchema = Joi.alternatives([
   Joi.object({
     id: Joi.string().required(),

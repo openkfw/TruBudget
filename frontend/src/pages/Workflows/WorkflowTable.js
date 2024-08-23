@@ -132,7 +132,7 @@ const WorkflowTableHeader = (props) => {
   );
 };
 
-const createWorkflowItems = ({ workflowItems, ...props }) => {
+const renderWorkflowItems = ({ workflowItems, ...props }) => {
   const onSortEnd = ({ oldIndex, newIndex }) => {
     const items = arrayMoveImmutable(workflowItems, oldIndex, newIndex);
     props.updateWorkflowOrderOnState(items);
@@ -155,7 +155,7 @@ const WorkflowTable = (props) => {
   return (
     <div data-test="workflowitem-table" className="workflow-item-table">
       <WorkflowTableHeader {...props} />
-      {createWorkflowItems({ ...props, workflowItems })}
+      {renderWorkflowItems({ ...props, workflowItems })}
       {showDetailsItem && <WorkflowDetails workflowitem={showDetailsItem} {...props} />}
     </div>
   );

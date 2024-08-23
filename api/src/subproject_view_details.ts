@@ -17,6 +17,7 @@ import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
 import { extractUser } from "./handlerUtils";
+import WorkflowMode from "./service/domain/workflow/types";
 
 /**
  * Creates the swagger schema for the `/subproject.viewDetails endpoint
@@ -77,6 +78,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                         assignee: { type: "string", example: "aSmith" },
                         validator: { type: "string", example: "aSmith" },
                         workflowitemType: { type: "string", example: "general" },
+                        workflowMode: { type: "string", example: "ordered" },
                         currency: {
                           type: "string",
                           description: "contract currency",
@@ -139,6 +141,7 @@ interface ExposedSubproject {
     assignee?: string;
     validator?: string;
     workflowitemType?: WorkflowitemType;
+    workflowMode?: WorkflowMode;
     currency: string;
     projectedBudgets: Array<{
       organization: string;
@@ -291,6 +294,7 @@ export function addHttpHandler(
               assignee: subproject.assignee,
               validator: subproject.validator,
               workflowitemType: subproject.workflowitemType,
+              workflowMode: subproject.workflowMode || "ordered",
               description: subproject.description,
               currency: subproject.currency,
               projectedBudgets: subproject.projectedBudgets,

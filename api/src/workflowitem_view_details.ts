@@ -10,7 +10,7 @@ import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
-import { DocumentOrExternalLinkReference } from "./service/domain/document/document";
+import { DocumentWithAvailability } from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
@@ -100,10 +100,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                               id: {
                                 type: "string",
                                 example: "abc-cde-adf",
-                                additionalProperties: true,
                               },
                               available: { type: "boolean", example: true },
                             },
+                            additionalProperties: true,
                           },
                         },
                       },
@@ -137,7 +137,7 @@ interface ExposedWorkflowitem {
     billingDate: string | null | undefined;
     dueDate: string | null | undefined;
     exchangeRate: string | null | undefined;
-    documents: DocumentOrExternalLinkReference[];
+    documents: DocumentWithAvailability[];
     additionalData: object;
     workflowitemType: Type | undefined;
   };
