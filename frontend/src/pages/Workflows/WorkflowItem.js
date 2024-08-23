@@ -499,41 +499,39 @@ export const WorkflowItem = ({
                           sx={{ backgroundColor: (theme) => theme.palette.tag.main, color: "white" }}
                         />
                       </div>
-                      {tags.length > 1 && (
-                        <div>
-                          <IconButton aria-label="expand" aria-describedby={popoverId} onClick={handleClick}>
-                            {open ? <ExpandLess /> : <ExpandMore />}
-                          </IconButton>
-                          <Popover
-                            id={popoverId}
-                            open={open}
-                            anchorEl={anchorEl}
-                            onClose={handleClose}
-                            anchorOrigin={{
-                              vertical: "top",
-                              horizontal: "left"
-                            }}
-                            transformOrigin={{
-                              vertical: "top",
-                              horizontal: "right"
-                            }}
-                          >
-                            <div className="tags-popover">
-                              {tags.map((tag) => (
-                                <Chip
-                                  key={tag}
-                                  label={tag}
-                                  size="small"
-                                  onClick={(event) => {
-                                    props.storeWorkflowitemSearchTerm(`tag:${event.target.innerText}`);
-                                  }}
-                                  sx={{ backgroundColor: (theme) => theme.palette.tag.main, color: "white" }}
-                                />
-                              ))}
-                            </div>
-                          </Popover>
-                        </div>
-                      )}
+                      <div>
+                        <IconButton aria-label="expand" aria-describedby={popoverId} onClick={handleClick}>
+                          {open ? <ExpandLess /> : <ExpandMore />}
+                        </IconButton>
+                        <Popover
+                          id={popoverId}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleClose}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "left"
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right"
+                          }}
+                        >
+                          <div className="tags-popover">
+                            {tags.map((tag) => (
+                              <Chip
+                                key={tag}
+                                label={tag}
+                                size="small"
+                                onClick={(event) => {
+                                  props.storeWorkflowitemSearchTerm(`tag:${event.target.innerText}`);
+                                }}
+                                sx={{ backgroundColor: (theme) => theme.palette.tag.main, color: "white" }}
+                              />
+                            ))}
+                          </div>
+                        </Popover>
+                      </div>
                     </div>
                   )}
                 </div>
