@@ -1,5 +1,4 @@
-import Joi from "joi";
-import logger from "./lib/logger";
+import * as Joi from "joi";
 import { randomString } from "./service/hash";
 
 export interface JwtConfig {
@@ -121,7 +120,7 @@ interface Config {
   azureMonitorConnectionString: string;
   silenceLoggingOnFrequentRoutes: boolean;
 }
-
+console.log(Joi);
 const envVarsSchema = Joi.object({
   ORGANIZATION: Joi.string()
     .min(1)
@@ -243,12 +242,6 @@ if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 
-/**
- * environment variables which are required by the API
- * @notExported
- */
-const requiredEnvVars = ["ORGANIZATION", "ORGANIZATION_VAULT_SECRET"];
-
 export const config: Config = {
   organization: envVars.ORGANIZATION,
   organizationVaultSecret: envVars.ORGANIZATION_VAULT_SECRET,
@@ -313,53 +306,6 @@ export const config: Config = {
   snapshotEventInterval: envVars.SNAPSHOT_EVENT_INTERVAL,
   azureMonitorConnectionString: envVars.APPLICATIONINSIGHTS_CONNECTION_STRING,
   silenceLoggingOnFrequentRoutes: envVars.SILENCE_LOGGING_ON_FREQUENT_ROUTES,
-};
-
-/**
- * Checks if required environment variables are set, stops the process otherwise
- * @notExported
- *
- * @param requiredEnvVars environment variables required for the API to run
- */
-function exitIfMissing(requiredEnvVars): void {
-  let envVarMissing = false;
-  requiredEnvVars.forEach((env) => {
-    if (!envExists(process.env, env)) envVarMissing = true;
-  });
-  if (envVarMissing) process.exit(1);
-}
-
-/**
- * Checks if an environment variable is attached to the current process
- * @notExported
- *
- * @param processEnv environment variables attached to the current process
- * @param prop environment variable to check
- * @param msg optional message to print out
- * @returns a boolean indicating if an environment variable is attached to the current process
- */
-const envExists = <T, K extends keyof T>(
-  processEnv: Partial<T>,
-  prop: K,
-  msg?: string,
-): boolean => {
-  if (processEnv[prop] === undefined || processEnv[prop] === null) {
-    switch (prop) {
-      case "ORGANIZATION":
-        msg = "Please set ORGANIZATION to the organization this node belongs to.";
-        break;
-      case "ORGANIZATION_VAULT_SECRET":
-        msg =
-          "Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.";
-        break;
-      default:
-        break;
-    }
-    logger.fatal(msg || `Environment is missing required variable ${String(prop)}`);
-    return false;
-  } else {
-    return true;
-  }
 };
 
 /**

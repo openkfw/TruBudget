@@ -47,6 +47,7 @@
     "tsc": "tsc",
     "test:here": "node ./runTest.js",
     "generate-joi": "node dist/scripts/joiGenerator.js",
+    "validate-env": "node dist/scripts/envVarsValidator.js",
     "build-docs": "bash ./buildDocs.sh"
   },
   "nyc": {
