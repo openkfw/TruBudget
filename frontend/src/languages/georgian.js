@@ -376,6 +376,7 @@ const ka = {
     workflow_type_workflow: "Workflowitem-ი",
     workflow_type: "Type",
     workflow_upload_document: "ატვირთვა",
+    workflow_select_document: "აირჩიეთ დოკუმენტი",
     workflowitem_details_documents: "დოკუმენტები",
     workflowitem_details_history: "ისტორია",
     workflowitem_details_overview: "მიმოხილვა",

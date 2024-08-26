@@ -12,10 +12,12 @@ import {
   UploadResponse,
   Version,
 } from "./Client_storage_service.h";
+import { File } from "./domain/document/document_upload";
 
 interface UploadRequest {
   fileName: string;
   content: string;
+  comment?: string;
 }
 
 export default class StorageServiceClient implements StorageServiceClientI {
@@ -66,28 +68,28 @@ export default class StorageServiceClient implements StorageServiceClientI {
     return result?.data as Version;
   }
 
-  public async uploadObject(
-    id: string,
-    name: string,
-    data: string,
-  ): Promise<Result.Type<UploadResponse>> {
-    logger.debug(`Uploading Object "${name}"`);
+  public async uploadObject(file: File): Promise<Result.Type<UploadResponse>> {
+    logger.debug(`Uploading Object "${file.fileName}"`);
 
     let requestData: UploadRequest = {
-      fileName: encodeURIComponent(name),
-      content: data,
+      fileName: encodeURIComponent(file.fileName || ""),
+      content: file.documentBase64,
+      comment: encodeURIComponent(file.comment || ""),
     };
     if (config.encryptionPassword) {
       requestData.fileName = encrypt(config.encryptionPassword, requestData.fileName);
       requestData.content = encrypt(config.encryptionPassword, requestData.content);
+      requestData.comment = requestData.comment
+        ? encrypt(config.encryptionPassword, requestData.comment)
+        : undefined;
     }
-    const url = `/upload?docId=${id}`;
+    const url = `/upload?docId=${file.id}`;
     const uploadResponse = await this.axiosInstance.post(url, requestData);
     if (Result.isErr(uploadResponse)) {
-      logger.error(`Error while uploading document ${id} to storage service.`);
+      logger.error(`Error while uploading document ${file.id} to storage service.`);
       return new VError(uploadResponse, "Uploading the object failed");
     } else if (uploadResponse.status !== 200) {
-      logger.error(`Error while uploading document ${id} to storage service.`);
+      logger.error(`Error while uploading document ${file.id} to storage service.`);
       return new VError("Uploading the object failed");
     }
     return uploadResponse.data;

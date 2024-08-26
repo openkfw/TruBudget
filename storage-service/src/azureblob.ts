@@ -111,6 +111,7 @@ export const download = async (blobName: string): Promise<FileWithMeta> => {
         fileName: properties.metadata?.fileName || "",
         docId: properties.metadata?.docId || "",
         secret: properties.metadata?.secret,
+        comment: properties.metadata?.comment,
       },
     };
   } catch (error) {

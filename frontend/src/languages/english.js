@@ -372,6 +372,7 @@ const en = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Type",
     workflow_upload_document: "Upload",
+    workflow_select_document: "Select a file",
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "History",
     workflowitem_details_overview: "Overview",

@@ -1,11 +1,11 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import * as Yup from "yup";
 
-import AddLinkIcon from "@mui/icons-material/AddLink";
-import LinkIcon from "@mui/icons-material/Link";
-import PostAddIcon from "@mui/icons-material/PostAdd";
-import UploadIcon from "@mui/icons-material/Publish";
-import { Grid, Paper, TableHead, TextField, Tooltip } from "@mui/material";
+import AddLink from "@mui/icons-material/AddLink";
+// import Link from "@mui/icons-material/Link";
+import PostAdd from "@mui/icons-material/PostAdd";
+import Publish from "@mui/icons-material/Publish";
+import { CircularProgress, Grid, Paper, TableHead, TextField, Tooltip } from "@mui/material";
 import Button from "@mui/material/Button";
 import FormControl from "@mui/material/FormControl";
 import InputLabel from "@mui/material/InputLabel";
@@ -34,6 +34,9 @@ const hashValue = async (base64String) => {
   return hashHex;
 };
 
+// todo isFileLoading
+// todo optional message
+// todo file upload timestamp - take from bucket?
 const DocumentUpload = ({
   storeWorkflowDocument,
   storeWorkflowDocumentExternalLink,
@@ -44,7 +47,9 @@ const DocumentUpload = ({
 }) => {
   const defaultDocumentUrl = "https://";
   const defaultDocumentName = "";
+  const [isLoading, setIsLoading] = useState(false);
   const [fileToUpload, setFileToUpload] = useState(null);
+  const [comment, setComment] = useState("");
   const [externalDocumentUrl, setExternalDocumentUrl] = useState(defaultDocumentUrl);
   const [externalDocumentName, setExternalDocumentName] = useState(defaultDocumentName);
   const [externalDocumentHash, setExternalDocumentHash] = useState();
@@ -109,8 +114,13 @@ const DocumentUpload = ({
   };
 
   const addFile = () => {
-    storeWorkflowDocument(fileToUpload?.dataUrl, fileToUpload?.name);
+    storeWorkflowDocument(fileToUpload?.dataUrl, fileToUpload?.name, comment);
     setFileToUpload(null);
+    setComment("");
+  };
+
+  const handleCommentChange = (event) => {
+    setComment(event.target.value);
   };
 
   const body = (
@@ -136,7 +146,7 @@ const DocumentUpload = ({
                         }}
                         component="div"
                       >
-                        <LinkIcon />
+                        <Publish />
                       </Button>
                     </Tooltip>
                   )}
@@ -155,6 +165,55 @@ const DocumentUpload = ({
     </TableBody>
   );
 
+  const handleFileChange = useCallback(
+    (event) => {
+      if (event.target.files) {
+        const file = event.target.files[0];
+        if (file.size > MAX_DOCUMENT_SIZE_BINARY) {
+          storeSnackbarMessage(
+            `${strings.workflow.workflow_documents_size_exceed} ${Math.round(
+              MAX_DOCUMENT_SIZE_BINARY / (1024 * 1024)
+            )} MB`
+          );
+          showErrorSnackbar();
+          return;
+        }
+        setIsLoading(true);
+        const reader = new FileReader();
+        reader.onloadend = (e) => {
+          if (e.target.result !== undefined) {
+            const dataUrl = e.target.result.split(";base64,")[1];
+            // data in redux store needs to be serializable, so we store base64 string
+            setFileToUpload({
+              name: file.name,
+              dataUrl
+            });
+            setIsLoading(false);
+          }
+        };
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+      }
+    },
+    [showErrorSnackbar, storeSnackbarMessage]
+  );
+
+  const renderFileUpload = (fileToUpload) => {
+    if (isLoading) {
+      return <CircularProgress />;
+    } else
+      return fileToUpload ? (
+        fileToUpload.name
+      ) : (
+        <Button className="document-upload-button" component="div">
+          <PostAdd />
+          {strings.workflow.workflow_select_document}
+          <input id="docupload" type="file" className="document-upload-input" onChange={handleFileChange} />
+        </Button>
+      );
+  };
+
   return (
     <div>
       <div className="document-upload-container">
@@ -165,54 +224,19 @@ const DocumentUpload = ({
           <Grid item xs={6}>
             <Paper className="paper-forms">
               <h4>{strings.workflow.workflow_documents_upload_heading}</h4>
-              <div className="document-upload-flex-container">
-                {fileToUpload ? (
-                  strings.workflow.workflow_documents_file_prepared
-                ) : (
-                  <Button className="document-upload-button" component="div">
-                    <UploadIcon />
-                    {strings.workflow.workflow_upload_document}
-                    <input
-                      id="docupload"
-                      type="file"
-                      className="document-upload-input"
-                      onChange={(event) => {
-                        if (event.target.files) {
-                          const file = event.target.files[0];
-                          if (file.size > MAX_DOCUMENT_SIZE_BINARY) {
-                            storeSnackbarMessage(
-                              `${strings.workflow.workflow_documents_size_exceed} ${Math.round(
-                                MAX_DOCUMENT_SIZE_BINARY / (1024 * 1024)
-                              )} MB`
-                            );
-                            showErrorSnackbar();
-                            return;
-                          }
-                          const reader = new FileReader();
-                          reader.onloadend = (e) => {
-                            if (e.target.result !== undefined) {
-                              const dataUrl = e.target.result.split(";base64,")[1];
-                              // data in redux store needs to be serializable, so we store base64 string
-                              // storeWorkflowDocument(dataUrl, file.name);
-                              setFileToUpload({
-                                name: file.name,
-                                dataUrl
-                              });
-                            }
-                          };
-                          if (file) {
-                            reader.readAsDataURL(file);
-                          }
-                        }
-                      }}
-                    />
-                  </Button>
-                )}
-              </div>
-
+              <div className="document-upload-flex-container">{renderFileUpload(fileToUpload, isLoading)}</div>
+              <TextField
+                id="document-comment"
+                label={"TODO: Add comment (optional)"}
+                value={comment}
+                onChange={handleCommentChange}
+                error={false}
+                helperText={"helper text"}
+                className="document-comment-field"
+              />
               <div className="document-upload-flex-container" style={{ marginTop: "0.9rem" }}>
                 <Button onClick={addFile} className="document-upload-button" component="div" disabled={!fileToUpload}>
-                  <PostAddIcon />
+                  <Publish />
                   {strings.workflow.workflow_documents_add_file}
                 </Button>
               </div>
@@ -258,7 +282,7 @@ const DocumentUpload = ({
                   {strings.workflow.workflow_documents_upload_same_document}
                 </InputLabel>
                 <Button className="document-upload-button" component="div">
-                  <UploadIcon />
+                  <PostAdd />
                   {strings.workflow.workflow_upload_document}
                   <input
                     id="docupload"
@@ -294,7 +318,7 @@ const DocumentUpload = ({
                   !externalDocumentNameUpdated
                 }
               >
-                <AddLinkIcon />
+                <AddLink />
                 {strings.workflow.workflow_documents_add_link}
               </Button>
             </div>

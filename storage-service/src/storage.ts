@@ -20,6 +20,7 @@ export interface Metadata extends Minio.ItemBucketMetadata {
   fileName: string;
   docId: string;
   secret?: string;
+  comment?: string;
 }
 
 export interface MetadataWithName extends Metadata {

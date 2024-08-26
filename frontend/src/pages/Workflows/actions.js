@@ -534,11 +534,12 @@ export function storeWorkflowType(workflowType) {
   };
 }
 
-export function storeWorkflowDocument(base64, fileName) {
+export function storeWorkflowDocument(base64, fileName, comment) {
   return {
     type: WORKFLOW_DOCUMENT,
     base64: base64,
-    fileName: fileName
+    fileName: fileName,
+    comment: comment
   };
 }
 

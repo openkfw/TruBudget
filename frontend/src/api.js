@@ -391,6 +391,7 @@ class Api {
         if (documents[i].base64) {
           const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
           formData.append("documents", blob, documents[i].fileName);
+          formData.append(`comment_${i}`, documents[i].comment);
         }
       }
     }

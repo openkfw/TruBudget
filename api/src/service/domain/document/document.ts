@@ -30,6 +30,7 @@ export interface DocumentReference {
   fileName: string;
   hash: string;
   available?: boolean;
+  comment?: string;
 }
 
 export interface DeleteDocumentResponse {
@@ -57,6 +58,7 @@ export const documentReferenceSchema = Joi.alternatives([
     fileName: Joi.string().required(),
     hash: Joi.string().required(),
     available: Joi.boolean(),
+    comment: Joi.string().optional().allow(""),
   }),
   Joi.object({
     id: Joi.string().required(),
@@ -64,6 +66,7 @@ export const documentReferenceSchema = Joi.alternatives([
     link: Joi.string().required(),
     linkedFileHash: Joi.string(),
     available: Joi.boolean(),
+    comment: Joi.string().optional().allow(""),
   }),
 ]);
 
@@ -71,6 +74,7 @@ export interface UploadedDocument extends GenericDocument {
   id: string;
   base64: string;
   fileName: string;
+  comment?: string;
 }
 
 export interface DocumentLink extends GenericDocument {
@@ -90,6 +94,7 @@ export const uploadedDocumentSchema = Joi.alternatives([
       .max(MAX_DOCUMENT_SIZE_BASE64)
       .error(() => new Error("Document is not valid")),
     fileName: Joi.string(),
+    comment: Joi.string().optional().allow(""),
   }),
   Joi.object({
     id: Joi.string(),
@@ -114,6 +119,7 @@ export async function hashDocument(
     id: document.id,
     hash: hashValue,
     fileName: document.fileName,
+    comment: document.comment,
   }));
 }
 

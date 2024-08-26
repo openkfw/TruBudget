@@ -293,6 +293,7 @@ const fr = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Type du Workflow",
     workflow_upload_document: "Charger",
+    workflow_select_document: "Sélectionner un document",
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "Historique",
     workflowitem_details_overview: "Sommaire",

@@ -289,6 +289,7 @@ const de = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Typ",
     workflow_upload_document: "Upload",
+    workflow_select_document: "Dokument auswählen",
     workflowitem_details_documents: "Dokumente",
     workflowitem_details_history: "Historie",
     workflowitem_details_overview: "Übersicht",

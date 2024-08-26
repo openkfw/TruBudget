@@ -26,6 +26,7 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import { File } from "../document/document_upload";
 
 export interface RequestData {
   displayName?: string;
@@ -51,11 +52,7 @@ interface Repository {
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
-  uploadDocumentToStorageService(
-    fileName: string,
-    documentBase64: string,
-    id: string,
-  ): Promise<Result.Type<BusinessEvent[]>>;
+  uploadDocumentToStorageService(file: File): Promise<Result.Type<BusinessEvent[]>>;
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
 
@@ -125,7 +122,12 @@ export async function updateWorkflowitem(
 
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
         onlyDocuments.map(async (d) => {
-          return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+          return repository.uploadDocumentToStorageService({
+            id: d.id,
+            fileName: d.fileName || "",
+            documentBase64: d.base64,
+            comment: d.comment,
+          });
         }),
       );
       for (const result of documentUploadedEventsResults) {
