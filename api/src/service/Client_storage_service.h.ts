@@ -13,6 +13,7 @@ export interface StorageObject {
   id: string;
   fileName: string;
   base64: Base64String;
+  lastModified?: string;
 }
 
 export interface DeleteResponse {

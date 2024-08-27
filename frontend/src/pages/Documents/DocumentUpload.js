@@ -204,7 +204,28 @@ const DocumentUpload = ({
       return <CircularProgress />;
     } else
       return fileToUpload ? (
-        fileToUpload.name
+        <>
+          {fileToUpload.name}
+          <TextField
+            id="document-comment"
+            label={strings.common.comment_description}
+            value={comment}
+            onChange={handleCommentChange}
+            error={false}
+            helperText={strings.common.optional}
+            className="document-comment-field"
+            sx={{
+              width: "35ch",
+              marginTop: "0.9rem"
+            }}
+          />
+          <div className="document-upload-flex-container" style={{ marginTop: "0.9rem" }}>
+            <Button onClick={addFile} className="document-upload-button" component="div" disabled={!fileToUpload}>
+              <Publish />
+              {strings.workflow.workflow_documents_add_file}
+            </Button>
+          </div>
+        </>
       ) : (
         <Button className="document-upload-button" component="div">
           <PostAdd />
@@ -225,21 +246,6 @@ const DocumentUpload = ({
             <Paper className="paper-forms">
               <h4>{strings.workflow.workflow_documents_upload_heading}</h4>
               <div className="document-upload-flex-container">{renderFileUpload(fileToUpload, isLoading)}</div>
-              <TextField
-                id="document-comment"
-                label={"TODO: Add comment (optional)"}
-                value={comment}
-                onChange={handleCommentChange}
-                error={false}
-                helperText={"helper text"}
-                className="document-comment-field"
-              />
-              <div className="document-upload-flex-container" style={{ marginTop: "0.9rem" }}>
-                <Button onClick={addFile} className="document-upload-button" component="div" disabled={!fileToUpload}>
-                  <Publish />
-                  {strings.workflow.workflow_documents_add_file}
-                </Button>
-              </div>
             </Paper>
           </Grid>
         )}

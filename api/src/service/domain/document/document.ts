@@ -49,7 +49,8 @@ export type DocumentOrExternalLinkReference = DocumentReference | ExternalLinkRe
 
 export type DocumentWithAvailability = DocumentOrExternalLinkReference & {
   isValidHash?: boolean;
-  message?: string;
+  comment?: string;
+  lastModified?: string;
 };
 
 export const documentReferenceSchema = Joi.alternatives([
@@ -75,6 +76,7 @@ export interface UploadedDocument extends GenericDocument {
   base64: string;
   fileName: string;
   comment?: string;
+  lastModified?: string;
 }
 
 export interface DocumentLink extends GenericDocument {

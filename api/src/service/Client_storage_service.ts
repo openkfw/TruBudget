@@ -117,6 +117,7 @@ export default class StorageServiceClient implements StorageServiceClientI {
       id: downloadResponse.data.meta.docid,
       fileName: decodeURIComponent(downloadResponse.data.meta.filename),
       base64: downloadResponse.data.data,
+      lastModified: downloadResponse.data.meta.lastModified,
     };
 
     if (config.encryptionPassword) {

@@ -9,7 +9,7 @@
     "audit": "better-npm-audit audit",
     "build": "tsc",
     "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)",
-    "watch": "tsc --watch & (sleep 30 && nodemon --inspect=0.0.0.0:9229 dist)",
+    "watch": "concurrently \"tsc --watch\" \"nodemon --inspect=0.0.0.0:9229 dist\"",
     "lint": "eslint src --ext ts",
     "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\""
   },
@@ -44,6 +44,7 @@
     "@types/node": "^18.6.1",
     "@types/uuid": "^8.3.4",
     "@typescript-eslint/parser": "^5.30.6",
+    "concurrently": "^8.2.2",
     "eslint": "^8.40.0",
     "eslint-config-airbnb-typescript": "^17.0.0",
     "eslint-config-prettier": "^8.8.0",
