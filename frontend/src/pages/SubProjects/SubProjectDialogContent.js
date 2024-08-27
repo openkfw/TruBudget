@@ -14,7 +14,7 @@ import SingleSelection from "../Common/SingleSelection";
 
 import "./SubProjectDialogContent.scss";
 
-const subprojectWorkflowItemTypes = ["general", "restricted"];
+const subprojectWorkflowModes = ["ordered", "unordered"];
 
 function getMenuItems(currencies) {
   return currencies.map((currency, index) => {
@@ -30,7 +30,7 @@ const getDropdownMenuItems = (types) => {
   return types.map((type, index) => {
     return (
       <MenuItem key={index} value={type}>
-        {type}
+        {strings.subproject[`workflow_mode_${type}`]}
       </MenuItem>
     );
   });
@@ -74,16 +74,14 @@ const SubProjectDialogContent = (props) => {
               </div>
 
               <div className="sub-project-dialog-input-container">
-                {/* workflow item type selection {general|restricted} deprecated */}
                 <Dropdown
-                  disabled
                   className="dropdown"
-                  floatingLabel={strings.subproject.fixed_workflowitem_type}
-                  value={"general"}
-                  onChange={(value) => props.storeFixedWorkflowitemType(value)}
-                  id="types"
+                  floatingLabel={strings.subproject.workflow_mode}
+                  value={props.subprojectToAdd.workflowMode}
+                  onChange={(value) => props.storeWorkflowMode(value)}
+                  id="wf-mode-dropdown"
                 >
-                  {getDropdownMenuItems(subprojectWorkflowItemTypes)}
+                  {getDropdownMenuItems(subprojectWorkflowModes)}
                 </Dropdown>
               </div>
 

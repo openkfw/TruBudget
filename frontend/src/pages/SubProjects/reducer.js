@@ -42,7 +42,8 @@ import {
   SUBPROJECT_STORE_FILTERED_PROJECTS,
   SUBPROJECT_STORE_SEARCH_TERMS_AS_ARRAY,
   SUBPROJECT_VALIDATOR,
-  SUBPROJECT_WORKFLOWITEMTYPE
+  SUBPROJECT_WORKFLOWITEMTYPE,
+  SUBPROJECT_WORKFLOWMODE
 } from "./actions";
 
 const historyPageSize = 50;
@@ -66,7 +67,8 @@ const defaultState = fromJS({
     projectedBudgets: [],
     deletedProjectedBudgets: [],
     validator: "",
-    workflowitemType: ""
+    workflowitemType: "",
+    workflowMode: "ordered"
   },
   idsPermissionsUnassigned: [],
   creationDialogShown: false,
@@ -161,6 +163,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.setIn(["subprojectToAdd", "validator"], action.validator);
     case SUBPROJECT_WORKFLOWITEMTYPE:
       return state.setIn(["subprojectToAdd", "workflowitemType"], action.workflowitemType);
+    case SUBPROJECT_WORKFLOWMODE:
+      return state.setIn(["subprojectToAdd", "workflowMode"], action.workflowMode);
     case ADD_SUBPROJECT_PROJECTED_BUDGET:
       return state.merge({
         subprojectToAdd: state.get("subprojectToAdd").merge({

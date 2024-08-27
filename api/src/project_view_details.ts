@@ -252,6 +252,7 @@ export function addHttpHandler(
               assignee: subproject.assignee,
               validator: subproject.validator,
               workflowitemType: subproject.workflowitemType,
+              workflowMode: subproject.workflowMode || "ordered",
               currency: subproject.currency,
               projectedBudgets: subproject.projectedBudgets,
               additionalData: subproject.additionalData,

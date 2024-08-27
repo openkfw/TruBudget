@@ -1,7 +1,7 @@
 {
   "name": "email-notification",
   "description": "Sends notification-emails to provided SMTP server to identities saved in a database of choice.",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
   "dependencies": {
     "@hapi/joi": "^17.1.1",
     "@types/jsonwebtoken": "^8.5.8",
-    "axios": "^1.6.5",
+    "axios": "^1.7.4",
     "better-npm-audit": "^3.7.3",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",

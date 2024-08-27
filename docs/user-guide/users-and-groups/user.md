@@ -19,7 +19,7 @@ View all users.
 1. Click the button in the upper left corner (hamburger menu) to open the side-navigation-bar
 2. Click "Users" Selection
 
-![Show Users](./../img/show_Users.jpg)
+![Show Users](./../img/show_Users.png)
 
 :::note
 Users can only be viewed or created by an administrator.
@@ -37,11 +37,11 @@ Create a new User.
 2. Click "Users" Selection
 3. Click the blue "+" button on the right to open the "Add User" dialog
 
-![Create User](./../img/create_User.jpg)
+![Create User](./../img/create_User.png)
 
 4. Fill in the required fields:
 
-   - "Full Name": Name displayed to other users
+   - Full name: Name of the organization and the function (“e.g. Project Executing Agency Project Manager”) as displayed to others users. Note: This name should not contain personal data to be conform with the General Data Protection Regulation (GDPR).
    - "Username": ID of the user e.g. for login
    - "Password": Password of user
 
@@ -63,8 +63,8 @@ A user's password can be changed by anyone who has the permission `user.changePa
 
 Examples:
 
-- User `mstein` wants to change his own password, but does not have the permission to do so. The `root` user needs to grant `mstein` the permission `user.changePassword`. Once this is done, `mstein` can change his own password.
-- User `mstein` is an administrator and should be able to change the password of `dviolin`. The `root` user needs to grant the `user.changePassword` permission to `mstein` for `dviolin`. After that, `mstein` is able to change the password of `dviolin`.
+- User `Portfoliomanager` wants to change his own password, but does not have the permission to do so. The `root` user needs to grant `Portfoliomanager` the permission `user.changePassword`. Once this is done, `Portfoliomanager` can change his own password.
+- User `Portfoliomanager` is an administrator and should be able to change the password of `Portfolioanalyst`. The `root` user needs to grant the `user.changePassword` permission to `Portfoliomanager` for `Portfolioanalyst`. After that, `Portfoliomanager` is able to change the password of `Portfolioanalyst`.
 
 **Instructions:**
 

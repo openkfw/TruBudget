@@ -1,6 +1,6 @@
 {
   "name": "trubudget-e2e-test",
-  "version": "2.13.0",
+  "version": "2.14.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -19,7 +19,7 @@
   "main": "index.js",
   "devDependencies": {
     "accounting": "^0.4.1",
-    "cypress": "^13.8.1",
+    "cypress": "^13.13.3",
     "cypress-mochawesome-reporter": "^3.7.0",
     "dotenv": "^16.3.1",
     "eslint": "^8.54.0",
@@ -38,7 +38,7 @@
   },
   "dependencies": {
     "async-each": "^1.0.6",
-    "axios": "^1.6.5",
+    "axios": "^1.7.4",
     "better-npm-audit": "^3.7.3",
     "exceljs": "^4.4.0",
     "js-sha256": "^0.11.0",

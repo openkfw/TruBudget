@@ -1,4 +1,4 @@
-export function executeActions(
+export function executeActions({
   actions,
   assignProject,
   assignSubproject,
@@ -16,7 +16,7 @@ export function executeActions(
   closeWorkflowItem,
   disableUser,
   enableUser
-) {
+}) {
   actions.forEach((action) => {
     switch (action.intent) {
       case "project.intent.grantPermission": {
@@ -40,16 +40,17 @@ export function executeActions(
         break;
       }
       case "project.createSubproject": {
-        createSubProject(
-          action.payload.project.id,
-          action.payload.project.displayName,
-          action.payload.subproject.displayName,
-          action.payload.subproject.description,
-          action.payload.subproject.currency,
-          action.payload.subproject.validator,
-          action.payload.subproject.workflowitemType,
-          action.payload.subproject.projectedBudgets
-        );
+        createSubProject({
+          projectId: action.payload.project.id,
+          projectDisplayName: action.payload.project.displayName,
+          subprojectDisplayName: action.payload.subproject.displayName,
+          description: action.payload.subproject.description,
+          currency: action.payload.subproject.currency,
+          validator: action.payload.subproject.validator,
+          workflowitemType: action.payload.subproject.workflowitemType,
+          workflowMode: action.payload.subproject.workflowMode,
+          projectedBudgets: action.payload.subproject.projectedBudgets
+        });
         break;
       }
       case "subproject.intent.grantPermission": {

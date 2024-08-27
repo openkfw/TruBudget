@@ -39,6 +39,7 @@ export interface Subproject {
   description: string;
   assignee: string;
   workflowitemType?: string;
+  workflowMode?: string;
   currency: string;
   projectedBudgets: [
     {

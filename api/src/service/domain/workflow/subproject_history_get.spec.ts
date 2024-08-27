@@ -52,6 +52,7 @@ const event: SubprojectTraceEvent = {
       projectedBudgets: [],
       permissions: {},
       additionalData: {},
+      workflowMode: "ordered",
     },
   },
   snapshot: {

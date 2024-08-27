@@ -41,9 +41,15 @@ export interface ExternalLinkReference {
   fileName: string;
   link: string;
   available?: boolean;
+  linkedFileHash?: string;
 }
 
 export type DocumentOrExternalLinkReference = DocumentReference | ExternalLinkReference;
+
+export type DocumentWithAvailability = DocumentOrExternalLinkReference & {
+  isValidHash?: boolean;
+  message?: string;
+};
 
 export const documentReferenceSchema = Joi.alternatives([
   Joi.object({
@@ -56,6 +62,7 @@ export const documentReferenceSchema = Joi.alternatives([
     id: Joi.string().required(),
     fileName: Joi.string().required(),
     link: Joi.string().required(),
+    linkedFileHash: Joi.string(),
     available: Joi.boolean(),
   }),
 ]);
@@ -70,6 +77,7 @@ export interface DocumentLink extends GenericDocument {
   id: string;
   link: string;
   fileName: string;
+  linkedFileHash?: string;
 }
 
 export type UploadedDocumentOrLink = UploadedDocument | DocumentLink;
@@ -90,6 +98,7 @@ export const uploadedDocumentSchema = Joi.alternatives([
       .required()
       .error(() => new Error("Link is not valid")),
     fileName: Joi.string(),
+    linkedFileHash: Joi.string(),
   }),
 ]);
 

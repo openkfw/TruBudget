@@ -115,13 +115,17 @@ export async function closeWorkflowitem(
     }
   }
 
-  logger.trace("Making sure all previous workflowitems were already closed");
-  for (const item of sortedWorkflowitems) {
-    if (item.id === workflowitemId) {
-      break;
-    }
-    if (item.status !== "closed") {
-      return new PreconditionError(ctx, closeEvent, "all previous workflowitems must be closed");
+  if (subproject.workflowMode === "unordered") {
+    logger.trace("Workflow is unordered, skipping previous workflowitems closed check");
+  } else {
+    logger.trace("Making sure all previous workflowitems were already closed");
+    for (const item of sortedWorkflowitems) {
+      if (item.id === workflowitemId) {
+        break;
+      }
+      if (item.status !== "closed") {
+        return new PreconditionError(ctx, closeEvent, "all previous workflowitems must be closed");
+      }
     }
   }
 

@@ -113,25 +113,25 @@ class ConfirmationContainer extends React.Component {
 
   executeAllActions = () => {
     this.props.confirmConfirmation();
-    executeActions(
-      this.props.originalActions,
-      this.props.assignProject,
-      this.props.assignSubproject,
-      this.props.assignWorkflowitem,
-      this.props.createWorkflowitem,
-      this.props.createSubProject,
-      this.props.grantProjectPermission,
-      this.props.revokeProjectPermission,
-      this.props.grantSubprojectPermission,
-      this.props.revokeSubprojectPermission,
-      this.props.grantWorkflowitemPermission,
-      this.props.revokeWorkflowitemPermission,
-      this.props.closeProject,
-      this.props.closeSubproject,
-      this.props.closeWorkflowItem,
-      this.props.disableUser,
-      this.props.enableUser
-    );
+    executeActions({
+      actions: this.props.originalActions,
+      assignProject: this.props.assignProject,
+      assignSubproject: this.props.assignSubproject,
+      assignWorkflowitem: this.props.assignWorkflowitem,
+      createWorkflowitem: this.props.createWorkflowitem,
+      createSubProject: this.props.createSubProject,
+      grantProjectPermission: this.props.grantProjectPermission,
+      revokeProjectPermission: this.props.revokeProjectPermission,
+      grantSubprojectPermission: this.props.grantSubprojectPermission,
+      revokeSubprojectPermission: this.props.revokeSubprojectPermission,
+      grantWorkflowitemPermission: this.props.grantWorkflowitemPermission,
+      revokeWorkflowitemPermission: this.props.revokeWorkflowitemPermission,
+      closeProject: this.props.closeProject,
+      closeSubproject: this.props.closeSubproject,
+      closeWorkflowItem: this.props.closeWorkflowItem,
+      disableUser: this.props.disableUser,
+      enableUser: this.props.enableUser
+    });
   };
 
   includesPermissionIntent(originalActions) {

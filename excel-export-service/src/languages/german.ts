@@ -29,6 +29,9 @@ const de = {
     id: "Subprojekt ID",
     name: "Subprojekt Name",
     workflowitem_type: "Workflowitem Typ",
+    workflow_mode: "Workflow Modus",
+    workflow_mode_ordered: "Workflow / Prozess",
+    workflow_mode_unordered: "Liste",
     validator: "Validator",
   },
 
