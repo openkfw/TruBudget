@@ -7,8 +7,6 @@ import Typography from "@mui/material/Typography";
 
 import strings from "../../localizeStrings";
 
-let noDocsText = ["Click on the upload button and select a document", "Add an optional comment", ""];
-
 const DocumentEmptyState = (props) => {
   const { captionText } = props;
   return (

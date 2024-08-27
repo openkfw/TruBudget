@@ -2,7 +2,6 @@ import React, { useCallback, useState } from "react";
 import * as Yup from "yup";
 
 import AddLink from "@mui/icons-material/AddLink";
-// import Link from "@mui/icons-material/Link";
 import PostAdd from "@mui/icons-material/PostAdd";
 import Publish from "@mui/icons-material/Publish";
 import { CircularProgress, Grid, Paper, TableHead, TextField, Tooltip } from "@mui/material";
@@ -34,9 +33,6 @@ const hashValue = async (base64String) => {
   return hashHex;
 };
 
-// todo isFileLoading
-// todo optional message
-// todo file upload timestamp - take from bucket?
 const DocumentUpload = ({
   storeWorkflowDocument,
   storeWorkflowDocumentExternalLink,
