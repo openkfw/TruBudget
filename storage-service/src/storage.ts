@@ -21,6 +21,7 @@ export interface Metadata extends Minio.ItemBucketMetadata {
   docId: string;
   secret?: string;
   comment?: string;
+  lastModified?: Date;
 }
 
 export interface MetadataWithName extends Metadata {

@@ -137,9 +137,9 @@ export const getMetadata = async (
 ): Promise<MetadataWithName> => {
   try {
     const stat = await minioClient.statObject(bucketName, fileHash);
-    const { metaData } = stat as BucketItemStatWithMeta;
+    const { metaData, lastModified } = stat as BucketItemStatWithMeta;
 
-    return metaData;
+    return { ...metaData, lastModified };
   } catch (err) {
     log.error({ err }, "Error while getting Metadata");
     throw err;
