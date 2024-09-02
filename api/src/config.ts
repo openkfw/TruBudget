@@ -120,7 +120,7 @@ interface Config {
   azureMonitorConnectionString: string;
   silenceLoggingOnFrequentRoutes: boolean;
 }
-console.log(Joi);
+
 const envVarsSchema = Joi.object({
   ORGANIZATION: Joi.string()
     .min(1)
@@ -216,7 +216,7 @@ const envVarsSchema = Joi.object({
   NODE_ENV: Joi.string().default("production"),
   ENCRYPTION_PASSWORD: Joi.string(),
   SIGNING_METHOD: Joi.string().default("node"),
-  RATE_LIMIT: Joi.number(),
+  RATE_LIMIT: Joi.number().allow("").empty(""),
   AUTHPROXY_ENABLED: Joi.boolean().default(false),
   AUTHPROXY_JWS_SIGNATURE: Joi.string(),
   DB_TYPE: Joi.string().default("pg"),
@@ -232,7 +232,7 @@ const envVarsSchema = Joi.object({
   REFRESH_TOKEN_STORAGE: Joi.string().allow("db", "memory"),
   SNAPSHOT_EVENT_INTERVAL: Joi.number().default(3),
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: Joi.boolean().default(false),
-  APPLICATIONINSIGHTS_CONNECTION_STRING: Joi.string().default(""),
+  APPLICATIONINSIGHTS_CONNECTION_STRING: Joi.string().allow(""),
 })
   .unknown()
   .required();
