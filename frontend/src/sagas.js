@@ -105,6 +105,8 @@ import {
   TIME_OUT_FLY_IN
 } from "./pages/Notifications/actions";
 import {
+  APP_LATEST_VERSION_FETCHED,
+  APP_UPGRADE_VERSION_SUCCESS,
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
   EDIT_PROJECT,
@@ -127,6 +129,7 @@ import {
   SET_SORT
 } from "./pages/Overview/actions";
 import {
+  APP_LATEST_VERSION,
   FETCH_EMAIL_SERVICE_VERSION,
   FETCH_EMAIL_SERVICE_VERSION_FAILURE,
   FETCH_EMAIL_SERVICE_VERSION_SUCCESS,
@@ -135,7 +138,8 @@ import {
   FETCH_EXPORT_SERVICE_VERSION_SUCCESS,
   FETCH_VERSIONS,
   FETCH_VERSIONS_FAILURE,
-  FETCH_VERSIONS_SUCCESS
+  FETCH_VERSIONS_SUCCESS,
+  UPGRADE_TO_LATEST_VERSION
 } from "./pages/Status/actions.js";
 import {
   ASSIGN_PROJECT,
@@ -2048,6 +2052,36 @@ export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
   }, showLoading);
 }
 
+export function* fetchAppLatestVersionSaga({ showLoading }) {
+  yield execute(function* () {
+    let response;
+    try {
+      response = yield callApi(api.getAppLatestVersion);
+    } catch (error) {
+      yield put({
+        type: APP_LATEST_VERSION_FETCHED,
+        version: null
+      });
+      throw error;
+    }
+
+    yield put({
+      type: APP_LATEST_VERSION_FETCHED,
+      version: response.data
+    });
+  }, showLoading);
+}
+
+export function* upgradeAppVersionSaga({ version, showLoading }) {
+  yield execute(function* () {
+    yield callApi(api.upgradeAppVersion, version);
+    yield put({
+      type: APP_UPGRADE_VERSION_SUCCESS,
+      payload: { version }
+    });
+  }, showLoading);
+}
+
 export function* fetchSubProjectPermissionsSaga({ projectId, subprojectId, showLoading }) {
   yield execute(function* () {
     let response;
@@ -3537,6 +3571,9 @@ export default function* rootSaga() {
       yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga),
       yield takeLatest(FETCH_EMAIL_SERVICE_VERSION, fetchEmailVersionSaga),
       yield takeLatest(FETCH_EXPORT_SERVICE_VERSION, fetchExportVersionSaga),
+
+      yield takeLatest(APP_LATEST_VERSION, fetchAppLatestVersionSaga),
+      yield takeLatest(UPGRADE_TO_LATEST_VERSION, upgradeAppVersionSaga),
 
       // Analytics
       yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),

@@ -11,6 +11,8 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
 import axios from "axios";
+import { DOCKERHUB_TRUBUDGET_TAGS_URL } from "system/constants";
+import * as fs from "fs";
 
 /**
  * Represents the request body of the endpoint
@@ -21,6 +23,7 @@ interface RequestBodyV1 {
 
 const requestBodyV1Schema = Joi.object({
   apiVersion: Joi.valid("1.0").required(),
+  data: Joi.object({}),
 });
 
 type RequestBody = RequestBodyV1;
@@ -60,6 +63,9 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         required: ["apiVersion"],
         properties: {
           apiVersion: { type: "string", example: "1.0" },
+          data: {
+            type: "object",
+          },
         },
       },
       response: {
@@ -72,6 +78,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
               type: "object",
               properties: {
                 version: { type: "string", example: "2.15.0" },
+                message: { type: "string", example: "App is not upgradable" },
               },
             },
           },
@@ -114,9 +121,7 @@ export function addHttpHandler(server: AugmentedFastifyInstance, urlPrefix: stri
       const bodyResult = validateRequestBody(request.body);
 
       if (Result.isErr(bodyResult)) {
-        const { code, body } = toHttpError(
-          new VError(bodyResult, "failed to store new app version"),
-        );
+        const { code, body } = toHttpError(new VError(bodyResult, "failed to get new app version"));
         request.log.error({ err: bodyResult }, "Invalid request body");
         reply.status(code).send(body);
         return;
@@ -124,36 +129,46 @@ export function addHttpHandler(server: AugmentedFastifyInstance, urlPrefix: stri
 
       // Check if user is root
       if (serviceUser.id !== "root") {
-        const { code, body } = toHttpError(
-          new VError("User is not root", "failed to store new app version"),
+        const { body } = toHttpError(
+          new VError("User is not root", "failed to get new app version"),
         );
         request.log.error({ err: body }, "User is not root");
-        reply.status(code).send(body);
+        reply.status(403).send(body);
+        return;
+      }
+
+      // check if it is upgradable app
+      const appIsUpgradable = fs.existsSync(__dirname + "/trubudget-config/upgradable.txt");
+      if (!appIsUpgradable) {
+        reply.status(200).send({
+          apiVersion: "1.0",
+          data: {
+            message: "App is not upgradable",
+          },
+        });
         return;
       }
 
       switch (bodyResult.apiVersion) {
         case "1.0": {
-          axios
-            .get("https://hub.docker.com/v2/repositories/trubudget%2Fapi/tags?page_size=10")
-            .then((response) => {
-              const tags = response.data.results;
-              const highestVersion: string | undefined = tags
-                .filter(
-                  (tag: { name: string }): boolean =>
-                    tag.name !== "latest" && /^v\d+\.\d+\.\d+$/.test(tag.name),
-                )
-                .map((tag: { name: string }): string => tag.name)
-                .find((): boolean => true);
-              const code = 200;
-              const body = {
-                apiVersion: "1.0",
-                data: {
-                  version: highestVersion,
-                },
-              };
-              reply.status(code).send(body);
-            });
+          axios.get(DOCKERHUB_TRUBUDGET_TAGS_URL).then((response) => {
+            const tags = response.data.results;
+            const highestVersion: string | undefined = tags
+              .filter(
+                (tag: { name: string }): boolean =>
+                  tag.name !== "latest" && /^v\d+\.\d+\.\d+$/.test(tag.name),
+              )
+              .map((tag: { name: string }): string => tag.name)
+              .find((): boolean => true);
+            const code = 200;
+            const body = {
+              apiVersion: "1.0",
+              data: {
+                version: highestVersion,
+              },
+            };
+            reply.status(code).send(body);
+          });
 
           break;
         }

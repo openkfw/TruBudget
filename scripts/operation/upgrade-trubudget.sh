@@ -11,6 +11,12 @@ dockerCmd="$1"
 # Check if the trubudget-config directory exists and the upgrade_version.txt file exists in docker container
 NEW_VERSION=$($dockerCmd exec trubudget-operation-alpha-api-1 cat /home/node/src/trubudget-config/upgrade_version.txt)
 
+# Create file indicating upradable app if it doesn't exist
+if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../api/src/trubudget-config/upgradable.txt" ]; then
+  echo "App is upgradable" >> $SCRIPT_DIR/../../api/src/trubudget-config/upgradable.txt
+fi
+
+# Check if file exists
 if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../api/src/trubudget-config/upgrade_version.txt" ]; then
   # Define the path to your .env file
   ENV_FILE="$SCRIPT_DIR/.env"
