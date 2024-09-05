@@ -13,15 +13,17 @@ dockerCmd="$1"
 # NEW_VERSION=$($dockerCmd exec trubudget-operation-alpha-api-1 cat /home/node/src/trubudget-config/upgrade_version.txt)
 
 # Create file indicating upradable app if it doesn't exist
-if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../api/src/trubudget-config/upgradable.txt" ]; then
+if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ ! -f "$SCRIPT_DIR/../../api/src/trubudget-config/upgradable.txt" ]; then
+  echo "App is upgradable, creating file indicating upgradable app"
   echo "App is upgradable" > $SCRIPT_DIR/../../api/src/trubudget-config/upgradable.txt
 fi
 
 RUNNING_CONTAINERS=$($dockerCmd ps)
-# Check if file exists
+# Check if file indicatig upgrade request exists
 if [ -d "$SCRIPT_DIR/../../api/src/trubudget-config" ] && [ -f "$SCRIPT_DIR/../../api/src/trubudget-config/upgrade_version.txt" ]; then
   echo "Upgrading TruBudget"
-elif ! grep -q "trubudget-operation-alpha-api" "$RUNNING_CONTAINERS"; then
+# Check if the trubudget is not running
+elif [[ ${RUNNING_CONTAINERS} != *"trubudget-operation-alpha-api"* ]]; then
   echo "TruBudget is not running"
 else 
   echo "No upgrade requested"
