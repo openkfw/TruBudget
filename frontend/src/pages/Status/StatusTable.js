@@ -75,13 +75,13 @@ function renderCircularProgressRow(service) {
 
 function isVersionHigher(version1, version2) {
   // check if versions are in correct format using regex
-  if (!version1 || !version2 || !/^\d+\.\d+\.\d+$/.test(version1) || !/^\d+\.\d+\.\d+$/.test(version2)) {
+  if (!version1 || !version2 || !/^v*\d+\.\d+\.\d+$/.test(version1) || !/^v*\d+\.\d+\.\d+$/.test(version2)) {
     return false;
   }
 
   // Split the version strings into arrays of integers
-  const v1 = version1.split(".").map(Number);
-  const v2 = version2.split(".").map(Number);
+  const v1 = version1.replace("v", "").split(".").map(Number);
+  const v2 = version2.replace("v", "").split(".").map(Number);
 
   // Compare major, minor, and patch versions
   for (let i = 0; i < 3; i++) {
@@ -121,16 +121,6 @@ const StatusTable = (props) => {
 
   const upgradeApp = useCallback(() => {
     dispatch(upgradeAppToLatestVersion(latestVersion));
-    // axios
-    //   .post("/api/app.upgrade", {
-    //     apiVersion: "1.0",
-    //     data: {
-    //       version: latestVersion
-    //     }
-    //   })
-    //   .then((response) => {
-    //     console.log(response);
-    //   });
   }, [dispatch, latestVersion]);
 
   const isFetchingVersion = (serviceName) => {
