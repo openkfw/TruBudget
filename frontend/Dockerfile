@@ -11,7 +11,7 @@ RUN npm run build
 
 ######
 
-FROM nginx:1.27-alpine
+FROM nginx:1.27.1-alpine
 
 ARG USE_SSL
 ARG SSL_DOMAIN
