@@ -40,6 +40,12 @@ orange=$(tput setaf 214)
 red=$(tput setaf 196)
 colorReset=$(tput sgr0)
 
+# Find correct docker command
+dockerCmd=$(which docker)
+if [ -z "$dockerCmd" ]; then
+    dockerCmd="$1"
+fi
+
 echo "INFO: Building, Starting TruBudget for Operation"
 
 # Set default options
@@ -121,7 +127,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker compose -p trubudget-operation down
+        $dockerCmd compose -p trubudget-operation down
         exit 1
         ;;
 
@@ -144,6 +150,10 @@ while [ "$1" != "" ]; do
         ;;
 
     *) # unknown option
+        if [ $1 == $dockerCmd ]; then
+            shift
+            continue
+        fi
         echo "unknown argument: " $1
         echo "Exiting ..."
         exit 1
@@ -258,7 +268,7 @@ else
     fi
 fi
 
-COMPOSE="docker compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
+COMPOSE="$dockerCmd compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."

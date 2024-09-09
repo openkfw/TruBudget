@@ -10,6 +10,7 @@ services:
   alpha-node:
     image: trubudget/blockchain:${TAG}
     environment:
+      PORT: 8085
       MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
@@ -28,8 +29,8 @@ services:
       mynetwork:
         ipv4_address: 172.21.0.11
     # volume for persisting data from multichain
-    volumes:
-      - alphaVolume:${MULTICHAIN_DIR}
+    # volumes:
+    #   - alphaVolume:${MULTICHAIN_DIR}
     ports:
       - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting to the multichain daemon
       - ${BLOCKCHAIN_PORT}:${BLOCKCHAIN_PORT} # port for requests to blockchain API
@@ -111,6 +112,8 @@ services:
       API_REFRESH_TOKENS_TABLE: ${API_REFRESH_TOKENS_TABLE}
     depends_on:
       - alpha-node
+    volumes:
+      - "../../api/src/trubudget-config:/home/node/src/trubudget-config:delegated"
     networks:
       mynetwork:
         ipv4_address: 172.21.0.4

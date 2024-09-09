@@ -10,6 +10,8 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import getValidConfig, { config } from "./config";
+import * as AppLatestVersionAPI from "./app_latest_version";
+import * as AppUpgradeVersionAPI from "./app_upgrade";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
@@ -295,6 +297,13 @@ function registerSelf(): Promise<boolean> {
 registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
   Cache.invalidateCache(db),
 );
+
+/*
+ * APIs related to App versioning
+ */
+
+AppLatestVersionAPI.addHttpHandler(server, URL_PREFIX);
+AppUpgradeVersionAPI.addHttpHandler(server, URL_PREFIX);
 
 /*
  * APIs related to Global Permissions

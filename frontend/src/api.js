@@ -648,6 +648,13 @@ class Api {
         `/workflowitem.deleteDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
       )
     );
+
+  getAppLatestVersion = () => instance.post(`/app.latestVersion`, {});
+
+  upgradeAppVersion = (version) =>
+    instance.post(`/app.upgrade`, {
+      version
+    });
 }
 
 /**
