@@ -410,16 +410,23 @@ $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 # Read logs from servises to check if there is any error. Stop the environment if there is any error.
 read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
+# Read running docker containers into array
+read -a RUNNING_CONTAINERS <<< $(docker ps --format '{{.Names}}')
 
 # loop through the services array
-for service in "${ALL_SERVICES_ARRAY[@]}"
+for container in "${RUNNING_CONTAINERS[@]}"
 do
-    echo "INFO: Validating environment variables for $service service ..."
+    # skip the container if it is not in the services array
+    if [[ ! " ${ALL_SERVICES_ARRAY[@]} " =~ " ${container%-*} " ]]; then
+        echo "Skipping $container container ..."
+        continue
+    fi
+    echo "INFO: Validating environment variables for $container container ..."
     # Run environenment variables check
-    OUTPUT=$(docker logs trubudget-dev-$service 2>&1 | grep "Config validation error")
+    OUTPUT=$(docker logs $container 2>&1 | grep "Config validation error")
 
     if [[ $OUTPUT =~ "Config validation error" ]]; then
-        echo "${red}ERROR: The .env file is not valid for the $service service. Please check the .env file.${colorReset}"
+        echo "${red}ERROR: The .env file is not valid for the $container service. Please check the .env file.${colorReset}"
         exit 1
     fi
 done
