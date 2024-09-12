@@ -184,7 +184,7 @@ export const config: Config = {
     user: process.env.API_DB_USER || "postgres",
     password: process.env.API_DB_PASSWORD || "test",
     host: process.env.API_DB_HOST || "localhost",
-    database: process.env.API_DB_NAME || "trubudget_email_service",
+    database: process.env.API_DB_DATABASE || "trubudget_email_service",
     port: Number(process.env.API_DB_PORT) || 5432,
     ssl: process.env.API_DB_SSL === "true",
     schema: process.env.API_DB_SCHEMA || "public",
