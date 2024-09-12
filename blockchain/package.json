@@ -49,7 +49,7 @@
     "jsonwebtoken": "^9.0.0",
     "sha256-file": "^1.0.0",
     "shelljs": "^0.8.5",
-    "sinon": "^18.0.0",
+    "sinon": "^18.0.1",
     "streamifier": "^0.1.1",
     "tar-fs": "^2.1.1",
     "tar-stream": "^2.2.0",
