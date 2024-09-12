@@ -76,6 +76,7 @@ interface Config {
   rpc: {
     host: string;
     port: number;
+    protocol: "http" | "https";
     user: string;
     password: string;
   };
@@ -84,6 +85,7 @@ interface Config {
   blockchain: {
     host: string;
     port: number;
+    protocol: string;
   };
   jwt: JwtConfig;
   npmPackageVersion: string;
@@ -95,11 +97,13 @@ interface Config {
   storageService: {
     host: string;
     port: number;
+    protocol: string;
     externalUrl: string;
   };
   emailService: {
     host: string;
     port: number;
+    protocol: string;
   };
   encryptionPassword: string | undefined;
   signingMethod: string;
@@ -136,6 +140,7 @@ export const config: Config = {
   rpc: {
     host: process.env.MULTICHAIN_RPC_HOST || "localhost",
     port: Number(process.env.MULTICHAIN_RPC_PORT) || 8000,
+    protocol: process.env.MULTICHAIN_RPC_PROTOCOL === "https" ? "https" : "http",
     user: process.env.MULTICHAIN_RPC_USER || "multichainrpc",
     password: process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
   },
@@ -144,6 +149,7 @@ export const config: Config = {
   blockchain: {
     host: process.env.MULTICHAIN_RPC_HOST || "localhost",
     port: Number(process.env.BLOCKCHAIN_PORT) || 8085,
+    protocol: process.env.BLOCKCHAIN_PROTOCOL === "https" ? "https" : "http",
   },
   jwt: {
     secretOrPrivateKey: process.env.JWT_SECRET || randomString(32),
@@ -160,11 +166,13 @@ export const config: Config = {
   storageService: {
     host: process.env.STORAGE_SERVICE_HOST || "localhost",
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
+    protocol: process.env.STORAGE_SERVICE_PROTOCOL === "https" ? "https" : "http",
     externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL || "",
   },
   emailService: {
     host: process.env.EMAIL_HOST || "localhost",
     port: Number(process.env.EMAIL_PORT) || 8089,
+    protocol: process.env.EMAIL_PROTOCOL === "https" ? "https" : "http",
   },
   encryptionPassword:
     process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,

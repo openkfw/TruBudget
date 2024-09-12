@@ -195,7 +195,7 @@ const {
  */
 
 const rpcSettings: ConnectionSettings = {
-  protocol: "http",
+  protocol: rpc.protocol,
   host: rpc.host,
   port: rpc.port,
   username: rpc.user,
@@ -221,7 +221,7 @@ const { multichainClient } = db;
 let storageServiceSettings: AxiosRequestConfig;
 if (documentFeatureEnabled) {
   storageServiceSettings = {
-    baseURL: `http://${storageService.host}:${storageService.port}`,
+    baseURL: `${storageService.protocol}://${storageService.host}:${storageService.port}`,
     // 10 seconds request timeout
     timeout: 10000,
     maxBodyLength: MAX_DOCUMENT_SIZE_BASE64,
@@ -294,7 +294,7 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
+registerRoutes(server, db, URL_PREFIX, blockchain.protocol, blockchain.host, blockchain.port, storageServiceClient, () =>
   Cache.invalidateCache(db),
 );
 
