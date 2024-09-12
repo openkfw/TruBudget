@@ -396,23 +396,6 @@ if [ "$IS_PARTLY_REBUILDING" = true ]; then
     $COMPOSE build $BUILD_SERVICES
 fi
 
-# Read space sepparated services to array
-read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
-
-# loop through the services array
-for service in "${ALL_SERVICES_ARRAY[@]}"
-do
-    echo "INFO: Validating environment variables for $service service ..."
-    # Run environenment variables check
-    OUTPUT=$(docker run --env-file $SCRIPT_DIR/.env trubudget-dev-$service npm run validate-env 2>&1)
-
-    if [[ $OUTPUT =~ "Config validation error" ]]; then
-        echo "${red}ERROR: The .env file is not valid for the $service service. Please check the .env file.${colorReset}"
-        exit 1
-    fi
-done
-
-
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"
 fi
@@ -425,3 +408,18 @@ fi
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
 $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
+# Read logs from servises to check if there is any error. Stop the environment if there is any error.
+read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
+
+# loop through the services array
+for service in "${ALL_SERVICES_ARRAY[@]}"
+do
+    echo "INFO: Validating environment variables for $service service ..."
+    # Run environenment variables check
+    OUTPUT=$(docker logs trubudget-dev-$service 2>&1 | grep "Config validation error")
+
+    if [[ $OUTPUT =~ "Config validation error" ]]; then
+        echo "${red}ERROR: The .env file is not valid for the $service service. Please check the .env file.${colorReset}"
+        exit 1
+    fi
+done

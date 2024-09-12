@@ -1,10 +1,8 @@
-import config from "../config";
+import { envVarsSchema } from "../envVarsSchema";
 
-try {
-  config();
-  console.log("Environment variables are valid");
-} catch (error) {
-  console.error("Environment variables are not valid");
-  console.error(error);
-  process.exit(1);
+const { error } = envVarsSchema.validate(process.env, { abortEarly: false });
+if (error) {
+  console.log(error.message);
+} else {
+  console.log("[]");
 }
