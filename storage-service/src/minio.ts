@@ -23,7 +23,7 @@ export const getMinioStatus = async (): Promise<{
 }> => {
   try {
     await axios.get(
-      `http://${config.storage.host}:${config.storage.port}/minio/health/ready`,
+      `${config.storage.protocol}://${config.storage.host}:${config.storage.port}/minio/health/ready`,
     );
   } catch (error) {
     log.error({ error }, "Error during health check on minio-server");

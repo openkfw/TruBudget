@@ -14,7 +14,7 @@ import { CustomExpressRequest, CustomExpressResponse } from "./types";
 import { forwardError, APIError } from "./errors";
 
 const DEFAULT_API_VERSION = "1.0";
-const API_BASE = `http://${config.apiHost}:${config.apiPort}/api`;
+const API_BASE = `${config.apiProtocol}://${config.apiHost}:${config.apiPort}/api`;
 
 const transformRequest: AxiosRequestTransformer = (data) => {
   if (typeof data === "object") {
