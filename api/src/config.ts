@@ -33,6 +33,7 @@ interface ProcessEnvVars {
   STORAGE_SERVICE_EXTERNAL_URL: string;
   EMAIL_HOST: string;
   EMAIL_PORT: string;
+  EMAIL_PROTOCOL: "http" | "https";
   ACCESS_CONTROL_ALLOW_ORIGIN: string;
   NODE_ENV: string;
   ENCRYPTION_PASSWORD: string;
