@@ -85,7 +85,7 @@ interface Config {
   blockchain: {
     host: string;
     port: number;
-    protocol: string;
+    protocol: "http" | "https";
   };
   jwt: JwtConfig;
   npmPackageVersion: string;
