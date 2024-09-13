@@ -97,13 +97,13 @@ interface Config {
   storageService: {
     host: string;
     port: number;
-    protocol: string;
+    protocol: "http" | "https";
     externalUrl: string;
   };
   emailService: {
     host: string;
     port: number;
-    protocol: string;
+    protocol: "http" | "https";
   };
   encryptionPassword: string | undefined;
   signingMethod: string;
