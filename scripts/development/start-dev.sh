@@ -384,6 +384,7 @@ if [ "$IS_RESTARTING_ONLY" = false ]; then
 fi
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
+echo $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 $COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 if [ "$IS_REBUILDING" = true ]; then
@@ -395,6 +396,27 @@ if [ "$IS_PARTLY_REBUILDING" = true ]; then
     echo "INFO: Re-build only selected images"
     $COMPOSE build $BUILD_SERVICES
 fi
+
+# Read logs from servises to check if there is any error. Stop the environment if there is any error.
+read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
+
+# loop through the services array
+for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
+do
+    # # skip the container if it is not in the services array
+    # if [[ ! " ${ALL_SERVICES_ARRAY[@]} " =~ " ${container%-*} " ]]; then
+    #     echo "Skipping $container container ..."
+    #     continue
+    # fi
+    echo "INFO: Validating environment variables for $service_to_be_started service ..."
+    # Run environenment variables check
+    OUTPUT=$(docker run $container validate-env-variables 2>&1 | grep "Config validation error")
+
+    if [[ $OUTPUT =~ "Config validation error" ]]; then
+        echo "${red}ERROR: The .env file is not valid for the $container service. Please check the .env file.${colorReset}"
+        exit 1
+    fi
+done
 
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"
@@ -408,25 +430,4 @@ fi
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
 $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
-# Read logs from servises to check if there is any error. Stop the environment if there is any error.
-read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
-# Read running docker containers into array
-read -a RUNNING_CONTAINERS <<< $(docker ps --format '{{.Names}}')
 
-# loop through the services array
-for container in "${RUNNING_CONTAINERS[@]}"
-do
-    # skip the container if it is not in the services array
-    if [[ ! " ${ALL_SERVICES_ARRAY[@]} " =~ " ${container%-*} " ]]; then
-        echo "Skipping $container container ..."
-        continue
-    fi
-    echo "INFO: Validating environment variables for $container container ..."
-    # Run environenment variables check
-    OUTPUT=$(docker logs $container 2>&1 | grep "Config validation error")
-
-    if [[ $OUTPUT =~ "Config validation error" ]]; then
-        echo "${red}ERROR: The .env file is not valid for the $container service. Please check the .env file.${colorReset}"
-        exit 1
-    fi
-done
