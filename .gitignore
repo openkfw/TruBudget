@@ -15,3 +15,8 @@ scripts/development/.env
 scripts/operation/.env
 .idea/
 docs/developer/api-docs
+scripts/operation/.env.bak
+scripts/operation/cronjob.err
+scripts/operation/cronjob.output
+api/src/trubudget-config/upgrade_version.txt
+api/src/trubudget-config/upgradable.txt

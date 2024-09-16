@@ -23,6 +23,11 @@ api:
     memLimit: 200Mi
     cpuRequest: 100m
     cpuLimit: 150m
+  livenessProbe:
+    # Prevents being killed during initial data load phase
+    initialDelaySeconds:  500
+  readinessProbe:
+    initialDelaySeconds:  500
 
 service:
   name: api

@@ -150,7 +150,7 @@ There are two ways of starting the frontend using different networking solutions
 
 The environment parameters `API_HOST` and `API_PORT` are not used by the frontend direct connect setup, to connect to
 the api the `package.json` has to be adapted.
-Use the property `proxy` to pass the API connection "proxy": "http://API_HOST:API_PORT". (e.g. "
+Use the property `proxy` to pass the API connection "proxy": "API_PROTOCOL://API_HOST:API_PORT". (e.g. "
 proxy": "http://20.11.202.22:8080")
 
 Navigate into the `frontend` directory, install the node packages defined in the `package.json` and start the frontend

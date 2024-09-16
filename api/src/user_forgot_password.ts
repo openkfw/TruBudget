@@ -95,7 +95,7 @@ export function addHttpHandler(
 
       try {
         const { data } = await axios.get(
-          `http://${emailService.host}:${emailService.port}/${getUserByEmailUrl}${email}`,
+          `${emailService.protocol}://${emailService.host}:${emailService.port}/${getUserByEmailUrl}${email}`,
         );
 
         const { user } = data;
@@ -113,7 +113,7 @@ export function addHttpHandler(
           );
           const link = `${url}/reset-password?id=${user.id}&resetToken=${signedJwt}`;
           await axios.post(
-            `http://${emailService.host}:${emailService.port}/${sendResetPasswordUrl}`,
+            `${emailService.protocol}://${emailService.host}:${emailService.port}/${sendResetPasswordUrl}`,
             { data: { ...user, link, lang } },
           );
           reply.status(200).send({

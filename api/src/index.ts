@@ -10,6 +10,8 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import getValidConfig, { config } from "./config";
+import * as AppLatestVersionAPI from "./app_latest_version";
+import * as AppUpgradeVersionAPI from "./app_upgrade";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
@@ -193,7 +195,7 @@ const {
  */
 
 const rpcSettings: ConnectionSettings = {
-  protocol: "http",
+  protocol: rpc.protocol,
   host: rpc.host,
   port: rpc.port,
   username: rpc.user,
@@ -219,7 +221,7 @@ const { multichainClient } = db;
 let storageServiceSettings: AxiosRequestConfig;
 if (documentFeatureEnabled) {
   storageServiceSettings = {
-    baseURL: `http://${storageService.host}:${storageService.port}`,
+    baseURL: `${storageService.protocol}://${storageService.host}:${storageService.port}`,
     // 10 seconds request timeout
     timeout: 10000,
     maxBodyLength: MAX_DOCUMENT_SIZE_BASE64,
@@ -292,9 +294,16 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
+registerRoutes(server, db, URL_PREFIX, blockchain.protocol, blockchain.host, blockchain.port, storageServiceClient, () =>
   Cache.invalidateCache(db),
 );
+
+/*
+ * APIs related to App versioning
+ */
+
+AppLatestVersionAPI.addHttpHandler(server, URL_PREFIX);
+AppUpgradeVersionAPI.addHttpHandler(server, URL_PREFIX);
 
 /*
  * APIs related to Global Permissions
