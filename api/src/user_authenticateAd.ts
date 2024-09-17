@@ -254,7 +254,7 @@ export function addHttpHandler(
         reply
           .setCookie("token", signedJwt, {
             path: "/",
-            secure: true,
+            secure: config.secureCookie,
             httpOnly: true,
             sameSite: true,
           })
