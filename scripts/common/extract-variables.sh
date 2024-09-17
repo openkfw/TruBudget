@@ -1,10 +1,9 @@
 #!/bin/bash
 
-# Path to the docker-compose.yml file
-COMPOSE_FILE="docker-compose.yml"
-
 # Function to parse environment variables for each service and distinguish values from environment variables
 parse_services_and_environment_variables() {
+    # Path to the docker-compose.yml file
+    COMPOSE_FILE=$1
     service=""
     awk '
     # Find a new service block (starts at the same indentation level as "services")
@@ -41,6 +40,3 @@ parse_services_and_environment_variables() {
     }
     ' "$COMPOSE_FILE"
 }
-
-# Run the function to extract variables and service names
-parse_services_and_environment_variables

@@ -64,6 +64,7 @@ IS_SKIPPING=false
 SKIPPED_SERVICE=""
 IS_RESTARTING_ONLY=false
 RESTART_ONLY_SERVICE=""
+CONTAINERS_PREFIX="trubudget-dev"
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -154,7 +155,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker compose -p trubudget-dev down
+        docker compose -p $CONTAINERS_PREFIX down
         exit 1
         ;;
 
@@ -377,14 +378,13 @@ if [[ $COMPOSE_SERVICES =~ "minio" || $COMPOSE_SERVICES =~ "azure-storage" ]]; t
     COMPOSE="$COMPOSE -f $SCRIPT_DIR/docker-compose.azure-storage.yml"
   fi
 fi
-COMPOSE="$COMPOSE -p trubudget-dev --env-file $SCRIPT_DIR/.env"
+COMPOSE="$COMPOSE -p $CONTAINERS_PREFIX --env-file $SCRIPT_DIR/.env"
 
 if [ "$IS_RESTARTING_ONLY" = false ]; then
   $COMPOSE down
 fi
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
-echo $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 $COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 if [ "$IS_REBUILDING" = true ]; then
@@ -398,22 +398,19 @@ if [ "$IS_PARTLY_REBUILDING" = true ]; then
 fi
 
 # Read logs from servises to check if there is any error. Stop the environment if there is any error.
+# e.g. alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend
 read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
 
 # loop through the services array
 for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
 do
-    # # skip the container if it is not in the services array
-    # if [[ ! " ${ALL_SERVICES_ARRAY[@]} " =~ " ${container%-*} " ]]; then
-    #     echo "Skipping $container container ..."
-    #     continue
-    # fi
     echo "INFO: Validating environment variables for $service_to_be_started service ..."
     # Run environenment variables check
-    OUTPUT=$(docker run $container validate-env-variables 2>&1 | grep "Config validation error")
+    OUTPUT=$(docker run ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
 
     if [[ $OUTPUT =~ "Config validation error" ]]; then
-        echo "${red}ERROR: The .env file is not valid for the $container service. Please check the .env file.${colorReset}"
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo $OUTPUT
         exit 1
     fi
 done

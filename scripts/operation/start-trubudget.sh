@@ -267,6 +267,24 @@ $COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 echo "INFO: Since images are used, building is not necessary and will be skipped."
 #$COMPOSE build
 
+# Read logs from servises to check if there is any error. Stop the environment if there is any error.
+# e.g. alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend
+read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
+
+# loop through the services array
+for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
+do
+    echo "INFO: Validating environment variables for $service_to_be_started service ..."
+    # Run environenment variables check
+    OUTPUT=$(docker run ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
+
+    if [[ $OUTPUT =~ "Config validation error" ]]; then
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo $OUTPUT
+        exit 1
+    fi
+done
+
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
 $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
