@@ -89,6 +89,7 @@ interface Config {
     protocol: "http" | "https";
   };
   jwt: JwtConfig;
+  secureCookie: boolean;
   npmPackageVersion: string;
   // Continues Integration
   ciCommitSha: string;
@@ -157,6 +158,7 @@ export const config: Config = {
     publicKey: process.env.JWT_PUBLIC_KEY || "",
     algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
   },
+  secureCookie: process.env.API_SECURE_COOKIE === "true" || process.env.NODE_ENV === "production",
   npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration
   ciCommitSha: process.env.CI_COMMIT_SHA || "",

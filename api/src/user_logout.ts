@@ -149,7 +149,7 @@ export function addHttpHandler(
           ),
           {
             path: "/",
-            secure: process.env.NODE_ENV !== "development",
+            secure: config.secureCookie,
             httpOnly: true,
             sameSite: "strict",
             expires: new Date(Date.now()),
@@ -165,7 +165,7 @@ export function addHttpHandler(
           ),
           {
             path: "/api/user.refreshtoken",
-            secure: process.env.NODE_ENV !== "development",
+            secure: config.secureCookie,
             httpOnly: true,
             sameSite: "strict",
             expires: new Date(Date.now()),
@@ -181,7 +181,7 @@ export function addHttpHandler(
           ),
           {
             path: "/api/user.logout",
-            secure: process.env.NODE_ENV !== "development",
+            secure: config.secureCookie,
             httpOnly: true,
             sameSite: "strict",
             expires: new Date(Date.now()),

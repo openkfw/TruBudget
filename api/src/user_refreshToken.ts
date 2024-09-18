@@ -230,7 +230,7 @@ export function addHttpHandler(
       reply
         .setCookie("token", signedJwt, {
           path: "/",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
