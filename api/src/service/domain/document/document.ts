@@ -31,6 +31,7 @@ export interface DocumentReference {
   hash: string;
   available?: boolean;
   comment?: string;
+  lastModified?: string;
 }
 
 export interface DeleteDocumentResponse {
@@ -43,6 +44,8 @@ export interface ExternalLinkReference {
   link: string;
   available?: boolean;
   linkedFileHash?: string;
+  lastModified?: string;
+  comment?: string;
 }
 
 export type DocumentOrExternalLinkReference = DocumentReference | ExternalLinkReference;
@@ -60,6 +63,7 @@ export const documentReferenceSchema = Joi.alternatives([
     hash: Joi.string().required(),
     available: Joi.boolean(),
     comment: Joi.string().optional().allow(""),
+    lastModified: Joi.date().iso().optional(),
   }),
   Joi.object({
     id: Joi.string().required(),
@@ -68,6 +72,7 @@ export const documentReferenceSchema = Joi.alternatives([
     linkedFileHash: Joi.string(),
     available: Joi.boolean(),
     comment: Joi.string().optional().allow(""),
+    lastModified: Joi.date().iso().optional(),
   }),
 ]);
 
@@ -105,6 +110,7 @@ export const uploadedDocumentSchema = Joi.alternatives([
       .required()
       .error(() => new Error("Link is not valid")),
     fileName: Joi.string(),
+    comment: Joi.string().optional().allow(""),
     linkedFileHash: Joi.string(),
   }),
 ]);

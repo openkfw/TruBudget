@@ -360,7 +360,12 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.updateIn(["workflowToAdd", "documents"], (documents) =>
         Immutable.List([
           ...documents,
-          Immutable.Map({ link: action.link, fileName: action.fileName, linkedFileHash: action.linkedFileHash })
+          Immutable.Map({
+            link: action.link,
+            fileName: action.fileName,
+            linkedFileHash: action.linkedFileHash,
+            comment: action.comment
+          })
         ])
       );
     case WORKFLOWITEM_TYPE:

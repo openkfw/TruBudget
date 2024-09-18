@@ -543,12 +543,13 @@ export function storeWorkflowDocument(base64, fileName, comment) {
   };
 }
 
-export function storeWorkflowDocumentExternalLink(link, fileName, linkedFileHash) {
+export function storeWorkflowDocumentExternalLink(link, fileName, linkedFileHash, comment) {
   return {
     type: WORKFLOW_DOCUMENT_EXTERNAL_LINK,
     link,
     fileName,
-    linkedFileHash
+    linkedFileHash,
+    comment
   };
 }
 

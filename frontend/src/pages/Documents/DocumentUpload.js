@@ -46,6 +46,7 @@ const DocumentUpload = ({
   const [isLoading, setIsLoading] = useState(false);
   const [fileToUpload, setFileToUpload] = useState(null);
   const [comment, setComment] = useState("");
+  const [externalDocumentComment, setExternalDocumentComment] = useState("");
   const [externalDocumentUrl, setExternalDocumentUrl] = useState(defaultDocumentUrl);
   const [externalDocumentName, setExternalDocumentName] = useState(defaultDocumentName);
   const [externalDocumentHash, setExternalDocumentHash] = useState();
@@ -56,6 +57,7 @@ const DocumentUpload = ({
   const [externalDocumentNameUpdated, setExternalDocumentNameUpdated] = useState(false);
   const [externalDocumentNameHelperText, setExternalDocumentNameHelperText] = useState("");
 
+  console.log("externalDocumentUrlUpdated: ", externalDocumentUrlUpdated);
   const validateExternalDocumentUrl = async (value) => {
     // is not valid url
     let error;
@@ -103,10 +105,18 @@ const DocumentUpload = ({
   };
 
   const addExternalLink = () => {
-    storeWorkflowDocumentExternalLink(externalDocumentUrl, externalDocumentName, externalDocumentHash);
+    storeWorkflowDocumentExternalLink(
+      externalDocumentUrl,
+      externalDocumentName,
+      externalDocumentHash,
+      externalDocumentComment
+    );
     setExternalDocumentUrl(defaultDocumentUrl);
     setExternalDocumentName(defaultDocumentName);
     setExternalDocumentHash();
+    setExternalDocumentComment("");
+    setExternalDocumentUrlUpdated(false);
+    setExternalDocumentNameUpdated(false);
   };
 
   const addFile = () => {
@@ -274,6 +284,15 @@ const DocumentUpload = ({
                 onChange={handleExternalDocumentNameChange}
                 error={externalDocumentNameError}
                 helperText={externalDocumentNameHelperText}
+              />
+              <TextField
+                id="external-document-comment"
+                label={strings.common.comment_description}
+                value={externalDocumentComment}
+                onChange={(event) => setExternalDocumentComment(event.target.value)}
+                error={false}
+                helperText={strings.common.optional}
+                className="document-comment-field"
               />
             </Stack>
             {externalDocumentHash ? (

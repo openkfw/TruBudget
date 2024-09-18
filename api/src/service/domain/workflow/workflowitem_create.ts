@@ -30,6 +30,7 @@ import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
 import uuid = require("uuid");
 import { File } from "../document/document_upload";
+import { isDocumentLink } from "../document/workflowitem_document_delete";
 
 export interface RequestData {
   projectId: Project.Id;
@@ -184,13 +185,14 @@ export async function createWorkflowitem(
       // preparation for workflowitem_created event
       for (const doc of reqData.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        if ("base64" in doc) {
+        if (!isDocumentLink(doc)) {
           const hashedDocumentResult = await hashDocument(doc);
           if (Result.isErr(hashedDocumentResult)) {
             return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
           }
           documents.push(hashedDocumentResult);
         } else {
+          doc.lastModified = new Date().toISOString();
           documents.push(doc);
         }
       }
