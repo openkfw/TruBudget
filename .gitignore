@@ -12,6 +12,7 @@ yarn-error.log
 .vs/
 e2e-test/debug.log
 scripts/development/.env
+scripts/development/certs/*
 scripts/operation/.env
 .idea/
 docs/developer/api-docs
