@@ -28,5 +28,8 @@
     "dotenv": "^16.3.1",
     "fastify": "^4.24.3",
     "trubudget-logging-service": "^2.6.0"
+  },
+  "overrides": {
+    "find-my-way": "^8.2.2"
   }
 }
