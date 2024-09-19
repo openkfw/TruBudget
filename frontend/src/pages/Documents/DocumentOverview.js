@@ -186,7 +186,8 @@ class DocumentOverview extends Component {
         isValidHash === false ? "finger-print-container invalid-hash" : "finger-print-container";
       const fingerPrintText = isValidHash === false ? `Invalid hash ${hash}. File corrupt.` : hash;
       validated = validatedDocuments[id];
-      const formattedDate = new Date(lastModified).toLocaleString();
+      const date = new Date(lastModified);
+      const formattedDate = isNaN(date.getTime()) ? "" : date.toLocaleString();
 
       return (
         <TableRow key={index + "document"}>

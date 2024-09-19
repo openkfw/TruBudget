@@ -27,6 +27,7 @@ import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
 import { File } from "../document/document_upload";
+import { isDocumentLink } from "../document/workflowitem_document_delete";
 
 export interface RequestData {
   displayName?: string;
@@ -104,13 +105,14 @@ export async function updateWorkflowitem(
       // preparation for workflowitem_updated event
       for (const doc of modification.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        if ("base64" in doc) {
-          const hashedDocumentResult = await hashDocument(doc);
+        if (!isDocumentLink(doc)) {
+          const hashedDocumentResult = await hashDocument(doc as UploadedDocument);
           if (Result.isErr(hashedDocumentResult)) {
             return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
           }
           documents.push(hashedDocumentResult);
         } else {
+          doc.lastModified = new Date().toISOString();
           documents.push(doc);
         }
       }
