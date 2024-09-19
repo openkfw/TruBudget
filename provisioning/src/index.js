@@ -28,6 +28,9 @@ const {
 } = require("./api");
 const log = require("./logger");
 
+const provisioningTimeout = Number.isInteger(parseInt(process.env.PROVISIONING_TIMEOUT, 10))
+  ? parseInt(process.env.PROVISIONING_TIMEOUT) * 1000
+  : 30000;
 const DEFAULT_API_VERSION = "1.0";
 
 // List all files here that do not contain project data
@@ -609,7 +612,7 @@ const provisionBlockchain = async (protocol, host, port, rootSecret, organizatio
 
     axios.defaults.baseURL = `${protocol}://${host}:${port}/api`;
     log.info("Axios baseURL is set to " + axios.defaults.baseURL);
-    axios.defaults.timeout = 10000;
+    axios.defaults.timeout = provisioningTimeout;
 
     await isApiReady(axios);
 
@@ -659,7 +662,7 @@ const provisionBetaNode = async (protocol, host, port, rootSecret, organization)
 
     axios.defaults.baseURL = `${protocol}://${host}:${port}/api`;
     log.info("Axios baseURL is set to " + axios.defaults.baseURL);
-    axios.defaults.timeout = 10000;
+    axios.defaults.timeout = provisioningTimeout;
 
     await isApiReady(axios);
 
