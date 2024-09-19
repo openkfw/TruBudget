@@ -304,19 +304,19 @@ export function addHttpHandler(
       reply
         .setCookie("token", signedJwt, {
           path: "/",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
         .setCookie("refreshToken", refreshToken, {
           path: "/api/user.refreshtoken",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
         .setCookie("refreshToken", refreshToken, {
           path: "/api/user.logout",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
@@ -347,9 +347,10 @@ function createJWT(
   }
 
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
-  const expiresIn = config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)
-    ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
-    : "8h";
+  const expiresIn =
+    config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)
+      ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
+      : "8h";
   return jsonwebtoken.sign(
     {
       userId: token.userId,

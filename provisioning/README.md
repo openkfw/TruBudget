@@ -16,6 +16,7 @@ The provisioning project creates a bunch of test data via api requests.
 | PROVISIONING_SERVICE_USER | mstein | Provisioning service user. Custom user should be defined in `users.json` and have appropriate permissions. |
 | PROVISIONING_SERVICE_PASSWORD | test | |
 | PROVISIONING_BETA | `false` | Flag for additional provisioning of users and groups. If set to `true`, provisioning tries to create users and groups in already provisioned TB chain. | 
+| PROVISIONING_TIMEOUT | `30` | Number of seconds in which an individual provisioning request times out. |
 
 ## Setup
 
