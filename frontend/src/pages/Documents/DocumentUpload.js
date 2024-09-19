@@ -57,7 +57,6 @@ const DocumentUpload = ({
   const [externalDocumentNameUpdated, setExternalDocumentNameUpdated] = useState(false);
   const [externalDocumentNameHelperText, setExternalDocumentNameHelperText] = useState("");
 
-  console.log("externalDocumentUrlUpdated: ", externalDocumentUrlUpdated);
   const validateExternalDocumentUrl = async (value) => {
     // is not valid url
     let error;
