@@ -33,6 +33,7 @@ interface ProcessEnvVars {
   STORAGE_SERVICE_EXTERNAL_URL: string;
   EMAIL_HOST: string;
   EMAIL_PORT: string;
+  EMAIL_PROTOCOL: "http" | "https";
   ACCESS_CONTROL_ALLOW_ORIGIN: string;
   NODE_ENV: string;
   ENCRYPTION_PASSWORD: string;
@@ -76,6 +77,7 @@ interface Config {
   rpc: {
     host: string;
     port: number;
+    protocol: "http" | "https";
     user: string;
     password: string;
   };
@@ -84,8 +86,10 @@ interface Config {
   blockchain: {
     host: string;
     port: number;
+    protocol: "http" | "https";
   };
   jwt: JwtConfig;
+  secureCookie: boolean;
   npmPackageVersion: string;
   // Continues Integration
   ciCommitSha: string;
@@ -95,11 +99,13 @@ interface Config {
   storageService: {
     host: string;
     port: number;
+    protocol: "http" | "https";
     externalUrl: string;
   };
   emailService: {
     host: string;
     port: number;
+    protocol: "http" | "https";
   };
   encryptionPassword: string | undefined;
   signingMethod: string;
@@ -136,6 +142,7 @@ export const config: Config = {
   rpc: {
     host: process.env.MULTICHAIN_RPC_HOST || "localhost",
     port: Number(process.env.MULTICHAIN_RPC_PORT) || 8000,
+    protocol: process.env.MULTICHAIN_RPC_PROTOCOL === "https" ? "https" : "http",
     user: process.env.MULTICHAIN_RPC_USER || "multichainrpc",
     password: process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
   },
@@ -144,12 +151,14 @@ export const config: Config = {
   blockchain: {
     host: process.env.MULTICHAIN_RPC_HOST || "localhost",
     port: Number(process.env.BLOCKCHAIN_PORT) || 8085,
+    protocol: process.env.BLOCKCHAIN_PROTOCOL === "https" ? "https" : "http",
   },
   jwt: {
     secretOrPrivateKey: process.env.JWT_SECRET || randomString(32),
     publicKey: process.env.JWT_PUBLIC_KEY || "",
     algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
   },
+  secureCookie: process.env.API_SECURE_COOKIE === "true" || process.env.NODE_ENV === "production",
   npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration
   ciCommitSha: process.env.CI_COMMIT_SHA || "",
@@ -160,11 +169,13 @@ export const config: Config = {
   storageService: {
     host: process.env.STORAGE_SERVICE_HOST || "localhost",
     port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
+    protocol: process.env.STORAGE_SERVICE_PROTOCOL === "https" ? "https" : "http",
     externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL || "",
   },
   emailService: {
     host: process.env.EMAIL_HOST || "localhost",
     port: Number(process.env.EMAIL_PORT) || 8089,
+    protocol: process.env.EMAIL_PROTOCOL === "https" ? "https" : "http",
   },
   encryptionPassword:
     process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,

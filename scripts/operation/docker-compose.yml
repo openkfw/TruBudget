@@ -153,6 +153,7 @@ services:
     environment:
       API_HOST: alpha-api
       API_PORT: ${API_PORT}
+      API_PROTOCOL: ${API_PROTOCOL}
       PROVISIONING_TYPE: ${PROVISIONING_TYPE}
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
@@ -198,6 +199,7 @@ services:
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
+      MINIO_PROTOCOL: ${MINIO_PROTOCOL}
       LOG_LEVEL: ${STORAGE_LOG_LEVEL}
       RATE_LIMIT: ${RATE_LIMIT}
       STORAGE_PROVIDER: ${STORAGE_PROVIDER}
@@ -222,10 +224,16 @@ services:
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
       API_HOST: alpha-api
       API_PORT: ${API_PORT}
+      API_PROTOCOL: ${API_PROTOCOL}
       EXPORT_HOST: ${EXPORT_HOST}
       EXPORT_PORT: ${EXPORT_PORT}
+      EXPORT_PROTOCOL: ${EXPORT_PROTOCOL}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_PROTOCOL: ${EMAIL_PROTOCOL}
+      STORAGE_SERVICE_HOST: ${STORAGE_SERVICE_HOST}
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+      STORAGE_SERVICE_PROTOCOL: ${STORAGE_SERVICE_PROTOCOL}
       INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
       REACT_APP_LOGGING: ${REACT_APP_LOGGING}
       REACT_APP_LOG_LEVEL: ${REACT_APP_LOG_LEVEL}
@@ -253,6 +261,7 @@ services:
       LOGGER_PORT: ${LOGGER_PORT}
       API_HOST: ${API_HOST}
       API_PORT: ${API_PORT}
+      API_PROTOCOL: ${API_PROTOCOL}
       LOG_LEVEL: ${LOG_LEVEL}
       LOGGING_SERVICE_CACHE_DURATION: ${LOGGING_SERVICE_CACHE_DURATION}
       NODE_ENV: ${LOGGING_SERVICE_NODE_ENV}
@@ -272,7 +281,7 @@ services:
       # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
       P2P_HOST: 172.21.0.11 # IP of alpha-node
       P2P_PORT: 7447
-      API_PROTO: http
+      API_PROTOCOL: http
       API_HOST: alpha-api # API to send register request
       API_PORT: ${API_PORT}
     volumes:

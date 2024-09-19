@@ -28,6 +28,9 @@ const {
 } = require("./api");
 const log = require("./logger");
 
+const provisioningTimeout = Number.isInteger(parseInt(process.env.PROVISIONING_TIMEOUT, 10))
+  ? parseInt(process.env.PROVISIONING_TIMEOUT) * 1000
+  : 30000;
 const DEFAULT_API_VERSION = "1.0";
 
 // List all files here that do not contain project data
@@ -600,16 +603,16 @@ async function checkProvisionState(axios) {
   }
 }
 
-const provisionBlockchain = async (host, port, rootSecret, organization) => {
+const provisionBlockchain = async (protocol, host, port, rootSecret, organization) => {
   try {
     const folder =
       process.env.PROVISIONING_TYPE === "PROD"
         ? "./src/data/prod/"
         : "./src/data/test/";
 
-    axios.defaults.baseURL = `http://${host}:${port}/api`;
+    axios.defaults.baseURL = `${protocol}://${host}:${port}/api`;
     log.info("Axios baseURL is set to " + axios.defaults.baseURL);
-    axios.defaults.timeout = 10000;
+    axios.defaults.timeout = provisioningTimeout;
 
     await isApiReady(axios);
 
@@ -650,16 +653,16 @@ const provisionBlockchain = async (host, port, rootSecret, organization) => {
   }
 };
 
-const provisionBetaNode = async (host, port, rootSecret, organization) => {
+const provisionBetaNode = async (protocol, host, port, rootSecret, organization) => {
   try {
     const folder =
       process.env.PROVISIONING_TYPE === "PROD"
         ? "./src/data/prod/"
         : "./src/data/test/";
 
-    axios.defaults.baseURL = `http://${host}:${port}/api`;
+    axios.defaults.baseURL = `${protocol}://${host}:${port}/api`;
     log.info("Axios baseURL is set to " + axios.defaults.baseURL);
-    axios.defaults.timeout = 10000;
+    axios.defaults.timeout = provisioningTimeout;
 
     await isApiReady(axios);
 
@@ -679,6 +682,7 @@ const provisionBetaNode = async (host, port, rootSecret, organization) => {
 
 const port = process.env.API_PORT || 8080;
 const host = process.env.API_HOST || "localhost";
+const protocol = process.env.API_PROTOCOL === "https" ? "https" : "http";
 const rootSecret = process.env.ROOT_SECRET || "root-secret";
 const organization = process.env.ORGANIZATION;
 const isBeta = process.env.PROVISIONING_BETA === "true" || false;
@@ -700,12 +704,12 @@ if (!rootSecret) {
 }
 
 if (isBeta) {
-  provisionBetaNode(host, port, rootSecret, organization).then(() => {
+  provisionBetaNode(protocol, host, port, rootSecret, organization).then(() => {
     log.info("\x1b[32m%s\x1b[0m", "Successfully beta-provisioned Trubudget!");
     process.exit(0);
   });
 } else {
-  provisionBlockchain(host, port, rootSecret, organization).then(() => {
+  provisionBlockchain(protocol, host, port, rootSecret, organization).then(() => {
     log.info("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
     process.exit(0);
   });

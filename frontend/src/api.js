@@ -73,7 +73,7 @@ class Api {
    */
   getExportServiceUrl = (urlSlug, devModeEnvironment = "") => {
     const baseURL = devMode
-      ? `http://localhost:${config.export.servicePort}${
+      ? `${config.export.serviceProtocol}://${config.export.serviceHost}:${config.export.servicePort}${
           !devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`
         }`
       : "/export/xlsx";
@@ -84,7 +84,7 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${config.email.servicePort}` : "/email"}/${urlSlug}`;
+  getEmailServiceUrl = (urlSlug) => `${devMode ? `${config.email.serviceProtocol}://${config.email.serviceHost}:${config.email.servicePort}` : "/email"}/${urlSlug}`;
 
   checkAccessTokenExpiration = () => {
     return localStorage.getItem("refresh_token_expiration");
