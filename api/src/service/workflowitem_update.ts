@@ -62,45 +62,40 @@ export async function updateWorkflowitem(
         applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
           return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
         },
-        uploadDocumentToStorageService: (fileName, documentBase64, id) => {
-          return DocumentUpload.uploadDocument(
-            ctx,
-            serviceUser,
-            { fileName, documentBase64, id },
-            {
-              getAllDocumentReferences: async () => {
-                return DocumentGet.getAllDocumentReferences({
-                  getDocumentsEvents: async () => {
-                    return cache.getDocumentUploadedEvents();
-                  },
-                  getAllProjects: async () => {
-                    return ProjectCacheHelper.getAllProjects(conn, ctx);
-                  },
-                  getAllSubprojects: async (projectId) => {
-                    return SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
-                  },
-                  getAllWorkflowitems: async (projectId, subprojectId) => {
-                    return WorkflowitemCacheHelper.getAllWorkflowitems(
-                      conn,
-                      ctx,
-                      projectId,
-                      subprojectId,
-                    );
-                  },
-                });
-              },
-              storeDocument: async (id, name, hash) => {
-                return storageServiceClient.uploadObject(id, name, hash);
-              },
-              getPublicKey: async (organization) => {
-                return PublicKeyGet.getPublicKey(conn, ctx, organization);
-              },
-              encryptWithKey: async (secret, publicKey) => {
-                return encryptWithKey(secret, publicKey);
-              },
-              getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
+        uploadDocumentToStorageService: (file: DocumentUpload.File) => {
+          return DocumentUpload.uploadDocument(ctx, serviceUser, file, {
+            getAllDocumentReferences: async () => {
+              return DocumentGet.getAllDocumentReferences({
+                getDocumentsEvents: async () => {
+                  return cache.getDocumentUploadedEvents();
+                },
+                getAllProjects: async () => {
+                  return ProjectCacheHelper.getAllProjects(conn, ctx);
+                },
+                getAllSubprojects: async (projectId) => {
+                  return SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
+                },
+                getAllWorkflowitems: async (projectId, subprojectId) => {
+                  return WorkflowitemCacheHelper.getAllWorkflowitems(
+                    conn,
+                    ctx,
+                    projectId,
+                    subprojectId,
+                  );
+                },
+              });
             },
-          );
+            storeDocument: async (file: DocumentUpload.File) => {
+              return storageServiceClient.uploadObject(file);
+            },
+            getPublicKey: async (organization) => {
+              return PublicKeyGet.getPublicKey(conn, ctx, organization);
+            },
+            encryptWithKey: async (secret, publicKey) => {
+              return encryptWithKey(secret, publicKey);
+            },
+            getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
+          });
         },
         getAllDocumentReferences: async () => {
           return DocumentGet.getAllDocumentReferences({

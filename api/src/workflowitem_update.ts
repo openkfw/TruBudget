@@ -126,6 +126,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                       type: "string",
                       example: "e41a7hduwdf724fbiq8f23fdi2ufg2ef",
                     },
+                    comment: { type: "string", example: "this is a comment" },
                   },
                 },
               },
