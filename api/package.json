@@ -48,7 +48,8 @@
     "test:here": "node ./runTest.js",
     "generate-joi": "node dist/scripts/joiGenerator.js",
     "build-docs": "bash ./buildDocs.sh",
-    "validate-env-variables": "node ./dist/scripts/envVarsValidator.js"
+    "validate-env-variables": "node ./dist/scripts/envVarsValidator.js",
+    "generate-env-vars-docs": "node ./dist/scripts/envVarsDocsGenerator.js"
   },
   "nyc": {
     "include": [

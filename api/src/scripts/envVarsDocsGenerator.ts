@@ -1,10 +1,12 @@
 import Joi from "joi";
 import { envVarsSchema } from "../envVarsSchema";
+import { writeFileSync } from "fs";
 
 interface EnvVariable {
   name: string;
   required: string;
   default: string;
+  deprecated: boolean;
   description: string;
 }
 
@@ -22,26 +24,35 @@ export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
       const defaultValue = item.flags && item.flags.default ? item.flags.default : "-";
       const description = item.notes && item.notes.length ? item.notes.join(" ") : "-";
       const additionalEntries: string[] = [];
-      if (item.min) {
-        additionalEntries.push(`Minimal value: ${item.min}.`);
+
+      const min = item.rules && item.rules.find((rule) => rule.name === "min");
+      const max = item.rules && item.rules.find((rule) => rule.name === "max");
+      const invalid = item.invalid;
+      const deprecated = item.notes && item.notes.find((note) => note === "deprecated");
+      const examples = item.examples;
+      const valid = item.allow;
+
+      if (min) {
+        additionalEntries.push(`Minimal value: ${min?.args?.limit}.`);
       }
-      if (item.max) {
-        additionalEntries.push(`Maximal value: ${item.max}.`);
+      if (max) {
+        additionalEntries.push(`Maximal value: ${max?.args?.limit}.`);
       }
-      if (item.invalid) {
-        additionalEntries.push(`Invalid values: ${item.invalid}.`);
+      if (invalid) {
+        additionalEntries.push(`Invalid values: ${invalid.join(", ")}.`);
       }
-      if (item.example) {
-        additionalEntries.push(`Example values: ${item.example}.`);
+      if (examples) {
+        additionalEntries.push(`Example values: ${examples.join(", ")}.`);
       }
-      if (item.valid) {
-        additionalEntries.push(`Allowed values: ${item.valid}.`);
+      if (valid) {
+        additionalEntries.push(`Allowed values: ${valid.join(", ")}.`);
       }
 
       envVariables.push({
         name: key,
         required: isRequired,
         default: defaultValue,
+        deprecated: !!deprecated,
         description: description.replace(/<br\/>/g, " ") + ` ${additionalEntries.join(" ")}`,
       });
     });
@@ -57,7 +68,9 @@ const generateMarkdown = (envVariables: EnvVariable[]) => {
   const rows = envVariables
     .map(
       (varInfo: EnvVariable) =>
-        `| ${varInfo.name} | ${varInfo.required} | ${varInfo.default} | ${varInfo.description} |`,
+        `| **${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""} | ${
+          varInfo.required
+        } | ${varInfo.default} | ${varInfo.description} |`,
     )
     .join("\n");
 
@@ -68,5 +81,7 @@ const updateMarkdownFile = () => {
   const schema = extractSchemaInfo(envVarsSchema);
   const mdTable = generateMarkdown(schema);
 
-  console.log(mdTable);
+  writeFileSync("../../environment-variables2.md", mdTable, "utf-8");
 };
+
+updateMarkdownFile();
