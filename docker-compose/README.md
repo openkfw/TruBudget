@@ -12,7 +12,7 @@ Environment variables for each service can be checked in the individual service 
 All environment variables are configured via `.env` file. The `.env.example` file can be used as first configuration by copying it to `.env` file:
 
 ```
-cp .env_example .env
+cp .env.example .env
 ```
 
 All variables in the `.env` file are passed to one or more TruBudget docker compose services per default, if another .env file should be used the `--env-file` option can be used.
@@ -28,10 +28,10 @@ docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml 
 To start TruBudget with docker compose check out previous section and make sure the command `docker compose` can be used.
 Make sure your are in the `docker-compose` folder and use following command to manage your TruBudget node with docker compose:
 
-Copy .env_example to .env to use the default configuration
+Copy .env.example to .env to use the default configuration
 
 ```
-cp .env_example .env
+cp .env.example .env
 ```
 
 Deploy TruBudget

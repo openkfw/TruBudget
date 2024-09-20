@@ -117,7 +117,7 @@ There are two settings of the Pino logger that are set via environment variables
 - Set the log level via `LOG_LEVEL`. This will setting will be used for every service by default.
   The possible values are: "trace", "debug", "info", "warn", "error" and "fatal".
 
-- The developer and operation startup scripts control the log level for each service specifically (see .env_example files in scripts folder). Following Variables can be modified there:
+- The developer and operation startup scripts control the log level for each service specifically (see .env.example files in scripts folder). Following Variables can be modified there:
   - Set the log level via `API_LOG_LEVEL`. Controls Log Level for API.
   - Set the log level via `BLOCKCHAIN_LOG_LEVEL`. Controls Log Level for the Blockchain
   - Set the log level via `EXCEL_LOG_LEVEL`. Controls Log Level for Excel Service
