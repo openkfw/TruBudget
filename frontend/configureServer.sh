@@ -77,20 +77,35 @@ rm /etc/nginx/conf.d/default-ssl.conf
 
 # add the proxy pass and store the conf into the nginx conf directory
 sed -i -e "/# pathToApi/i\\
-proxy_pass $api_protocol://$api_host:$api_port;" /etc/nginx/conf.d/default.conf
+      proxy_pass $api_protocol://$api_host:$api_port;" /etc/nginx/conf.d/default.conf
+# Loop through each line of the multi-line string and use sed to inject it
+echo "$REACT_APP_API_SERVICE_ADDITIONAL_NGINX_CONF" | while IFS= read -r line; do
+  sed -i -e "/# pathToApi/i\\
+      $line" /etc/nginx/conf.d/default.conf
+done
 
 if [ "$REACT_APP_EXPORT_SERVICE_ENABLED" = true ]; then
     echo "Excel export has been enabled"
     echo "$export_protocol://$export_host:$export_port/"
     sed -i -e "/# pathToExcelExport/i\\
-    proxy_pass $export_protocol://$export_host:$export_port/;" /etc/nginx/conf.d/default.conf
+      proxy_pass $export_protocol://$export_host:$export_port/;" /etc/nginx/conf.d/default.conf
+    # Loop through each line of the multi-line string and use sed to inject it
+    echo "$REACT_APP_EXPORT_SERVICE_ADDITIONAL_NGINX_CONF" | while IFS= read -r line; do
+      sed -i -e "/# pathToExcelExport/i\\
+      $line" /etc/nginx/conf.d/default.conf
+    done
 fi
 
 if [ "$REACT_APP_EMAIL_SERVICE_ENABLED" = true ]; then
     echo "Email service has been enabled"
     echo "$email_protocol://$email_host:$email_port/"
     sed -i -e "/# pathToEmailService/i\\
-    proxy_pass $email_protocol://$email_host:$email_port/;" /etc/nginx/conf.d/default.conf
+      proxy_pass $email_protocol://$email_host:$email_port/;" /etc/nginx/conf.d/default.conf
+    # Loop through each line of the multi-line string and use sed to inject it
+    echo "$REACT_APP_EMAIL_SERVICE_ADDITIONAL_NGINX_CONF" | while IFS= read -r line; do
+      sed -i -e "/# pathToEmailService/i\\
+      $line" /etc/nginx/conf.d/default.conf
+    done
 fi
 
 if [[ ! -z "${REACT_APP_EXCHANGE_RATE_URL}" ]]; then
@@ -102,7 +117,12 @@ fi
 
 
 sed -i -e "/# pathToStorageService/i\\
-proxy_pass $storage_service_protocol://$storage_service_host:$storage_service_port/download;" /etc/nginx/conf.d/default.conf
+      proxy_pass $storage_service_protocol://$storage_service_host:$storage_service_port/download;" /etc/nginx/conf.d/default.conf
+# Loop through each line of the multi-line string and use sed to inject it
+echo "$REACT_APP_STORAGE_SERVICE_ADDITIONAL_NGINX_CONF" | while IFS= read -r line; do
+  sed -i -e "/# pathToStorageService/i\\
+      $line" /etc/nginx/conf.d/default.conf
+done
 
 sed -i -e "s/^\(\s*include \/etc\/nginx\/sites-enabled\)/#&/" /etc/nginx/nginx.conf
 
