@@ -266,7 +266,13 @@ export const registerRoutes = (
       `${urlPrefix}/version`,
       silentRouteSettings(getSchema(server, "version")),
       (request, reply) => {
-        getVersion(blockchainProtocol, blockchainHost, blockchainPort, multichainClient, storageServiceClient)
+        getVersion(
+          blockchainProtocol,
+          blockchainHost,
+          blockchainPort,
+          multichainClient,
+          storageServiceClient,
+        )
           .then((response) => {
             send(reply, response);
           })
