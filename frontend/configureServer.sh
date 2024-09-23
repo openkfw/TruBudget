@@ -115,7 +115,6 @@ if [[ ! -z "${REACT_APP_EXCHANGE_RATE_URL}" ]]; then
   sed -i -e "s|https://data-api.ecb.europa.eu/service/data/EXR/|& $FX_URL_WITHOUT_QUERY|" /etc/nginx/conf.d/default.conf
 fi
 
-
 sed -i -e "/# pathToStorageService/i\\
       proxy_pass $storage_service_protocol://$storage_service_host:$storage_service_port/download;" /etc/nginx/conf.d/default.conf
 # Loop through each line of the multi-line string and use sed to inject it
