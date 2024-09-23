@@ -41,6 +41,7 @@ interface ExternalLink {
   id: string;
   link: string;
   fileName: string;
+  linkedFileHash?: string;
 }
 
 type DocumentOrLink = Document | ExternalLink;

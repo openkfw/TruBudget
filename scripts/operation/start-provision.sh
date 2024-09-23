@@ -173,10 +173,10 @@ echo "INFO: Current script directory: $SCRIPT_DIR"
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
     echo "${orange}WARNING: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
-    echo -n "${orange}WARNING: Do you want to create .env and copy the .env_example file to .env now? (y/N)${colorReset}"
+    echo -n "${orange}WARNING: Do you want to create .env and copy the .env.example file to .env now? (y/N)${colorReset}"
     read answer
     if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        cp ${SCRIPT_DIR}/.env_example ${SCRIPT_DIR}/.env
+        cp ${SCRIPT_DIR}/.env.example ${SCRIPT_DIR}/.env
     else
         echo "${red}ERROR: No .env file in directory ${SCRIPT_DIR} found, script will exit ... ${colorReset}"
         exit 1

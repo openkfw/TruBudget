@@ -1,18 +1,17 @@
 # Subproject
 
 - [Subproject](#subproject)
-    - [View subprojects](#view-subprojects)
-    - [Filter subprojects](#filter-subprojects)
-    - [View subproject details](#view-subproject-details)
-    - [Create a subproject](#create-a-subproject)
-    - [Update a subproject](#update-a-subproject)
-    - [Assign an User/Group to a subproject](#assign-an-usergroup-to-a-subproject)
-    - [Close subproject](#close-subproject)
-    - [View the history of a subproject](#view-the-history-of-a-subproject)
-    - [Filter the history of a subproject](#filter-the-history-of-a-subproject)
-    - [View the additional data of a subproject](#view-the-additional-data-of-a-subproject)
-    - [Permissions on subproject](#permissions-on-subproject)
-    - [Create a workflowitem](#create-a-workflowitem)
+  - [View subprojects](#view-subprojects)
+  - [Filter subprojects](#filter-subprojects)
+  - [View subproject details](#view-subproject-details)
+  - [Create a subproject](#create-a-subproject)
+  - [Update a subproject](#update-a-subproject)
+  - [Assign an User/Group to a subproject](#assign-an-usergroup-to-a-subproject)
+  - [Close subproject](#close-subproject)
+  - [View the history of a subproject](#view-the-history-of-a-subproject)
+  - [Filter the history of a subproject](#filter-the-history-of-a-subproject)
+  - [Permissions on subproject](#permissions-on-subproject)
+  - [Create a workflowitem](#create-a-workflowitem)
 
 A project is normally split into a fraction of sub-task and Trubudget calls them **Subprojects**.
 In case of the school example the overall project would be the "School" having multiple subprojects like Design studies,
@@ -46,7 +45,7 @@ View all subprojects where the current user has view-permissions on.
 2. Click the "Projects" menu point
 3. Click the blue magnifier icon in the bottom right corner of a project
 
-![show subprojects](./../img/view_projects.jpg)
+![show subprojects](./../img/view_projects.png)
 
 4. At the bottom half of the site all subprojects of the current project are viewed
 
@@ -96,7 +95,7 @@ View details like budget distribution or task status of a subproject.
 3. Click the blue magnifier icon in the bottom right corner of a project
 4. Click the grey magnifier icon on the most right of the subproject you want to view
 
-![view subproject details](./../img/view_details_subproject.jpg)
+![view subproject details](./../img/view_details_subproject.png)
 
 :::note
 The subproject.viewDetails permission does not permit to view any workflowitem.
@@ -115,7 +114,7 @@ Create a new subproject defining title, comment, currency, budget, validator and
 3. Click the blue magnifier icon in the bottom right corner of a project
 4. Click the '+' button on the right to open the creation dialog
 
-![create a  subproject](./../img/subproject_create.jpg)
+![create a  subproject](./../img/subproject_create.png)
 
 5. Fill in the required fields:
 
@@ -134,7 +133,7 @@ Create a new subproject defining title, comment, currency, budget, validator and
 
 6. Add the projected budget of the organization by clicking the "+" symbol
    After this, the entered budget will appear on the screen
-   ![Add organization to subproject](./../img/subproject_add_orga.jpg)
+   ![Add organization to subproject](./../img/subproject_add_orga.png)
 7. Click the "Submit"-button to create a new subproject.
 
 :::note
@@ -196,7 +195,7 @@ Assign a User or Group to a subproject to show which User or Group is responsibl
 8. Confirming the dialog first executes all additional actions listed if there are any, then assigns the user
 9. If no addtional permissions have to be granted the user or group is assigned
 
-![change subproject assignee](./../img/change_subproject_assignee.jpg)
+![change subproject assignee](./../img/change_subproject_assignee.png)
 
 :::note
 
@@ -240,7 +239,7 @@ The history contains all activities done and directly refer to the current subpr
 5. Click the grey button below the '+' button on te right to open the right sidebar viewing the history of the current
    subproject.
 
-![show subproject history](./../img/view_subproject_history.jpg)
+![show subproject history](./../img/view_subproject_history.png)
 
 :::note
 
@@ -266,28 +265,7 @@ request.
    subproject
 6. Click on the top of the sidebar to open the expandable filter area
 
-![filter subproject history](./../img/filter_subproject_history.jpg)
-
-## View the additional data of a subproject
-
-**Description:**
-
-The additional data is a free field that can be used to extend the subproject data beyond the visible information like
-display name and budget. To view this data, an additional button was added that opens a window containing the data of
-this field.
-
-**Instructions:**
-
-1. Click the "..." button on the right side of the subproject
-2. A window appears containing the additional information on the subproject
-3. Close the window by clicking "close"
-
-![show subproject additional data](./../img/subproject_info.jpeg)
-![show subproject additional data screen](./../img/subproject_info_2.jpeg)
-
-:::note
-There is no logic to format the data.
-:::
+![filter subproject history](./../img/filter_subproject_history.png)
 
 ## [Permissions on subproject](../users-and-groups/permissions.md)
 

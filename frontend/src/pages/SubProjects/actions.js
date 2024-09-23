@@ -20,6 +20,7 @@ export const SUBPROJECT_CURRENCY = "SUBPROJECT_CURRENCY";
 export const SUBPROJECT_ORGANIZATION = "SUBPROJECT_ORGANIZATION";
 export const SUBPROJECT_VALIDATOR = "SUBPROJECT_VALIDATOR";
 export const SUBPROJECT_WORKFLOWITEMTYPE = "SUBPROJECT_WORKFLOWITEMTYPE";
+export const SUBPROJECT_WORKFLOWMODE = "SUBPROJECT_WORKFLOWMODE";
 
 export const ADD_SUBPROJECT_PROJECTED_BUDGET = "ADD_SUBPROJECT_PROJECTED_BUDGET";
 export const EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT = "EDIT_SUBPROJECT_PROJECTED_BUDGET_AMOUNT";
@@ -29,7 +30,8 @@ export const FETCH_ALL_PROJECT_DETAILS = "FETCH_ALL_PROJECT_DETAILS";
 export const FETCH_ALL_PROJECT_DETAILS_SUCCESS = "FETCH_ALL_PROJECT_DETAILS_SUCCESS";
 
 export const FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT = "FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT";
-export const FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS = "FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS";
+export const FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS =
+  "FETCH_ALL_PROJECT_DETAILS_NOT_CURRENT_PROJECT_SUCCESS";
 
 export const SHOW_PROJECT_ASSIGNEES = "SHOW_PROJECT_ASSIGNEES";
 export const HIDE_PROJECT_ASSIGNEES = "HIDE_PROJECT_ASSIGNEES";
@@ -205,7 +207,7 @@ export function assignProject(projectId, projectDisplayName, assigneeId, assigne
   };
 }
 
-export function createSubProject(
+export function createSubProject({
   projectId,
   projectDisplayName,
   subprojectDisplayName,
@@ -213,9 +215,10 @@ export function createSubProject(
   currency,
   validator,
   workflowitemType,
+  workflowMode,
   projectedBudgets,
   showLoading = false
-) {
+}) {
   return {
     type: CREATE_SUBPROJECT,
     projectId,
@@ -225,8 +228,8 @@ export function createSubProject(
     currency,
     validator,
     workflowitemType,
+    workflowMode,
     projectedBudgets,
-
     showLoading
   };
 }
@@ -275,6 +278,13 @@ export function storeFixedWorkflowitemType(workflowitemType) {
   return {
     type: SUBPROJECT_WORKFLOWITEMTYPE,
     workflowitemType
+  };
+}
+
+export function storeWorkflowMode(workflowMode) {
+  return {
+    type: SUBPROJECT_WORKFLOWMODE,
+    workflowMode
   };
 }
 

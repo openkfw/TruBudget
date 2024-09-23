@@ -207,31 +207,6 @@ describe("Workflowitem create", function () {
     cy.get("[data-test^=workflowitem-]").last().find(`[data-test=single-select]`).should("contain", "Tom House");
   });
 
-  it("When the subproject type is general, the workflowitem type is also fixed to general", function () {
-    cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
-    cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.visit(`/projects/${projectId}`);
-
-    //Create a subproject
-    cy.wait("@loadPage").get("[data-test=subproject-create-button]").click();
-    cy.get("[data-test=nameinput] input").type("Test");
-    cy.get("[data-test=dropdown-sp-dialog-currencies-click]")
-      .click()
-      .then(() => cy.get("[data-value=EUR]").click());
-    cy.get("[data-test=dropdown-types-click]").click();
-    cy.get("[data-test=submit]").click();
-    cy.get("[data-test=confirmation-dialog-confirm]").should("be.visible").click();
-
-    cy.wait("@subprojectCreated").then((interception) => {
-      cy.visit(`/projects/${projectId}/${interception.response.body.data.subproject.id}`);
-
-      //test type in workflowitem creation
-      cy.get("[data-test=createWorkflowitem]").click();
-      cy.get("[data-test=creation-dialog]").should("be.visible");
-      cy.get("[data-test=dropdown-types-click]").get("[data-disabled=true]").should("be.visible");
-    });
-  });
-
   it("When the subproject validator is set, the workflowitem assignee is fixed and the field is disabled", function () {
     const assignee = { id: "jdoe", name: "John Doe" };
     cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");

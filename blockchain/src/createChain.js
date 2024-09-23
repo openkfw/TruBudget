@@ -65,6 +65,7 @@ const startMultichainDaemon = (chainName, externalIpArg, blockNotifyArg, P2P_POR
     "-autosubscribe=streams",
     `${connectArg}`,
     `-datadir=${multichainDir}`,
+    "-rpcworkqueue=100",
   ]);
   log.debug({ args }, "Starting multichain deamon with arguments");
   const mcproc = spawn("multichaind", args);

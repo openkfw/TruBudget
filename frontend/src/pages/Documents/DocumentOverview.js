@@ -29,6 +29,9 @@ class DocumentOverview extends Component {
   constructor() {
     super();
     this.input = {};
+    this.state = {
+      validatedLinks: {}
+    };
   }
 
   hashValue = async (base64String) => {
@@ -105,6 +108,65 @@ class DocumentOverview extends Component {
     );
   };
 
+  generateLinkValidationButton = (document) => {
+    const { linkedFileHash, id } = document;
+
+    return (
+      <Button
+        {...this.getPropsForValidationButton(this.state.validatedLinks[id], !!linkedFileHash)}
+        data-test="validation-button"
+      >
+        <ValidationIcon />
+        {this.getValidationText(this.state.validatedLinks[id])}
+        <Input
+          id="docvalidation"
+          type="file"
+          className="document-validation-input"
+          onChange={(event) => {
+            if (event.target.files[0]) {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              reader.onloadend = async (e) => {
+                if (e.target.result !== undefined) {
+                  const dataBase64 = e.target.result.split(";base64,")[1];
+                  const newHash = await this.hashValue(dataBase64);
+                  this.setState((state) => ({
+                    validatedLinks: { ...state.validatedLinks, [id]: newHash === linkedFileHash }
+                  }));
+                }
+              };
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
+      </Button>
+    );
+  };
+
+  generateLinkDocToHashUploadButton = (validated, projectId, subprojectId, workflowitemId, document) => {
+    const { id, available } = document;
+
+    return (
+      <Button {...this.getPropsForValidationButton(validated, available)} data-test="validation-button">
+        <ValidationIcon />
+        {this.getValidationText(validated)}
+        <Input
+          id="docvalidation"
+          type="file"
+          className="document-validation-input"
+          onChange={(event) => {
+            if (event.target.files[0]) {
+              const file = event.target.files[0];
+              const reader = new FileReader();
+              reader.onloadend = async (e) => {};
+              reader.readAsDataURL(file);
+            }
+          }}
+        />
+      </Button>
+    );
+  };
+
   generateDocumentList = () => {
     const {
       workflowitemId,
@@ -119,13 +181,24 @@ class DocumentOverview extends Component {
     const header = this.generateDocumentListHeader();
     const rows = documents.map((document, index) => {
       let validated = undefined;
-      const { id, fileName, hash } = document;
+      const { id, fileName, hash, isValidHash, comment, lastModified } = document;
+      const fingerPrintClassName =
+        isValidHash === false ? "finger-print-container invalid-hash" : "finger-print-container";
+      const fingerPrintText = isValidHash === false ? `Invalid hash ${hash}. File corrupt.` : hash;
       validated = validatedDocuments[id];
+      const date = new Date(lastModified);
+      const formattedDate = isNaN(date.getTime()) ? "" : date.toLocaleString();
 
       return (
         <TableRow key={index + "document"}>
           <TableCell data-test="workflowitemDocumentFileName">
             <OverflowTooltip text={fileName} maxWidth="12.5rem" />
+          </TableCell>
+          <TableCell data-test="workflowitem-document-comment">
+            <OverflowTooltip text={comment} maxWidth="12.5rem" />
+          </TableCell>
+          <TableCell data-test="workflowitem-document-comment">
+            <OverflowTooltip text={formattedDate} maxWidth="12.5rem" />
           </TableCell>
           <TableCell>
             {document.link ? (
@@ -133,9 +206,9 @@ class DocumentOverview extends Component {
                 <div className="document-link">{document.link}</div>
               </Tooltip>
             ) : (
-              <div className="finger-print-container">
+              <div className={fingerPrintClassName}>
                 <FingerPrint className="finger-print" />
-                <OverflowTooltip text={hash} maxWidth="4.375rem" />
+                <OverflowTooltip text={fingerPrintText} />
               </div>
             )}
           </TableCell>
@@ -144,6 +217,8 @@ class DocumentOverview extends Component {
               {document.id &&
                 document.hash &&
                 this.generateValidationButton(validated, projectId, subprojectId, workflowitemId, document)}
+              {document.id && document.link && document.linkedFileHash && this.generateLinkValidationButton(document)}
+              {/* {document.id && document.link && this.generateLinkDocToHashUploadButton(validated, projectId, subprojectId, workflowitemId, document)} */}
               {document.id &&
                 document.hash &&
                 this.generateDownloadButton(downloadDocument, projectId, subprojectId, workflowitemId, document)}
@@ -177,6 +252,12 @@ class DocumentOverview extends Component {
         <TableRow key={"documentlistheaderrow"}>
           <TableCell>
             <Typography>{strings.common.name}</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>{strings.common.comment}</Typography>
+          </TableCell>
+          <TableCell>
+            <Typography>{strings.workflow.workflow_document_last_modified}</Typography>
           </TableCell>
           <TableCell>
             <Typography>{strings.common.hash}</Typography>

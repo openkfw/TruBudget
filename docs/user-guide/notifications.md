@@ -19,7 +19,7 @@ View all notifications the current user has.
 1. Click the button in the upper left corner to open the side-navigation-bar
 2. Click the "Notifications" menu point
 
-![view notifications](./img/view_notifications.jpg)
+![view notifications](./img/view_notifications.png)
 
 :::note
 

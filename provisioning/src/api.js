@@ -22,6 +22,13 @@ const authenticate = async (axios, userId, password) => {
   return token;
 };
 
+const listUsers = async (axios) => {
+  const response = await withRetry(() =>
+    axios.get("/user.list") 
+  );
+  return response.data.data.items;
+};
+
 const createUser = async (axios, user, organization) => {
   await withRetry(() =>
     axios.post("/global.createUser", {
@@ -31,6 +38,13 @@ const createUser = async (axios, user, organization) => {
       },
     })
   );
+};
+
+const listGroups = async (axios) => {
+  const response = await withRetry(() =>
+    axios.get("/group.list") 
+  );
+  return response.data.data.groups;
 };
 
 const createGroup = async (axios, group) => {
@@ -341,33 +355,35 @@ const setProvisionEndFlag = async (axios) => {
 };
 
 module.exports = {
-  isApiReady,
-  authenticate,
-  createUser,
-  createGroup,
   addUserToGroup,
-  removeUserFromGroup,
-  grantGlobalPermissionToUser,
-  grantAllPermissionsToUser,
-  createProject,
   assignProject,
-  closeProject,
-  createSubproject,
-  updateProject,
   assignSubproject,
-  updateSubproject,
-  closeSubproject,
-  createWorkflowitem,
-  updateWorkflowitem,
-  closeWorkflowitem,
   assignWorkflowitem,
+  authenticate,
+  closeProject,
+  closeSubproject,
+  closeWorkflowitem,
+  createGroup,
+  createProject,
+  createSubproject,
+  createUser,
+  createWorkflowitem,
   findProject,
   findSubproject,
   findWorkflowitem,
+  grantAllPermissionsToUser,
+  grantGlobalPermissionToUser,
   grantPermissions,
-  revokeProjectPermission,
+  isApiReady,
+  listGroups,
+  listUsers,
   queryApiDoc,
   queryProvisionState,
-  setProvisionStartFlag,
+  removeUserFromGroup,
+  revokeProjectPermission,
   setProvisionEndFlag,
+  setProvisionStartFlag,
+  updateProject,
+  updateSubproject,
+  updateWorkflowitem,
 };

@@ -87,21 +87,22 @@ function sourceEventFromSnapshot(
 
 export function parseSubprojectFromSnapshot(subprojectJson): Subproject.Subproject {
   return {
-    id: subprojectJson.id,
-    projectId: subprojectJson.projectId,
-    createdAt: subprojectJson.createdAt,
-    status: subprojectJson.status,
-    displayName: subprojectJson.displayName,
-    description: subprojectJson.description,
-    assignee: subprojectJson.assignee,
-    validator: subprojectJson.validator,
-    workflowitemType: subprojectJson.workflowitemType,
-    currency: subprojectJson.currency,
-    projectedBudgets: subprojectJson.projectedBudgets,
-    workflowitemOrdering: subprojectJson.workflowitemOrdering,
-    permissions: subprojectJson.permissions,
-    log: subprojectJson.log,
     additionalData: subprojectJson.additionalData,
+    assignee: subprojectJson.assignee,
+    createdAt: subprojectJson.createdAt,
+    currency: subprojectJson.currency,
+    description: subprojectJson.description,
+    displayName: subprojectJson.displayName,
+    id: subprojectJson.id,
+    log: subprojectJson.log,
+    permissions: subprojectJson.permissions,
+    projectedBudgets: subprojectJson.projectedBudgets,
+    projectId: subprojectJson.projectId,
+    status: subprojectJson.status,
+    validator: subprojectJson.validator,
+    workflowitemOrdering: subprojectJson.workflowitemOrdering,
+    workflowitemType: subprojectJson.workflowitemType,
+    workflowMode: subprojectJson.workflowMode,
   };
 }
 

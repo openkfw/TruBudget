@@ -43,7 +43,7 @@ A sample set of global permissions are:
 3. Click the lock item in line of the user that you want to grant/revoke permissions..
 4. Select the permissions that you want to grant/revoke
 
-![open global permission dialog](./../img/open_global_permission_dialog.jpg)
+![open global permission dialog](./../img/open_global_permission_dialog.png)
 
 ## Project permissions
 
@@ -133,7 +133,7 @@ These section describes all permissions related to a subproject
    users/groups
 8. If no additional permissions have to be granted the users/groups are granted/revoked all selected permissions
 
-![open subproject permission dialog](./../img/open_subproject_permission_dialog.jpg)
+![open subproject permission dialog](./../img/open_subproject_permission_dialog.png)
 
 :::note
 More information about a specific action on a subproject can be found in
@@ -208,12 +208,13 @@ These section describes all permissions related to a workflowitem
    users/groups
 9. If no additional permissions have to be granted the users/groups are granted/revoked all selected permissions
 
-![open workflowitem permission dialog](./../img/open_workflowitem_permission_dialog.jpg)
+![open workflowitem permission dialog](./../img/open_workflowitem_permission_dialog.png)
 
 :::note
 
 - More information about a specific intent can be found in the [workflowitem section](./../projects/workflowitem.md).
 - If a user has any write permission but no view permission the workflowitem is shown as redacted.
+
   :::
 
 ### View permissions

@@ -32,16 +32,37 @@
 }
 
 .document-upload-table {
-  width: 40%;
+  width: 70%;
 }
 
 .document-upload-flex-container {
   display: flex;
-  flex-direction: row;
+  flex-direction: column;
   justify-content: center;
   margin-top: 0.625rem;
 }
 
 .document-external-link-input {
   margin-right: 0.3rem;
+}
+
+.document-external-link-upload {
+  margin-top: 0.9rem;
+  width: 100%;
+
+  .document-upload-button {
+    overflow: visible;
+    margin: 1rem auto 0.6rem auto;
+  }
+
+  .document-external-link-upload-label {
+    width: 100%;
+  }
+}
+
+.paper-forms {
+  padding: 10px 25px 10px 15px;
+  margin-top: 20px;
+  justify-content: center;
+  min-width: 32ch;
 }

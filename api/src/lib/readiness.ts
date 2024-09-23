@@ -17,8 +17,21 @@ export async function isReady(multichain: MultichainClient): Promise<boolean> {
       return false;
     }
 
-    return true;
+    return isSynced(multichain);
   } catch (err) {
+    return false;
+  }
+}
+
+export async function isSynced(multichain: MultichainClient): Promise<boolean> {
+  try {
+    const rpcClient = multichain.getRpcClient();
+    const blockchainInfo = await rpcClient.invoke("getblockchaininfo");
+
+    // Check if the node is fully synchronized
+    return blockchainInfo.verificationprogress === 1;
+  } catch (err) {
+    console.error("Error checking sync status:", err);
     return false;
   }
 }

@@ -42,7 +42,7 @@ const EXTERNAL_IP = process.env.EXTERNAL_IP;
 const P2P_HOST = process.env.P2P_HOST;
 const P2P_PORT = process.env.P2P_PORT || 7447;
 
-const API_PROTO = process.env.API_PROTO || "http";
+const API_PROTOCOL = process.env.API_PROTOCOL === "https" ? "https" : "http";
 const API_HOST = process.env.API_HOST || "localhost";
 const API_PORT = process.env.API_PORT || "8080";
 const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
@@ -148,7 +148,7 @@ function initMultichain() {
     spawnProcess(() =>
       startBeta(
         CHAINNAME,
-        API_PROTO,
+        API_PROTOCOL,
         API_HOST,
         API_PORT,
         P2P_PORT,
@@ -160,7 +160,7 @@ function initMultichain() {
       ),
     );
     setTimeout(
-      () => registerNodeAtAlpha(ORGANIZATION, API_PROTO, API_HOST, API_PORT, CERT_PATH, CERT_CA_PATH, CERT_KEY_PATH),
+      () => registerNodeAtAlpha(ORGANIZATION, API_PROTOCOL, API_HOST, API_PORT, CERT_PATH, CERT_CA_PATH, CERT_KEY_PATH),
       5000,
     );
   }

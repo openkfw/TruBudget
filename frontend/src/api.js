@@ -73,7 +73,7 @@ class Api {
    */
   getExportServiceUrl = (urlSlug, devModeEnvironment = "") => {
     const baseURL = devMode
-      ? `http://localhost:${config.export.servicePort}${
+      ? `${config.export.serviceProtocol}://${config.export.serviceHost}:${config.export.servicePort}${
           !devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`
         }`
       : "/export/xlsx";
@@ -84,7 +84,7 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${config.email.servicePort}` : "/email"}/${urlSlug}`;
+  getEmailServiceUrl = (urlSlug) => `${devMode ? `${config.email.serviceProtocol}://${config.email.serviceHost}:${config.email.servicePort}` : "/email"}/${urlSlug}`;
 
   checkAccessTokenExpiration = () => {
     return localStorage.getItem("refresh_token_expiration");
@@ -263,7 +263,8 @@ class Api {
     currency,
     projectedBudgets = [],
     validatorId = undefined,
-    workflowitemType = undefined
+    workflowitemType = undefined,
+    workflowMode = "ordered"
   ) => {
     if (_isEmpty(validatorId)) validatorId = undefined;
     if (_isEmpty(workflowitemType)) workflowitemType = undefined;
@@ -275,7 +276,8 @@ class Api {
         currency,
         projectedBudgets,
         validator: validatorId,
-        workflowitemType
+        workflowitemType,
+        workflowMode
       }
     });
   };
@@ -389,6 +391,7 @@ class Api {
         if (documents[i].base64) {
           const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
           formData.append("documents", blob, documents[i].fileName);
+          formData.append(`comment_${i}`, documents[i].comment);
         }
       }
     }
@@ -646,6 +649,13 @@ class Api {
         `/workflowitem.deleteDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
       )
     );
+
+  getAppLatestVersion = () => instance.post(`/app.latestVersion`, {});
+
+  upgradeAppVersion = (version) =>
+    instance.post(`/app.upgrade`, {
+      version
+    });
 }
 
 /**

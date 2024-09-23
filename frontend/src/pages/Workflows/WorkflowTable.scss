@@ -25,13 +25,17 @@
   padding-bottom: 0.5rem;
 }
 
+div.columns:first-of-type {
+  width: 5%;
+}
+
 div.columns:nth-last-of-type(6) {
-  width: 12%;
+  width: 20%;
   padding-left: 5rem;
 }
 
 div.columns:nth-last-of-type(5) {
-  width: 13%;
+  width: 15%;
 }
 
 div.columns:nth-last-of-type(4) {
@@ -39,14 +43,14 @@ div.columns:nth-last-of-type(4) {
 }
 
 div.columns:nth-last-of-type(3) {
-  width: 16%;
+  width: 20%;
 }
 
 div.columns:nth-last-of-type(2) {
-  width: 8%;
+  width: 15%;
 }
 
 div.columns:nth-last-of-type(1) {
-  width: 8%;
+  width: 10%;
   text-align: center;
 }

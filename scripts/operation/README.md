@@ -38,7 +38,7 @@ To learn how to setup TruBudget with multiple organizations and how tho connect 
 
 ### Environment Variables
 
-The environmental variables are located in the file `.env` (in the directory `scripts/operation/`). You can change them directly. If you do not have an `.env` file, you can copy the `.env_example` file.
+The environmental variables are located in the file `.env` (in the directory `scripts/operation/`). You can change them directly. If you do not have an `.env` file, you can copy the `.env.example` file.
 
 ### Options for Setup
 

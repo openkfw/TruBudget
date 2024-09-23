@@ -29,6 +29,9 @@ const en = {
     id: "Subproject ID",
     name: "Subproject Name",
     workflowitem_type: "Workflowitem Type",
+    workflow_mode: "Workflow Mode",
+    workflow_mode_ordered: "Workflow (Ordered)",
+    workflow_mode_unordered: "Action List (Unordered)",
     validator: "Validator",
   },
 

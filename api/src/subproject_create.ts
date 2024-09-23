@@ -18,6 +18,7 @@ import WorkflowitemType, {
 import * as SubprojectCreate from "./service/subproject_create";
 import { extractUser } from "./handlerUtils";
 import Joi = require("joi");
+import WorkflowMode, { workflowModeSchema } from "./service/domain/workflow/types";
 
 /**
  * Represents the request body of the endpoint
@@ -34,6 +35,7 @@ interface RequestBodyV1 {
       assignee?: string;
       validator?: string;
       workflowitemType?: WorkflowitemType;
+      workflowMode?: WorkflowMode;
       currency: string;
       projectedBudgets?: Array<{
         organization: string;
@@ -60,6 +62,7 @@ const requestBodyV1Schema = Joi.object({
       currency: currencyCodeSchema.required(),
       projectedBudgets: projectedBudgetListSchema,
       additionalData: AdditionalData.schema,
+      workflowMode: workflowModeSchema,
     }).required(),
   }).required(),
 });
@@ -119,6 +122,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                   assignee: { type: "string", example: "aSmith" },
                   validator: { type: "string", example: "aSmith" },
                   workflowitemType: { type: "string", example: "general" },
+                  workflowMode: { type: "string", example: "ordered" },
                   currency: { type: "string", example: "EUR" },
                   projectedBudgets: {
                     type: "array",
@@ -209,6 +213,7 @@ export function addHttpHandler(
           assignee: bodyResult.data.subproject.assignee,
           validator: bodyResult.data.subproject.validator,
           workflowitemType: bodyResult.data.subproject.workflowitemType,
+          workflowMode: bodyResult.data.subproject.workflowMode,
           currency: bodyResult.data.subproject.currency,
           projectedBudgets: bodyResult.data.subproject.projectedBudgets,
           additionalData: bodyResult.data.subproject.additionalData,
