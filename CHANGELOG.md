@@ -45,12 +45,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Upgrade Multichain [#1937](https://github.com/openkfw/TruBudget/issues/1937)
 
 
-<!-- ### Deprecated -->
-
-<!-- ### Removed -->
-
 ### Fixed
-- probably frontend: External documents attached to wf item duplicated [#1977](https://github.com/openkfw/TruBudget/issues/1977)
+- External documents attached to wf item duplicated [#1977](https://github.com/openkfw/TruBudget/issues/1977)
 - E2E HTTPS between containers might not be working/terminating in case of blocked HTTP traffic, e.g. on API [#1972](https://github.com/openkfw/TruBudget/issues/1972)
 - Typo in env variable handling [#1959](https://github.com/openkfw/TruBudget/issues/1959)
 - Scripts and documentation using env_example don't work [#1956](https://github.com/openkfw/TruBudget/issues/1956)
@@ -59,7 +55,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
   
 ## [2.14.0] - 2024-08-12
 
-<!-- ## Unreleased -->
 
 ### Added
   
