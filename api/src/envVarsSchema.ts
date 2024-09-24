@@ -43,6 +43,12 @@ export const envVarsSchema = Joi.object({
     .note(
       "The Port of the blockchain where the server is available for incoming http connections (e.g. readiness, versions, backup and restore)",
     ),
+  MULTICHAIN_PROTOCOL: Joi.string()
+    .default("http")
+    .allow("http", "https")
+    .note(
+      "The protocol used to expose the multichain daemon of your Trubudget blockchain installation(bc). The protocol used to connect to the multichain daemon(api). This will be used internally for the communication between the API and the multichain daemon.",
+    ),
   MULTICHAIN_RPC_USER: Joi.string()
     .default("multichainrpc")
     .note("The user used to connect to the multichain daemon."),
@@ -55,6 +61,12 @@ export const envVarsSchema = Joi.object({
     .default(8085)
     .note(
       "The port used to expose the multichain daemon of your Trubudget blockchain installation(bc). The port used to connect to the multichain daemon(api). This will be used internally for the communication between the API and the multichain daemon.",
+    ),
+  BLOCKCHAIN_PROTOCOL: Joi.string()
+    .default("http")
+    .allow("http", "https")
+    .note(
+      "The Protocol of the blockchain where the server is available for incoming http connections.",
     ),
   SWAGGER_BASEPATH: Joi.string()
     .example("/")
@@ -98,6 +110,10 @@ export const envVarsSchema = Joi.object({
     ),
   STORAGE_SERVICE_HOST: Joi.string().default("localhost").note("IP of connected storage service"),
   STORAGE_SERVICE_PORT: Joi.number().default(8090).note("Port of connected storage service"),
+  STORAGE_SERVICE_PROTOCOL: Joi.string()
+    .default("http")
+    .allow("http", "https")
+    .note("Protocol of connected storage service."),
   STORAGE_SERVICE_EXTERNAL_URL: Joi.string()
     .default("")
     .when("DOCUMENT_FEATURE_ENABLED", {
@@ -107,6 +123,10 @@ export const envVarsSchema = Joi.object({
     .note("IP and port of own connected storage service accessible externally"),
   EMAIL_HOST: Joi.string().default("localhost"),
   EMAIL_PORT: Joi.number().default(8089),
+  EMAIL_PROTOCOL: Joi.string()
+    .default("http")
+    .allow("http", "https")
+    .note("Protocol of connected storage service."),
   ACCESS_CONTROL_ALLOW_ORIGIN: Joi.string()
     .default("*")
     .note(
