@@ -1,5 +1,4 @@
 import * as Joi from "joi";
-import { writeFileSync } from "fs";
 
 interface EnvVariable {
   name: string;
@@ -19,7 +18,8 @@ export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
     Object.keys(schemaDescribe.keys).forEach((key) => {
       const item = schemaDescribe.keys[key];
 
-      const isRequired = item.flags && item.flags.presence === "required" ? "yes" : "no";
+      let isRequired = item.flags && item.flags.presence === "required" ? "yes" : "no";
+      
       const defaultValue = item.flags && item.flags.default ? item.flags.default : "-";
       const description = item.notes && item.notes.length ? item.notes.join(" ") : "-";
       const additionalEntries: string[] = [];
@@ -30,6 +30,17 @@ export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
       const deprecated = item.notes && item.notes.find((note) => note === "deprecated");
       const examples = item.examples;
       const valid = item.allow;
+
+      if (item.whens) {
+        item.whens.forEach(when => {
+          // conditional required
+        if (isRequired !== "yes" && when.then?.flags?.presence === "required") {
+          const relationSign = when.is?.flags?.only === true && when.is?.flags?.presence === "required" ? "=" : " ";
+          isRequired = `yes (if ${when.ref?.path?.[0]}${relationSign}${when.is?.allow?.[1]})`
+        }
+        });
+        
+      }
 
       if (min) {
         additionalEntries.push(`Minimal value: ${min?.args?.limit}.`);
@@ -62,24 +73,43 @@ export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
 
 // Generate Markdown table
 const generateMarkdown = (envVariables: EnvVariable[]) => {
-  const header =
-    "| Env Variable name | Required | Default Value | Description |\n|------------------|----------------------|---------------|-------------|\n";
-  const rows = envVariables
-    .map(
-      (varInfo: EnvVariable) =>
-        `| **${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""} | ${
+  const table: string[][] = [];
+  table.push(["Env Variable name", "Required", "Default Value", "Description"]);
+  table.push(["---","---","---","---"]);
+  envVariables
+    .forEach(
+      (varInfo: EnvVariable) => {
+        table.push([`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${
           varInfo.required
-        } | ${varInfo.default} | ${varInfo.description} |`,
-    )
-    .join("\n");
+        }`, `${varInfo.default}`, `${varInfo.description}`])
+      });
 
-  return header + rows;
+  // get max column length for each column
+  const tableColumnsLength: number[] = [];
+  table.forEach((row) => row.forEach((column, columnIndex) => {
+    if (!tableColumnsLength[columnIndex] || tableColumnsLength[columnIndex] < column.length) {
+      tableColumnsLength[columnIndex] = column.length;
+    }
+  }));
+
+  const finalMarkdownTable = table.map(row => {
+    const finalMarkdownRow = row.map((column, columnIndex) => {
+      if (column === "---") {
+        return "-".repeat(tableColumnsLength[columnIndex]);
+      }
+      return column + " ".repeat(tableColumnsLength[columnIndex] - column.length);
+    });
+
+    return `| ${finalMarkdownRow.join(" | ")} |`;
+  });
+
+  return finalMarkdownTable.join("\n");
 };
 
-export const updateMarkdownFile = (envVarsSchema) => {
+export const generateMarkdownFile = (envVarsSchema) => {
   const schema = extractSchemaInfo(envVarsSchema);
   const mdTable = generateMarkdown(schema);
 
-  writeFileSync("../../environment-variables2.md", mdTable, "utf-8");
+  return mdTable;
 };
 

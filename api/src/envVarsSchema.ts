@@ -2,6 +2,10 @@ import * as Joi from "joi";
 import { randomString } from "./service/hash";
 
 export const envVarsSchema = Joi.object({
+  LOG_LEVEL: Joi.string()
+    .default("info")
+    .allow("trace", "debug", "info", "warn", "error", "fatal")
+    .note("Defines the log output."),
   ORGANIZATION: Joi.string()
     .min(1)
     .max(100)
@@ -82,37 +86,135 @@ export const envVarsSchema = Joi.object({
     .note(
       "If JWT_ALGORITHM is set to `RS256`, this is required and holds BASE64 encoded PEM encoded public key for RSA.",
     ),
-  DOCUMENT_FEATURE_ENABLED: Joi.boolean().default(false),
-  DOCUMENT_EXTERNAL_LINKS_ENABLED: Joi.boolean().default(false),
-  STORAGE_SERVICE_HOST: Joi.string().default("localhost"),
-  STORAGE_SERVICE_PORT: Joi.number().default(8090),
-  STORAGE_SERVICE_EXTERNAL_URL: Joi.string().default("").when("DOCUMENT_FEATURE_ENABLED", {
-    is: true,
-    then: Joi.required(),
-  }),
+  DOCUMENT_FEATURE_ENABLED: Joi.boolean()
+    .default(false)
+    .note(
+      "If true, all uploaded documents are stored using trubudget's storage-service. If false, the document feature of TruBudget is disabled, and trying to upload a document will result in an error.",
+    ),
+  DOCUMENT_EXTERNAL_LINKS_ENABLED: Joi.boolean()
+    .default(false)
+    .note(
+      'If true, it is possible to use external documents links also without TruBudget\'s storage-service. If false, the external documents links feature of TruBudget is still possible to use in case DOCUMENT_FEATURE_ENABLED equals "true".',
+    ),
+  STORAGE_SERVICE_HOST: Joi.string().default("localhost").note("IP of connected storage service"),
+  STORAGE_SERVICE_PORT: Joi.number().default(8090).note("Port of connected storage service"),
+  STORAGE_SERVICE_EXTERNAL_URL: Joi.string()
+    .default("")
+    .when("DOCUMENT_FEATURE_ENABLED", {
+      is: true,
+      then: Joi.required(),
+    })
+    .note("IP and port of own connected storage service accessible externally"),
   EMAIL_HOST: Joi.string().default("localhost"),
   EMAIL_PORT: Joi.number().default(8089),
-  ACCESS_CONTROL_ALLOW_ORIGIN: Joi.string().default("*"),
-  NODE_ENV: Joi.string().default("production"),
-  ENCRYPTION_PASSWORD: Joi.string(),
-  SIGNING_METHOD: Joi.string().default("node"),
-  RATE_LIMIT: Joi.number().allow("").empty(""),
-  AUTHPROXY_ENABLED: Joi.boolean().default(false),
-  AUTHPROXY_JWS_SIGNATURE: Joi.string(),
+  ACCESS_CONTROL_ALLOW_ORIGIN: Joi.string()
+    .default("*")
+    .note(
+      "Since the service uses CORS, the domain by which it can be called needs to be set. Setting this value to `*` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).",
+    ),
+  NODE_ENV: Joi.string()
+    .default("production")
+    .allow("production", "development", "testing")
+    .note(
+      "If set to `development` api will allow any string as password. If set to `production` passwords must satisfy safePasswordSchema, see lib/joiValidation-.ts & -.spec.ts files",
+    ),
+  ENCRYPTION_PASSWORD: Joi.string().note(
+    "If set, all data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_PASSWORD",
+  ),
+  SIGNING_METHOD: Joi.string()
+    .default("node")
+    .allow("node", "user")
+    .note(
+      "Possible signing methods are: `node` and `user`. Transactions on the chain will be signed using either the address of the node or the address of the specific user publishing that transaction.",
+    ),
+  RATE_LIMIT: Joi.number()
+    .allow("")
+    .empty("")
+    .note(
+      "If set, API will limit the number of requests from any individual IP address to the set number per minute. Can be set to any `number`, but shouldn't be set too low.",
+    ),
+  AUTHPROXY_ENABLED: Joi.boolean()
+    .default(false)
+    .note("Enables logging in using the authorization token from authentication proxy"),
+  AUTHPROXY_JWS_SIGNATURE: Joi.string()
+    .when("AUTHPROXY_ENABLED", {
+      is: true,
+      then: Joi.required(),
+    })
+    .note("secret/public key/certificate for verifying auth proxy token signature"),
   DB_TYPE: Joi.string().default("pg"),
   SQL_DEBUG: Joi.boolean().default(false),
-  API_DB_USER: Joi.string().default("postgres"),
-  API_DB_PASSWORD: Joi.string().default("test"),
-  API_DB_HOST: Joi.string().default("localhost"),
-  API_DB_NAME: Joi.string().default("trubudget_email_service"),
-  API_DB_PORT: Joi.number().default(5432),
-  API_DB_SSL: Joi.boolean().default(false),
-  API_DB_SCHEMA: Joi.string().default("public"),
-  API_REFRESH_TOKENS_TABLE: Joi.string().default("refresh_token"),
-  REFRESH_TOKEN_STORAGE: Joi.string().allow("db", "memory"),
+  API_DB_USER: Joi.string()
+    .default("postgres")
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .note("Database user for database connection, e.g. postgres"),
+  API_DB_PASSWORD: Joi.string()
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .default("test")
+    .note("Database password for database connection"),
+  API_DB_HOST: Joi.string()
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .default("localhost")
+    .note("Database host"),
+  API_DB_NAME: Joi.string()
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .default("trubudget_email_service")
+    .example("trubudget-db")
+    .note("Name of the used database"),
+  API_DB_PORT: Joi.number()
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .default(5432)
+    .note("Database port, e.g. 5432"),
+  API_DB_SSL: Joi.boolean()
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .default(false)
+    .note('Database SSL connection. Allowed values: "true" or "false".'),
+  API_DB_SCHEMA: Joi.string()
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .default("public")
+    .note('Database schema, e.g. "public".'),
+  API_REFRESH_TOKENS_TABLE: Joi.string()
+    .default("refresh_token")
+    .when("REFRESH_TOKEN_STORAGE", {
+      is: "db",
+      then: Joi.required(),
+    })
+    .note('Name of table where refresh tokens will be stored, e.g. "refresh_token".'),
+  REFRESH_TOKEN_STORAGE: Joi.string()
+    .allow("db", "memory", "")
+    .note(
+      'Determining the type of storage for refresh tokens. Allowed values are "db" or "memory" or blank to disable refresh token functionality.',
+    ),
   SNAPSHOT_EVENT_INTERVAL: Joi.number().default(3),
-  SILENCE_LOGGING_ON_FREQUENT_ROUTES: Joi.boolean().default(false),
-  APPLICATIONINSIGHTS_CONNECTION_STRING: Joi.string().allow(""),
+  SILENCE_LOGGING_ON_FREQUENT_ROUTES: Joi.boolean()
+    .default(false)
+    .note(
+      'Set to "true" if you want to hide route logging on frequent and technical endpoints like `/readiness`, `/version`, etc.',
+    ),
+  APPLICATIONINSIGHTS_CONNECTION_STRING: Joi.string()
+    .allow("")
+    .note("Azure Application Insights Connection String"),
 })
   .unknown()
   .required();

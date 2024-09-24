@@ -1,7 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateMarkdownFile = exports.extractSchemaInfo = void 0;
-const fs_1 = require("fs");
+exports.generateMarkdownFile = exports.extractSchemaInfo = void 0;
 // Helper function to extract Joi schema information
 const extractSchemaInfo = (schema) => {
     const envVariables = [];
@@ -11,7 +10,7 @@ const extractSchemaInfo = (schema) => {
         Object.keys(schemaDescribe.keys).forEach((key) => {
             var _a, _b;
             const item = schemaDescribe.keys[key];
-            const isRequired = item.flags && item.flags.presence === "required" ? "yes" : "no";
+            let isRequired = item.flags && item.flags.presence === "required" ? "yes" : "no";
             const defaultValue = item.flags && item.flags.default ? item.flags.default : "-";
             const description = item.notes && item.notes.length ? item.notes.join(" ") : "-";
             const additionalEntries = [];
@@ -21,6 +20,16 @@ const extractSchemaInfo = (schema) => {
             const deprecated = item.notes && item.notes.find((note) => note === "deprecated");
             const examples = item.examples;
             const valid = item.allow;
+            if (item.whens) {
+                item.whens.forEach(when => {
+                    var _a, _b, _c, _d, _e, _f, _g, _h, _j, _k;
+                    // conditional required
+                    if (isRequired !== "yes" && ((_b = (_a = when.then) === null || _a === void 0 ? void 0 : _a.flags) === null || _b === void 0 ? void 0 : _b.presence) === "required") {
+                        const relationSign = ((_d = (_c = when.is) === null || _c === void 0 ? void 0 : _c.flags) === null || _d === void 0 ? void 0 : _d.only) === true && ((_f = (_e = when.is) === null || _e === void 0 ? void 0 : _e.flags) === null || _f === void 0 ? void 0 : _f.presence) === "required" ? "=" : " ";
+                        isRequired = `yes (if ${(_h = (_g = when.ref) === null || _g === void 0 ? void 0 : _g.path) === null || _h === void 0 ? void 0 : _h[0]}${relationSign}${(_k = (_j = when.is) === null || _j === void 0 ? void 0 : _j.allow) === null || _k === void 0 ? void 0 : _k[1]})`;
+                    }
+                });
+            }
             if (min) {
                 additionalEntries.push(`Minimal value: ${(_a = min === null || min === void 0 ? void 0 : min.args) === null || _a === void 0 ? void 0 : _a.limit}.`);
             }
@@ -50,16 +59,35 @@ const extractSchemaInfo = (schema) => {
 exports.extractSchemaInfo = extractSchemaInfo;
 // Generate Markdown table
 const generateMarkdown = (envVariables) => {
-    const header = "| Env Variable name | Required | Default Value | Description |\n|------------------|----------------------|---------------|-------------|\n";
-    const rows = envVariables
-        .map((varInfo) => `| **${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""} | ${varInfo.required} | ${varInfo.default} | ${varInfo.description} |`)
-        .join("\n");
-    return header + rows;
+    const table = [];
+    table.push(["Env Variable name", "Required", "Default Value", "Description"]);
+    table.push(["---", "---", "---", "---"]);
+    envVariables
+        .forEach((varInfo) => {
+        table.push([`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${varInfo.required}`, `${varInfo.default}`, `${varInfo.description}`]);
+    });
+    // get max column length for each column
+    const tableColumnsLength = [];
+    table.forEach((row) => row.forEach((column, columnIndex) => {
+        if (!tableColumnsLength[columnIndex] || tableColumnsLength[columnIndex] < column.length) {
+            tableColumnsLength[columnIndex] = column.length;
+        }
+    }));
+    const finalMarkdownTable = table.map(row => {
+        const finalMarkdownRow = row.map((column, columnIndex) => {
+            if (column === "---") {
+                return "-".repeat(tableColumnsLength[columnIndex]);
+            }
+            return column + " ".repeat(tableColumnsLength[columnIndex] - column.length);
+        });
+        return `| ${finalMarkdownRow.join(" | ")} |`;
+    });
+    return finalMarkdownTable.join("\n");
 };
-const updateMarkdownFile = (envVarsSchema) => {
+const generateMarkdownFile = (envVarsSchema) => {
     const schema = (0, exports.extractSchemaInfo)(envVarsSchema);
     const mdTable = generateMarkdown(schema);
-    (0, fs_1.writeFileSync)("../../environment-variables2.md", mdTable, "utf-8");
+    return mdTable;
 };
-exports.updateMarkdownFile = updateMarkdownFile;
+exports.generateMarkdownFile = generateMarkdownFile;
 //# sourceMappingURL=index.js.map
