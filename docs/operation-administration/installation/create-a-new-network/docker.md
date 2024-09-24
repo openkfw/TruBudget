@@ -85,12 +85,12 @@ can change it in the docker compose file `scripts/operation/docker-compose.yml`.
 
 The next step is to set all required environment properties, otherwise Docker will not receive the required parameters
 to start the deployment.
-If you want to start with the standard configuration we recommend copying the `.env_example` file and rename it
+If you want to start with the standard configuration we recommend copying the `.env.example` file and rename it
 to `.env` in the `TruBudget` base folder:
 
 ```bash
 cd scripts/operation/
-cp .env_example .env
+cp .env.example .env
 ```
 
 The `.env` in scripts/operation/ can be edited directly to fit your needs.

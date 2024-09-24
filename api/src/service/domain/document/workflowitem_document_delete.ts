@@ -7,14 +7,21 @@ import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemUpdated from "../workflow/workflowitem_updated";
-import { DocumentOrExternalLinkReference, ExternalLinkReference, StoredDocument } from "./document";
+import {
+  DocumentOrExternalLinkReference,
+  ExternalLinkReference,
+  StoredDocument,
+  UploadedDocument,
+} from "./document";
 import * as DocumentDeleted from "./document_deleted";
 import * as DocumentShared from "./document_shared";
 import VError = require("verror");
 import { BusinessEvent } from "../business_event";
 import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
 
-function isDocumentLink(obj: DocumentOrExternalLinkReference): obj is ExternalLinkReference {
+export function isDocumentLink(
+  obj: DocumentOrExternalLinkReference | UploadedDocument,
+): obj is ExternalLinkReference {
   return "link" in obj;
 }
 

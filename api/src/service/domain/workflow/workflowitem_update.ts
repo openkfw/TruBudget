@@ -26,6 +26,8 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
+import { File } from "../document/document_upload";
+import { isDocumentLink } from "../document/workflowitem_document_delete";
 
 export interface RequestData {
   displayName?: string;
@@ -51,11 +53,7 @@ interface Repository {
     event: BusinessEvent,
     workflowitem: Workflowitem.Workflowitem,
   ): Result.Type<BusinessEvent[]>;
-  uploadDocumentToStorageService(
-    fileName: string,
-    documentBase64: string,
-    id: string,
-  ): Promise<Result.Type<BusinessEvent[]>>;
+  uploadDocumentToStorageService(file: File): Promise<Result.Type<BusinessEvent[]>>;
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
 }
 
@@ -107,13 +105,14 @@ export async function updateWorkflowitem(
       // preparation for workflowitem_updated event
       for (const doc of modification.documents || []) {
         doc.id = generateUniqueDocId(existingDocuments);
-        if ("base64" in doc) {
-          const hashedDocumentResult = await hashDocument(doc);
+        if (!isDocumentLink(doc)) {
+          const hashedDocumentResult = await hashDocument(doc as UploadedDocument);
           if (Result.isErr(hashedDocumentResult)) {
             return new VError(hashedDocumentResult, `cannot hash document ${doc.id} `);
           }
           documents.push(hashedDocumentResult);
         } else {
+          doc.lastModified = new Date().toISOString();
           documents.push(doc);
         }
       }
@@ -125,7 +124,12 @@ export async function updateWorkflowitem(
 
       const documentUploadedEventsResults: Result.Type<BusinessEvent[]>[] = await Promise.all(
         onlyDocuments.map(async (d) => {
-          return repository.uploadDocumentToStorageService(d.fileName || "", d.base64, d.id);
+          return repository.uploadDocumentToStorageService({
+            id: d.id,
+            fileName: d.fileName || "",
+            documentBase64: d.base64,
+            comment: d.comment,
+          });
         }),
       );
       for (const result of documentUploadedEventsResults) {

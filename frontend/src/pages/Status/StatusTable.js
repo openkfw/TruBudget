@@ -1,8 +1,21 @@
-import React from "react";
+import React, { useCallback, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
-import { CircularProgress, Paper, Table, TableBody, TableCell, TableHead, TableRow, Typography } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableRow,
+  Typography
+} from "@mui/material";
 
 import strings from "../../localizeStrings";
+
+import { fetchAppLatestVersion, upgradeAppToLatestVersion } from "./actions";
 
 import "./StatusTable.scss";
 
@@ -60,6 +73,30 @@ function renderCircularProgressRow(service) {
   );
 }
 
+function isVersionHigher(version1, version2) {
+  // check if versions are in correct format using regex
+  if (!version1 || !version2 || !/^v*\d+\.\d+\.\d+$/.test(version1) || !/^v*\d+\.\d+\.\d+$/.test(version2)) {
+    return false;
+  }
+
+  // Split the version strings into arrays of integers
+  const v1 = version1.replace("v", "").split(".").map(Number);
+  const v2 = version2.replace("v", "").split(".").map(Number);
+
+  // Compare major, minor, and patch versions
+  for (let i = 0; i < 3; i++) {
+    if (v1[i] > v2[i]) {
+      return true;
+    } else if (v1[i] < v2[i]) {
+      return false;
+    }
+    // If they're equal, continue to the next component
+  }
+
+  // If all components are equal, return false
+  return false;
+}
+
 const StatusTable = (props) => {
   const {
     versions,
@@ -69,6 +106,22 @@ const StatusTable = (props) => {
     isFetchingEmailVersion,
     isFetchingExportVersion
   } = props;
+
+  const dispatch = useDispatch();
+
+  const latestVersion = useSelector((state) => state.getIn(["status", "latestVersion"]));
+  const currentApiVersion = useSelector((state) => state.getIn(["status", "versions", "api", "release"]));
+  const userName = useSelector((state) => state.getIn(["login", "id"]));
+
+  useEffect(() => {
+    if (userName === "root") {
+      dispatch(fetchAppLatestVersion());
+    }
+  }, [dispatch, userName]);
+
+  const upgradeApp = useCallback(() => {
+    dispatch(upgradeAppToLatestVersion(latestVersion));
+  }, [dispatch, latestVersion]);
 
   const isFetchingVersion = (serviceName) => {
     const standardServices = ["frontend", "api", "blockchain", "multichain"];
@@ -136,6 +189,17 @@ const StatusTable = (props) => {
   return (
     <div data-test="status-dashboard" className="table-container">
       <div className="custom-width">
+        {latestVersion && isVersionHigher(latestVersion, currentApiVersion) && (
+          <div>
+            <p>
+              New version of TruBudget is available. Backup your data and click{" "}
+              <Button onClick={upgradeApp} variant="contained">
+                Upgrade to {latestVersion}
+              </Button>
+            </p>
+            <p>This will turn off, upgrade and restart the application.</p>
+          </div>
+        )}
         <Paper>
           <Table>
             <TableHead>

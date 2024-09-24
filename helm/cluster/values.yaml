@@ -49,7 +49,7 @@ blockchain-prod-2:
       CHAINNAME: TrubudgetChain
       MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       P2P_HOST: blockchain-prod-1
-      API_PROTO: http
+      API_PROTOCOL: http
       API_HOST: api-prod-1
   persistentVolume:
     name: blockchain-prod-2-data
@@ -86,7 +86,7 @@ blockchain-test-2:
       CHAINNAME: TrubudgetChain
       MULTICHAIN_RPC_PASSWORD: s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j
       P2P_HOST: blockchain-test-1
-      API_PROTO: http
+      API_PROTOCOL: http
       API_HOST: api-test-1
   persistentVolume:
     name: blockchain-test-2-data

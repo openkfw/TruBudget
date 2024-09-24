@@ -81,7 +81,7 @@ Navigate to the `e2e-test` folder and generate the `.env` file. If needed modify
 
 ```bash
 cd e2e-test
-cp .env_example .env
+cp .env.example .env
 ```
 
 ### Start E2E-Tests via Cypress

@@ -65,7 +65,6 @@ const displaySubprojectBudget = (budgets) => {
               currencyCode,
               true
             )}
-            f
           />
         </Tooltip>
       </div>

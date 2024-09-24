@@ -63,6 +63,7 @@ async function setDocumentAvailability(
         ...doc,
         available: Result.isOk(result),
         isValidHash: isIdentical,
+        lastModified: result.lastModified,
       });
     } else {
       docsWithAvailability.push({ ...doc, available: Result.isOk(result) });

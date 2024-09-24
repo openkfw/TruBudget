@@ -40,6 +40,12 @@ orange=$(tput setaf 214)
 red=$(tput setaf 196)
 colorReset=$(tput sgr0)
 
+# Find correct docker command
+dockerCmd=$(which docker)
+if [ -z "$dockerCmd" ]; then
+    dockerCmd="$1"
+fi
+
 echo "INFO: Building, Starting TruBudget for Operation"
 
 # Set default options
@@ -121,7 +127,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker compose -p trubudget-operation down
+        $dockerCmd compose -p trubudget-operation down
         exit 1
         ;;
 
@@ -144,6 +150,10 @@ while [ "$1" != "" ]; do
         ;;
 
     *) # unknown option
+        if [ $1 == $dockerCmd ]; then
+            shift
+            continue
+        fi
         echo "unknown argument: " $1
         echo "Exiting ..."
         exit 1
@@ -173,10 +183,10 @@ echo "INFO: Current script directory: $SCRIPT_DIR"
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
     echo "${orange}WARNING: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
-    echo -n "${orange}WARNING: Do you want to create .env and copy the .env_example file to .env now? (y/N)${colorReset}"
+    echo -n "${orange}WARNING: Do you want to create .env and copy the .env.example file to .env now? (y/N)${colorReset}"
     read answer
     if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        cp ${SCRIPT_DIR}/.env_example ${SCRIPT_DIR}/.env
+        cp ${SCRIPT_DIR}/.env.example ${SCRIPT_DIR}/.env
     else
         echo "${red}ERROR: No .env file in directory ${SCRIPT_DIR} found, script will exit ... ${colorReset}"
         exit 1
@@ -258,7 +268,7 @@ else
     fi
 fi
 
-COMPOSE="docker compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
+COMPOSE="$dockerCmd compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."

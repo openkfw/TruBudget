@@ -13,7 +13,7 @@ const e2eTestSources = danger.git.fileMatch("e2e-test/cypress/**/*");
 const excelExportSources = danger.git.fileMatch("excel-export/src/**/*");
 
 const envExampleFiles = danger.git.modified_files.filter((path) =>
-  path.endsWith(".env_example")
+  path.endsWith(".env.example")
 );
 envExampleFiles.forEach((file) =>
   getChanges(file).then((changes) => {
@@ -33,11 +33,11 @@ envExampleFiles.forEach((file) =>
       return res;
     }, []);
     if (!rootSecrets.every((val, i, arr) => val === "root-secret")) {
-      warn("Make sure the Root-Secret is the same in all .env_example files");
+      warn("Make sure the Root-Secret is the same in all .env.example files");
     }
     if (!orgaVaultSecrets.every((val, i, arr) => val === "secret")) {
       warn(
-        "Make sure the Organization-Vault-Secret is the same in all .env_example files"
+        "Make sure the Organization-Vault-Secret is the same in all .env.example files"
       );
     }
   })

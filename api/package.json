@@ -1,6 +1,6 @@
 {
   "name": "trubudget-api",
-  "version": "2.14.0",
+  "version": "2.15.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -153,6 +153,7 @@
   },
   "overrides": {
     "postcss": "^8.4.31",
-    "follow-redirects": "^1.15.6"
+    "follow-redirects": "^1.15.6",
+    "find-my-way": "^8.2.2"
   }
 }

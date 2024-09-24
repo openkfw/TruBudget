@@ -1,4 +1,3 @@
-
 import { envVarsSchema } from "envVarsSchema";
 
 export interface JwtConfig {
@@ -18,9 +17,11 @@ interface ProcessEnvVars {
   ROOT_SECRET: string;
   MULTICHAIN_RPC_HOST: string;
   MULTICHAIN_RPC_PORT: string;
+  MULTICHAIN_RPC_PROTOCOL: "http" | "https";
   MULTICHAIN_RPC_USER: string;
   MULTICHAIN_RPC_PASSWORD: string;
   BLOCKCHAIN_PORT: string;
+  BLOCKCHAIN_PROTOCOL: "http" | "https";
   JWT_ALGORITHM: string;
   JWT_SECRET: string;
   JWT_PUBLIC_KEY: string;
@@ -30,9 +31,11 @@ interface ProcessEnvVars {
   DOCUMENT_EXTERNAL_LINKS_ENABLED: string;
   STORAGE_SERVICE_HOST: string;
   STORAGE_SERVICE_PORT: string;
+  STORAGE_SERVICE_PROTOCOL: "http" | "https";
   STORAGE_SERVICE_EXTERNAL_URL: string;
   EMAIL_HOST: string;
   EMAIL_PORT: string;
+  EMAIL_PROTOCOL: "http" | "https";
   ACCESS_CONTROL_ALLOW_ORIGIN: string;
   NODE_ENV: string;
   ENCRYPTION_PASSWORD: string;
@@ -76,6 +79,7 @@ interface Config {
   rpc: {
     host: string;
     port: number;
+    protocol: "http" | "https";
     user: string;
     password: string;
   };
@@ -84,8 +88,10 @@ interface Config {
   blockchain: {
     host: string;
     port: number;
+    protocol: "http" | "https";
   };
   jwt: JwtConfig;
+  secureCookie: boolean;
   npmPackageVersion: string;
   // Continues Integration
   ciCommitSha: string;
@@ -95,11 +101,13 @@ interface Config {
   storageService: {
     host: string;
     port: number;
+    protocol: "http" | "https";
     externalUrl: string;
   };
   emailService: {
     host: string;
     port: number;
+    protocol: "http" | "https";
   };
   encryptionPassword: string | undefined;
   signingMethod: string;
@@ -121,8 +129,6 @@ interface Config {
   silenceLoggingOnFrequentRoutes: boolean;
 }
 
-
-
 const { error, value: envVars } = envVarsSchema.validate(process.env);
 if (error) {
   throw new Error(`Config validation error: ${error.message}`);
@@ -137,6 +143,7 @@ export const config: Config = {
   rpc: {
     host: envVars.MULTICHAIN_RPC_HOST,
     port: envVars.MULTICHAIN_RPC_PORT,
+    protocol: envVars.MULTICHAIN_RPC_PROTOCOL,
     user: envVars.MULTICHAIN_RPC_USER,
     password: envVars.MULTICHAIN_RPC_PASSWORD,
   },
@@ -145,12 +152,14 @@ export const config: Config = {
   blockchain: {
     host: envVars.MULTICHAIN_RPC_HOST,
     port: envVars.BLOCKCHAIN_PORT,
+    protocol: envVars.BLOCKCHAIN_PROTOCOL,
   },
   jwt: {
     secretOrPrivateKey: envVars.JWT_SECRET,
     publicKey: envVars.JWT_PUBLIC_KEY,
     algorithm: envVars.JWT_ALGORITHM,
   },
+  secureCookie: process.env.API_SECURE_COOKIE === "true" || process.env.NODE_ENV === "production",
   npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration
   ciCommitSha: process.env.CI_COMMIT_SHA || "",
@@ -160,11 +169,13 @@ export const config: Config = {
   storageService: {
     host: envVars.STORAGE_SERVICE_HOST,
     port: envVars.STORAGE_SERVICE_PORT,
+    protocol: envVars.STORAGE_SERVICE_PROTOCOL,
     externalUrl: envVars.STORAGE_SERVICE_EXTERNAL_URL,
   },
   emailService: {
     host: envVars.EMAIL_HOST,
     port: envVars.EMAIL_PORT,
+    protocol: envVars.EMAIL_PROTOCOL,
   },
   encryptionPassword: envVars.ENCRYPTION_PASSWORD,
   signingMethod: envVars.SIGNING_METHOD,

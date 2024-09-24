@@ -14,11 +14,15 @@ const config = {
   },
   email: {
     isEnabled: process.env.REACT_APP_EMAIL_SERVICE_ENABLED === "true" || false,
-    servicePort: process.env.EMAIL_PORT || "8890"
+    serviceHost: process.env.EMAIL_HOST || "localhost",
+    servicePort: process.env.EMAIL_PORT || "8890",
+    serviceProtocol: process.env.EMAIL_PROTOCOL === "https" ? "https" : "http"
   },
   export: {
     isEnabled: process.env.REACT_APP_EXPORT_SERVICE_ENABLED === "true" || false,
-    servicePort: process.env.EXPORT_PORT || "8888"
+    serviceHost: process.env.EXPORT_HOST || "localhost",
+    servicePort: process.env.EXPORT_PORT || "8888",
+    serviceProtocol: process.env.EXPORT_PROTOCOL === "https" ? "https" : "http"
   },
   authProxy: {
     enabled: process.env.REACT_APP_AUTHPROXY_ENABLED === "true" || false,
