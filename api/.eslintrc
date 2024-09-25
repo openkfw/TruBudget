@@ -115,6 +115,12 @@
           "caseInsensitive": true
         }
       }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": ["^[a-zA-Z]"]
+      }
     ]
   }
 }
