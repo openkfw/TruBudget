@@ -30,6 +30,7 @@ export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
       const deprecated = item.notes && item.notes.find((note) => note === "deprecated");
       const examples = item.examples;
       const valid = item.allow;
+      const port = item.rules && item.rules.find((rule) => rule.name === "port");
 
       if (item.whens) {
         item.whens.forEach(when => {
@@ -56,6 +57,9 @@ export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
       }
       if (valid) {
         additionalEntries.push(`Allowed values: ${valid.join(", ")}.`);
+      }
+      if (port) {
+        additionalEntries.push("Value is a port with minimal value 0 and maximal value 65535");
       }
 
       envVariables.push({

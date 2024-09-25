@@ -1,17 +1,17 @@
 import { expect } from "chai";
-import { safeIdSchema, safePasswordSchema, safeStringSchema } from "./joiValidation";
+import { safeIdSchema, safePasswordSchemaProduction, safeStringSchema } from "./joiValidation";
 import Joi = require("joi");
 
 const safeStringSchemaSchema = Joi.alternatives([safeStringSchema]);
 const safeIdSchemaSchema = Joi.alternatives([safeIdSchema]);
-const safePasswordSchemaSchema = Joi.alternatives([safePasswordSchema]);
+const safePasswordSchemaSchemaProduction = Joi.alternatives([safePasswordSchemaProduction]);
 
 describe("JoiValidation: Password", () => {
   it("Should accept user creation with a correct Password", async () => {
     const pass = "Test1234";
     const controlValue = "Test1234";
 
-    const { value, error } = safePasswordSchemaSchema.validate(pass);
+    const { value, error } = safePasswordSchemaSchemaProduction.validate(pass);
 
     expect(value).to.equal(controlValue);
     expect(error).to.equal(undefined);
@@ -20,7 +20,7 @@ describe("JoiValidation: Password", () => {
   it("Should not accept a weak Password (only in Production)", async () => {
     const pass = "asdfasdf";
 
-    const { value, error } = safePasswordSchemaSchema.validate(pass);
+    const { value, error } = safePasswordSchemaSchemaProduction.validate(pass);
 
     expect(value).to.equal(undefined);
     expect(error?.message || "").to.contain("fails to match the required pattern:");
@@ -29,7 +29,7 @@ describe("JoiValidation: Password", () => {
   it("Should not accept a short Password", async () => {
     const pass = "Test123";
 
-    const { value, error } = safePasswordSchemaSchema.validate(pass);
+    const { value, error } = safePasswordSchemaSchemaProduction.validate(pass);
 
     expect(value).to.equal(undefined);
     expect(error?.message || "").to.contain("length must be at least 8 characters long");
@@ -38,7 +38,7 @@ describe("JoiValidation: Password", () => {
   it("Should not accept a Password with malicious code", async () => {
     const pass = "Test1234<script>";
 
-    const { value } = safePasswordSchemaSchema.validate(pass);
+    const { value } = safePasswordSchemaSchemaProduction.validate(pass);
 
     expect(value).to.equal("Test1234");
   });

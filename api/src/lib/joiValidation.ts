@@ -21,12 +21,14 @@ export const safeIdSchema = JoiBase.string()
   .regex(/^([A-Za-zÀ-ÿ0-9-_]*)$/)
   .max(64);
 
+export const safePasswordSchemaProduction = JoiBase.string()
+  .trim()
+  .htmlStrip()
+  .regex(/^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/)
+  .min(8);
+export const safePasswordSchemaOtherEnv = JoiBase.string().trim().htmlStrip();
 export const safePasswordSchema = isProductionEnvironment()
-  ? JoiBase.string()
-      .trim()
-      .htmlStrip()
-      .regex(/^(?=.*[A-Za-zÀ-ÿ].*)(?=.*[0-9].*)([A-Za-zÀ-ÿ0-9-_!?@#$&*,.:/()[\] ])*$/)
-      .min(8)
-  : JoiBase.string().trim().htmlStrip();
+  ? safePasswordSchemaProduction
+  : safePasswordSchemaOtherEnv;
 
 export const safeBase64Schema = JoiBase.string().regex(/^[A-Za-z0-9+-_\/=\.]+$/);

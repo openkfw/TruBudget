@@ -14,8 +14,7 @@ export const envVarsSchema = Joi.object({
       "In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain and is also displayed in the frontend's top right corner.",
     ),
   PORT: Joi.number()
-    .min(0)
-    .max(65535)
+    .port()
     .default(8091)
     .note(
       "The port used to expose the API for your installation. <br/>Example: If you run TruBudget locally and set API_PORT to `8080`, you can reach the API via `localhost:8080/api`.",
