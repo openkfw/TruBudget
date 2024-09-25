@@ -130,7 +130,7 @@ interface Config {
 }
 
 const { error, value: envVars } = envVarsSchema.validate(process.env);
-if (error && process.env.NODE_ENV !== "testing") {
+if (error) {
   throw new Error(`Config validation error: ${error.message}`);
 }
 

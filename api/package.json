@@ -39,7 +39,7 @@
     "build": "rimraf dist && tsc",
     "dev": "ts-node-dev --poll --respawn -r tsconfig-paths/register src/index.ts -- --inspect=0.0.0.0:9229",
     "watch": "ts-node-dev --inspect=0.0.0.0:9229 --poll --respawn -r tsconfig-paths/register src/index.ts",
-    "test": "NODE_ENV=testing nyc mocha --require ts-node/register -r tsconfig-paths/register \"src/**/*.spec.ts\"",
+    "test": "ORGANIZATION=AcmeInc ORGANIZATION_VAULT_SECRET=AcmeIncSecret ROOT_SECRET=RootSecret nyc mocha --require ts-node/register -r tsconfig-paths/register \"src/**/*.spec.ts\"",
     "coverage": "nyc report --reporter=text-lcov",
     "generate-report": "nyc report --reporter=html",
     "lint": "eslint src --ext ts",
