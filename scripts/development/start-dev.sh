@@ -256,6 +256,8 @@ fi
 SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
+source $SCRIPT_DIR/../common/extract-variables.sh
+
 npm config set registry https://registry.npmjs.org/
 
 # Check if .env file exists in script directory
@@ -405,12 +407,15 @@ read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
 for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
 do
     echo "INFO: Validating environment variables for $service_to_be_started service ..."
+    SERVICE_ENV_VARS=$(parse_services_and_environment_variables "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
     # Run environenment variables check
-    OUTPUT=$(docker run ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
+    OUTPUT=$(docker run ${SERVICE_ENV_VARS} ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
 
     if [[ $OUTPUT =~ "Config validation error" ]]; then
         echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
         echo $OUTPUT
+        echo ""
+        echo "$SERVICE_ENV_VARS"
         exit 1
     fi
 done
