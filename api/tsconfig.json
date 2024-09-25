@@ -16,11 +16,7 @@
     }
   },
   "include": ["src/**/*.ts", "src/**/*.spec.ts"],
-  "exclude": [
-    "node_modules",
-    "coverage",
-    "src/scripts/envVarsDocsGenerator.ts"
-  ],
+  "exclude": ["node_modules", "coverage", "scripts"],
   "typedocOptions": {
     "name": "Api Code Documentation",
     "entryPoints": ["src/index.ts"],

@@ -1,6 +1,6 @@
 import { writeFileSync } from "fs";
-import { generateMarkdownFile } from "../../../scripts/common/envVarsGenerator/dist";
-import { envVarsSchema } from "../envVarsSchema";
+import { generateMarkdownFile } from "../../scripts/common/envVarsGenerator/dist";
+import { envVarsSchema } from "../src/envVarsSchema";
 
 function updateReadme(): void {
   const mdTable = generateMarkdownFile(envVarsSchema);
