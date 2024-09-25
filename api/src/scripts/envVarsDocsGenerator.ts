@@ -1,5 +1,5 @@
 import { writeFileSync } from "fs";
-import { generateMarkdownFile } from "env-vars-generator/dist";
+import { generateMarkdownFile } from "../../../scripts/common/envVarsGenerator/dist";
 import { envVarsSchema } from "../envVarsSchema";
 
 function updateReadme(): void {
