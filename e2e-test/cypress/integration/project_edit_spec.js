@@ -310,7 +310,8 @@ describe("Project Edit", function () {
           .then((additionalData) => {
             previousAddtionalData = additionalData;
           });
-        cy.get(".jse-value").click().type("-changed{enter}");
+        cy.get(".jse-value").click();
+        cy.get(".jse-value").type("-changed{enter}");
       });
 
       cy.get(`[data-test=project-additional-data]`).click();
