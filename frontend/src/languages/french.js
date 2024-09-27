@@ -228,7 +228,7 @@ const fr = {
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
     workflowitem_assignee: "Fixed assignee",
-    organization_info: "Organization",
+    organization_info: "Organisme de financement",
     total_budget_info: "Total budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:

@@ -311,7 +311,7 @@ const ka = {
     subproject_restricted_workflowitem_type:
       "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
     workflowitem_assignee: "ფიქსირებული მიმწოდებელი",
-    organization_info: "Organization",
+    organization_info: "დამფინანსებელი ორგანიზაცია",
     total_budget_info: "Total budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
