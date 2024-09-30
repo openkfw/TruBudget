@@ -1,9 +1,10 @@
 import Joi = require("joi");
-import logger from "../../../lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
-import { Identity } from "../organization/identity";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
 
 type SecretPublishedEventTypeType = "secret_published";
 const secretPublishedEventType: SecretPublishedEventTypeType = "secret_published";

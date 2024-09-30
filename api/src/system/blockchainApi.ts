@@ -1,5 +1,6 @@
-import axios, { AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
+
+import axios, { AxiosResponse } from "axios";
 
 const instance = axios.create();
 

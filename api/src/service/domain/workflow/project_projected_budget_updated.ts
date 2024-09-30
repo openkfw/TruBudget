@@ -1,10 +1,12 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
+
 import { CurrencyCode, currencyCodeSchema, MoneyAmount, moneyAmountSchema } from "./money";
 import * as Project from "./project";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "project_projected_budget_updated";
 const eventType: EventTypeType = "project_projected_budget_updated";

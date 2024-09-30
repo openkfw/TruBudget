@@ -1,5 +1,5 @@
-import { ServiceUser } from "./service/domain/organization/service_user";
 import { AuthenticatedRequest } from "./httpd/lib";
+import { ServiceUser } from "./service/domain/organization/service_user";
 
 export const extractUser = (request: AuthenticatedRequest): ServiceUser => {
   const user: ServiceUser = {

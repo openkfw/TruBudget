@@ -1,8 +1,10 @@
 import * as crypto from "crypto";
-import logger from "lib/logger";
-import * as Result from "../../../result";
+
 import Joi = require("joi");
 import VError = require("verror");
+
+import logger from "../../../lib/logger";
+import * as Result from "../../../result";
 
 export const MAX_DOCUMENT_SIZE_BINARY = 108 * 1024 * 1024; // 108 MB
 export const MAX_DOCUMENT_SIZE_BASE64 = 108 * 1024 * 1024 * (4 / 3); // 108 MB encoded in Base64

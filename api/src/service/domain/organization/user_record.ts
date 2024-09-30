@@ -4,6 +4,7 @@ import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Permissions, permissionsSchema } from "../permissions";
+
 import { canAssumeIdentity } from "./auth_token";
 import { Identity } from "./identity";
 import { ServiceUser } from "./service_user";

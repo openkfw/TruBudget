@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { config } from "../../../config";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { EventSourcingError } from "../errors/event_sourcing_error";
-import { Identity } from "../organization/identity";
-import { StoredDocument } from "./document";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
+
+import { StoredDocument } from "./document";
 
 type DocumentEventTypeType = "document_uploaded";
 const documentEventType: DocumentEventTypeType = "document_uploaded";

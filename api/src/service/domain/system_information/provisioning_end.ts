@@ -1,13 +1,15 @@
 import { VError } from "verror";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { ServiceUser } from "../organization/service_user";
+
 import * as ProvisioningEnded from "./provisioning_ended";
 import { sourceSystemInformation } from "./system_information_eventsourcing";
-import logger from "lib/logger";
 
 export async function setProvisioningEndFlag(
   ctx: Ctx,

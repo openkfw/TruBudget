@@ -1,11 +1,12 @@
 import { assert } from "chai";
 
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { ServiceUser } from "../organization/service_user";
 import { Workflowitem } from "../workflow/workflowitem";
 import * as WorkflowitemAssigned from "../workflow/workflowitem_assigned";
+
 import { applyWorkflowitemType } from "./apply_workflowitem_type";
 
 const ctx: Ctx = { requestId: "", source: "test" };

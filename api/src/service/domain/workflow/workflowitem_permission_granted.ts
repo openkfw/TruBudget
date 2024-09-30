@@ -1,12 +1,14 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import Intent, { workflowitemIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
+
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitem_permission_granted";
 const eventType: EventTypeType = "workflowitem_permission_granted";

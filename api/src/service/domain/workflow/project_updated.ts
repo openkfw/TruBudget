@@ -1,10 +1,12 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
-import { Identity } from "../organization/identity";
-import * as Project from "./project";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
+
+import * as Project from "./project";
 
 type EventTypeType = "project_updated";
 const eventType: EventTypeType = "project_updated";

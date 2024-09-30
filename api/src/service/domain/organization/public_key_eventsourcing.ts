@@ -1,8 +1,9 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+
 import * as PublicKey from "./public_key";
 import * as PublicKeyCreated from "./public_key_published";
 import * as PublicKeyUpdated from "./public_key_updated";

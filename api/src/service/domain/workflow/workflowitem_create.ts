@@ -1,9 +1,11 @@
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import uuid = require("uuid");
 import { VError } from "verror";
+
 import Intent, { workflowitemIntents } from "../../../authz/intents";
 import { config } from "../../../config";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -15,22 +17,21 @@ import {
   UploadedDocument,
   uploadedDocumentSchema,
 } from "../document/document";
+import { File } from "../document/document_upload";
+import { isDocumentLink } from "../document/workflowitem_document_delete";
 import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
+
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemCreated from "./workflowitem_created";
-import uuid = require("uuid");
-import { File } from "../document/document_upload";
-import { isDocumentLink } from "../document/workflowitem_document_delete";
 
 export interface RequestData {
   projectId: Project.Id;

@@ -1,14 +1,16 @@
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import * as UserRecord from "../organization/user_record";
 import { Permissions, permissionsSchema } from "../permissions";
+
 import { Identity } from "./identity";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "user_created";
 const eventType: EventTypeType = "user_created";

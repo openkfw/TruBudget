@@ -1,8 +1,9 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import * as Result from "../../../result";
-import { Identity } from "../organization/identity";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
 
 type EventTypeType = "storage_service_url_published";
 const eventType: EventTypeType = "storage_service_url_published";

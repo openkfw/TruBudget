@@ -1,7 +1,9 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+
 import { sourceStorageServiceUrls } from "./storage_service_url_eventsourcing";
 
 interface Repository {

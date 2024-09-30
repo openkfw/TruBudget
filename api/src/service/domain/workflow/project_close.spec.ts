@@ -1,11 +1,12 @@
 import { assert } from "chai";
 
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
+
 import { Project } from "./project";
 import { closeProject } from "./project_close";
 import { Subproject } from "./subproject";

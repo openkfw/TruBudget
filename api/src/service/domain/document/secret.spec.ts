@@ -1,7 +1,9 @@
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+
 import { getAllSecrets, getSecret, secretAlreadyExists } from "./secret_get";
 
 const ctx: Ctx = {

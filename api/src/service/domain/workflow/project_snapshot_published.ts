@@ -1,8 +1,10 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { Identity } from "../organization/identity";
+
 import * as Project from "./project";
 
 type EventTypeType = "project_snapshot_published";

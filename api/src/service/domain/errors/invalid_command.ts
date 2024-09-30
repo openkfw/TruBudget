@@ -1,4 +1,4 @@
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
 import { BusinessEvent } from "../business_event";
 
 export class InvalidCommand extends Error {

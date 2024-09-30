@@ -17,12 +17,12 @@ import fastifySwaggerUi from "@fastify/swagger-ui";
 import Ajv from "ajv";
 import { fastify, FastifyInstance, FastifyReply, FastifyRequest } from "fastify";
 import fastifyMetricsPlugin from "fastify-metrics";
-import { Ctx } from "lib/ctx";
-import { ConnToken } from "service";
 
 import { JwtConfig } from "../config";
+import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import * as Result from "../result";
+import { ConnToken } from "../service";
 import {
   MAX_DOCUMENT_SIZE_BASE64,
   MAX_DOCUMENT_SIZE_BINARY,

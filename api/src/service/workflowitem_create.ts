@@ -1,8 +1,8 @@
-import { encryptWithKey } from "lib/asymmetricCrypto";
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
 
+import { encryptWithKey } from "../lib/asymmetricCrypto";
+import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
 
 import * as Cache from "./cache2";

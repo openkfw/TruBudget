@@ -1,16 +1,18 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as ProjectPermissionRevoke from "./domain/workflow/project_permission_revoke";
-import { store } from "./store";
 import * as ProjectSnapshotPublish from "./domain/workflow/project_snapshot_publish";
 import * as ProjectCacheHelper from "./project_cache_helper";
+import { store } from "./store";
 
 export { RequestData } from "./domain/workflow/project_create";
 

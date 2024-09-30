@@ -1,13 +1,15 @@
 import { VError } from "verror";
+
 import Intent from "../../../authz/intents";
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { ServiceUser } from "../organization/service_user";
+
 import * as SystemInformation from "./system_information";
 import { sourceSystemInformation } from "./system_information_eventsourcing";
-import logger from "lib/logger";
 
 interface Repository {
   getSystemInformationEvents(): Promise<Result.Type<BusinessEvent[]>>;
