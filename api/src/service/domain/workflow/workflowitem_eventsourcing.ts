@@ -1,11 +1,13 @@
-import { Ctx } from "lib/ctx";
-import deepcopy from "lib/deepcopy";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import * as DocumentValidated from "../document/document_validated";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemAssigned from "./workflowitem_assigned";
 import * as WorkflowitemClosed from "./workflowitem_closed";

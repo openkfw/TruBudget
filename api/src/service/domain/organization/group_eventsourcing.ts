@@ -1,9 +1,10 @@
-import { Ctx } from "lib/ctx";
-import deepcopy from "lib/deepcopy";
-import logger from "lib/logger";
+import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+
 import * as Group from "./group";
 import * as GroupCreated from "./group_created";
 import * as GroupMemberAdded from "./group_member_added";

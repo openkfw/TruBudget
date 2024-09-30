@@ -1,9 +1,11 @@
 import { assert } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
+
 import { addMembers } from "./group_member_add";
 import { ServiceUser } from "./service_user";
 

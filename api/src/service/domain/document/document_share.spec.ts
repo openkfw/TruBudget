@@ -1,11 +1,13 @@
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
 import { Workflowitem } from "../workflow/workflowitem";
+
 import { DocumentOrExternalLinkReference, StoredDocument, UploadedDocument } from "./document";
 import { RequestData, shareDocument } from "./document_share";
 import { SecretPublished } from "./document_shared";

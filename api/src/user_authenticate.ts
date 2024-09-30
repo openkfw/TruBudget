@@ -1,17 +1,18 @@
 import { FastifyInstance } from "fastify";
+import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
+
+import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
+import { saveValue } from "./lib/keyValueStore";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import Joi = require("joi");
-import { JwtConfig, config } from "./config";
-import { saveValue } from "./lib/keyValueStore";
 
 export const MAX_GROUPS_LENGTH = 3000;
 export const accessTokenExpirationInMinutesWithrefreshToken = 10;

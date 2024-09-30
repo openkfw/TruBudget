@@ -1,8 +1,9 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import Intent from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
+
 import * as GlobalPermissions from "./global_permissions";
 import { identitiesAuthorizedFor } from "./global_permissions";
 

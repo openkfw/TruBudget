@@ -1,10 +1,12 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
 import { createStubInstance, stub } from "sinon";
+
 import { SuccessResponse } from "../../httpd/lib";
 import { RpcMultichainClient } from "../../service/Client.h";
 import * as Liststreamkeyitems from "../../service/liststreamkeyitems";
 import { RpcClient } from "../../service/RpcClient";
+
 import { declineNode } from "./declineNode";
 
 const testOrga = "Orga1";

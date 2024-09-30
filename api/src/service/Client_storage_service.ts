@@ -1,10 +1,13 @@
-import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
-import logger from "lib/logger";
 import { performance } from "perf_hooks";
+
+import axios, { AxiosInstance, AxiosRequestConfig, AxiosResponse } from "axios";
 import { VError } from "verror";
+
 import { config } from "../config";
+import logger from "../lib/logger";
 import { decrypt, encrypt } from "../lib/symmetricCrypto";
 import * as Result from "../result";
+
 import {
   DeleteResponse,
   StorageObject,

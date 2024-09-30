@@ -1,8 +1,10 @@
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
+
 import { StoredDocument } from "./document";
 import { processDocumentEvents, sourceSecrets } from "./document_eventsourcing";
 

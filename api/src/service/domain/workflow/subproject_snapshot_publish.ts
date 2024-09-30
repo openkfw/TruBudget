@@ -1,10 +1,11 @@
 import { Ctx } from "../../../lib/ctx";
-import { ConnToken } from "../../conn";
-import { createEvent } from "./subproject_snapshot_published";
 import * as Result from "../../../result";
-import { ServiceUser } from "../organization/service_user";
 import * as SnapshotService from "../../cache_snapshot";
+import { ConnToken } from "../../conn";
 import { BusinessEvent } from "../business_event";
+import { ServiceUser } from "../organization/service_user";
+
+import { createEvent } from "./subproject_snapshot_published";
 import { WorkflowitemOrdering } from "./workflowitem_ordering";
 
 const STREAM_BLACKLIST = [

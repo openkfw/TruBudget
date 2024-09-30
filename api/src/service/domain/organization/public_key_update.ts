@@ -1,11 +1,12 @@
 import Joi = require("joi");
-
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
+
 import { Organization, PublicKeyBase64 } from "./public_key";
 import { sourcePublicKeys } from "./public_key_eventsourcing";
 import * as PublicKeyPublished from "./public_key_published";

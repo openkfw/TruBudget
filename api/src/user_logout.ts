@@ -1,12 +1,14 @@
 import { FastifyInstance } from "fastify";
+import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
+
+import { config } from "./config";
 import { toHttpError } from "./http_errors";
 import { Ctx } from "./lib/ctx";
+import { clearValue } from "./lib/keyValueStore";
 import * as Result from "./result";
-import Joi = require("joi");
-import { config } from "./config";
-import { clearValue } from "lib/keyValueStore";
+
 import { UserLogoutAPIService } from "./index";
 
 /**

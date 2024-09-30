@@ -4,6 +4,7 @@ import { config } from "../config";
 import { toHttpError } from "../http_errors";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+import { silentRouteSettings } from "../lib/loggingTools";
 import { isReady } from "../lib/readiness";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
@@ -21,7 +22,6 @@ import { restoreBackup } from "../system/restoreBackup";
 
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
-import { silentRouteSettings } from "../lib/loggingTools";
 
 const send = (res, httpResponse: HttpResponse): void => {
   const [code, body] = httpResponse;

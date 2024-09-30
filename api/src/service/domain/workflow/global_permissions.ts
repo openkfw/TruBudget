@@ -7,6 +7,7 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as Permissions from "../permissions";
+
 import {
   GlobalPermissionsTraceEvent,
   globalPermissionsTraceEventSchema,

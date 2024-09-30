@@ -1,16 +1,18 @@
 import Joi = require("joi");
-import logger from "lib/logger";
+import uuid = require("uuid");
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent, businessEventSchema } from "../business_event";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
 import * as UserRecord from "../organization/user_record";
+
 import * as Notification from "./notification";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import uuid = require("uuid");
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "notification_created";
 const eventType: EventTypeType = "notification_created";

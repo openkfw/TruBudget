@@ -1,12 +1,14 @@
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
+import VError from "verror";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
 import { Workflowitem } from "../workflow/workflowitem";
+
 import { DocumentOrExternalLinkReference, StoredDocument, UploadedDocument } from "./document";
 import * as DocumentShared from "./document_shared";
 import { getDocument } from "./workflowitem_document_download";
-import VError from "verror";
 
 const ctx: Ctx = {
   requestId: "test",

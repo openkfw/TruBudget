@@ -1,11 +1,13 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import Intent, { subprojectIntents } from "../../../authz/intents";
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
+
 import * as Project from "./project";
 import * as Subproject from "./subproject";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "subproject_permission_granted";
 const eventType: EventTypeType = "subproject_permission_granted";

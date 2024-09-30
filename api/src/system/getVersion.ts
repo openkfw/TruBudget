@@ -15,7 +15,11 @@ interface VersionMetadata {
 
 const blockchainApi = new BlockchainApi();
 
-const bcVersionMetaData = async (blockchainProtocol: "http" | "https", blockchainHost: string, blockchainPort: number): Promise<VersionMetadata> => {
+const bcVersionMetaData = async (
+  blockchainProtocol: "http" | "https",
+  blockchainHost: string,
+  blockchainPort: number,
+): Promise<VersionMetadata> => {
   blockchainApi.setBaseUrl(`${blockchainProtocol}://${blockchainHost}:${blockchainPort}`);
   const { data } = await blockchainApi.fetchVersion();
   return data;

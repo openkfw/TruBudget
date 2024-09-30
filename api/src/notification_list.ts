@@ -1,18 +1,19 @@
 import { RequestGenericInterface, RouteShorthandOptions } from "fastify";
-import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
+import { silentRouteSettings } from "./lib/loggingTools";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Notification from "./service/domain/workflow/notification";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
-import { extractUser } from "./handlerUtils";
-import { silentRouteSettings } from "./lib/loggingTools";
+import { AugmentedFastifyInstance } from "./types";
 
 /**
  * Creates the swagger schema for the `/notification.list` endpoint

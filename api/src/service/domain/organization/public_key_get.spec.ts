@@ -1,6 +1,7 @@
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { getPublicKey, publicKeyAlreadyExists } from "../organization/public_key_get";

@@ -1,13 +1,19 @@
 import { VError } from "verror";
-import { ConnToken } from ".";
+
 import { globalIntents } from "../authz/intents";
 import { config } from "../config";
 import { Ctx } from "../lib/ctx";
+import DbConnector from "../lib/db";
+import { getValue } from "../lib/keyValueStore";
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
+import { verifyToken } from "../lib/token";
 import { getOrganizationAddress } from "../organization/organization";
 import * as Result from "../result";
+
 import { NotAuthorized } from "./domain/errors/not_authorized";
+import { NotFound } from "./domain/errors/not_found";
+import { UserMetadata } from "./domain/metadata";
 import * as AuthToken from "./domain/organization/auth_token";
 import { getGroupsForUser } from "./domain/organization/group_query";
 import * as UserQuery from "./domain/organization/user_query";
@@ -16,12 +22,9 @@ import { getselfaddress } from "./getselfaddress";
 import { getGlobalPermissions } from "./global_permissions_get";
 import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
 import { importprivkey } from "./importprivkey";
-import { verifyToken } from "../lib/token";
-import { UserMetadata } from "./domain/metadata";
-import { NotFound } from "./domain/errors/not_found";
-import { getValue } from "../lib/keyValueStore";
-import DbConnector from "../lib/db";
 import { TokenBody } from "./user_authenticate";
+
+import { ConnToken } from ".";
 
 export interface UserLoginResponse {
   id: string;

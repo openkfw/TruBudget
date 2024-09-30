@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
+import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
-import { uploadDocument } from "./document_upload";
+
 import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
-import { VError } from "verror";
+import { uploadDocument } from "./document_upload";
 
 const ctx: Ctx = {
   requestId: "test",

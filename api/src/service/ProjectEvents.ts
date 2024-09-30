@@ -4,6 +4,7 @@ import deepcopy from "../lib/deepcopy";
 import { isNotEmpty } from "../lib/emptyChecks";
 import { inheritDefinedProperties } from "../lib/inheritDefinedProperties";
 import logger from "../lib/logger";
+
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import { Event, throwUnsupportedEventVersion } from "./event";

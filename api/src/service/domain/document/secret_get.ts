@@ -1,11 +1,13 @@
 import { VError } from "verror";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+import { NotFound } from "../errors/not_found";
+
 import { sourceSecrets } from "./document_eventsourcing";
 import * as DocumentShared from "./document_shared";
-import { NotFound } from "../errors/not_found";
-import logger from "lib/logger";
 
 interface Repository {
   getSecretPublishedEvents(): Promise<Result.Type<BusinessEvent[]>>;

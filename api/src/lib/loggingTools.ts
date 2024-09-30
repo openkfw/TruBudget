@@ -1,5 +1,6 @@
-import { config } from "../config";
 import { RouteShorthandOptions } from "fastify";
+
+import { config } from "../config";
 
 export const silentRouteSettings = (
   routeSettings: RouteShorthandOptions,

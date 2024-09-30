@@ -99,7 +99,7 @@
     "@typescript-eslint/no-empty-interface": "warn",
     "unused-imports/no-unused-imports": "warn",
     "import/order": [
-      "off",
+      "error",
       {
         "groups": [
           "builtin",

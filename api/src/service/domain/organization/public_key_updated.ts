@@ -1,9 +1,11 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
-import { Identity } from "./identity";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+
+import { Identity } from "./identity";
 
 type EventTypeType = "public_key_updated";
 const eventType: EventTypeType = "public_key_updated";

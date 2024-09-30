@@ -1,8 +1,9 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotFound } from "../errors/not_found";
+
 import { ServiceUser } from "./service_user";
 import { sourceUserRecords } from "./user_eventsourcing";
 import * as UserRecord from "./user_record";

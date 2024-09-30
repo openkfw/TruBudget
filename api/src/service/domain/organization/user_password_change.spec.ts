@@ -1,14 +1,15 @@
 import { assert } from "chai";
 
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { hashPassword, isPasswordMatch } from "../../password";
 import { NotAuthorized } from "../errors/not_authorized";
+import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
+
 import { newUserFromEvent } from "./user_eventsourcing";
 import { changeUserPassword, RequestData } from "./user_password_change";
 import { UserRecord } from "./user_record";
-import { PreconditionError } from "../errors/precondition_error";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";

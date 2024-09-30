@@ -1,5 +1,6 @@
 import { TruBudgetError } from "../error";
 import logger from "../lib/logger";
+
 import Intent, { allIntents } from "./intents";
 import { AuthToken } from "./token";
 import { People, Permissions } from "./types";
