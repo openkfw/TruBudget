@@ -308,7 +308,7 @@ const en = {
     subproject_restricted_workflowitem_type:
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
     workflowitem_assignee: "Fixed assignee",
-    organization_info: "Organization",
+    organization_info: "Funding organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
