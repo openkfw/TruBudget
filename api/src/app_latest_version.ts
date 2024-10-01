@@ -1,11 +1,12 @@
-import Joi = require("joi");
-import { AugmentedFastifyInstance } from "./types";
-import { VError } from "verror";
-import axios from "axios";
 import * as fs from "fs";
-import { AuthenticatedRequest } from "./httpd/lib";
+
+import axios from "axios";
+import Joi = require("joi");
+import { VError } from "verror";
+
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
@@ -13,6 +14,7 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserCreate from "./service/domain/organization/user_create";
 import { DOCKERHUB_TRUBUDGET_TAGS_URL } from "./system/constants";
+import { AugmentedFastifyInstance } from "./types";
 
 /**
  * Represents the request body of the endpoint

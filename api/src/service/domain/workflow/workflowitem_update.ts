@@ -1,10 +1,10 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import isEqual = require("lodash.isequal");
 import uuid = require("uuid");
 import { VError } from "verror";
 
 import { config } from "../../../config";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import {
@@ -14,6 +14,8 @@ import {
   UploadedDocument,
   UploadedDocumentOrLink,
 } from "../document/document";
+import { File } from "../document/document_upload";
+import { isDocumentLink } from "../document/workflowitem_document_delete";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { Identity } from "../organization/identity";
@@ -26,8 +28,6 @@ import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "./workflowitem_updated";
-import { File } from "../document/document_upload";
-import { isDocumentLink } from "../document/workflowitem_document_delete";
 
 export interface RequestData {
   displayName?: string;

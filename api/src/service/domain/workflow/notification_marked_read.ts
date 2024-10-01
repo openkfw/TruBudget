@@ -1,11 +1,13 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
 import * as UserRecord from "../organization/user_record";
+
 import * as Notification from "./notification";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "notification_marked_read";
 const eventType: EventTypeType = "notification_marked_read";

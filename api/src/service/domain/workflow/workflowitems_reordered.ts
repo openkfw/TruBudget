@@ -1,11 +1,13 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
+
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitems_reordered";
 const eventType: EventTypeType = "workflowitems_reordered";

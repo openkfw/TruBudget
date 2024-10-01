@@ -1,4 +1,5 @@
 import * as Result from "../result";
+
 import { File } from "./domain/document/document_upload";
 
 type Base64String = string;

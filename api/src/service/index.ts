@@ -1,8 +1,10 @@
 import VError from "verror";
+
 import Intent from "../authz/intents";
 import { People, Permissions } from "../authz/types";
 import { TruBudgetError } from "../error";
 import logger from "../lib/logger";
+
 import * as Cache from "./cache";
 import * as Cache2 from "./cache2";
 import { RpcMultichainClient } from "./Client.h";

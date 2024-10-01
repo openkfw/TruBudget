@@ -1,7 +1,9 @@
-import { hasIntersection } from ".";
 import logger from "../lib/logger";
 import { Event } from "../service/event";
+
 import Intent from "./intents";
+
+import { hasIntersection } from ".";
 
 const requiredPermissions = new Map<Intent, Intent[]>([
   ["global.grantPermission", ["global.listPermissions"]],

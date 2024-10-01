@@ -1,6 +1,7 @@
 import { VError } from "verror";
 
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -12,11 +13,11 @@ import * as UserRecord from "../organization/user_record";
 import * as NotificationCreated from "../workflow/notification_created";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
-import * as DocumentValidated from "./document_validated";
 import * as Workflowitem from "../workflow/workflowitem";
 import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
+
 import { getAllDocumentReferences } from "./document_get";
-import logger from "lib/logger";
+import * as DocumentValidated from "./document_validated";
 
 interface Repository {
   getWorkflowitem(workflowitemId: Workflowitem.Id): Promise<Result.Type<Workflowitem.Workflowitem>>;

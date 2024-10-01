@@ -1,28 +1,30 @@
-import logger from "lib/logger";
-import StorageServiceClient from "./Client_storage_service";
 import VError = require("verror");
+
 import { config } from "../config";
-import { ConnToken } from "./conn";
-import { Ctx } from "../lib/ctx";
 import { decryptWithKey } from "../lib/asymmetricCrypto";
-import { ServiceUser } from "./domain/organization/service_user";
-import { StorageServiceClientI } from "./Client_storage_service.h";
-import { store } from "./store";
-import * as Cache from "./cache2";
-import * as DocumentGet from "./domain/document/document_get";
+import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as PrivateKeyGet from "../organization/organization";
-import * as Project from "./domain/workflow/project";
-import * as ProjectCacheHelper from "./project_cache_helper";
 import * as Result from "../result";
+
+import * as Cache from "./cache2";
+import StorageServiceClient from "./Client_storage_service";
+import { StorageServiceClientI } from "./Client_storage_service.h";
+import { ConnToken } from "./conn";
+import { BusinessEvent } from "./domain/business_event";
+import * as DocumentGet from "./domain/document/document_get";
 import * as SecretGet from "./domain/document/secret_get";
-import * as Subproject from "./domain/workflow/subproject";
-import * as SubprojectCacheHelper from "./subproject_cache_helper";
-import * as Workflowitem from "./domain/workflow/workflowitem";
-import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 import * as WorkflowitemDocumentDelete from "./domain/document/workflowitem_document_delete";
+import { ServiceUser } from "./domain/organization/service_user";
+import * as Project from "./domain/workflow/project";
+import * as Subproject from "./domain/workflow/subproject";
+import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemSnapshotPublish from "./domain/workflow/workflowitem_snapshot_publish";
 import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
-import { BusinessEvent } from "./domain/business_event";
+import * as ProjectCacheHelper from "./project_cache_helper";
+import { store } from "./store";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 
 export interface Service {
   deleteDocument(

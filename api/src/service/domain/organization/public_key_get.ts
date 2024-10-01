@@ -1,9 +1,11 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotFound } from "../errors/not_found";
+
 import { Organization, PublicKeyBase64 } from "./public_key";
 import { KeysByOrganization, sourcePublicKeys } from "./public_key_eventsourcing";
 

@@ -1,12 +1,13 @@
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+
 import * as GlobalPermissionGranted from "./global_permission_granted";
 import * as GlobalPermissionRevoked from "./global_permission_revoked";
 import * as GlobalPermissions from "./global_permissions";
 import { GlobalPermissionsTraceEvent } from "./global_permissions_trace_event";
-import logger from "lib/logger";
 
 export function sourceGlobalPermissions(
   ctx: Ctx,

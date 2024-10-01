@@ -1,12 +1,17 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import VError = require("verror");
+
 import { config } from "../../../config";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
+import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import * as Workflowitem from "../workflow/workflowitem";
+import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
 import * as WorkflowitemUpdated from "../workflow/workflowitem_updated";
+
 import {
   DocumentOrExternalLinkReference,
   ExternalLinkReference,
@@ -15,9 +20,6 @@ import {
 } from "./document";
 import * as DocumentDeleted from "./document_deleted";
 import * as DocumentShared from "./document_shared";
-import VError = require("verror");
-import { BusinessEvent } from "../business_event";
-import * as WorkflowitemEventSourcing from "../workflow/workflowitem_eventsourcing";
 
 export function isDocumentLink(
   obj: DocumentOrExternalLinkReference | UploadedDocument,

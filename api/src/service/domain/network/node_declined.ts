@@ -1,10 +1,11 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
 // TODO this event probably doesn't need user metadata - is it always issued by "system"?
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "node_declined";
 const eventType: EventTypeType = "node_declined";

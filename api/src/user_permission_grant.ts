@@ -1,16 +1,18 @@
-import { AugmentedFastifyInstance } from "./types";
+import Joi = require("joi");
 import { VError } from "verror";
+
 import Intent, { userIntents } from "./authz/intents";
-import { AuthenticatedRequest } from "./httpd/lib";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema } from "./lib/joiValidation";
 import * as Result from "./result";
 import { Identity } from "./service/domain/organization/identity";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
-import Joi = require("joi");
+import { AugmentedFastifyInstance } from "./types";
+
 
 /**
  * Represents the request body of the endpoint

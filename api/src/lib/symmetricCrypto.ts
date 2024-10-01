@@ -1,7 +1,9 @@
-import { VError } from "verror";
-import * as Result from "../result";
-import logger from "./logger";
 import * as sodium from "sodium-native";
+import { VError } from "verror";
+
+import * as Result from "../result";
+
+import logger from "./logger";
 
 class DecryptionFailed extends VError {
   constructor() {

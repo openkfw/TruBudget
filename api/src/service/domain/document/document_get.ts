@@ -1,13 +1,15 @@
 import { VError } from "verror";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
-import { processDocumentEvents } from "./document_eventsourcing";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
-import logger from "lib/logger";
+
+import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
+import { processDocumentEvents } from "./document_eventsourcing";
 
 interface Repository {
   getDocumentsEvents(): Promise<Result.Type<BusinessEvent[]>>;

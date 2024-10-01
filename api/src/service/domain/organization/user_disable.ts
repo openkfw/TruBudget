@@ -1,8 +1,10 @@
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import isEqual = require("lodash.isequal");
 import { VError } from "verror";
+
 import Intent from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -11,11 +13,11 @@ import { PreconditionError } from "../errors/precondition_error";
 import * as GlobalPermissions from "../workflow/global_permissions";
 import * as UserAssignments from "../workflow/user_assignments";
 import * as UserAssignmentsGet from "../workflow/user_assignments_get";
+
 import { ServiceUser } from "./service_user";
 import * as UserDisabled from "./user_disabled";
 import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserRecord from "./user_record";
-import isEqual = require("lodash.isequal");
 
 export interface RequestData {
   userId: string;

@@ -1,20 +1,22 @@
-import logger from "lib/logger";
+import VError = require("verror");
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
+import { hashBase64String } from "./domain/document/document";
 import * as DocumentValidate from "./domain/document/document_validate";
 import * as GroupQuery from "./domain/organization/group_query";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
-import { store } from "./store";
-import VError = require("verror");
 import * as ProjectCacheHelper from "./project_cache_helper";
+import { store } from "./store";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
-import { hashBase64String } from "./domain/document/document";
 
 /**
  * Returns true if the given hash matches the given document.

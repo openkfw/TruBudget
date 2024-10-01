@@ -1,7 +1,8 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
@@ -9,8 +10,9 @@ import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
-import * as GlobalPermissions from "./global_permissions";
+
 import * as GlobalPermissionRevoked from "./global_permission_revoked";
+import * as GlobalPermissions from "./global_permissions";
 
 interface Repository {
   getGlobalPermissions(): Promise<Result.Type<GlobalPermissions.GlobalPermissions>>;

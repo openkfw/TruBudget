@@ -1,4 +1,5 @@
 import { MultichainClient } from "../service/Client.h";
+
 import logger from "./logger";
 
 export async function isReady(multichain: MultichainClient): Promise<boolean> {

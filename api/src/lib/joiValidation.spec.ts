@@ -1,6 +1,7 @@
 import { expect } from "chai";
-import { safeIdSchema, safePasswordSchemaProduction, safeStringSchema } from "./joiValidation";
 import Joi = require("joi");
+
+import { safeIdSchema, safePasswordSchemaProduction, safeStringSchema } from "./joiValidation";
 
 const safeStringSchemaSchema = Joi.alternatives([safeStringSchema]);
 const safeIdSchemaSchema = Joi.alternatives([safeIdSchema]);

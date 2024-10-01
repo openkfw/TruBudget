@@ -311,7 +311,7 @@ const pt = {
     subproject_restricted_workflowitem_type:
       "Permitir apenas item de fluxo de trabalho do tipo restrito. Ao atribuir um item de fluxo de trabalho restrito, as permissões são concedidas e revogadas automaticamente. O atribuidor manterá apenas as permissões de visualização.",
     workflowitem_assignee: "Cessionário padrão",
-    organization_info: "Organization",
+    organization_info: "Organização financiadora",
     total_budget_info: "Total budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:

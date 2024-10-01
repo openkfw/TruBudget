@@ -1,13 +1,15 @@
-import logger from "../../../lib/logger";
 import { VError } from "verror";
+
 import Intent, { globalIntents } from "../../../authz/intents";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
+import { UserMetadata } from "../metadata";
 import { Permissions } from "../permissions";
 import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
+
 import { Identity } from "./identity";
 import { ServiceUser } from "./service_user";
 import * as UserRecord from "./user_record";
-import { UserMetadata } from "../metadata";
 
 export interface AuthToken {
   userId: UserRecord.Id;

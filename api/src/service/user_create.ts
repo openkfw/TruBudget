@@ -1,9 +1,11 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import { encrypt } from "../lib/symmetricCrypto";
 import { getOrganizationAddress, organizationExists } from "../organization/organization";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import { createkeypairs } from "./createkeypairs";
 import * as AuthToken from "./domain/organization/auth_token";

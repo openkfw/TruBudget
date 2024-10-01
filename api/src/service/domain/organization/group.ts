@@ -4,6 +4,7 @@ import Intent from "../../../authz/intents";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { Permissions, permissionsSchema } from "../permissions";
+
 import { canAssumeIdentity } from "./auth_token";
 import { GroupTraceEvent, groupTraceEventSchema } from "./group_trace_event";
 import { Identity } from "./identity";

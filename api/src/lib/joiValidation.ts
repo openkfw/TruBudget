@@ -1,5 +1,7 @@
 import Joi = require("joi");
+
 import { isProductionEnvironment } from "../config";
+
 import { htmlStrip } from "./htmlSanitize";
 
 const JoiBase = Joi.extend(htmlStrip);

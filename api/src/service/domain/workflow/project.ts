@@ -7,8 +7,9 @@ import { canAssumeIdentity } from "../organization/auth_token";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions, permissionsSchema } from "../permissions";
-import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
+
 import { ProjectTraceEvent, projectTraceEventSchema } from "./project_trace_event";
+import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 
 export type Id = string;
 

@@ -1,13 +1,17 @@
 import { VError } from "verror";
-import { ConnToken } from ".";
+
 import { globalIntents } from "../authz/intents";
 import { config } from "../config";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
+import { verifyToken } from "../lib/token";
 import { getOrganizationAddress } from "../organization/organization";
 import * as Result from "../result";
+
 import { NotAuthorized } from "./domain/errors/not_authorized";
+import { NotFound } from "./domain/errors/not_found";
+import { UserMetadata } from "./domain/metadata";
 import * as AuthToken from "./domain/organization/auth_token";
 import { getGroupsForUser } from "./domain/organization/group_query";
 import * as UserQuery from "./domain/organization/user_query";
@@ -17,9 +21,8 @@ import { getGlobalPermissions } from "./global_permissions_get";
 import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
 import { importprivkey } from "./importprivkey";
 import { hashPassword, isPasswordMatch } from "./password";
-import { verifyToken } from "../lib/token";
-import { UserMetadata } from "./domain/metadata";
-import { NotFound } from "./domain/errors/not_found";
+
+import { ConnToken } from ".";
 
 export interface UserLoginResponse {
   id: string;
@@ -234,8 +237,8 @@ export async function authenticateWithToken(
   const body: TokenBody = verifiedToken?.body.toJSON();
   const userId = body?.sub;
   const metadata = body.metadata;
-  const externalId = (metadata.externalId) || "";
-  const kid = (metadata.kid) || "";
+  const externalId = metadata.externalId || "";
+  const kid = metadata.kid || "";
   const csrfFromCookie = body?.csrf;
 
   // cookie value does not match with value from http request params

@@ -1,9 +1,11 @@
-import logger from "../../../lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { ConnToken } from "../../conn";
 import { NotFound } from "../errors/not_found";
+
 import * as Cache from "./../../cache2";
 import { ServiceUser } from "./service_user";
 import * as UserGet from "./user_get";

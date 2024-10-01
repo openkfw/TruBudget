@@ -1,6 +1,7 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 
 type EventTypeType = "peerinfo_saved";

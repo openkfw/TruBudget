@@ -1,10 +1,12 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { canAssumeIdentity } from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
+
 import * as Subproject from "./subproject";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 

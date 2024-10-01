@@ -1,7 +1,8 @@
 import { useAzureMonitor, AzureMonitorOpenTelemetryOptions } from "@azure/monitor-opentelemetry";
+import { metrics, trace, ProxyTracerProvider } from "@opentelemetry/api";
 import { registerInstrumentations } from "@opentelemetry/instrumentation";
 import { FastifyInstrumentation } from "@opentelemetry/instrumentation-fastify";
-import { metrics, trace, ProxyTracerProvider } from "@opentelemetry/api";
+
 import { config } from "../config";
 
 export const useAzureTelemetry = (): void => {
