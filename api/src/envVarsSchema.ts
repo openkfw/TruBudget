@@ -1,4 +1,5 @@
 import * as Joi from "joi";
+
 import { randomString } from "./service/hash";
 
 export const envVarsSchema = Joi.object({
