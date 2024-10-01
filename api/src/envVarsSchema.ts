@@ -79,8 +79,8 @@ export const envVarsSchema = Joi.object({
     .valid("HS256", "RS256")
     .note("Algorithm used for signing and verifying JWTs."),
   JWT_SECRET: Joi.string()
-    .min(32)
-    .default(randomString(32))
+    .min(10)
+    .default(randomString(10))
     .when("JWT_ALGORITHM", {
       is: "RS256",
       then: Joi.string().base64().required(),
