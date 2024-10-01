@@ -401,6 +401,8 @@ if (authProxy.enabled) {
         ),
       getGroupsForUser: (ctx, serviceUser, userId) =>
         GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+      storeRefreshToken: async (userId, refreshToken, validUntil) =>
+        dbConnection?.insertRefreshToken(userId, refreshToken, validUntil),
     },
     jwt,
   );

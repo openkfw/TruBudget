@@ -2,6 +2,7 @@ import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 
+import { accessTokenExpirationInMinutesWithrefreshToken } from "./authenticationUtils";
 import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
 import { AuthenticatedRequest } from "./httpd/lib";
@@ -12,10 +13,7 @@ import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { AugmentedFastifyInstance } from "./types";
-import {
-  MAX_GROUPS_LENGTH,
-  accessTokenExpirationInMinutesWithrefreshToken,
-} from "./user_authenticate";
+import { MAX_GROUPS_LENGTH } from "./user_authenticate";
 
 /**
  * Represents the request body of the endpoint

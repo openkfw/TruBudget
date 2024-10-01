@@ -3,6 +3,11 @@ import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 
+import {
+  accessTokenExpirationInMinutesWithrefreshToken,
+  createRefreshJWTToken,
+  refreshTokenExpirationInDays,
+} from "./authenticationUtils";
 import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
@@ -15,8 +20,6 @@ import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
 
 export const MAX_GROUPS_LENGTH = 3000;
-export const accessTokenExpirationInMinutesWithrefreshToken = 10;
-export const refreshTokenExpirationInDays = 8;
 
 /**
  * Represents the request body of the endpoint
@@ -363,22 +366,4 @@ function createJWT(
     secretOrPrivateKey,
     { expiresIn, algorithm },
   );
-}
-
-/**
- * Creates a refresh JWT Token
- *
- * @param userId the current user ID
- * @returns a string containing the encoded JWT token
- */
-function createRefreshJWTToken(
-  payload: {},
-  key: string,
-  algorithm: JwtConfig["algorithm"] = "HS256",
-): string {
-  const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
-  return jsonwebtoken.sign(payload, secretOrPrivateKey, {
-    expiresIn: `${refreshTokenExpirationInDays}d`,
-    algorithm,
-  });
 }
