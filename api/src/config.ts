@@ -1,4 +1,4 @@
-import { envVarsSchema } from "envVarsSchema";
+import { envVarsSchema } from "./envVarsSchema";
 
 export interface JwtConfig {
   secretOrPrivateKey: string;
