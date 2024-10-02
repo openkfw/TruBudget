@@ -1,6 +1,6 @@
 {
   "extends": ["airbnb-base", "prettier"],
-  "plugins": ["unused-imports"],
+  "plugins": ["unused-imports", "local-rules"],
   "env": {
     "node": true,
     "mocha": true,
@@ -35,6 +35,7 @@
     "linebreak-style": 0,
     "arrow-body-style": 0,
     "func-names": 0,
+    "local-rules/no-absolute-imports": 1,
     "no-unused-expressions": 0,
     "space-before-function-paren": 0,
     "strict": [2, "global"],

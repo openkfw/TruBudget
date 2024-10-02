@@ -1,6 +1,6 @@
 {
   "extends": ["plugin:@typescript-eslint/recommended", "prettier"],
-  "plugins": ["import", "unused-imports"],
+  "plugins": ["import", "unused-imports", "local-rules"],
   "env": {
     "node": true,
     "mocha": true,
@@ -75,6 +75,7 @@
     "prefer-template": 0,
     "operator-assignment": 0,
     "prefer-const": 0,
+    "local-rules/no-absolute-imports": 1,
     "no-plusplus": 0,
     "no-cond-assign": 0,
     "no-irregular-whitespace": 0,
