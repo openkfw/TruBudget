@@ -19,6 +19,82 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 <!-- ### Fixed -->
   
+  
+## [2.15.0] - 2024-09-23
+
+<!-- ## Unreleased -->
+
+### Added
+  
+- Add nginx buffer size config [#1984](https://github.com/openkfw/TruBudget/issues/1984)
+- API features that depend on HTTPS should be configurable with other environmental variable than NODE_ENV [#1980](https://github.com/openkfw/TruBudget/issues/1980)
+- Add additional nginx configuration [#1976](https://github.com/openkfw/TruBudget/issues/1976)
+- Option to change photo of projects [#1954](https://github.com/openkfw/TruBudget/issues/1954)
+- Local browsing of minio files [#1950](https://github.com/openkfw/TruBudget/issues/1950)
+- Automatically check file integrity using a hash [#1924](https://github.com/openkfw/TruBudget/issues/1924)
+- Only one tag is shown in the workflow item overview even if more are present [#1906](https://github.com/openkfw/TruBudget/issues/1906)
+- eMail notification when a document is added to a workflow assigned to me [#1903](https://github.com/openkfw/TruBudget/issues/1903)
+- Add additional comment field for uploaded documents [#1900](https://github.com/openkfw/TruBudget/issues/1900)
+- Document view should show the date when the document was uploaded [#1895](https://github.com/openkfw/TruBudget/issues/1895)
+- "Update" button for simpler upgrades of TruBudget versions [#1863](https://github.com/openkfw/TruBudget/issues/1863)
+- Set a fingerprint for a file linked in TruBudget [#1862](https://github.com/openkfw/TruBudget/issues/1862)
+- Unordered workflow items [#1829](https://github.com/openkfw/TruBudget/issues/1829)
+
+
+### Changed
+- Upgrade Multichain [#1937](https://github.com/openkfw/TruBudget/issues/1937)
+
+
+### Fixed
+- External documents attached to wf item duplicated [#1977](https://github.com/openkfw/TruBudget/issues/1977)
+- E2E HTTPS between containers might not be working/terminating in case of blocked HTTP traffic, e.g. on API [#1972](https://github.com/openkfw/TruBudget/issues/1972)
+- Typo in env variable handling [#1959](https://github.com/openkfw/TruBudget/issues/1959)
+- Scripts and documentation using env_example don't work [#1956](https://github.com/openkfw/TruBudget/issues/1956)
+- Fix security warnings [#1867](https://github.com/openkfw/TruBudget/issues/1867)
+
+  
+## [2.14.0] - 2024-08-12
+
+
+### Added
+  
+- User directory adapter: Login possible even though permissions/access was revoked [#1855](https://github.com/openkfw/TruBudget/issues/1855)
+
+
+<!-- ### Changed -->
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+### Fixed
+
+- Typo in docker-compose [#1931](https://github.com/openkfw/TruBudget/issues/1931)  
+  
+## [2.13.0] - 2024-07-31
+
+### Added
+  
+- storage-service: missing error logs in storage-service server [#1918](https://github.com/openkfw/TruBudget/issues/1918)
+- Detailed status for workflow items [#1885](https://github.com/openkfw/TruBudget/issues/1885)
+- Display warning message when closing a project [#1871](https://github.com/openkfw/TruBudget/issues/1871)
+- Custom images for projects [#1864](https://github.com/openkfw/TruBudget/issues/1864)
+- api, ui: Implement refresh token [#1739](https://github.com/openkfw/TruBudget/issues/1739)
+- docs: Telemetry documentation [#1575](https://github.com/openkfw/TruBudget/issues/1575)
+- Adding a link "forgot your password?" on the login screen [#878](https://github.com/openkfw/TruBudget/issues/878)
+
+### Changed
+
+- Remove restricted workflows [#1899](https://github.com/openkfw/TruBudget/issues/1899)
+- Create all initial letters uniformly small for workflow item  [#1887](https://github.com/openkfw/TruBudget/issues/1887)
+- Changing the mandatory fields when creating a project/adding an organisation  [#1873](https://github.com/openkfw/TruBudget/issues/1873)
+- Change wording of "default assignee" to "fixed assignee" [#1865](https://github.com/openkfw/TruBudget/issues/1865)
+
+### Fixed
+
+- frontend: The source list for Content Security Policy directive 'connect-src' contains a source with an invalid path [#1911](https://github.com/openkfw/TruBudget/issues/1911)
+
+  
 ## [2.12.0] - 2024-06-27
 
 ### Added
@@ -929,7 +1005,7 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - When adding subprojects, projected budgets are not mandatory
   anymore [#229](https://github.com/openkfw/TruBudget/issues/229)
 - Added groups to provisioning [#57](https://github.com/openkfw/TruBudget/issues/57)
-- In the frontend directory, the `.env_example` file was removed and the `.env` file is copied into the Docker container
+- In the frontend directory, the `.env.example` file was removed and the `.env` file is copied into the Docker container
   instead [#176](https://github.com/openkfw/TruBudget/issues/176)
 - The `additional data` button is now available on all levels and is only displayed if additional data is
   available [#91](https://github.com/openkfw/TruBudget/issues/91)
@@ -1167,6 +1243,10 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.15.0...main
+[2.15.0]: https://github.com/openkfw/TruBudget/compare/v2.14.0...v2.15.0
+[2.14.0]: https://github.com/openkfw/TruBudget/compare/v2.13.0...v2.14.0
+[2.13.0]: https://github.com/openkfw/TruBudget/compare/v2.12.0...v2.13.0
 [2.12.0]: https://github.com/openkfw/TruBudget/compare/v2.11.0...v2.12.0
 [2.11.0]: https://github.com/openkfw/TruBudget/compare/v2.10.0...v2.11.0
 [2.10.0]: https://github.com/openkfw/TruBudget/compare/v2.9.0...v2.10.0

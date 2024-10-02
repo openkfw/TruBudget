@@ -1,8 +1,10 @@
-import { AugmentedFastifyInstance } from "./types";
+import Joi = require("joi");
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { safeStringSchema } from "./lib/joiValidation";
 import * as Result from "./result";
@@ -16,8 +18,8 @@ import {
 import * as Project from "./service/domain/workflow/project";
 import { ProjectedBudget } from "./service/domain/workflow/projected_budget";
 import * as Subproject from "./service/domain/workflow/subproject";
-import { extractUser } from "./handlerUtils";
-import Joi = require("joi");
+import { AugmentedFastifyInstance } from "./types";
+
 
 /**
  * Represents the request body of the endpoint

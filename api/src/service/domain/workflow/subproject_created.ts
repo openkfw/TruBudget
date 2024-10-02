@@ -1,49 +1,53 @@
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
+
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as Subproject from "./subproject";
-import { UserMetadata, userMetadataSchema } from "../metadata";
+import WorkflowMode from "./types";
 
 type EventTypeType = "subproject_created";
 const eventType: EventTypeType = "subproject_created";
 
 interface InitialData {
-  id: Subproject.Id;
-  status: "open" | "closed";
-  displayName: string;
-  description: string;
+  additionalData: object; // Additional information (key-value store), e.g. external IDs:
   assignee: Identity;
+  currency: CurrencyCode;
+  description: string;
+  displayName: string;
+  id: Subproject.Id;
+  permissions: Permissions;
+  projectedBudgets: ProjectedBudget[];
+  status: "open" | "closed";
   validator?: Identity;
   workflowitemType?: WorkflowitemType;
-  currency: CurrencyCode;
-  projectedBudgets: ProjectedBudget[];
-  permissions: Permissions;
-  // Additional information (key-value store), e.g. external IDs:
-  additionalData: object;
+  workflowMode: WorkflowMode;
 }
 
 const initialDataSchema = Joi.object({
-  id: Subproject.idSchema.required(),
-  status: Joi.string().valid("open", "closed").required(),
-  displayName: Joi.string().required(),
-  description: Joi.string().allow("").required(),
+  additionalData: AdditionalData.schema.required(),
   assignee: Joi.string().required(),
+  currency: currencyCodeSchema.required(),
+  description: Joi.string().allow("").required(),
+  displayName: Joi.string().required(),
+  id: Subproject.idSchema.required(),
+  permissions: permissionsSchema.required(),
+  projectedBudgets: projectedBudgetListSchema.required(),
+  status: Joi.string().valid("open", "closed").required(),
   validator: Joi.string(),
   workflowitemType: workflowitemTypeSchema,
-  currency: currencyCodeSchema.required(),
-  projectedBudgets: projectedBudgetListSchema.required(),
-  permissions: permissionsSchema.required(),
-  additionalData: AdditionalData.schema.required(),
+  workflowMode: Joi.string().valid("ordered", "unordered", "").optional(),
 }).options({ stripUnknown: true });
 
 export interface Event {
@@ -116,6 +120,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Subproject.Subpr
     permissions: initialData.permissions,
     log: [],
     additionalData: initialData.additionalData,
+    workflowMode: initialData.workflowMode,
   };
 
   return Result.mapErr(

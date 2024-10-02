@@ -8,10 +8,12 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
+
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import { SubprojectTraceEvent, subprojectTraceEventSchema } from "./subproject_trace_event";
+import WorkflowMode, { workflowModeSchema } from "./types";
 
 export type Id = string;
 
@@ -27,6 +29,7 @@ export interface Subproject {
   assignee: string;
   validator?: string;
   workflowitemType?: WorkflowitemType;
+  workflowMode?: WorkflowMode;
   currency: CurrencyCode;
   projectedBudgets: ProjectedBudget[];
   // The ordering doesn't need to include all workflowitems; any items not included here
@@ -54,6 +57,7 @@ export const schema = Joi.object({
   permissions: Joi.object().pattern(/.*/, Joi.array().items(Joi.string())).required(),
   log: Joi.array().required().items(subprojectTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
+  workflowMode: workflowModeSchema,
 });
 
 export function validate(input): Result.Type<Subproject> {

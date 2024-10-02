@@ -1,7 +1,9 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as UserPasswordChange from "./domain/organization/user_password_change";
@@ -13,7 +15,7 @@ export async function changeUserPassword(
   conn: ConnToken,
   ctx: Ctx,
   serviceUser: ServiceUser,
-  issuerOrganization: string,
+  issuerOrganization: string | null,
   requestData: UserPasswordChange.RequestData,
 ): Promise<Result.Type<void>> {
   logger.debug({ req: requestData }, "Changing user password");

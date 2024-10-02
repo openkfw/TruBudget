@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import { chunkArray } from "./chunkArray";
 
 describe("chunkArray", () => {

@@ -1,11 +1,12 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
+
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
-import { AuthenticatedRequest } from "./httpd/lib";
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
@@ -13,8 +14,9 @@ import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
+import WorkflowMode from "./service/domain/workflow/types";
 import WorkflowitemType from "./service/domain/workflowitem_types/types";
-import { extractUser } from "./handlerUtils";
+import { AugmentedFastifyInstance } from "./types";
 
 /**
  * Creates the swagger schema for the `/subproject.list` endpoint
@@ -69,6 +71,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                           assignee: { type: "string", example: "aSmith" },
                           validator: { type: "string", example: "aSmith" },
                           workflowitemType: { type: "string", example: "general" },
+                          workflowMode: { type: "string", example: "ordered" },
                           currency: { type: "string", example: "EUR" },
                           projectedBudgets: {
                             type: "array",
@@ -112,6 +115,7 @@ interface ExposedSubproject {
     assignee?: string;
     validator?: string;
     workflowitemType?: WorkflowitemType;
+    workflowMode: WorkflowMode;
     currency: string;
     projectedBudgets: Array<{
       organization: string;
@@ -197,6 +201,7 @@ export function addHttpHandler(
                   assignee: subproject.assignee,
                   validator: subproject.validator,
                   workflowitemType: subproject.workflowitemType,
+                  workflowMode: subproject.workflowMode || "ordered",
                   currency: subproject.currency,
                   projectedBudgets: subproject.projectedBudgets,
                   additionalData: subproject.additionalData,

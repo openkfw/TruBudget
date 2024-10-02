@@ -3,7 +3,7 @@ const log = require("./logger");
 function timeout(ms) {
   return new Promise((resolve) => setTimeout(resolve, ms));
 }
-async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
+async function withRetry(cb, maxTimes = 24, timeoutMs = 30000) {
   try {
     return await cb();
   } catch (err) {
@@ -33,7 +33,7 @@ async function withRetry(cb, maxTimes = 24, timeoutMs = 20000) {
       await timeout(timeoutMs);
       return await withRetry(cb, --maxTimes);
     } else {
-      // In case of other error codes including 500 stop provisioning immediatly
+      // In case of other error codes including 500 stop provisioning immediately
       log.error({ err }, "Other Error, aborting provisioning");
       process.exit(1);
     }

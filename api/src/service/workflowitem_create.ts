@@ -1,8 +1,8 @@
-import { encryptWithKey } from "lib/asymmetricCrypto";
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
 
+import { encryptWithKey } from "../lib/asymmetricCrypto";
+import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
 
 import * as Cache from "./cache2";
@@ -72,45 +72,40 @@ export async function createWorkflowitem(
       applyWorkflowitemType: (event: BusinessEvent, workflowitem: Workflowitem.Workflowitem) => {
         return TypeEvents.applyWorkflowitemType(event, ctx, serviceUser, workflowitem);
       },
-      uploadDocumentToStorageService: async (fileName, documentBase64, id) => {
-        return await DocumentUpload.uploadDocument(
-          ctx,
-          serviceUser,
-          { fileName, documentBase64, id },
-          {
-            getAllDocumentReferences: async () => {
-              return DocumentGet.getAllDocumentReferences({
-                getDocumentsEvents: async () => {
-                  return cache.getDocumentUploadedEvents();
-                },
-                getAllProjects: async () => {
-                  return await ProjectCacheHelper.getAllProjects(conn, ctx);
-                },
-                getAllSubprojects: async (projectId) => {
-                  return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
-                },
-                getAllWorkflowitems: async (projectId, subprojectId) => {
-                  return await WorkflowitemCacheHelper.getAllWorkflowitems(
-                    conn,
-                    ctx,
-                    projectId,
-                    subprojectId,
-                  );
-                },
-              });
-            },
-            getPublicKey: async (organization) => {
-              return PublicKeyGet.getPublicKey(conn, ctx, organization);
-            },
-            storeDocument: async (id, name, hash) => {
-              return storageServiceClient.uploadObject(id, name, hash);
-            },
-            encryptWithKey: async (secret, publicKey) => {
-              return encryptWithKey(secret, publicKey);
-            },
-            getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
+      uploadDocumentToStorageService: async (file: DocumentUpload.File) => {
+        return await DocumentUpload.uploadDocument(ctx, serviceUser, file, {
+          getAllDocumentReferences: async () => {
+            return DocumentGet.getAllDocumentReferences({
+              getDocumentsEvents: async () => {
+                return cache.getDocumentUploadedEvents();
+              },
+              getAllProjects: async () => {
+                return await ProjectCacheHelper.getAllProjects(conn, ctx);
+              },
+              getAllSubprojects: async (projectId) => {
+                return await SubprojectCacheHelper.getAllSubprojects(conn, ctx, projectId);
+              },
+              getAllWorkflowitems: async (projectId, subprojectId) => {
+                return await WorkflowitemCacheHelper.getAllWorkflowitems(
+                  conn,
+                  ctx,
+                  projectId,
+                  subprojectId,
+                );
+              },
+            });
           },
-        );
+          getPublicKey: async (organization) => {
+            return PublicKeyGet.getPublicKey(conn, ctx, organization);
+          },
+          storeDocument: async (file: DocumentUpload.File) => {
+            return storageServiceClient.uploadObject(file);
+          },
+          encryptWithKey: async (secret, publicKey) => {
+            return encryptWithKey(secret, publicKey);
+          },
+          getUser: (userId) => UserQuery.getUser(conn, ctx, serviceUser, userId),
+        });
       },
       getAllDocumentReferences: async () => {
         return DocumentGet.getAllDocumentReferences({

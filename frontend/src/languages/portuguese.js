@@ -26,6 +26,7 @@ const pt = {
     assigned: "Atribuído",
     assignees: "Responsável",
     back: "Voltar",
+    backToLogin: "Voltar ao login",
     bank: "Banco",
     budget_distribution: "Distribuição do orçamento",
     budget: "Orçamento",
@@ -53,6 +54,7 @@ const pt = {
     edited: "Editado",
     email: "Email",
     finish: "Finalizar",
+    genericError: "Algo correu mal.",
     global: "global",
     grant: "Conceder",
     hash: "Hash",
@@ -104,6 +106,7 @@ const pt = {
     not_projected: "Não projetado",
     ongoing: "Em andamento",
     open: "Aberto",
+    optional: "Opcional",
     organization: "Organização",
     password: "Senha",
     permission: "Permissão",
@@ -157,7 +160,7 @@ const pt = {
     edit_permissions: "Editar permissões",
     group_created: "Grupo de usuários criado com sucesso",
     groups: "Grupos",
-    invalid_password: "Sehna inválida",
+    invalid_password: "A senha deve conter pelo menos 8 caracteres, letra maiúscula e número",
     new_group: "Novo grupo de usuários",
     new_user_password_confirmation: "Confirme a Nova Senha",
     new_user_password: "Nova Senha",
@@ -235,11 +238,30 @@ const pt = {
     environment: "Ambiente",
     loading: "Carregando ...",
     login_button_title: "Login",
+    login_authproxy_button_title: "Login com Auth Proxy",
     production_env: "Produção",
     test_env: "Teste",
     frontend_name: "TruBudget",
     frontend_description: "Uma solução baseada em blockchain para monitoramento de despesas orçamentárias",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Utilizador não encontrado. Entre em contacto com o seu administrador.",
+    popup_blocker_warning:
+      "Não é possível sair do serviço de autenticação externa. Ative os pop-ups ou visite o\n{0}\npara sair em segurança."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "O endereço de e-mail que introduziu está incorreto",
+    link: "Esqueceu-se da sua senha?",
+    emailSent: "E-mail com instruções sobre como redefinir a sua palavra-passe foi enviado.",
+    subHeader:
+      "Por favor, introduza o seu endereço de e-mail para receber mais instruções sobre como redefinir a sua palavra-passe.",
+    unavailableService: "O serviço de e-mail não está disponível de momento."
+  },
+
+  resetPassword: {
+    invalidToken: "O token de autenticação expirou. Por favor, repita o processo de esquecimento da palavra-passe.",
+    passwordResetSuccess: "Palavra-passe redefinida com sucesso. Por favor, prossiga para a página de login.",
+    setPasswordButton: "Definir nova palavra-passe",
+    subHeader: "Por favor, defina a sua nova palavra-passe."
   },
 
   project: {
@@ -265,6 +287,9 @@ const pt = {
   subproject: {
     assignee: "Proprietário",
     fixed_workflowitem_type: "Tipo de item de fluxo de trabalho fixo",
+    workflow_mode: "Modo de fluxo de trabalho",
+    workflow_mode_ordered: "Seleção ordenada",
+    workflow_mode_unordered: "Seleção não ordenada",
     subproject_add_title: "Criar novo subprojeto",
     subproject_assigned_organization: "Organização responsável",
 
@@ -286,11 +311,11 @@ const pt = {
     subproject_restricted_workflowitem_type:
       "Permitir apenas item de fluxo de trabalho do tipo restrito. Ao atribuir um item de fluxo de trabalho restrito, as permissões são concedidas e revogadas automaticamente. O atribuidor manterá apenas as permissões de visualização.",
     workflowitem_assignee: "Cessionário padrão",
-    organization_info: "Organization",
+    organization_info: "Organização financiadora",
     total_budget_info: "Parte interessada participante",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
-      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -320,7 +345,16 @@ const pt = {
     workflow_document_validated: "Validado",
     workflow_document_validation_not_ok: "Documento diferente",
     workflow_document_validation_ok: "Documento idêntico",
+    workflow_document_last_modified: "Última modificação",
     workflow_documents: "Documentos",
+    workflow_documents_add_file: "Adicionar arquivo",
+    workflow_documents_add_link: "Adicionar link externo",
+    workflow_documents_file_prepared: "Arquivo preparado",
+    workflow_documents_upload_same_document: "Carregue o mesmo documento para criar hash",
+    workflow_documents_link_url: "URL do link externo",
+    workflow_documents_link_name: "Nome do documento externo",
+    workflow_documents_size_exceed: "O tamanho do arquivo excede o limite de",
+    workflow_documents_upload_heading: "Carregar documento",
     workflow_enable_sort: "Ordenar",
     workflow_fingerprint: "Miniatura",
     workflow_name: "Nome",
@@ -343,7 +377,8 @@ const pt = {
     workflow_type_transaction: "Transação",
     workflow_type_workflow: "Workflow",
     workflow_type: "Categoria",
-    workflow_upload_document: "Autenticar",
+    workflow_upload_document: "Carregar documento",
+    workflow_select_document: "Selecione um documento",
     workflowitem_details_documents: "Documentos",
     workflowitem_details_history: "Histórico",
     workflowitem_details_overview: "Visão geral",

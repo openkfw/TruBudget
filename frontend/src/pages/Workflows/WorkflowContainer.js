@@ -318,6 +318,7 @@ const mapStateToProps = (state) => {
     worflowDetailsInitialTab: state.getIn(["workflow", "worflowDetailsInitialTab"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
+    workflowMode: state.getIn(["workflow", "workflowMode"]),
     workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
     workflowitemsBulkAction: state.getIn(["workflow", "workflowitemsBulkAction"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"])

@@ -1,7 +1,9 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import * as GroupCreate from "./domain/organization/group_create";
 import { sourceGroups } from "./domain/organization/group_eventsourcing";

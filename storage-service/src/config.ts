@@ -3,6 +3,7 @@ interface MinioConfig {
   secretKey: string;
   host: string;
   port: number;
+  protocol: "http" | "https";
   bucketName: string;
 }
 interface AzureBlobConfig {
@@ -37,6 +38,7 @@ const config: Config = {
     secretKey: process.env.MINIO_SECRET_KEY || "minio123",
     host: process.env.MINIO_HOST || "localhost",
     port: Number(process.env.MINIO_PORT) || 9000,
+    protocol: process.env.MINIO_PROTOCOL === "https" ? "https" : "http",
     bucketName: process.env.MINIO_BUCKET_NAME || "trubudget",
   },
   azureBlobStorage: {

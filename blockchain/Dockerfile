@@ -7,7 +7,7 @@ EXPOSE 8000
 
 RUN apt-get update
 RUN apt-get install -y curl
-RUN curl -ko- https://www.multichain.com/download/multichain-2.1.2.tar.gz | tar xzv -C /usr/local/bin --strip 1 --exclude='multichain-2.1.2/multichaind-cold'
+RUN curl -ko- https://www.multichain.com/download/multichain-2.3.3.tar.gz | tar xzv -C /usr/local/bin --strip 1 --exclude='multichain-2.3.3/multichaind-cold'
 
 WORKDIR /home/node
 COPY package.json ./

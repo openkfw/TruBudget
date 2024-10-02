@@ -10,6 +10,7 @@ services:
   alpha-node:
     image: trubudget/blockchain:${TAG}
     environment:
+      PORT: 8085
       MULTICHAIN_RPC_PORT: ${MULTICHAIN_RPC_PORT}
       MULTICHAIN_RPC_PASSWORD: ${MULTICHAIN_RPC_PASSWORD}
       ORGANIZATION: ${ORGANIZATION}
@@ -28,8 +29,8 @@ services:
       mynetwork:
         ipv4_address: 172.21.0.11
     # volume for persisting data from multichain
-    volumes:
-      - alphaVolume:${MULTICHAIN_DIR}
+    # volumes:
+    #   - alphaVolume:${MULTICHAIN_DIR}
     ports:
       - ${MULTICHAIN_RPC_PORT}:${MULTICHAIN_RPC_PORT} # port for connecting to the multichain daemon
       - ${BLOCKCHAIN_PORT}:${BLOCKCHAIN_PORT} # port for requests to blockchain API
@@ -88,6 +89,8 @@ services:
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service
       STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT} 
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
       SIGNING_METHOD: ${SIGNING_METHOD}
       JWT_SECRET: ${JWT_SECRET}
@@ -98,8 +101,19 @@ services:
       AUTHPROXY_ENABLED: ${AUTHPROXY_ENABLED}
       AUTHPROXY_JWS_SIGNATURE: ${AUTHPROXY_JWS_SIGNATURE}
       APPLICATIONINSIGHTS_CONNECTION_STRING: ${APPLICATIONINSIGHTS_CONNECTION_STRING}
+      REFRESH_TOKEN_STORAGE: ${REFRESH_TOKEN_STORAGE}
+      API_DB_USER: ${API_DB_USER}
+      API_DB_PASSWORD: ${API_DB_PASSWORD}
+      API_DB_HOST: ${API_DB_HOST}
+      API_DB_DATABASE: ${API_DB_DATABASE}
+      API_DB_PORT: ${API_DB_PORT}
+      API_DB_SSL: ${API_DB_SSL}
+      API_DB_SCHEMA: ${API_DB_SCHEMA}
+      API_REFRESH_TOKENS_TABLE: ${API_REFRESH_TOKENS_TABLE}
     depends_on:
       - alpha-node
+    volumes:
+      - "../../api/src/trubudget-config:/home/node/src/trubudget-config:delegated"
     networks:
       mynetwork:
         ipv4_address: 172.21.0.4
@@ -139,6 +153,7 @@ services:
     environment:
       API_HOST: alpha-api
       API_PORT: ${API_PORT}
+      API_PROTOCOL: ${API_PROTOCOL}
       PROVISIONING_TYPE: ${PROVISIONING_TYPE}
       ROOT_SECRET: ${ROOT_SECRET}
       ORGANIZATION: ${ORGANIZATION}
@@ -178,13 +193,19 @@ services:
     image: trubudget/storage-service:${TAG}
     environment:
       PORT: ${STORAGE_SERVICE_PORT}
+      NODE_ENV: ${NODE_ENV}
       ACCESS_CONTROL_ALLOW_ORIGIN: ${ACCESS_CONTROL_ALLOW_ORIGIN}
       MINIO_ACCESS_KEY: ${MINIO_ACCESS_KEY}
       MINIO_SECRET_KEY: ${MINIO_SECRET_KEY}
       MINIO_HOST: minio
       MINIO_PORT: ${MINIO_PORT}
+      MINIO_PROTOCOL: ${MINIO_PROTOCOL}
       LOG_LEVEL: ${STORAGE_LOG_LEVEL}
       RATE_LIMIT: ${RATE_LIMIT}
+      STORAGE_PROVIDER: ${STORAGE_PROVIDER}
+      AZURE_STORAGE_CONNECTION_STRING: ${AZURE_STORAGE_CONNECTION_STRING}
+      AZURE_STORAGE_PORT: ${AZURE_STORAGE_PORT}
+      AZURE_CONTAINER_NAME: ${AZURE_CONTAINER_NAME}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.8
@@ -203,10 +224,16 @@ services:
       REACT_APP_EMAIL_SERVICE_ENABLED: ${REACT_APP_EMAIL_SERVICE_ENABLED}
       API_HOST: alpha-api
       API_PORT: ${API_PORT}
+      API_PROTOCOL: ${API_PROTOCOL}
       EXPORT_HOST: ${EXPORT_HOST}
       EXPORT_PORT: ${EXPORT_PORT}
+      EXPORT_PROTOCOL: ${EXPORT_PROTOCOL}
       EMAIL_HOST: ${EMAIL_HOST}
       EMAIL_PORT: ${EMAIL_PORT}
+      EMAIL_PROTOCOL: ${EMAIL_PROTOCOL}
+      STORAGE_SERVICE_HOST: ${STORAGE_SERVICE_HOST}
+      STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT}
+      STORAGE_SERVICE_PROTOCOL: ${STORAGE_SERVICE_PROTOCOL}
       INLINE_RUNTIME_CHUNK: ${INLINE_RUNTIME_CHUNK}
       REACT_APP_LOGGING: ${REACT_APP_LOGGING}
       REACT_APP_LOG_LEVEL: ${REACT_APP_LOG_LEVEL}
@@ -219,6 +246,10 @@ services:
       REACT_APP_EXCHANGE_RATE_URL: ${REACT_APP_EXCHANGE_RATE_URL}
       REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING: ${REACT_APP_APPLICATIONINSIGHTS_CONNECTION_STRING}
       REACT_APP_POLLING_INTERVAL: ${REACT_APP_POLLING_INTERVAL}
+      REACT_APP_API_SERVICE_ADDITIONAL_NGINX_CONF: ${REACT_APP_API_SERVICE_ADDITIONAL_NGINX_CONF}
+      REACT_APP_EMAIL_SERVICE_ADDITIONAL_NGINX_CONF: ${REACT_APP_EMAIL_SERVICE_ADDITIONAL_NGINX_CONF}
+      REACT_APP_EXPORT_SERVICE_ADDITIONAL_NGINX_CONF: ${REACT_APP_EXPORT_SERVICE_ADDITIONAL_NGINX_CONF}
+      REACT_APP_STORAGE_SERVICE_ADDITIONAL_NGINX_CONF: ${REACT_APP_STORAGE_SERVICE_ADDITIONAL_NGINX_CONF}
     networks:
       mynetwork:
         ipv4_address: 172.21.0.91
@@ -234,6 +265,7 @@ services:
       LOGGER_PORT: ${LOGGER_PORT}
       API_HOST: ${API_HOST}
       API_PORT: ${API_PORT}
+      API_PROTOCOL: ${API_PROTOCOL}
       LOG_LEVEL: ${LOG_LEVEL}
       LOGGING_SERVICE_CACHE_DURATION: ${LOGGING_SERVICE_CACHE_DURATION}
       NODE_ENV: ${LOGGING_SERVICE_NODE_ENV}
@@ -253,7 +285,7 @@ services:
       # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
       P2P_HOST: 172.21.0.11 # IP of alpha-node
       P2P_PORT: 7447
-      API_PROTO: http
+      API_PROTOCOL: http
       API_HOST: alpha-api # API to send register request
       API_PORT: ${API_PORT}
     volumes:
@@ -320,7 +352,7 @@ services:
     depends_on:
       - alpha-api
     ports:
-      - "3005:80" # map nginx port 80 to localhost:3005
+      - "3005:80" # map nginx port 80 to localhost:3005 
 
 volumes:
   alphaVolume:

@@ -1,11 +1,12 @@
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
+
 import { getAllowedIntents } from "./authz";
 import Intent from "./authz/intents";
-import { AuthenticatedRequest } from "./httpd/lib";
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { toUnixTimestampStr } from "./lib/datetime";
 import { isNonemptyString } from "./lib/validation";
@@ -14,7 +15,7 @@ import { DocumentOrExternalLinkReference } from "./service/domain/document/docum
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import Type from "./service/domain/workflowitem_types/types";
-import { extractUser } from "./handlerUtils";
+import { AugmentedFastifyInstance } from "./types";
 
 /**
  * Creates the swagger schema for the `/workflowitem.list` endpoint
@@ -97,6 +98,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                                   example: "https://www.example.com",
                                 },
                                 fileName: { type: "string", example: "myFile.pdf" },
+                                linkedFileHash: {
+                                  type: "string",
+                                  example: "e14khj7gdksjbd8ehfk3bf3bfi3brigu395go3ou",
+                                },
                                 documentId: {
                                   type: "string",
                                   example: "abc-cde-adf",

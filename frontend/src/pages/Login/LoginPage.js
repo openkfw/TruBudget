@@ -1,5 +1,5 @@
 import React from "react";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import SettingsIcon from "@mui/icons-material/Settings";
 import Box from "@mui/material/Box";
@@ -62,6 +62,11 @@ const LoginPage = ({
                 id="password"
                 data-test="password-field"
               />
+              <Box className="forgot-password">
+                <Button component={Link} to="/forgot-password" variant="text" size="small">
+                  {strings.forgotPassword.link}
+                </Button>
+              </Box>
               <div className="login-card-footer">
                 <Dropdown value={language} id="language_selection" onChange={setLanguage} className="login-dropdown">
                   <MenuItem value="en-gb">{strings.language.english}</MenuItem>
@@ -94,7 +99,7 @@ const LoginPage = ({
                       variant="contained"
                       id="orgaloginbutton"
                     >
-                      LOGIN WITH AUTH PROXY
+                      {strings.login.login_authproxy_button_title}
                     </Button>
                   </div>
                 </Grid>

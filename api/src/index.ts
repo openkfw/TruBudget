@@ -3,7 +3,9 @@ import { AxiosRequestConfig } from "axios";
 
 import "module-alias/register";
 
-import getValidConfig from "./config";
+import * as AppLatestVersionAPI from "./app_latest_version";
+import * as AppUpgradeVersionAPI from "./app_upgrade";
+import getValidConfig, { config } from "./config";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
 import * as GlobalPermissionsGrantAllAPI from "./global_permissions_grant_all";
@@ -15,6 +17,8 @@ import * as GroupMemberRemoveAPI from "./group_member_remove";
 import * as GroupPermissionsListAPI from "./group_permissions_list";
 import { registerRoutes } from "./httpd/router";
 import * as Server from "./httpd/server";
+import { Ctx } from "./lib/ctx";
+import DbConnector from "./lib/db";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -48,7 +52,11 @@ import StorageServiceClient from "./service/Client_storage_service";
 import * as DocumentValidationService from "./service/document_validation";
 import { MAX_DOCUMENT_SIZE_BASE64 } from "./service/domain/document/document";
 import * as GroupQueryService from "./service/domain/organization/group_query";
+import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserQueryService from "./service/domain/organization/user_query";
+import * as Project from "./service/domain/workflow/project";
+import * as Subproject from "./service/domain/workflow/subproject";
+import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
@@ -95,6 +103,7 @@ import * as UserPasswordChangeService from "./service/user_password_change";
 import * as UserPermissionGrantService from "./service/user_permission_grant";
 import * as UserPermissionRevokeService from "./service/user_permission_revoke";
 import * as UserPermissionsListService from "./service/user_permissions_list";
+import * as UserAuthenticateRefreshTokenService from "./service/user_refresh_token";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
@@ -107,6 +116,7 @@ import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
+import * as WorkflowitemUpdate from "./service/workflowitem_update";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as SubprojectAssignAPI from "./subproject_assign";
@@ -129,13 +139,16 @@ import * as UserAuthenticateAdAPI from "./user_authenticateAd";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
 import * as UserEnableAPI from "./user_enable";
+import * as UserForgotPasswordAPI from "./user_forgot_password";
 import * as UserListAPI from "./user_list";
 import * as UserAssignmentsAPI from "./user_listAssignments";
 import * as UserLogoutAPI from "./user_logout";
 import * as UserPasswordChangeAPI from "./user_password_change";
+import * as UserResetPasswordAPI from "./user_password_reset";
 import * as UserPermissionGrantAPI from "./user_permission_grant";
 import * as UserPermissionRevokeAPI from "./user_permission_revoke";
 import * as UserPermissionsListAPI from "./user_permissions_list";
+import * as UserAuthenticateRefreshTokenAPI from "./user_refreshToken";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
@@ -182,7 +195,7 @@ const {
  */
 
 const rpcSettings: ConnectionSettings = {
-  protocol: "http",
+  protocol: rpc.protocol,
   host: rpc.host,
   port: rpc.port,
   username: rpc.user,
@@ -208,7 +221,7 @@ const { multichainClient } = db;
 let storageServiceSettings: AxiosRequestConfig;
 if (documentFeatureEnabled) {
   storageServiceSettings = {
-    baseURL: `http://${storageService.host}:${storageService.port}`,
+    baseURL: `${storageService.protocol}://${storageService.host}:${storageService.port}`,
     // 10 seconds request timeout
     timeout: 10000,
     maxBodyLength: MAX_DOCUMENT_SIZE_BASE64,
@@ -222,6 +235,12 @@ if (documentFeatureEnabled) {
   };
 }
 const storageServiceClient = new StorageServiceClient(storageServiceSettings);
+
+// database connection
+let dbConnection: DbConnector | undefined;
+if (config.refreshTokenStorage === "db") {
+  dbConnection = new DbConnector();
+}
 
 const server = Server.createBasicApp(
   jwt,
@@ -275,9 +294,23 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
-  Cache.invalidateCache(db),
+registerRoutes(
+  server,
+  db,
+  URL_PREFIX,
+  blockchain.protocol,
+  blockchain.host,
+  blockchain.port,
+  storageServiceClient,
+  () => Cache.invalidateCache(db),
 );
+
+/*
+ * APIs related to App versioning
+ */
+
+AppLatestVersionAPI.addHttpHandler(server, URL_PREFIX);
+AppUpgradeVersionAPI.addHttpHandler(server, URL_PREFIX);
 
 /*
  * APIs related to Global Permissions
@@ -346,6 +379,8 @@ UserAuthenticateAPI.addHttpHandler(
       ),
     getGroupsForUser: (ctx, serviceUser, userId) =>
       GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+    storeRefreshToken: async (userId, refreshToken, validUntil) =>
+      dbConnection?.insertRefreshToken(userId, refreshToken, validUntil),
   },
   jwt,
 );
@@ -366,12 +401,41 @@ if (authProxy.enabled) {
         ),
       getGroupsForUser: (ctx, serviceUser, userId) =>
         GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+      storeRefreshToken: async (userId, refreshToken, validUntil) =>
+        dbConnection?.insertRefreshToken(userId, refreshToken, validUntil),
     },
     jwt,
   );
 }
 
-UserLogoutAPI.addHttpHandler(server, URL_PREFIX);
+if (config.refreshTokenStorage) {
+  UserAuthenticateRefreshTokenAPI.addHttpHandler(
+    server,
+    URL_PREFIX,
+    {
+      validateRefreshToken: (ctx, userId, refreshToken) =>
+        UserAuthenticateRefreshTokenService.validateRefreshToken(
+          organization,
+          organizationVaultSecret,
+          db,
+          dbConnection as DbConnector,
+          ctx,
+          userId,
+          refreshToken,
+        ),
+      getGroupsForUser: (ctx, serviceUser, userId) =>
+        GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+    },
+    jwt,
+  );
+}
+
+export interface UserLogoutAPIService {
+  clearRefreshToken(refreshToken: string): Promise<Result.Type<void>>;
+}
+UserLogoutAPI.addHttpHandler(server, URL_PREFIX, {
+  clearRefreshToken: async (refreshToken) => dbConnection?.deleteRefreshToken(refreshToken),
+});
 
 UserCreateAPI.addHttpHandler(server, URL_PREFIX, {
   createUser: (ctx, issuer, reqData) =>
@@ -397,6 +461,26 @@ UserListAPI.addHttpHandler(server, URL_PREFIX, {
   listUsers: (ctx, issuer) => UserQueryService.getUsers(db, ctx, issuer),
   listGroups: (ctx, issuer) => GroupQueryService.getGroups(db, ctx, issuer),
 });
+
+UserForgotPasswordAPI.addHttpHandler(
+  server,
+  URL_PREFIX,
+  {
+    getUserPermissions: (ctx, user, userId) =>
+      UserPermissionsListService.getUserPermissions(db, ctx, user, userId),
+  },
+  jwt,
+);
+
+UserResetPasswordAPI.addHttpHandler(
+  server,
+  URL_PREFIX,
+  {
+    changeUserPassword: (ctx, serviceUser, orga, requestData) =>
+      UserPasswordChangeService.changeUserPassword(db, ctx, serviceUser, orga, requestData),
+  },
+  jwt,
+);
 
 UserPasswordChangeAPI.addHttpHandler(server, URL_PREFIX, {
   changeUserPassword: (ctx, issuer, orga, reqData) =>
@@ -817,6 +901,20 @@ WorkflowitemPermissionRevokeAPI.addHttpHandler(server, URL_PREFIX, {
       intent,
     ),
 });
+
+/**
+ * Represents the service that updates a workflowitem
+ */
+export interface WorkflowitemUpdateServiceInterface {
+  updateWorkflowitem(
+    ctx: Ctx,
+    user: ServiceUser,
+    projectId: Project.Id,
+    subprojectId: Subproject.Id,
+    workflowitemId: Workflowitem.Id,
+    data: WorkflowitemUpdate.RequestData,
+  ): Promise<Result.Type<void>>;
+}
 
 WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
   updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>

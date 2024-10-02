@@ -48,7 +48,7 @@ describe("Language", function() {
     cy.get("[data-test=project-header]")
       .last()
       .should("be.visible")
-      .should("contain", "სტატუსი: Open");
+      .should("contain", "გახსნა");
     cy.get("[data-test=project-creation-date]")
       .last()
       .should("be.visible")

@@ -1,8 +1,9 @@
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent, { subprojectIntents } from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -13,7 +14,9 @@ import { PreconditionError } from "../errors/precondition_error";
 import * as AuthToken from "../organization/auth_token";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+import WorkflowMode, { workflowModeSchema } from "../workflow/types";
 import WorkflowitemType, { workflowitemTypeSchema } from "../workflowitem_types/types";
+
 import { CurrencyCode, currencyCodeSchema } from "./money";
 import * as Project from "./project";
 import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
@@ -32,6 +35,7 @@ export interface RequestData {
   currency: CurrencyCode;
   projectedBudgets?: ProjectedBudget[];
   additionalData?: object;
+  workflowMode?: WorkflowMode;
 }
 
 const requestDataSchema = Joi.object({
@@ -46,6 +50,7 @@ const requestDataSchema = Joi.object({
   currency: currencyCodeSchema.required(),
   projectedBudgets: projectedBudgetListSchema,
   additionalData: AdditionalData.schema,
+  workflowMode: workflowModeSchema,
 });
 
 export function validate(input): RequestData {
@@ -126,6 +131,7 @@ export async function createSubproject(
       projectedBudgets: reqData.projectedBudgets || [],
       permissions: newDefaultPermissionsFor(issuer.id),
       additionalData: reqData.additionalData || {},
+      workflowMode: reqData.workflowMode || "ordered",
     },
     new Date().toISOString(),
     issuer.metadata,

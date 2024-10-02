@@ -50,14 +50,14 @@ spec:
           httpGet:
             path: /api/liveness
             port: {{ .Values.api.env.PORT }}
-          initialDelaySeconds: 10
+          initialDelaySeconds: {{ .Values.api.livenessProbe.initialDelaySeconds }}
           periodSeconds: 5
           timeoutSeconds: 10
         readinessProbe:
           httpGet:
             path: /api/readiness
             port: {{ .Values.api.env.PORT }}
-          initialDelaySeconds: 10
+          initialDelaySeconds: {{ .Values.api.readinessProbe.initialDelaySeconds }}
           periodSeconds: 10
           timeoutSeconds: 10
 

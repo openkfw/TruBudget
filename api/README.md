@@ -8,10 +8,10 @@ Check out our [ADRs](../doc/adr/) to learn about our current way of doing things
 
 #### Get started
 
-Before starting the API, environment variables have to be set under `.env` file. The `.env_example` file provides the default/example values for the environment variables. Just make a copy of example file via:
+Before starting the API, environment variables have to be set under `.env` file. The `.env.example` file provides the default/example values for the environment variables. Just make a copy of example file via:
 
 ```bash
-cp .env_example .env
+cp .env.example .env
 ```
 
 Default values are usually enough to setup a working local Trubudget instance. However you are free to change the variable values under .env file.

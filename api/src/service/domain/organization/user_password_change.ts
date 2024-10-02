@@ -1,15 +1,16 @@
 import Joi = require("joi");
-
-import { Ctx } from "lib/ctx";
-import { safePasswordSchema } from "lib/joiValidation";
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import { safePasswordSchema } from "../../../lib/joiValidation";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
+
 import { ServiceUser } from "./service_user";
 import * as UserEventSourcing from "./user_eventsourcing";
 import * as UserPasswordChanged from "./user_password_changed";
@@ -38,7 +39,7 @@ interface Repository {
 export async function changeUserPassword(
   ctx: Ctx,
   issuer: ServiceUser,
-  issuerOrganization: string,
+  issuerOrganization: string | null,
   data: RequestData,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
@@ -73,7 +74,7 @@ export async function changeUserPassword(
   const user = userResult;
 
   logger.trace({ issuer }, "Checking if issuer and revokee belong to the same organization");
-  if (userResult.organization !== issuerOrganization) {
+  if (issuerOrganization && userResult.organization !== issuerOrganization) {
     return new NotAuthorized({
       ctx,
       userId: issuer.id,

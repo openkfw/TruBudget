@@ -248,10 +248,10 @@ cd docker-compose
 
 2. Start docker if it is not running already
 
-3. Set environment variables in the `.env` file, or to use the default values use the `.env_example`
+3. Set environment variables in the `.env` file, or to use the default values use the `.env.example`
 
 ```bash
-cp .env_example .env
+cp .env.example .env
 ```
 
 4. Create a blockchain instance
@@ -276,7 +276,7 @@ cd ../api
 
 1. Set environment variables
 
-- Rename the .env_example file to .env and set following environment variables accordingly.
+- Rename the .env.example file to .env and set following environment variables accordingly.
 
 ```bash
 ORGANIZATION=ACMECorp
@@ -358,7 +358,7 @@ cd ../frontend
 
 1. Set environment variables
 
-- Rename the .env_example file to .env and set following environment variables accordingly.
+- Rename the .env.example file to .env and set following environment variables accordingly.
 
 ```bash
 PORT=3000
@@ -393,7 +393,7 @@ cd ../provisioning
 
 1. Set environment variables
 
-- Rename the .env_example file to .env and set following environment variables accordingly.
+- Rename the .env.example file to .env and set following environment variables accordingly.
 
 ```bash
 API_PORT=8080
@@ -426,7 +426,7 @@ cd ../excel-export-service
 
 1. Set environment variables
 
-- Rename the .env_example file to .env and set following environment variables accordingly.
+- Rename the .env.example file to .env and set following environment variables accordingly.
 
 ```bash
 API_HOST="localhost"
@@ -492,7 +492,7 @@ cd e2e-test
 
 In the `e2e-test` folder you can run the following commands:
 
-Before you run cypress, you need to specify the environment variables (such as Organization, URLs of fronted, api, excel export, email service) in the .env\* file. If you have not .env\* file, create one and copy the content from /e2e-test/.env_example\* to /e2e-test/.env\*. For more information see [Environment variables](#environment-variables)
+Before you run cypress, you need to specify the environment variables (such as Organization, URLs of fronted, api, excel export, email service) in the .env\* file. If you have not .env\* file, create one and copy the content from /e2e-test/.env.example\* to /e2e-test/.env\*. For more information see [Environment variables](#environment-variables)
 
 ```bash
 npm run cypress

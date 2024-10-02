@@ -1,7 +1,9 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
 import * as GroupQuery from "./domain/organization/group_query";
@@ -11,8 +13,8 @@ import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemAssign from "./domain/workflow/workflowitem_assign";
-import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import * as WorkflowitemSnapshotPublish from "./domain/workflow/workflowitem_snapshot_publish";
+import * as TypeEvents from "./domain/workflowitem_types/apply_workflowitem_type";
 import { store } from "./store";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 

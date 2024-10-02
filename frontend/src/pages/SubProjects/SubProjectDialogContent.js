@@ -1,7 +1,6 @@
 import React from "react";
 
-import CancelIcon from "@mui/icons-material/Cancel";
-import { Alert, IconButton } from "@mui/material";
+import { Alert } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import MenuItem from "@mui/material/MenuItem";
 
@@ -15,7 +14,7 @@ import SingleSelection from "../Common/SingleSelection";
 
 import "./SubProjectDialogContent.scss";
 
-const subprojectWorkflowItemTypes = ["general", "restricted"];
+const subprojectWorkflowModes = ["ordered", "unordered"];
 
 function getMenuItems(currencies) {
   return currencies.map((currency, index) => {
@@ -31,7 +30,7 @@ const getDropdownMenuItems = (types) => {
   return types.map((type, index) => {
     return (
       <MenuItem key={index} value={type}>
-        {type}
+        {strings.subproject[`workflow_mode_${type}`]}
       </MenuItem>
     );
   });
@@ -39,6 +38,12 @@ const getDropdownMenuItems = (types) => {
 
 const SubProjectDialogContent = (props) => {
   const currencies = getCurrencies();
+
+  // creation of restricted workflow item types is deprecated
+  // all new subprojects will have general workflow item types
+  if (!props.editDialogShown) {
+    props.storeFixedWorkflowitemType("general");
+  }
 
   return (
     <div data-test="subproject-dialog-content">
@@ -71,24 +76,13 @@ const SubProjectDialogContent = (props) => {
               <div className="sub-project-dialog-input-container">
                 <Dropdown
                   className="dropdown"
-                  floatingLabel={strings.subproject.fixed_workflowitem_type}
-                  value={props.selectedWorkflowitemType}
-                  onChange={(value) => props.storeFixedWorkflowitemType(value)}
-                  id="types"
+                  floatingLabel={strings.subproject.workflow_mode}
+                  value={props.subprojectToAdd.workflowMode}
+                  onChange={(value) => props.storeWorkflowMode(value)}
+                  id="wf-mode-dropdown"
                 >
-                  {getDropdownMenuItems(subprojectWorkflowItemTypes)}
+                  {getDropdownMenuItems(subprojectWorkflowModes)}
                 </Dropdown>
-                {props.selectedWorkflowitemType ? (
-                  <IconButton
-                    aria-label="cancel"
-                    data-test={"clear-workflowitem-type"}
-                    className="clear-button"
-                    onClick={() => props.storeFixedWorkflowitemType("")}
-                    size="large"
-                  >
-                    <CancelIcon color="action" style={{ fontSize: "x-large" }} />
-                  </IconButton>
-                ) : null}
               </div>
 
               <div className="sub-project-dialog-input-container">

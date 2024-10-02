@@ -38,6 +38,11 @@ const parseMultiPartRequest = async (request: AuthenticatedRequest): Promise<any
     if (part.type === "file") {
       uploadedDocuments.push(await parseMultiPartFile(part));
     } else {
+      if (part.fieldname.includes("comment_")) {
+        const index = parseInt(part.fieldname.split("_")[1]);
+        uploadedDocuments[index].comment = part.value;
+        continue;
+      }
       if (part.fieldname === "apiVersion") {
         continue;
       } else if (part.fieldname === "tags") {

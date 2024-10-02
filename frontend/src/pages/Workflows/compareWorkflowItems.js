@@ -1,7 +1,8 @@
 import { toAmountString } from "../../helper";
+
 export const compareWorkflowItems = (originalItem, itemToCompare) => {
   function isNewDocument(doc) {
-    return Object.hasOwn(doc, "base64") || Object.hasOwn(doc, "link");
+    return !Object.hasOwn(doc, "id");
   }
 
   const modifiedOriginalItem = {
@@ -25,5 +26,6 @@ export const compareWorkflowItems = (originalItem, itemToCompare) => {
   const addedDocuments = Object.keys(itemToCompare.documents || {})
     .map((docId) => itemToCompare.documents[docId])
     .filter(isNewDocument);
+
   return { ...changesExceptDocuments, documents: addedDocuments };
 };

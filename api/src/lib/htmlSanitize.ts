@@ -1,5 +1,5 @@
-import * as sanitizeHtml from "sanitize-html";
 import Joi = require("joi");
+import * as sanitizeHtml from "sanitize-html";
 
 export const htmlStrip = {
   type: "string",

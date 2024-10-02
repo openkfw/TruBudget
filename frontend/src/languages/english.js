@@ -26,6 +26,7 @@ const en = {
     assigned: "Assigned",
     assignees: "Assignee(s)",
     back: "Back",
+    backToLogin: "Back to login",
     bank: "Bank",
     budget_distribution: "Budget distribution",
     budget: "Budget",
@@ -53,6 +54,7 @@ const en = {
     edited: "Edited",
     email: "Email",
     finish: "Finish",
+    genericError: "Something went wrong.",
     global: "global",
     grant: "grant",
     hash: "Hash",
@@ -103,6 +105,7 @@ const en = {
     not_projected: "Not projected",
     ongoing: "Ongoing",
     open: "Open",
+    optional: "Optional",
     organization: "Organization",
     password: "Password",
     permission: "Permission",
@@ -156,7 +159,7 @@ const en = {
     edit_permissions: "Edit permissions",
     group_created: "Group successfully created",
     groups: "Groups",
-    invalid_password: "Password invalid",
+    invalid_password: "Password must contain at least 8 characters, capital letter and number",
     new_group: "New Group",
     new_user_password_confirmation: "Confirm new password",
     new_user_password: "New password",
@@ -234,11 +237,29 @@ const en = {
     environment: "Environment",
     loading: "Loading ...",
     login_button_title: "Login",
+    login_authproxy_button_title: "Login with Auth Proxy",
     production_env: "Prod",
     test_env: "Test",
     frontend_name: "TruBudget",
     frontend_description: "A blockchain-based solution for budget expenditure",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Your user account has not been found. Please contact the administrator.",
+    popup_blocker_warning:
+      "Could not log out from external authentication service. Please allow popup windows, or visit\n{0}\n to securely log out."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "E-mail address you entered is incorrect",
+    link: "Forgot Your Password?",
+    emailSent: "E-mail with instructions how to reset your password was sent.",
+    subHeader: "Please enter your e-mail address in order to receive further instructions how to reset your password.",
+    unavailableService: "E-mail service is unavailable at this time, please try again later."
+  },
+
+  resetPassword: {
+    invalidToken: "Authentication token expired. Please repeat the forgot password process.",
+    passwordResetSuccess: "Password successfully reset. Please proceed to login page.",
+    setPasswordButton: "Set New Password",
+    subHeader: "Please set your new password."
   },
 
   project: {
@@ -264,6 +285,9 @@ const en = {
   subproject: {
     assignee: "Owner",
     fixed_workflowitem_type: "Fixed workflowitem type",
+    workflow_mode: "Workflow Mode",
+    workflow_mode_ordered: "Workflow (Ordered)",
+    workflow_mode_unordered: "Action List (Unordered)",
     subproject_add_title: "Add new subproject",
     subproject_assigned_organization: "Assigned organization",
     subproject_budget_amount: "Subproject  budget amount",
@@ -283,12 +307,12 @@ const en = {
     subproject_general_workflowitem_type: "Only allow workflowitems of type general",
     subproject_restricted_workflowitem_type:
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    workflowitem_assignee: "Default assignee",
-    organization_info: "Organization",
+    workflowitem_assignee: "Fixed assignee",
+    organization_info: "Funding organization",
     total_budget_info: "Participating Stakeholder",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
-      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -317,7 +341,16 @@ const en = {
     workflow_document_validated: "Validated",
     workflow_document_validation_not_ok: "Different document",
     workflow_document_validation_ok: "Identical document",
+    workflow_document_last_modified: "Last modified",
     workflow_documents: "Documents",
+    workflow_documents_add_file: "Add file",
+    workflow_documents_add_link: "Add external link",
+    workflow_documents_file_prepared: "File prepared",
+    workflow_documents_upload_same_document: "Upload same document to create hash",
+    workflow_documents_link_url: "External link URL",
+    workflow_documents_link_name: "External document name",
+    workflow_documents_size_exceed: "File size exceeds the limit of",
+    workflow_documents_upload_heading: "Upload document",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
     workflow_name: "Name",
@@ -341,6 +374,7 @@ const en = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Type",
     workflow_upload_document: "Upload",
+    workflow_select_document: "Select a file",
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "History",
     workflowitem_details_overview: "Overview",
@@ -398,10 +432,12 @@ const en = {
     post_actions_dialog_text: "After creation following actions are executed",
     project_close: "Close project",
     project_close_text: "Are you sure, you want to close this project?",
-    project_close_warning: "If you close the project, you will no longer be able to make changes or add information to it.",
+    project_close_warning:
+      "If you close the project, you will no longer be able to make changes or add information to it.",
     subproject_close: "Close subproject",
     subproject_close_text: "Are you sure, you want to close this subproject?",
-    subproject_close_warning: "If you close the subproject, you will no longer be able to make changes or add information to it.",
+    subproject_close_warning:
+      "If you close the subproject, you will no longer be able to make changes or add information to it.",
     user_group: "User/Group",
     workflowitem_close: "Close workflowitem",
     workflowitem_close_text: "Do you want to accept and close this workflowitem?",

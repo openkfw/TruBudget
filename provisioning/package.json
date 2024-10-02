@@ -1,6 +1,6 @@
 {
   "name": "trubudget-provisioning",
-  "version": "2.12.0",
+  "version": "2.15.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "lint:fix": "eslint src --fix"
   },
   "dependencies": {
-    "axios": "^1.6.5",
+    "axios": "^1.7.4",
     "better-npm-audit": "^3.4.0",
     "trubudget-logging-service": "^1.2.2"
   },
@@ -40,6 +40,7 @@
     "nodemon": "^2.0.3"
   },
   "overrides": {
-    "follow-redirects": "^1.15.6"
+    "follow-redirects": "^1.15.6",
+    "find-my-way": "^8.2.2"
   }
 }

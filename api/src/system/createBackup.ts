@@ -1,8 +1,10 @@
 import axios, { AxiosResponse } from "axios";
+
 import { TruBudgetError } from "../error";
 import { AuthenticatedRequest } from "../httpd/lib";
 
 export const createBackup = async (
+  blockchainProtocol: string,
   blockchainHost: string,
   blockchainPort: number,
   req: AuthenticatedRequest,
@@ -11,7 +13,7 @@ export const createBackup = async (
   if (userId === "root") {
     try {
       const response = await axios({
-        url: `http://${blockchainHost}:${blockchainPort}/chain-sha256`,
+        url: `${blockchainProtocol}://${blockchainHost}:${blockchainPort}/chain-sha256`,
         responseType: "stream",
       });
       return response.data;

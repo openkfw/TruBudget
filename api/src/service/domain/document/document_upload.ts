@@ -16,6 +16,14 @@ export interface RequestData {
   id: string;
   fileName: string;
   documentBase64: string;
+  comment?: string;
+}
+
+export interface File {
+  id: string;
+  fileName: string;
+  documentBase64: string;
+  comment?: string;
 }
 
 type Base64String = string;
@@ -23,7 +31,7 @@ type Base64String = string;
 interface Repository {
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  storeDocument(id, name, hash): Promise<any>;
+  storeDocument(file: File): Promise<any>;
   encryptWithKey(secret, publicKey): Promise<Result.Type<string>>;
   getPublicKey(organization): Promise<Result.Type<Base64String>>;
   getUser(userId: string): Promise<Result.Type<UserRecord.UserRecord>>;
@@ -36,10 +44,10 @@ function docIdAlreadyExists(existingDocuments: GenericDocument[], docId: string)
 export async function uploadDocument(
   ctx: Ctx,
   issuer: ServiceUser,
-  requestData: RequestData,
+  file: File,
   repository: Repository,
 ): Promise<Result.Type<BusinessEvent[]>> {
-  const { id, documentBase64, fileName } = requestData;
+  const { id, documentBase64, fileName } = file;
 
   logger.trace("Getting all documents from repository");
   const existingDocuments = await repository.getAllDocumentReferences();
@@ -57,11 +65,7 @@ export async function uploadDocument(
   }
 
   logger.trace("Storing document in storage");
-  const documentStorageServiceResponseResult = await repository.storeDocument(
-    id,
-    fileName,
-    documentBase64,
-  );
+  const documentStorageServiceResponseResult = await repository.storeDocument(file);
 
   if (Result.isErr(documentStorageServiceResponseResult)) {
     return new VError(documentStorageServiceResponseResult, "failed to store document");

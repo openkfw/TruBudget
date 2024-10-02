@@ -72,6 +72,7 @@ describe("Attaching a document to a workflowitem.", function () {
         { action: "select" },
       );
     });
+    cy.get("[data-testid=PublishIcon]").click();
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 
@@ -82,7 +83,7 @@ describe("Attaching a document to a workflowitem.", function () {
 
     uploadDocument(fileName);
     // submit and close the dialog:
-    cy.get("[data-test=submit]").should("be.visible").click();
+    cy.get("[data-test=submit]").scrollIntoView().should("be.visible").click();
 
     // open the info dialog window:
     cy.wait("@update")
@@ -117,7 +118,7 @@ describe("Attaching a document to a workflowitem.", function () {
 
     uploadDocument(fileName);
     // submit and close the dialog:
-    cy.get("[data-test=submit]").should("be.visible").click();
+    cy.get("[data-test=submit]").scrollIntoView().should("be.visible").click();
 
     // open the info dialog window:
     cy.wait("@update")
@@ -153,7 +154,7 @@ describe("Attaching a document to a workflowitem.", function () {
 
     uploadDocument(fileName);
     // submit and close the dialog:
-    cy.get("[data-test=submit]").should("be.visible").click();
+    cy.get("[data-test=submit]").scrollIntoView().should("be.visible").click();
 
     // open the info dialog window:
     cy.wait("@update")
@@ -211,6 +212,7 @@ describe("Deleting a document from a workflowitem.", function () {
         { action: "select" },
       );
     });
+    cy.get("[data-testid=PublishIcon]").click();
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 
@@ -221,7 +223,7 @@ describe("Deleting a document from a workflowitem.", function () {
 
     uploadDocument(fileName);
     // submit and close the dialog:
-    cy.get("[data-test=submit]").should("be.visible").click();
+    cy.get("[data-test=submit]").scrollIntoView().should("be.visible").click();
 
     // open the info dialog window:
     cy.wait("@update")
@@ -284,6 +286,7 @@ describe("Deleting a document from a closed workflowitem.", function () {
         { action: "select" },
       );
     });
+    cy.get("[data-testid=PublishIcon]").click();
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 
@@ -294,7 +297,7 @@ describe("Deleting a document from a closed workflowitem.", function () {
 
     uploadDocument(fileName);
     // submit and close the dialog:
-    cy.get("[data-test=submit]").should("be.visible").click();
+    cy.get("[data-test=submit]").scrollIntoView().should("be.visible").click();
 
     // close workflowitem
     cy.get("[data-test=close-workflowitem]").should("be.visible").click();

@@ -9,7 +9,12 @@ import {
   Subproject,
   Workflowitem,
 } from "./api";
-import { amountTypesMapping, statusMapping, workflowItemTypeMapping } from "./helper";
+import {
+  amountTypesMapping,
+  statusMapping,
+  workflowItemTypeMapping,
+  workflowModeMapping,
+} from "./helper";
 import strings from "./localizeStrings";
 import logger from "./logger";
 
@@ -79,6 +84,7 @@ export async function writeXLSX(
       { header: strings.common.created, key: "creationUnixTs", width: mediumWidth },
       { header: strings.common.status, key: "status", width: smallWidth },
       { header: strings.common.description, key: "description", width: mediumWidth },
+      { header: strings.subproject.workflow_mode, key: "workflowMode", width: mediumWidth },
       { header: strings.subproject.workflowitem_type, key: "workflowitemType", width: mediumWidth },
       { header: strings.subproject.validator, key: "validator", width: mediumWidth },
       { header: strings.common.assignee, key: "assignee", width: smallWidth },
@@ -177,6 +183,7 @@ export async function writeXLSX(
             status: statusMapping(subproject.status),
             parentDisplayName: project.displayName,
             workflowitemType: workflowItemTypeMapping(subproject.workflowitemType),
+            workflowMode: workflowModeMapping(subproject.workflowMode),
             creationUnixTs: new Date(parseInt(subproject.creationUnixTs, 10) * 1000).toISOString(),
           })
           .commit();

@@ -1,10 +1,12 @@
+import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
+import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
-import { VError } from "verror";
-import * as Result from "../result";
-import logger from "lib/logger";
 import * as ProjectList from "./domain/workflow/project_list";
 import * as ProjectCacheHelper from "./project_cache_helper";
 

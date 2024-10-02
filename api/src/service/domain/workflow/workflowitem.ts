@@ -1,6 +1,7 @@
 import Joi = require("joi");
 
 import Intent from "../../../authz/intents";
+import { safeStringSchema } from "../../../lib/joiValidation";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
@@ -10,10 +11,10 @@ import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
+
 import { moneyAmountSchema } from "./money";
 import * as Subproject from "./subproject";
 import { WorkflowitemTraceEvent, workflowitemTraceEventSchema } from "./workflowitem_trace_event";
-import { safeStringSchema } from "../../../lib/joiValidation";
 
 export type Id = string;
 

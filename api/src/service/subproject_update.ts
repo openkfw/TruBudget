@@ -1,16 +1,18 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import * as GroupQuery from "./domain/organization/group_query";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
-import * as SubprojectUpdate from "./domain/workflow/subproject_update";
 import * as SubprojectSnapshotPublish from "./domain/workflow/subproject_snapshot_publish";
-import * as SubprojectCacheHelper from "./subproject_cache_helper";
+import * as SubprojectUpdate from "./domain/workflow/subproject_update";
 import { store } from "./store";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
 
 export async function updateSubproject(
   conn: ConnToken,

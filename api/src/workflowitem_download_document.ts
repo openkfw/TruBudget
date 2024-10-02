@@ -1,16 +1,17 @@
 import * as contentDisposition from "content-disposition";
 import { RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
+
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
 import * as WorkflowitemDocument from "./service/domain/document/document";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { extractUser } from "./handlerUtils";
-import { AuthenticatedRequest } from "httpd/lib";
+import { AugmentedFastifyInstance } from "./types";
 
 /**
  * Creates the swagger schema for the `/workflowitem.downloadDocument` endpoint

@@ -1,12 +1,14 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
+
 import * as Group from "./group";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "group_created";
 const eventType: EventTypeType = "group_created";

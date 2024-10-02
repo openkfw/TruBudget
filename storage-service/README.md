@@ -16,7 +16,7 @@ Follow these steps to start the environment using docker:
 
 ```bash
 cd docker-compose
-cp .env_example .env
+cp .env.example .env
 docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f storage-service/docker-compose.yml up
 ```
 
@@ -32,7 +32,7 @@ The cluster contains:
 
 To start the storage-service without docker, you need to start all desired service yourself with the right environment
 variables. To set these environment variables, read the documentation of the services in their folder or use the
-.env_example file of the storage-service. We recommend to start Minio with docker since the configuration is much easier.
+.env.example file of the storage-service. We recommend to start Minio with docker since the configuration is much easier.
 To start Minio without docker we refer to
 their [official documentation](https://docs.min.io/docs/minio-quickstart-guide.html).
 
@@ -45,7 +45,7 @@ Follow this service start order to start the environment without docker (assumin
 
 ```
 cd storage-service
-source .env_example
+source .env.example
 npm install
 npm run build
 npm start

@@ -65,6 +65,7 @@ const startMultichainDaemon = (chainName, externalIpArg, blockNotifyArg, P2P_POR
     "-autosubscribe=streams",
     `${connectArg}`,
     `-datadir=${multichainDir}`,
+    "-rpcworkqueue=100",
   ]);
   log.debug({ args }, "Starting multichain deamon with arguments");
   const mcproc = spawn("multichaind", args);
@@ -77,6 +78,8 @@ const startMultichainDaemon = (chainName, externalIpArg, blockNotifyArg, P2P_POR
     const error = Buffer.from(data).toString();
     if (error.includes("multichain-feed")) {
       mdLog.info({ feed: error }, "multichain-feed ");
+    } else if (error.includes("notifications")) {
+      mdLog.info({ notifications: error }, "notifications ");
     } else {
       mdLog.error({ err: error }, "Failed to start the alpha node: ");
     }

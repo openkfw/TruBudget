@@ -1,18 +1,25 @@
 import { FastifyInstance } from "fastify";
+import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
+
+import {
+  accessTokenExpirationInMinutesWithrefreshToken,
+  createRefreshJWTToken,
+  refreshTokenExpirationInDays,
+} from "./authenticationUtils";
+import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
+import { saveValue } from "./lib/keyValueStore";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import Joi = require("joi");
-import { JwtConfig } from "./config";
 
-const MAX_GROUPS_LENGTH = 3000;
+export const MAX_GROUPS_LENGTH = 3000;
 
 /**
  * Represents the request body of the endpoint
@@ -24,6 +31,14 @@ interface RequestBodyV1 {
       id: string;
       password: string;
     };
+  };
+}
+
+interface RequestResponse {
+  apiVersion: string;
+  data: {
+    user: LoginResponse;
+    accessTokenExp?: number;
   };
 }
 
@@ -107,6 +122,9 @@ const swaggerSchema = {
           data: {
             type: "object",
             properties: {
+              accessTokenExp: {
+                type: "number",
+              },
               user: {
                 type: "object",
                 properties: {
@@ -178,6 +196,7 @@ interface Service {
     serviceUser: ServiceUser,
     userId: string,
   ): Promise<Result.Type<Group[]>>;
+  storeRefreshToken(userId: string, refreshToken: string, validUntil: number): Promise<void>;
 }
 
 /**
@@ -229,6 +248,34 @@ export function addHttpHandler(
         jwt.algorithm as "HS256" | "RS256",
       );
 
+      // store refresh token
+      const now = new Date();
+      // time in miliseconds of refresh token expiration
+      const refreshTokenExpiration = new Date(
+        now.getTime() + 1000 * 60 * 60 * 24 * refreshTokenExpirationInDays,
+      );
+      const refreshToken = createRefreshJWTToken(
+        { userId: token.userId, expirationAt: refreshTokenExpiration },
+        jwt.secretOrPrivateKey,
+        jwt.algorithm as "HS256" | "RS256",
+      );
+
+      if (config.refreshTokenStorage === "memory") {
+        saveValue(
+          `refreshToken.${refreshToken}`,
+          {
+            userId: token.userId,
+          },
+          refreshTokenExpiration,
+        );
+      } else if (config.refreshTokenStorage === "db") {
+        await service.storeRefreshToken(
+          token.userId,
+          refreshToken,
+          refreshTokenExpiration.getTime(),
+        );
+      }
+
       const groupsResult = await service.getGroupsForUser(
         ctx,
         { id: token.userId, groups: token.groups, address: token.address },
@@ -246,16 +293,34 @@ export function addHttpHandler(
         allowedIntents: token.allowedIntents,
         groups: groups.map((x) => ({ groupId: x.id, displayName: x.displayName })),
       };
-      const body = {
+
+      const body: RequestResponse = {
         apiVersion: "1.0",
         data: {
           user: loginResponse,
         },
       };
+      // conditionally add token expiration to payload
+      if (config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)) {
+        body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
+      }
+
       reply
         .setCookie("token", signedJwt, {
           path: "/",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
+          httpOnly: true,
+          sameSite: "strict",
+        })
+        .setCookie("refreshToken", refreshToken, {
+          path: "/api/user.refreshtoken",
+          secure: config.secureCookie,
+          httpOnly: true,
+          sameSite: "strict",
+        })
+        .setCookie("refreshToken", refreshToken, {
+          path: "/api/user.logout",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
@@ -286,6 +351,10 @@ function createJWT(
   }
 
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
+  const expiresIn =
+    config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)
+      ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
+      : "8h";
   return jsonwebtoken.sign(
     {
       userId: token.userId,
@@ -295,6 +364,6 @@ function createJWT(
       groups: setGroups(),
     },
     secretOrPrivateKey,
-    { expiresIn: "8h", algorithm },
+    { expiresIn, algorithm },
   );
 }

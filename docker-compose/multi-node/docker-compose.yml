@@ -105,7 +105,7 @@ services:
       # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
       P2P_HOST: 172.21.0.2
       P2P_PORT: ${P2P_PORT}
-      API_PROTO: ${EXTERNAL_ALPHA_API_PROTO}
+      API_PROTOCOL: ${EXTERNAL_ALPHA_API_PROTOCOL}
       API_HOST: 172.21.0.3 # API to send register request
       API_PORT: ${EXTERNAL_ALPHA_API_PORT}
       NODE_ENV: ${ENVIRONMENT}

@@ -26,6 +26,7 @@ const fr = {
     assigned: "Engagé",
     assignees: "Responsable(s)",
     back: "Retour",
+    backToLogin: "Retour connexion",
     bank: "Banque",
     budget_distribution: "Affectation budgétaire",
     budget: "Budget",
@@ -53,6 +54,7 @@ const fr = {
     edited: "Modifié",
     email: "Email",
     finish: "Terminer",
+    genericError: "Quelque chose s'est mal passé.",
     global: "global",
     grant: "Accorder",
     hash: "Hachage",
@@ -104,6 +106,7 @@ const fr = {
     not_projected: "Non estimé",
     ongoing: "En cours",
     open: "Ouvert",
+    optional: "Optionnel",
     organization: "Organisation",
     password: "Mot de passe",
     permission: "Autorisation",
@@ -150,12 +153,32 @@ const fr = {
     environment: "Environnement",
     loading: "Chargement ...",
     login_button_title: "Connexion",
+    login_authproxy_button_title: "Connexion avec Auth Proxy",
+
     production_env: "Prod",
     test_env: "Test",
     frontend_name: "TruBudget",
     frontend_description:
       "Une plateforme collaborative pour une gestion transparente et sécurisée des financements extérieurs.",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Votre compte utilisateur n'a pas été trouvé. Veuillez contacter l'administrateur.",
+    popup_blocker_warning:
+      "Impossible de se déconnecter du service d'authentification externe. Veuillez autoriser les fenêtres contextuelles ou visiter\n{0}\n pour vous déconnecter en toute sécurité."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "L'adresse e-mail que vous avez saisie est incorrecte",
+    link: "Mot de passe oublié?",
+    emailSent: "Un e-mail contenant des instructions sur la façon de réinitialiser votre mot de passe a été envoyé.",
+    subHeader:
+      "Veuillez saisir votre adresse e-mail afin de recevoir des instructions supplémentaires sur la façon de réinitialiser votre mot de passe.",
+    unavailableService: "Le service de messagerie n'est pas disponible pour le moment, veuillez réessayer plus tard."
+  },
+
+  resetPassword: {
+    invalidToken: "Le jeton d'authentification a expiré. Veuillez répéter le processus de mot de passe oublié.",
+    passwordResetSuccess: "Le mot de passe a été réinitialisé avec succès. Veuillez accéder à la page de connexion.",
+    setPasswordButton: "Definir un nouveau mot de passe",
+    subHeader: "Veuillez définir votre nouveau mot de passe."
   },
 
   project: {
@@ -181,6 +204,9 @@ const fr = {
   subproject: {
     assignee: "Responsable par défaut",
     fixed_workflowitem_type: "Type de workflow fixe",
+    workflow_mode: "Mode de workflow",
+    workflow_mode_ordered: "Workflow (ordonnée)",
+    workflow_mode_unordered: "Liste d'actions (non ordonnée)",
     subproject_add_title: "Ajouter une nouvelle composante",
     subproject_assigned_organization: "Organisation assignée",
 
@@ -201,12 +227,12 @@ const fr = {
     subproject_general_workflowitem_type: "Autoriser uniquement les éléments de workflow de type général",
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
-    workflowitem_assignee: "Default assignee",
-    organization_info: "Organization",
+    workflowitem_assignee: "Fixed assignee",
+    organization_info: "Organisme de financement",
     total_budget_info: "Partie prenante participante",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
-      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -236,7 +262,16 @@ const fr = {
     workflow_document_validated: "Validé",
     workflow_document_validation_not_ok: "Document différent",
     workflow_document_validation_ok: "Document identique",
+    workflow_document_last_modified: "Dernière modification",
     workflow_documents: "Documents de l’étape de workflow",
+    workflow_documents_add_file: "Ajouter un fichier",
+    workflow_documents_add_link: "Ajouter un lien externe",
+    workflow_documents_file_prepared: "Dossier préparé",
+    workflow_documents_upload_same_document: "Téléchargez le même document pour créer un hachage",
+    workflow_documents_link_url: "Lien externe URL",
+    workflow_documents_link_name: "Nom du document externe",
+    workflow_documents_size_exceed: "La taille du fichier dépasse la limite de",
+    workflow_documents_upload_heading: "Télécharger le document",
     workflow_enable_sort: "Trier",
     workflow_fingerprint: "Empreinte digitale",
     workflow_name: "Nom de l’étape de workflow",
@@ -260,6 +295,7 @@ const fr = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Type du Workflow",
     workflow_upload_document: "Charger",
+    workflow_select_document: "Sélectionner un document",
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "Historique",
     workflowitem_details_overview: "Sommaire",
@@ -297,7 +333,7 @@ const fr = {
     edit_permissions: "Éditer les autorisations",
     group_created: "Groupe créé avec succès",
     groups: "Groupes",
-    invalid_password: "Mot de passe invalide",
+    invalid_password: "Le mot de passe doit contenir au moins 8 caractères, une lettre majuscule et un chiffre",
     new_group: "Nouveau groupe d'utilisateurs",
     new_user_password_confirmation: "Confirmer le nouveau mot de passe",
     new_user_password: "Nouveau mot de passe",
@@ -402,10 +438,12 @@ const fr = {
     post_actions_dialog_text: "Après la création, les actions suivantes sont exécutées",
     project_close: "Fermer projet",
     project_close_text: "Vous êtes sûr de vouloir fermer ce projet?",
-    project_close_warning: "Si vous fermez le projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
+    project_close_warning:
+      "Si vous fermez le projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     subproject_close: "Fermer la composante",
     subproject_close_text: "Vous êtes sûr de vouloir fermer cette composante ?",
-    subproject_close_warning: "Si vous fermez le sous-projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
+    subproject_close_warning:
+      "Si vous fermez le sous-projet, vous ne pourrez plus y apporter de modifications ni y ajouter d'informations.",
     user_group: "Utilisateur/Groupe",
     workflowitem_close: "Fermer l’étape de workflow ",
     workflowitem_close_text: "Êtes-vous sûr de vouloir fermer cette étape de workflow?",

@@ -26,6 +26,7 @@ const ka = {
     assigned: "Assigned",
     assignees: "Assignee(s)",
     back: "უკან დაბრუნება",
+    backToLogin: "უკან შესვლა",
     bank: "ბანკი",
     budget_distribution: "ბიუჯეტის განაწილება",
     budget: "ბიუჯეტი",
@@ -53,6 +54,7 @@ const ka = {
     edited: "რედაქტირებულია",
     email: "Email",
     finish: "დასრულება",
+    genericError: "Რაღაც არასწორად წავიდა.",
     global: "გლობალური",
     grant: "მინიჭება",
     hash: "ჰაში",
@@ -102,7 +104,8 @@ const ka = {
     ok: "კარგი",
     not_projected: "არ არის დაგეგმილი",
     ongoing: "მიმდინარე",
-    open: "Open",
+    open: "გახსნა",
+    optional: "არასავალდებულო",
     organization: "ორგანიზაცია",
     password: "პაროლი",
     permission: "ნებართვა",
@@ -156,7 +159,7 @@ const ka = {
     edit_permissions: "ნებართვების რედაქტირება",
     group_created: "ჯგუფი წარმატებით შექმნილია",
     groups: "ჯგუფები",
-    invalid_password: "პაროლი არასწორია",
+    invalid_password: "პაროლი უნდა შეიცავდეს მინიმუმ 8 სიმბოლოს, დიდ ასოს და რიცხვს",
     new_group: "ახალი ჯგუფი",
     new_user_password_confirmation: "დაადასტურე ახალი პაროლი",
     new_user_password: "ახალი პაროლი",
@@ -235,11 +238,30 @@ const ka = {
     environment: "Environment",
     loading: "იტვირთება ...",
     login_button_title: "შესვლა",
+    login_authproxy_button_title: "შესვლა Auth Proxy",
     production_env: "Prod",
     test_env: "ტესტი",
     frontend_name: "TruBudget",
     frontend_description: "ბლოკჩეინზე დაფუძნებული ბიუჯეტის განკარგვის სისტემა",
-    user_not_found: "Your user account has not been found. Please contact the administrator."
+    user_not_found: "Your user account has not been found. Please contact the administrator.",
+    popup_blocker_warning:
+      "გარე ავთენტიფიკაციის სერვისიდან გამოსვლა ვერ მოხერხდა. გთხოვთ, დაუშვათ ამომხტარი ფანჯრები ან ეწვიეთ\n{0}\n, რათა უსაფრთხოდ უარი თქვან."
+  },
+
+  forgotPassword: {
+    incorrectEmail: "თქვენ მიერ შეყვანილი ელ. ფოსტის მისამართი არასწორია",
+    link: "Დაგავიწყდათ პაროლი?",
+    emailSent: "გაიგზავნა ელ.წერილი ინსტრუქციებით, თუ როგორ უნდა აღადგინოთ პაროლი.",
+    subHeader:
+      "გთხოვთ, შეიყვანოთ თქვენი ელფოსტის მისამართი, რათა მიიღოთ დამატებითი ინსტრუქციები თქვენი პაროლის აღდგენის შესახებ.",
+    unavailableService: "ელფოსტის სერვისი ამჟამად მიუწვდომელია, გთხოვთ, სცადოთ მოგვიანებით."
+  },
+
+  resetPassword: {
+    invalidToken: "ავთენტიფიკაციის ჟეტონს ვადა გაუვიდა. გთხოვთ გაიმეოროთ დავიწყებული პაროლის პროცესი.",
+    passwordResetSuccess: "პაროლი წარმატებით გადაკეთდა. გთხოვთ, გადახვიდეთ შესვლის გვერდზე.",
+    setPasswordButton: "დააყენეთ ახალი პაროლი",
+    subHeader: "გთხოვთ დააყენოთ თქვენი ახალი პაროლი."
   },
 
   project: {
@@ -265,6 +287,9 @@ const ka = {
   subproject: {
     assignee: "მფლობელი",
     fixed_workflowitem_type: "ფიქსირებული სამუშაო ნაკადის ტიპი",
+    workflow_mode: "სამუშაო რეჟიმი",
+    workflow_mode_ordered: "სამუშაო სია (დალაგებული)",
+    workflow_mode_unordered: "სამუშაო სია (არ დალაგებული)",
     subproject_add_title: "ახალი ქვეპროექტის დამატება",
     subproject_assigned_organization: "Assigned organization",
 
@@ -285,12 +310,12 @@ const ka = {
     subproject_general_workflowitem_type: "დაუშვით მხოლოდ workflowitem ტიპის ზოგადი",
     subproject_restricted_workflowitem_type:
       "მხოლოდ ტიპის workflowitem- ის აკრძალვა შეზღუდულია. შეზღუდული workflowitem- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
-    workflowitem_assignee: "ნაგულისხმევი მიმღები",
-    organization_info: "Organization",
+    workflowitem_assignee: "ფიქსირებული მიმწოდებელი",
+    organization_info: "დამფინანსებელი ორგანიზაცია",
     total_budget_info: "მონაწილე დაინტერესებული მხარე",
-    default_assignee_warning: "Default assignee cannot be changed once Subproject is created.",
+    default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
-      "Default assignee will be assigned to all workflow items in subproject without an option to change it."
+      "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
   },
 
   workflow: {
@@ -320,7 +345,16 @@ const ka = {
     workflow_document_validated: "დამტკიცებულია",
     workflow_document_validation_not_ok: "განსხვავებული დოკუმენტი",
     workflow_document_validation_ok: "იდენტურია დოკუმენტი",
+    workflow_document_last_modified: "ბოლო შეცვლა",
     workflow_documents: "დოკუმენტები",
+    workflow_documents_add_file: "ფაილის დამატება",
+    workflow_documents_add_link: "დაამატეთ გარე ბმული",
+    workflow_documents_file_prepared: "მომზადებულია ფაილი",
+    workflow_documents_upload_same_document: "ატვირთეთ იგივე დოკუმენტი ჰეშის შესაქმნელად",
+    workflow_documents_link_url: "გარე ბმული URL",
+    workflow_documents_link_name: "გარე დოკუმენტის სახელი",
+    workflow_documents_size_exceed: "ფაილის ზომა აღემატება ლიმიტს",
+    workflow_documents_upload_heading: "დოკუმენტის ატვირთვა",
     workflow_enable_sort: "Sort",
     workflow_fingerprint: "Fingerprint",
     workflow_name: "დასახელება",
@@ -344,6 +378,7 @@ const ka = {
     workflow_type_workflow: "Workflowitem-ი",
     workflow_type: "Type",
     workflow_upload_document: "ატვირთვა",
+    workflow_select_document: "აირჩიეთ დოკუმენტი",
     workflowitem_details_documents: "დოკუმენტები",
     workflowitem_details_history: "ისტორია",
     workflowitem_details_overview: "მიმოხილვა",
@@ -404,7 +439,8 @@ const ka = {
     project_close_warning: "თუ პროექტს დახურავთ, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
     subproject_close: "ქვეპროექტის დახურვა",
     subproject_close_text: "დარწმუნებული ხართ, გსურთ ამ ქვეპროექტის დახურვა?",
-    subproject_close_warning: "თუ დახურავთ ქვეპროექტს, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
+    subproject_close_warning:
+      "თუ დახურავთ ქვეპროექტს, ვეღარ შეძლებთ მასში ცვლილებების შეტანას ან ინფორმაციის დამატებას.",
     user_group: "მომხმარებელი/ჯგუფი",
     workflowitem_close: "სამუშაო ნაკადის დახურვა",
     workflowitem_close_text: "დარწმუნებული ხართ, გინდა რომ დახურო ეს სამუშაო გრაფიკი?",

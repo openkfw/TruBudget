@@ -1,10 +1,12 @@
-import { Ctx } from "lib/ctx";
-import deepcopy from "lib/deepcopy";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+
 import * as Subproject from "./subproject";
 import * as SubprojectAssigned from "./subproject_assigned";
 import * as SubprojectClosed from "./subproject_closed";
@@ -87,21 +89,22 @@ function sourceEventFromSnapshot(
 
 export function parseSubprojectFromSnapshot(subprojectJson): Subproject.Subproject {
   return {
-    id: subprojectJson.id,
-    projectId: subprojectJson.projectId,
-    createdAt: subprojectJson.createdAt,
-    status: subprojectJson.status,
-    displayName: subprojectJson.displayName,
-    description: subprojectJson.description,
-    assignee: subprojectJson.assignee,
-    validator: subprojectJson.validator,
-    workflowitemType: subprojectJson.workflowitemType,
-    currency: subprojectJson.currency,
-    projectedBudgets: subprojectJson.projectedBudgets,
-    workflowitemOrdering: subprojectJson.workflowitemOrdering,
-    permissions: subprojectJson.permissions,
-    log: subprojectJson.log,
     additionalData: subprojectJson.additionalData,
+    assignee: subprojectJson.assignee,
+    createdAt: subprojectJson.createdAt,
+    currency: subprojectJson.currency,
+    description: subprojectJson.description,
+    displayName: subprojectJson.displayName,
+    id: subprojectJson.id,
+    log: subprojectJson.log,
+    permissions: subprojectJson.permissions,
+    projectedBudgets: subprojectJson.projectedBudgets,
+    projectId: subprojectJson.projectId,
+    status: subprojectJson.status,
+    validator: subprojectJson.validator,
+    workflowitemOrdering: subprojectJson.workflowitemOrdering,
+    workflowitemType: subprojectJson.workflowitemType,
+    workflowMode: subprojectJson.workflowMode,
   };
 }
 

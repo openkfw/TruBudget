@@ -28,6 +28,8 @@ import * as ProvisioningEnded from "./domain/system_information/provisioning_end
 import * as ProvisioningStarted from "./domain/system_information/provisioning_started";
 import * as GlobalPermissionsGranted from "./domain/workflow/global_permission_granted";
 import * as GlobalPermissionsRevoked from "./domain/workflow/global_permission_revoked";
+import { GlobalPermissions } from "./domain/workflow/global_permissions";
+import { sourceGlobalPermissions } from "./domain/workflow/global_permissions_eventsourcing";
 import * as NotificationCreated from "./domain/workflow/notification_created";
 import * as NotificationMarkedRead from "./domain/workflow/notification_marked_read";
 import * as ProjectAssigned from "./domain/workflow/project_assigned";
@@ -55,8 +57,6 @@ import * as WorkflowitemPermissionsRevoked from "./domain/workflow/workflowitem_
 import * as WorkflowitemUpdated from "./domain/workflow/workflowitem_updated";
 import * as WorkflowitemsReordered from "./domain/workflow/workflowitems_reordered";
 import { Item } from "./liststreamitems";
-import { GlobalPermissions } from "./domain/workflow/global_permissions";
-import { sourceGlobalPermissions } from "./domain/workflow/global_permissions_eventsourcing";
 
 const STREAM_BLACKLIST = [
   // The organization address is written directly (i.e., not as event):

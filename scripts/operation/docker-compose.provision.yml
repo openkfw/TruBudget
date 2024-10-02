@@ -87,6 +87,8 @@ services:
       STORAGE_SERVICE_EXTERNAL_URL: ${STORAGE_SERVICE_EXTERNAL_URL}
       STORAGE_SERVICE_HOST: storage-service
       STORAGE_SERVICE_PORT: ${STORAGE_SERVICE_PORT} 
+      EMAIL_HOST: ${EMAIL_HOST}
+      EMAIL_PORT: ${EMAIL_PORT}
       ENCRYPTION_PASSWORD: ${ENCRYPTION_PASSWORD}
       SIGNING_METHOD: ${SIGNING_METHOD}
       JWT_SECRET: ${JWT_SECRET}
@@ -246,7 +248,7 @@ services:
       # P2P_HOST must be a valid IP-Address. If you pass a domain like "alpha-node", the windows kernel will shutdown the process because of a segmentation fault
       P2P_HOST: 172.21.0.11 # IP of alpha-node
       P2P_PORT: 7447
-      API_PROTO: http
+      API_PROTOCOL: http
       API_HOST: alpha-api # API to send register request
       API_PORT: ${API_PORT}
     volumes:

@@ -18,6 +18,7 @@ Welcome to the TruBudget operation and administration documentation! This guide 
   - [Multichain-CLI](./multichain-cli.md#multichain-cli) - Information on how to use the Multichain-CLI to interact with the blockchain
   - [Resource Requirements](./resource-requirements.md#running-trubudget) - Information on minimum resource requirements for running TruBudget
   - [Security](./security.md#security--trubudget)
+  - [Telemetry](./telemetry.md)
   - [Updating TruBudget](./update-trubudget.md#updating-trubudget) - Information on how to update and upgrade TruBudget to newer versions as well as create backups
 
 ## Introduction to Organizations and Nodes in TruBudget
@@ -78,7 +79,7 @@ All installation and user guides have one thing in common: They all use environm
 
 You can find the documentation of all environmental variables in [environment-variables.md](../environment-variables.md).
 
-If you need a `.env_example` file as a template, use the `.env_example` file in `/scripts/operation`. This file has all values pre-filled.
+If you need a `.env.example` file as a template, use the `.env.example` file in `/scripts/operation`. This file has all values pre-filled.
 
 ### Setting environment variables
 
@@ -103,4 +104,4 @@ In this case we assume you use the standard command line tool for Linux/OS X (wh
 :::
 
 Another option to set environment variables is to use a `.env` file in the directory where the start command is executed.
-Trubudget provides a default example `.env_example` file which has to be renamed to `.env` if it should be used.
+Trubudget provides a default example `.env.example` file which has to be renamed to `.env` if it should be used.

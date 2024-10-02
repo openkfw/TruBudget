@@ -1,5 +1,4 @@
-import logger from "./lib/logger";
-import { randomString } from "./service/hash";
+import { envVarsSchema } from "./envVarsSchema";
 
 export interface JwtConfig {
   secretOrPrivateKey: string;
@@ -18,9 +17,11 @@ interface ProcessEnvVars {
   ROOT_SECRET: string;
   MULTICHAIN_RPC_HOST: string;
   MULTICHAIN_RPC_PORT: string;
+  MULTICHAIN_RPC_PROTOCOL: "http" | "https";
   MULTICHAIN_RPC_USER: string;
   MULTICHAIN_RPC_PASSWORD: string;
   BLOCKCHAIN_PORT: string;
+  BLOCKCHAIN_PROTOCOL: "http" | "https";
   JWT_ALGORITHM: string;
   JWT_SECRET: string;
   JWT_PUBLIC_KEY: string;
@@ -30,7 +31,11 @@ interface ProcessEnvVars {
   DOCUMENT_EXTERNAL_LINKS_ENABLED: string;
   STORAGE_SERVICE_HOST: string;
   STORAGE_SERVICE_PORT: string;
+  STORAGE_SERVICE_PROTOCOL: "http" | "https";
   STORAGE_SERVICE_EXTERNAL_URL: string;
+  EMAIL_HOST: string;
+  EMAIL_PORT: string;
+  EMAIL_PROTOCOL: "http" | "https";
   ACCESS_CONTROL_ALLOW_ORIGIN: string;
   NODE_ENV: string;
   ENCRYPTION_PASSWORD: string;
@@ -41,8 +46,26 @@ interface ProcessEnvVars {
   AUTHPROXY_JWS_SIGNATURE: string;
   SNAPSHOT_EVENT_INTERVAL: string;
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: string;
+  API_DB_USER: string;
+  API_DB_PASSWORD: string;
+  API_DB_HOST: string;
+  API_DB_DATABASE: string;
+  API_DB_PORT: string;
+  API_DB_SSL: string;
+  API_DB_SCHEMA: string;
+  API_REFRESH_TOKENS_TABLE: string;
+  REFRESH_TOKEN_STORAGE?: string; // "db" || "memory" || undefined
 }
 
+interface DatabaseConfig {
+  user: string;
+  password: string;
+  host: string;
+  database: string;
+  port: number;
+  ssl: boolean;
+  schema: string;
+}
 /**
  * Shows the type of an API configuration
  * @notExported
@@ -56,6 +79,7 @@ interface Config {
   rpc: {
     host: string;
     port: number;
+    protocol: "http" | "https";
     user: string;
     password: string;
   };
@@ -64,8 +88,10 @@ interface Config {
   blockchain: {
     host: string;
     port: number;
+    protocol: "http" | "https";
   };
   jwt: JwtConfig;
+  secureCookie: boolean;
   npmPackageVersion: string;
   // Continues Integration
   ciCommitSha: string;
@@ -75,7 +101,13 @@ interface Config {
   storageService: {
     host: string;
     port: number;
+    protocol: "http" | "https";
     externalUrl: string;
+  };
+  emailService: {
+    host: string;
+    port: number;
+    protocol: "http" | "https";
   };
   encryptionPassword: string | undefined;
   signingMethod: string;
@@ -87,117 +119,90 @@ interface Config {
     authProxyCookie: string;
     jwsSignature: string | undefined;
   };
+  db: DatabaseConfig;
+  dbType: string;
+  sqlDebug: boolean | undefined;
+  refreshTokensTable: string | undefined;
+  refreshTokenStorage: string | undefined;
   snapshotEventInterval: number;
   azureMonitorConnectionString: string;
   silenceLoggingOnFrequentRoutes: boolean;
 }
 
-/**
- * environment variables which are required by the API
- * @notExported
- */
-const requiredEnvVars = ["ORGANIZATION", "ORGANIZATION_VAULT_SECRET"];
+const { error, value: envVars } = envVarsSchema.validate(process.env);
+if (error) {
+  throw new Error(`Config validation error: ${error.message}`);
+}
 
 export const config: Config = {
-  organization: process.env.ORGANIZATION || "",
-  organizationVaultSecret: process.env.ORGANIZATION_VAULT_SECRET || "",
-  port: Number(process.env.PORT) || 8080,
-  rootSecret: process.env.ROOT_SECRET || randomString(32),
+  organization: envVars.ORGANIZATION,
+  organizationVaultSecret: envVars.ORGANIZATION_VAULT_SECRET,
+  port: envVars.PORT,
+  rootSecret: envVars.ROOT_SECRET,
   // RPC is the mutlichain daemon
   rpc: {
-    host: process.env.MULTICHAIN_RPC_HOST || "localhost",
-    port: Number(process.env.MULTICHAIN_RPC_PORT) || 8000,
-    user: process.env.MULTICHAIN_RPC_USER || "multichainrpc",
-    password: process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j",
+    host: envVars.MULTICHAIN_RPC_HOST,
+    port: envVars.MULTICHAIN_RPC_PORT,
+    protocol: envVars.MULTICHAIN_RPC_PROTOCOL,
+    user: envVars.MULTICHAIN_RPC_USER,
+    password: envVars.MULTICHAIN_RPC_PASSWORD,
   },
   // Blockchain is the blockchain component of Trubudget
   // It serves e.g. backup or version endpoints
   blockchain: {
-    host: process.env.MULTICHAIN_RPC_HOST || "localhost",
-    port: Number(process.env.BLOCKCHAIN_PORT) || 8085,
+    host: envVars.MULTICHAIN_RPC_HOST,
+    port: envVars.BLOCKCHAIN_PORT,
+    protocol: envVars.BLOCKCHAIN_PROTOCOL,
   },
   jwt: {
-    secretOrPrivateKey: process.env.JWT_SECRET || randomString(32),
-    publicKey: process.env.JWT_PUBLIC_KEY || "",
-    algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
+    secretOrPrivateKey: envVars.JWT_SECRET,
+    publicKey: envVars.JWT_PUBLIC_KEY,
+    algorithm: envVars.JWT_ALGORITHM,
   },
+  secureCookie: process.env.API_SECURE_COOKIE === "true" || process.env.NODE_ENV === "production",
   npmPackageVersion: process.env.npm_package_version || "",
   // Continues Integration
   ciCommitSha: process.env.CI_COMMIT_SHA || "",
   buildTimeStamp: process.env.BUILDTIMESTAMP || "",
-  documentFeatureEnabled: process.env.DOCUMENT_FEATURE_ENABLED === "true" ? true : false,
-  documentExternalLinksEnabled:
-    process.env.DOCUMENT_EXTERNAL_LINKS_ENABLED === "true" ? true : false,
+  documentFeatureEnabled: envVars.DOCUMENT_FEATURE_ENABLED,
+  documentExternalLinksEnabled: envVars.DOCUMENT_EXTERNAL_LINKS_ENABLED,
   storageService: {
-    host: process.env.STORAGE_SERVICE_HOST || "localhost",
-    port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
-    externalUrl: process.env.STORAGE_SERVICE_EXTERNAL_URL || "",
+    host: envVars.STORAGE_SERVICE_HOST,
+    port: envVars.STORAGE_SERVICE_PORT,
+    protocol: envVars.STORAGE_SERVICE_PROTOCOL,
+    externalUrl: envVars.STORAGE_SERVICE_EXTERNAL_URL,
   },
-  encryptionPassword:
-    process.env.ENCRYPTION_PASSWORD === "" ? undefined : process.env.ENCRYPTION_PASSWORD,
-  signingMethod: process.env.SIGNING_METHOD || "node",
-  nodeEnv: process.env.NODE_ENV || "production",
-  accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
-  rateLimit:
-    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
-      ? undefined
-      : Number(process.env.RATE_LIMIT),
+  emailService: {
+    host: envVars.EMAIL_HOST,
+    port: envVars.EMAIL_PORT,
+    protocol: envVars.EMAIL_PROTOCOL,
+  },
+  encryptionPassword: envVars.ENCRYPTION_PASSWORD,
+  signingMethod: envVars.SIGNING_METHOD,
+  nodeEnv: envVars.NODE_ENV,
+  accessControlAllowOrigin: envVars.ACCESS_CONTROL_ALLOW_ORIGIN,
+  rateLimit: envVars.RATE_LIMIT,
   authProxy: {
-    enabled: process.env.AUTHPROXY_ENABLED === "true" || false,
+    enabled: envVars.AUTHPROXY_ENABLED,
     authProxyCookie: "authorizationToken",
-    jwsSignature: process.env.AUTHPROXY_JWS_SIGNATURE || undefined,
+    jwsSignature: envVars.AUTHPROXY_JWS_SIGNATURE,
   },
-  snapshotEventInterval: Number(process.env.SNAPSHOT_EVENT_INTERVAL) || 3,
-  azureMonitorConnectionString: process.env.APPLICATIONINSIGHTS_CONNECTION_STRING || "",
-  silenceLoggingOnFrequentRoutes:
-    process.env.SILENCE_LOGGING_ON_FREQUENT_ROUTES === "true" || false,
-};
-
-/**
- * Checks if required environment variables are set, stops the process otherwise
- * @notExported
- *
- * @param requiredEnvVars environment variables required for the API to run
- */
-function exitIfMissing(requiredEnvVars): void {
-  let envVarMissing = false;
-  requiredEnvVars.forEach((env) => {
-    if (!envExists(process.env, env)) envVarMissing = true;
-  });
-  if (envVarMissing) process.exit(1);
-}
-
-/**
- * Checks if an environment variable is attached to the current process
- * @notExported
- *
- * @param processEnv environment variables attached to the current process
- * @param prop environment variable to check
- * @param msg optional message to print out
- * @returns a boolean indicating if an environment variable is attached to the current process
- */
-const envExists = <T, K extends keyof T>(
-  processEnv: Partial<T>,
-  prop: K,
-  msg?: string,
-): boolean => {
-  if (processEnv[prop] === undefined || processEnv[prop] === null) {
-    switch (prop) {
-      case "ORGANIZATION":
-        msg = "Please set ORGANIZATION to the organization this node belongs to.";
-        break;
-      case "ORGANIZATION_VAULT_SECRET":
-        msg =
-          "Please set ORGANIZATION_VAULT_SECRET to the secret key used to encrypt the organization's vault.";
-        break;
-      default:
-        break;
-    }
-    logger.fatal(msg || `Environment is missing required variable ${String(prop)}`);
-    return false;
-  } else {
-    return true;
-  }
+  db: {
+    user: envVars.API_DB_USER,
+    password: envVars.API_DB_PASSWORD,
+    host: envVars.API_DB_HOST,
+    database: envVars.API_DB_NAME,
+    port: envVars.API_DB_PORT,
+    ssl: envVars.API_DB_SSL,
+    schema: envVars.API_DB_SCHEMA,
+  },
+  dbType: envVars.DB_TYPE,
+  sqlDebug: envVars.SQL_DEBUG,
+  refreshTokensTable: envVars.API_REFRESH_TOKENS_TABLE,
+  refreshTokenStorage: envVars.REFRESH_TOKEN_STORAGE,
+  snapshotEventInterval: envVars.SNAPSHOT_EVENT_INTERVAL,
+  azureMonitorConnectionString: envVars.APPLICATIONINSIGHTS_CONNECTION_STRING,
+  silenceLoggingOnFrequentRoutes: envVars.SILENCE_LOGGING_ON_FREQUENT_ROUTES,
 };
 
 /**
@@ -207,37 +212,6 @@ const envExists = <T, K extends keyof T>(
  * @notExported
  */
 const getValidConfig = (): Config => {
-  exitIfMissing(requiredEnvVars);
-
-  // Environment Validation
-  const jwtSecret: string = process.env.JWT_SECRET || randomString(32);
-  if (jwtSecret.length < 32) {
-    logger.warn("Warning: the JWT secret key should be at least 32 characters long.");
-  }
-  const rootSecret: string = process.env.ROOT_SECRET || randomString(32);
-  if (!process.env.ROOT_SECRET) {
-    logger.warn(`Warning: root password not set; autogenerated to ${rootSecret}`);
-  }
-
-  // Document feature enabled
-  if (process.env.DOCUMENT_FEATURE_ENABLED === "true") {
-    const requiredDocEnvVars = ["STORAGE_SERVICE_EXTERNAL_URL"];
-    exitIfMissing(requiredDocEnvVars);
-  }
-
-  const jwtAlgorithm: string = process.env.JWT_ALGORITHM;
-  if (
-    !(
-      jwtAlgorithm === "HS256" ||
-      jwtAlgorithm === "RS256" ||
-      jwtAlgorithm === undefined ||
-      jwtAlgorithm === ""
-    )
-  ) {
-    logger.fatal("JWT_ALGORITHM must be either HS256 or RS256 or empty (defaults to HS256)");
-    process.exit(1);
-  }
-
   return config;
 };
 /**

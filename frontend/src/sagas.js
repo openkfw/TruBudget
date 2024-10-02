@@ -52,10 +52,15 @@ import {
   FETCH_USER_SUCCESS,
   LOGIN,
   LOGIN_AD,
+  LOGIN_AD_SUCCESS,
   LOGIN_ERROR,
   LOGIN_SUCCESS,
   LOGOUT,
-  LOGOUT_SUCCESS
+  LOGOUT_SUCCESS,
+  REFRESH_TOKEN,
+  REFRESH_TOKEN_SUCCESS,
+  RESET_USER_PASSWORD,
+  SEND_FORGOT_PASSWORD_EMAIL
 } from "./pages/Login/actions";
 import {
   CREATE_BACKUP,
@@ -100,6 +105,8 @@ import {
   TIME_OUT_FLY_IN
 } from "./pages/Notifications/actions";
 import {
+  APP_LATEST_VERSION_FETCHED,
+  APP_UPGRADE_VERSION_SUCCESS,
   CREATE_PROJECT,
   CREATE_PROJECT_SUCCESS,
   EDIT_PROJECT,
@@ -122,6 +129,7 @@ import {
   SET_SORT
 } from "./pages/Overview/actions";
 import {
+  APP_LATEST_VERSION,
   FETCH_EMAIL_SERVICE_VERSION,
   FETCH_EMAIL_SERVICE_VERSION_FAILURE,
   FETCH_EMAIL_SERVICE_VERSION_SUCCESS,
@@ -130,7 +138,8 @@ import {
   FETCH_EXPORT_SERVICE_VERSION_SUCCESS,
   FETCH_VERSIONS,
   FETCH_VERSIONS_FAILURE,
-  FETCH_VERSIONS_SUCCESS
+  FETCH_VERSIONS_SUCCESS,
+  UPGRADE_TO_LATEST_VERSION
 } from "./pages/Status/actions.js";
 import {
   ASSIGN_PROJECT,
@@ -324,6 +333,15 @@ const getPaginationState = (state) => {
 
 const getSearchTermState = (state) => {
   return state.getIn(["navbar", "searchTerm"]);
+};
+
+const saveRefreshTokenToLocalStorage = (data) => {
+  if (data?.accessTokenExp) {
+    const now = new Date();
+    // 2 minutes before access token expires
+    const shortlyBeforeAccessTokenExpiration = now.getTime() + data?.accessTokenExp - 1000 * 60 * 2;
+    localStorage.setItem("access_token_exp", shortlyBeforeAccessTokenExpiration);
+  }
 };
 
 function* execute(fn, showLoading = false, errorCallback = undefined) {
@@ -650,6 +668,7 @@ export function* createSubProjectSaga({
   currency,
   validator,
   workflowitemType,
+  workflowMode,
   projectedBudgets,
   showLoading
 }) {
@@ -660,8 +679,10 @@ export function* createSubProjectSaga({
     currency,
     validator,
     workflowitemType,
+    workflowMode,
     projectedBudgets
   };
+
   yield execute(function* () {
     const confirmed = yield select(getConfirmedState);
     const additionalActions = yield select(getAdditionalActionsState);
@@ -708,7 +729,8 @@ export function* createSubProjectSaga({
         currency,
         projectedBudgets,
         validator.id,
-        workflowitemType
+        workflowitemType,
+        workflowMode
       );
       yield put({
         type: CREATE_SUBPROJECT_SUCCESS,
@@ -1214,6 +1236,7 @@ export function* loginSaga({ user }) {
       ...data,
       isUserLoggedIn: true
     });
+    saveRefreshTokenToLocalStorage(data);
     yield call(() => fetchNotificationCountsSaga(false));
     yield put({
       type: SNACKBAR_MESSAGE,
@@ -1258,6 +1281,10 @@ export function* loginTokenSaga({ token }) {
       type: LOGIN_SUCCESS,
       ...data,
       isUserLoggedIn: true
+    });
+    yield put({
+      type: LOGIN_AD_SUCCESS,
+      isUsingAuthproxy: true
     });
     yield call(() => fetchNotificationCountsSaga(false));
     yield put({
@@ -1416,6 +1443,34 @@ export function* changeUserPasswordSaga({ username, newPassword }) {
     });
     yield showSnackbarSuccess();
   }, true);
+}
+
+export function* resetUserPasswordSaga({ username, newPassword, token }) {
+  function* resetUserPassword() {
+    yield callApi(api.resetPassword, username, newPassword, token);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.resetPassword.passwordResetSuccess
+    });
+    yield showSnackbarSuccess();
+  }
+
+  function* onError(error) {
+    const errorMessage =
+      error.response.status === 401 ? strings.resetPassword.invalidToken : strings.common.genericError;
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+  }
+
+  yield execute(resetUserPassword, false, onError);
 }
 
 export function* checkUserPasswordSaga({ username, password }) {
@@ -1629,6 +1684,16 @@ export function* logoutSaga() {
     yield callApi(api.logout);
     yield put({
       type: LOGOUT_SUCCESS
+    });
+  });
+}
+
+export function* refreshTokenSaga() {
+  yield execute(function* () {
+    const { data } = yield callApi(api.refreshToken);
+    saveRefreshTokenToLocalStorage(data);
+    yield put({
+      type: REFRESH_TOKEN_SUCCESS
     });
   });
 }
@@ -1983,6 +2048,36 @@ export function* fetchProjectPermissionsSaga({ projectId, showLoading }) {
     yield put({
       type: FETCH_PROJECT_PERMISSIONS_SUCCESS,
       permissions: response.data || {}
+    });
+  }, showLoading);
+}
+
+export function* fetchAppLatestVersionSaga({ showLoading }) {
+  yield execute(function* () {
+    let response;
+    try {
+      response = yield callApi(api.getAppLatestVersion);
+    } catch (error) {
+      yield put({
+        type: APP_LATEST_VERSION_FETCHED,
+        version: null
+      });
+      throw error;
+    }
+
+    yield put({
+      type: APP_LATEST_VERSION_FETCHED,
+      version: response.data
+    });
+  }, showLoading);
+}
+
+export function* upgradeAppVersionSaga({ version, showLoading }) {
+  yield execute(function* () {
+    yield callApi(api.upgradeAppVersion, version);
+    yield put({
+      type: APP_UPGRADE_VERSION_SUCCESS,
+      payload: { version }
     });
   }, showLoading);
 }
@@ -3334,6 +3429,38 @@ function* checkExportServiceSaga({ showLoading = true }) {
   );
 }
 
+export function* forgotPasswordSaga({ data }) {
+  function* sendForgotPasswordEmail() {
+    yield callApi(api.sendForgotPasswordEmail, data.email, data.url, data.lang);
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: strings.forgotPassword.emailSent
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: false,
+      isWarning: false
+    });
+  }
+
+  function* onError(error) {
+    const errorMessage =
+      error.response.status === 400 ? strings.forgotPassword.incorrectEmail : strings.common.genericError;
+    yield put({
+      type: SNACKBAR_MESSAGE,
+      message: errorMessage
+    });
+    yield put({
+      type: SHOW_SNACKBAR,
+      show: true,
+      isError: true,
+      isWarning: false
+    });
+  }
+  yield execute(sendForgotPasswordEmail, true, onError);
+}
+
 export default function* rootSaga() {
   try {
     yield all([
@@ -3341,6 +3468,7 @@ export default function* rootSaga() {
       yield takeLatest(LOGIN_AD, loginTokenSaga),
       yield takeLatest(LOGIN, loginSaga),
       yield takeEvery(LOGOUT, logoutSaga),
+      yield takeLatest(REFRESH_TOKEN, refreshTokenSaga),
       yield takeEvery(CREATE_USER, createUserSaga),
       yield takeEvery(GRANT_ALL_USER_PERMISSIONS, grantAllUserPermissionsSaga),
       yield takeEvery(FETCH_USER, fetchUserSaga),
@@ -3356,6 +3484,8 @@ export default function* rootSaga() {
       yield takeLatest(GRANT_GLOBAL_PERMISSION, grantGlobalPermissionSaga),
       yield takeLatest(REVOKE_GLOBAL_PERMISSION, revokeGlobalPermissionSaga),
       yield takeLatest(LIST_GLOBAL_PERMISSIONS, listGlobalPermissionSaga),
+      yield takeLatest(SEND_FORGOT_PASSWORD_EMAIL, forgotPasswordSaga),
+      yield takeLatest(RESET_USER_PASSWORD, resetUserPasswordSaga),
 
       // Users
       yield takeEvery(CHECK_AND_CHANGE_USER_PASSWORD, checkAndChangeUserPasswordSaga),
@@ -3441,6 +3571,9 @@ export default function* rootSaga() {
       yield takeLatest(FETCH_VERSIONS, fetchVersionsSaga),
       yield takeLatest(FETCH_EMAIL_SERVICE_VERSION, fetchEmailVersionSaga),
       yield takeLatest(FETCH_EXPORT_SERVICE_VERSION, fetchExportVersionSaga),
+
+      yield takeLatest(APP_LATEST_VERSION, fetchAppLatestVersionSaga),
+      yield takeLatest(UPGRADE_TO_LATEST_VERSION, upgradeAppVersionSaga),
 
       // Analytics
       yield takeLeading(GET_SUBPROJECT_KPIS, getSubProjectKPIs),

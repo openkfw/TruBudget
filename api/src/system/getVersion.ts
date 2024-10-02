@@ -15,8 +15,12 @@ interface VersionMetadata {
 
 const blockchainApi = new BlockchainApi();
 
-const bcVersionMetaData = async (blockchainHost, blockchainPort): Promise<VersionMetadata> => {
-  blockchainApi.setBaseUrl(`http://${blockchainHost}:${blockchainPort}`);
+const bcVersionMetaData = async (
+  blockchainProtocol: "http" | "https",
+  blockchainHost: string,
+  blockchainPort: number,
+): Promise<VersionMetadata> => {
+  blockchainApi.setBaseUrl(`${blockchainProtocol}://${blockchainHost}:${blockchainPort}`);
   const { data } = await blockchainApi.fetchVersion();
   return data;
 };
@@ -45,6 +49,7 @@ const storageServiceMetaData = async (
 ): Promise<Version> => storageServiceClient.getVersion();
 
 export const getVersion = async (
+  blockchainProtocol: "http" | "https",
   blockchainHost: string,
   blockchainPort: number,
   multichainClient: MultichainClient,
@@ -59,7 +64,7 @@ export const getVersion = async (
         apiVersion: "1.0",
         data: {
           api: apiVersionMetaData(),
-          blockchain: await bcVersionMetaData(blockchainHost, blockchainPort),
+          blockchain: await bcVersionMetaData(blockchainProtocol, blockchainHost, blockchainPort),
           multichain: await multichainVersionMetaData(multichainClient),
           storage: await storageServiceMetaData(storageServiceClient),
         },
@@ -72,7 +77,7 @@ export const getVersion = async (
       apiVersion: "1.0",
       data: {
         api: apiVersionMetaData(),
-        blockchain: await bcVersionMetaData(blockchainHost, blockchainPort),
+        blockchain: await bcVersionMetaData(blockchainProtocol, blockchainHost, blockchainPort),
         multichain: await multichainVersionMetaData(multichainClient),
       },
     },

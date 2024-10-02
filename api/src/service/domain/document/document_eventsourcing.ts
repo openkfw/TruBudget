@@ -1,13 +1,14 @@
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
-import * as DocumentUploaded from "./document_uploaded";
+
+import { DeletedDocument, StoredDocument } from "./document";
 import * as DocumentDeleted from "./document_deleted";
 import * as DocumentShared from "./document_shared";
+import * as DocumentUploaded from "./document_uploaded";
 import { applyStorageServiceUrls as applyStorageServiceUrl } from "./storage_service_url_eventsourcing";
-import logger from "lib/logger";
-import { DeletedDocument, StoredDocument } from "./document";
 
 export function processDocumentEvents(
   ctx: Ctx,

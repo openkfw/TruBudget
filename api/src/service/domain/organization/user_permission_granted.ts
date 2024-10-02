@@ -1,11 +1,13 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent, { userIntents } from "../../../authz/intents";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
+
 import { Identity } from "./identity";
 import * as UserRecord from "./user_record";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "user_permission_granted";
 const eventType: EventTypeType = "user_permission_granted";

@@ -1,9 +1,11 @@
 import { VError } from "verror";
+
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { HttpResponse } from "../../httpd/lib";
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import { Ctx } from "../../lib/ctx";
+import logger from "../../lib/logger";
+import { getLatestDateOnlineByAddress } from "../../network/controller/logNodes";
 import * as Result from "../../result";
 import { ConnToken } from "../../service";
 import { ServiceUser } from "../../service/domain/organization/service_user";
@@ -11,7 +13,6 @@ import * as GlobalPermissionsGet from "../../service/global_permissions_get";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
 import { AugmentedWalletAddress, WalletAddress } from "../model/Nodes";
-import { getLatestDateOnlineByAddress } from "../../network/controller/logNodes";
 
 const basicPermission: Nodes.NetworkPermission = "connect";
 const adminPermission: Nodes.NetworkPermission = "admin";

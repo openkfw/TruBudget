@@ -1,12 +1,13 @@
 import { assert } from "chai";
 
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+
 import { Filter } from "./historyFilter";
 import { Subproject } from "./subproject";
 import { getHistory } from "./subproject_history_get";
@@ -52,6 +53,7 @@ const event: SubprojectTraceEvent = {
       projectedBudgets: [],
       permissions: {},
       additionalData: {},
+      workflowMode: "ordered",
     },
   },
   snapshot: {

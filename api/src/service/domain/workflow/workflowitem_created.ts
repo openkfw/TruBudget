@@ -1,18 +1,20 @@
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import { safeStringSchema } from "../../../lib/joiValidation";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { DocumentOrExternalLinkReference, documentReferenceSchema } from "../document/document";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
 import { Permissions, permissionsSchema } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
+
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import { UserMetadata, userMetadataSchema } from "../metadata";
-import { safeStringSchema } from "../../../lib/joiValidation";
 
 type EventTypeType = "workflowitem_created";
 const eventType: EventTypeType = "workflowitem_created";

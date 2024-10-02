@@ -4,7 +4,7 @@ import {
   downloadAsPromised,
   establishConnection as establishConnectionMinio,
   getMinioStatus,
-  uploadAsPromised,
+  upload as uploadMinio,
 } from "./minio";
 import config from "./config";
 import {
@@ -20,6 +20,8 @@ export interface Metadata extends Minio.ItemBucketMetadata {
   fileName: string;
   docId: string;
   secret?: string;
+  comment?: string;
+  lastModified?: Date;
 }
 
 export interface MetadataWithName extends Metadata {
@@ -63,7 +65,7 @@ export const uploadDocument = async (
   if (config.storageProvider === "azure-storage") {
     return await upload(file, content, metaData);
   } else {
-    return await uploadAsPromised(file, content, metaData);
+    return await uploadMinio(file, content, metaData);
   }
 };
 

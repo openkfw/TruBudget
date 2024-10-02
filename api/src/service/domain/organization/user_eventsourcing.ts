@@ -1,10 +1,12 @@
-import { Ctx } from "lib/ctx";
-import deepcopy from "lib/deepcopy";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import deepcopy from "../../../lib/deepcopy";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { EventSourcingError } from "../errors/event_sourcing_error";
+
 import * as UserCreated from "./user_created";
 import * as UserDisabled from "./user_disabled";
 import * as UserEnabled from "./user_enabled";

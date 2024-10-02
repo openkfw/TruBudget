@@ -1,9 +1,9 @@
 import Joi = require("joi");
-
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { userDefaultIntents, userIntents } from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import { BusinessEvent } from "../business_event";
@@ -11,8 +11,9 @@ import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
-import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
 import * as GlobalPermissionGranted from "../workflow/global_permission_granted";
+import { GlobalPermissions, identitiesAuthorizedFor } from "../workflow/global_permissions";
+
 import { canAssumeIdentity } from "./auth_token";
 import { KeyPair } from "./key_pair";
 import { ServiceUser } from "./service_user";

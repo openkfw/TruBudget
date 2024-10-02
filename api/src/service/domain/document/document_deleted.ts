@@ -1,12 +1,14 @@
 import Joi = require("joi");
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { EventSourcingError } from "../errors/event_sourcing_error";
-import { Identity } from "../organization/identity";
-import { DeletedDocument } from "./document";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
+
+import { DeletedDocument } from "./document";
 
 type DocumentDeletedEvent = "document_deleted";
 const documentEventType: DocumentDeletedEvent = "document_deleted";

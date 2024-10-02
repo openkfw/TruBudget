@@ -1,5 +1,7 @@
 import * as crypto from "crypto";
+
 import { VError } from "verror";
+
 import * as Result from "../result";
 
 export function encryptWithKey(toEncrypt, publicKey): Result.Type<string> {

@@ -33,7 +33,7 @@ beforeEach(() => {
 });
 
 Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { language: "en-gb" }) => {
-  const loginRequest = (retries = 3) => {
+  const loginRequest = (retries = 5) => {
     return cy
       .request({
         url: `${baseUrl}/api/user.authenticate`,
@@ -46,7 +46,8 @@ Cypress.Commands.add("login", (username = "mstein", password = "test", opts = { 
       })
       .then((response) => {
         if (response.status === 502 && retries > 0) {
-          cy.wait(1000);
+          console.log("api/user.authenticate responded with 502. Retrying login request.");
+          cy.wait(3000);
           return loginRequest(retries - 1);
         } else if (response.status >= 400) {
           throw new Error(`Request failed with status ${response.status}`);

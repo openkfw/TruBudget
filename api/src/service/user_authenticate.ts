@@ -1,13 +1,17 @@
 import { VError } from "verror";
-import { ConnToken } from ".";
+
 import { globalIntents } from "../authz/intents";
 import { config } from "../config";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
+import { verifyToken } from "../lib/token";
 import { getOrganizationAddress } from "../organization/organization";
 import * as Result from "../result";
+
 import { NotAuthorized } from "./domain/errors/not_authorized";
+import { NotFound } from "./domain/errors/not_found";
+import { UserMetadata } from "./domain/metadata";
 import * as AuthToken from "./domain/organization/auth_token";
 import { getGroupsForUser } from "./domain/organization/group_query";
 import * as UserQuery from "./domain/organization/user_query";
@@ -17,9 +21,8 @@ import { getGlobalPermissions } from "./global_permissions_get";
 import { grantpermissiontoaddress } from "./grantpermissiontoaddress";
 import { importprivkey } from "./importprivkey";
 import { hashPassword, isPasswordMatch } from "./password";
-import { verifyToken } from "../lib/token";
-import { UserMetadata } from "./domain/metadata";
-import { NotFound } from "./domain/errors/not_found";
+
+import { ConnToken } from ".";
 
 export interface UserLoginResponse {
   id: string;
@@ -28,6 +31,12 @@ export interface UserLoginResponse {
   allowedIntents: string[];
   groups: object[];
   token: string;
+}
+
+export interface TokenBody {
+  sub: string;
+  metadata: { externalId: string; kid: string };
+  csrf: string;
 }
 
 export async function authenticate(
@@ -214,7 +223,10 @@ export async function authenticateWithToken(
 
   let verifiedToken;
   try {
-    const base64SigningKey = config.authProxy.jwsSignature as string;
+    if (!config.authProxy.jwsSignature) {
+      return new VError("jwsSignature not set in authProxy config");
+    }
+    const base64SigningKey = config.authProxy.jwsSignature;
     verifiedToken = verifyToken(token, Buffer.from(base64SigningKey, "base64"), "RS256");
   } catch (err) {
     const cause = new VError(err, "There was a problem verifying the authorization token");
@@ -222,12 +234,12 @@ export async function authenticateWithToken(
   }
 
   // extract id and metadata
-  const body = verifiedToken?.body.toJSON();
-  const userId = body?.sub as string;
+  const body: TokenBody = verifiedToken?.body.toJSON();
+  const userId = body?.sub;
   const metadata = body.metadata;
-  const externalId = (metadata.externalId as string) || "";
-  const kid = (metadata.kid as string) || "";
-  const csrfFromCookie = body?.csrf as string;
+  const externalId = metadata.externalId || "";
+  const kid = metadata.kid || "";
+  const csrfFromCookie = body?.csrf;
 
   // cookie value does not match with value from http request params
   if (csrfFromCookie !== csrf) {

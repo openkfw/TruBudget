@@ -1,8 +1,10 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";

@@ -1,7 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import * as fs from "fs";
+
 import * as colors from "colors";
 import * as Diff from "diff";
-import * as fs from "fs";
 import * as parseSwagger from "swagger-to-joi";
 
 // This script auto generates the Joi-Object from the swagger-object.

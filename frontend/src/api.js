@@ -3,12 +3,20 @@ import { parse } from "content-disposition-attachment";
 import _isEmpty from "lodash/isEmpty";
 
 import config from "./config";
-import { base64ToBlob } from "./helper";
+import { base64ToBlob, formatString } from "./helper";
 import strings from "./localizeStrings";
+import { store } from "./store";
 
 const devMode = config.envMode === "development";
 const API_VERSION = "1.0";
 const instance = axios.create();
+
+const isAuthProxyEnabled = window?.injectedEnv?.REACT_APP_AUTHPROXY_ENABLED === "true" || config.authProxy.enabled;
+
+const authProxySignoutUri = (window?.injectedEnv?.REACT_APP_AUTHPROXY_URL || config.authProxy.url).replace(
+  "signin",
+  "signout"
+);
 
 // eslint-disable-next-line no-console
 console.log(`API is running in ${devMode ? "development" : "production"} mode (API Version ${API_VERSION})`);
@@ -65,7 +73,7 @@ class Api {
    */
   getExportServiceUrl = (urlSlug, devModeEnvironment = "") => {
     const baseURL = devMode
-      ? `http://localhost:${config.export.servicePort}${
+      ? `${config.export.serviceProtocol}://${config.export.serviceHost}:${config.export.servicePort}${
           !devModeEnvironment.length ? "" : `/${devModeEnvironment.toLowerCase()}`
         }`
       : "/export/xlsx";
@@ -76,7 +84,11 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = (urlSlug) => `${devMode ? `http://localhost:${config.email.servicePort}` : "/email"}/${urlSlug}`;
+  getEmailServiceUrl = (urlSlug) => `${devMode ? `${config.email.serviceProtocol}://${config.email.serviceHost}:${config.email.servicePort}` : "/email"}/${urlSlug}`;
+
+  checkAccessTokenExpiration = () => {
+    return localStorage.getItem("refresh_token_expiration");
+  };
 
   login = (username, password) =>
     instance.post(`/user.authenticate`, {
@@ -91,7 +103,21 @@ class Api {
       token
     });
 
-  logout = () => instance.post(`/user.logout`, {});
+  logout = () => {
+    if (isAuthProxyEnabled) {
+      const isUsingAuthproxy = store?.getState()?.get("login")?.toJS()?.isUsingAuthproxy;
+      if (isUsingAuthproxy && authProxySignoutUri) {
+        let logoutWindow = window.open(`${authProxySignoutUri}`, "_blank");
+
+        if (!logoutWindow || logoutWindow.closed || typeof logoutWindow.closed == "undefined") {
+          alert(formatString(strings.login.popup_blocker_warning, authProxySignoutUri));
+        }
+      }
+    }
+    return instance.post(`/user.logout`, {});
+  };
+
+  refreshToken = () => instance.post(`/user.refreshtoken`, {});
 
   disableUser = (userId) =>
     instance.post(`/global.disableUser`, {
@@ -127,11 +153,12 @@ class Api {
 
   listUser = () => instance.get(`/user.list`);
 
-  changeUserPassword = (userId, newPassword) =>
-    instance.post(`/user.changePassword`, {
+  changeUserPassword = (userId, newPassword) => {
+    return instance.post(`/user.changePassword`, {
       userId,
       newPassword
     });
+  };
 
   listUserAssignments = (userId) => instance.get(removeEmptyQueryParams(`/global.listAssignments?userId=${userId}`));
 
@@ -236,7 +263,8 @@ class Api {
     currency,
     projectedBudgets = [],
     validatorId = undefined,
-    workflowitemType = undefined
+    workflowitemType = undefined,
+    workflowMode = "ordered"
   ) => {
     if (_isEmpty(validatorId)) validatorId = undefined;
     if (_isEmpty(workflowitemType)) workflowitemType = undefined;
@@ -248,7 +276,8 @@ class Api {
         currency,
         projectedBudgets,
         validator: validatorId,
-        workflowitemType
+        workflowitemType,
+        workflowMode
       }
     });
   };
@@ -362,6 +391,7 @@ class Api {
         if (documents[i].base64) {
           const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
           formData.append("documents", blob, documents[i].fileName);
+          formData.append(`comment_${i}`, documents[i].comment);
         }
       }
     }
@@ -564,6 +594,25 @@ class Api {
     return instance.get(path, { withCredentials: true });
   };
 
+  sendForgotPasswordEmail = (email, url, lang) => {
+    const data = { email, url, lang };
+    return instance.post(`/user.forgotPassword`, data);
+  };
+
+  resetPassword = (userId, newPassword, token) => {
+    instance.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    const data = { userId, newPassword };
+    return instance.post(`/user.resetPassword`, data);
+  };
+
+  sendMail = (email) => {
+    const data = {
+      email
+    };
+    const path = this.getEmailServiceUrl("resetPassword");
+    return instance.post(path, data, { withCredentials: true });
+  };
+
   getWorkflowItem = (projectId, subprojectId, workflowitemId) => {
     return instance.get(
       removeEmptyQueryParams(
@@ -600,6 +649,13 @@ class Api {
         `/workflowitem.deleteDocument?projectId=${projectId}&subprojectId=${subprojectId}&workflowitemId=${workflowitemId}&documentId=${documentId}`
       )
     );
+
+  getAppLatestVersion = () => instance.post(`/app.latestVersion`, {});
+
+  upgradeAppVersion = (version) =>
+    instance.post(`/app.upgrade`, {
+      version
+    });
 }
 
 /**

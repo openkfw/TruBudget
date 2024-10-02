@@ -1,6 +1,7 @@
 export const LOGIN = "LOGIN";
 export const LOGIN_AD = "LOGIN_AD";
 export const LOGIN_SUCCESS = "LOGIN_SUCCESS";
+export const LOGIN_AD_SUCCESS = "LOGIN_AD_SUCCESS";
 export const LOGOUT = "LOGOUT";
 export const LOGOUT_SUCCESS = "LOGOUT_SUCCESS";
 export const LOGIN_ERROR = "LOGIN_ERROR";
@@ -11,6 +12,7 @@ export const FETCH_USER_SUCCESS = "FETCH_USER_SUCCESS";
 
 export const STORE_USERNAME = "STORE_USERNAME";
 export const STORE_PASSWORD = "STORE_PASSWORD";
+export const STORE_EMAIL = "STORE_EMAIL";
 
 export const INIT_LANGUAGE = "INIT_LANGUAGE";
 export const SET_LANGUAGE = "SET_LANGUAGE";
@@ -32,6 +34,12 @@ export const CHECK_EMAIL_SERVICE_FAILURE = "CHECK_EMAIL_SERVICE_FAILURE";
 export const CHECK_EXPORT_SERVICE = "CHECK_EXPORT_SERVICE";
 export const CHECK_EXPORT_SERVICE_SUCCESS = "CHECK_EXPORT_SERVICE_SUCCESS";
 export const CHECK_EXPORT_SERVICE_FAILURE = "CHECK_EXPORT_SERVICE_FAILURE";
+
+export const REFRESH_TOKEN = "REFRESH_TOKEN";
+export const REFRESH_TOKEN_SUCCESS = "REFRESH_TOKEN_SUCCESS";
+
+export const SEND_FORGOT_PASSWORD_EMAIL = "SEND_FORGOT_PASSWORD_EMAIL";
+export const RESET_USER_PASSWORD = "RESET_USER_PASSWORD";
 
 export function fetchUser(showLoading = false) {
   return {
@@ -61,6 +69,7 @@ export function storeUsername(username) {
     username
   };
 }
+
 export function storePassword(password) {
   return {
     type: STORE_PASSWORD,
@@ -131,5 +140,35 @@ export function checkExportService(showLoading) {
   return {
     type: CHECK_EXPORT_SERVICE,
     showLoading
+  };
+}
+
+export function refreshToken() {
+  return {
+    type: REFRESH_TOKEN
+  };
+}
+
+export function storeEmail(email) {
+  return {
+    type: STORE_EMAIL,
+    email
+  };
+}
+
+export function sendForgotPasswordEmail(email, url, lang) {
+  const data = { email, url, lang };
+  return {
+    type: SEND_FORGOT_PASSWORD_EMAIL,
+    data
+  };
+}
+
+export function resetUserPassword(username, newPassword, token) {
+  return {
+    type: RESET_USER_PASSWORD,
+    username,
+    newPassword,
+    token
   };
 }

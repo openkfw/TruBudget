@@ -64,6 +64,7 @@ IS_SKIPPING=false
 SKIPPED_SERVICE=""
 IS_RESTARTING_ONLY=false
 RESTART_ONLY_SERVICE=""
+CONTAINERS_PREFIX="trubudget-dev"
 
 while [ "$1" != "" ]; do
     case $1 in
@@ -154,7 +155,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker compose -p trubudget-dev down
+        docker compose -p $CONTAINERS_PREFIX down
         exit 1
         ;;
 
@@ -255,15 +256,17 @@ fi
 SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
+source $SCRIPT_DIR/../common/extract-variables.sh
+
 npm config set registry https://registry.npmjs.org/
 
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
     echo "${orange}WARNING: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
-    echo -n "${orange}WARNING: Do you want to create .env and copy the .env_example file to .env now? (y/N)${colorReset}"
+    echo -n "${orange}WARNING: Do you want to create .env and copy the .env.example file to .env now? (y/N)${colorReset}"
     read answer
     if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        cp ${SCRIPT_DIR}/.env_example ${SCRIPT_DIR}/.env
+        cp ${SCRIPT_DIR}/.env.example ${SCRIPT_DIR}/.env
     else
         echo "${red}ERROR: No .env file in directory ${SCRIPT_DIR} found, script will exit ... ${colorReset}"
         exit 1
@@ -377,7 +380,7 @@ if [[ $COMPOSE_SERVICES =~ "minio" || $COMPOSE_SERVICES =~ "azure-storage" ]]; t
     COMPOSE="$COMPOSE -f $SCRIPT_DIR/docker-compose.azure-storage.yml"
   fi
 fi
-COMPOSE="$COMPOSE -p trubudget-dev --env-file $SCRIPT_DIR/.env"
+COMPOSE="$COMPOSE -p $CONTAINERS_PREFIX --env-file $SCRIPT_DIR/.env"
 
 if [ "$IS_RESTARTING_ONLY" = false ]; then
   $COMPOSE down
@@ -396,6 +399,27 @@ if [ "$IS_PARTLY_REBUILDING" = true ]; then
     $COMPOSE build $BUILD_SERVICES
 fi
 
+# Read logs from servises to check if there is any error. Stop the environment if there is any error.
+# e.g. alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend
+read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
+
+# loop through the services array
+for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
+do
+    echo "INFO: Validating environment variables for $service_to_be_started service ..."
+    SERVICE_ENV_VARS=$(parse_services_and_environment_variables "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
+    # Run environenment variables check
+    OUTPUT=$(docker run ${SERVICE_ENV_VARS} ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
+
+    if [[ $OUTPUT =~ "Config validation error" ]]; then
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo $OUTPUT
+        echo ""
+        echo "$SERVICE_ENV_VARS"
+        exit 1
+    fi
+done
+
 if [ "$IS_LOG_ENABLED" = false ]; then
     echo "INFO: Docker container are started without logging"
 fi
@@ -407,4 +431,5 @@ fi
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"
 $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
+
 

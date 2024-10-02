@@ -20,11 +20,13 @@ import {
   FETCH_EMAIL_ADDRESS_SUCCESS,
   FETCH_USER_SUCCESS,
   INIT_LANGUAGE,
+  LOGIN_AD_SUCCESS,
   LOGIN_ERROR,
   LOGIN_LOADING,
   LOGIN_SUCCESS,
   LOGOUT_SUCCESS,
   SET_LANGUAGE,
+  STORE_EMAIL,
   STORE_PASSWORD,
   STORE_USERNAME
 } from "./actions";
@@ -44,6 +46,7 @@ export const defaultState = fromJS({
   groups: [],
   id: "",
   isUserLoggedIn: false,
+  isUsingAuthproxy: false,
   language: "en-gb",
   loading: false,
   loginError: false,
@@ -51,7 +54,8 @@ export const defaultState = fromJS({
   password: "",
   user: [],
   userDisplayNameMap: {},
-  username: ""
+  username: "",
+  email: ""
 });
 
 const setTimeLocale = (language) => {
@@ -132,6 +136,11 @@ export default function loginReducer(state = defaultState, action) {
         loginError: false
       });
     }
+    case LOGIN_AD_SUCCESS: {
+      return state.merge({
+        isUsingAuthproxy: action.isUsingAuthproxy
+      });
+    }
     case ADMIN_LOGIN_SUCCESS:
       return state.merge({
         adminLoggedIn: true
@@ -153,6 +162,8 @@ export default function loginReducer(state = defaultState, action) {
       return state.merge({
         loading: action.showLoading
       });
+    case STORE_EMAIL:
+      return state.set("email", action.email);
     default:
       return state;
   }

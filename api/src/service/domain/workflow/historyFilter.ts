@@ -1,4 +1,5 @@
 import { Identity } from "../organization/identity";
+
 import { ProjectTraceEvent } from "./project_trace_event";
 import { SubprojectTraceEvent } from "./subproject_trace_event";
 import { WorkflowitemTraceEvent } from "./workflowitem_trace_event";

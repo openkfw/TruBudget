@@ -1,9 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert } from "chai";
-import { ConnToken } from "service/conn";
+
 import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
+import { ConnToken } from "../../../service/conn";
 import { NotFound } from "../errors/not_found";
+
 import * as Group from "./group";
 import * as GroupQuery from "./group_query";
 import { ServiceUser } from "./service_user";

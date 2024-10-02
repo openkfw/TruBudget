@@ -40,6 +40,12 @@ orange=$(tput setaf 214)
 red=$(tput setaf 196)
 colorReset=$(tput sgr0)
 
+# Find correct docker command
+dockerCmd=$(which docker)
+if [ -z "$dockerCmd" ]; then
+    dockerCmd="$1"
+fi
+
 echo "INFO: Building, Starting TruBudget for Operation"
 
 # Set default options
@@ -121,7 +127,7 @@ while [ "$1" != "" ]; do
         ;;
 
     --down)
-        docker compose -p trubudget-operation down
+        $dockerCmd compose -p trubudget-operation down
         exit 1
         ;;
 
@@ -144,6 +150,10 @@ while [ "$1" != "" ]; do
         ;;
 
     *) # unknown option
+        if [ $1 == $dockerCmd ]; then
+            shift
+            continue
+        fi
         echo "unknown argument: " $1
         echo "Exiting ..."
         exit 1
@@ -170,13 +180,15 @@ fi
 SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
+source $SCRIPT_DIR/../common/extract-variables.sh
+
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
     echo "${orange}WARNING: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
-    echo -n "${orange}WARNING: Do you want to create .env and copy the .env_example file to .env now? (y/N)${colorReset}"
+    echo -n "${orange}WARNING: Do you want to create .env and copy the .env.example file to .env now? (y/N)${colorReset}"
     read answer
     if [ "$answer" = "yes" ] || [ "$answer" = "Y" ] || [ "$answer" = "y" ]; then
-        cp ${SCRIPT_DIR}/.env_example ${SCRIPT_DIR}/.env
+        cp ${SCRIPT_DIR}/.env.example ${SCRIPT_DIR}/.env
     else
         echo "${red}ERROR: No .env file in directory ${SCRIPT_DIR} found, script will exit ... ${colorReset}"
         exit 1
@@ -258,7 +270,7 @@ else
     fi
 fi
 
-COMPOSE="docker compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
+COMPOSE="$dockerCmd compose -f $SCRIPT_DIR/docker-compose.yml -p trubudget-operation --env-file $SCRIPT_DIR/.env"
 $COMPOSE down
 
 echo "INFO: Pull images from https://hub.docker.com/ ..."
@@ -266,6 +278,27 @@ $COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 echo "INFO: Since images are used, building is not necessary and will be skipped."
 #$COMPOSE build
+
+# Read logs from servises to check if there is any error. Stop the environment if there is any error.
+# e.g. alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend
+read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
+
+# loop through the services array
+for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
+do
+    echo "INFO: Validating environment variables for $service_to_be_started service ..."
+    SERVICE_ENV_VARS=$(parse_services_and_environment_variables "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
+    # Run environenment variables check
+    OUTPUT=$(docker run ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
+
+    if [[ $OUTPUT =~ "Config validation error" ]]; then
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo $OUTPUT
+        echo ""
+        echo "$SERVICE_ENV_VARS"
+        exit 1
+    fi
+done
 
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"

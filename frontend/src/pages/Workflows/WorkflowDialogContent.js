@@ -141,7 +141,7 @@ const WorkflowDialogContent = (props) => {
             <>
               <div className="workflow-input-container">
                 <Dropdown
-                  disabled={hasFixedWorkflowitemType || isWorkflowFromTemplate}
+                  disabled
                   className="dropdown"
                   floatingLabel={strings.workflow.workflowitem_type}
                   value={hasFixedWorkflowitemType ? fixedWorkflowitemType : workflowitemType}

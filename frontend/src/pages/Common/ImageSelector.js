@@ -43,7 +43,7 @@ const ImageSelector = ({ onTouchTap, selectedImage, customImage, setImage, remov
           }}
           ref={customImageGalleryRef}
         >
-          {imagesToDisplay.map((image, index) => (
+          {imagesToDisplay.map((image) => (
             <ImageListItem onClick={() => onTouchTap(image.src)} key={image.src} className="image-list-item">
               <img alt={image.src} src={image.src} />
               <ImageListItemBar

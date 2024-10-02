@@ -1,10 +1,15 @@
 import { FastifyInstance } from "fastify";
+import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
+
+import { config } from "./config";
 import { toHttpError } from "./http_errors";
 import { Ctx } from "./lib/ctx";
+import { clearValue } from "./lib/keyValueStore";
 import * as Result from "./result";
-import Joi = require("joi");
+
+import { UserLogoutAPIService } from "./index";
 
 /**
  * Represents the request body of the endpoint
@@ -106,7 +111,11 @@ const swaggerSchema = {
  * @param server the current fastify server instance
  * @param urlPrefix the prefix of the http url
  */
-export function addHttpHandler(server: FastifyInstance, urlPrefix: string): void {
+export function addHttpHandler(
+  server: FastifyInstance,
+  urlPrefix: string,
+  service: UserLogoutAPIService,
+): void {
   server.post(`${urlPrefix}/user.logout`, swaggerSchema, async (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
     const bodyResult = validateRequestBody(request.body);
@@ -119,6 +128,14 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string): void
     }
 
     try {
+      const currentRefreshToken = request.cookies["refreshToken"];
+
+      // delete refresh token from storage
+      if (currentRefreshToken && config.refreshTokenStorage === "memory") {
+        clearValue(`refreshToken.${currentRefreshToken}`);
+      } else if (currentRefreshToken && config.refreshTokenStorage === "db") {
+        await service.clearRefreshToken(currentRefreshToken);
+      }
       const body = {
         apiVersion: "1.0",
         data: {},
@@ -134,7 +151,39 @@ export function addHttpHandler(server: FastifyInstance, urlPrefix: string): void
           ),
           {
             path: "/",
-            secure: process.env.NODE_ENV !== "development",
+            secure: config.secureCookie,
+            httpOnly: true,
+            sameSite: "strict",
+            expires: new Date(Date.now()),
+          },
+        )
+        .setCookie(
+          "refreshToken",
+          jsonwebtoken.sign(
+            {
+              userId: "",
+            },
+            "thisTokenIsInvalid",
+          ),
+          {
+            path: "/api/user.refreshtoken",
+            secure: config.secureCookie,
+            httpOnly: true,
+            sameSite: "strict",
+            expires: new Date(Date.now()),
+          },
+        )
+        .setCookie(
+          "refreshToken",
+          jsonwebtoken.sign(
+            {
+              userId: "",
+            },
+            "thisTokenIsInvalid",
+          ),
+          {
+            path: "/api/user.logout",
+            secure: config.secureCookie,
             httpOnly: true,
             sameSite: "strict",
             expires: new Date(Date.now()),
