@@ -34,23 +34,14 @@ module.exports = {
     return {
       ImportDeclaration(node) {
         const importSource = node.source.value;
-        const isAbsoluteImport =
-          !importSource.startsWith("./") && !importSource.startsWith("../");
+        const isAbsoluteImport = !importSource.startsWith("./") && !importSource.startsWith("../");
         const importSourceLibNameFromPath = importSource.split("/")[0];
         const isPackageIncluded =
           Object.keys(packageJsonDeps).includes(importSource) ||
           Object.keys(packageJsonDeps).includes(importSourceLibNameFromPath);
-        const isPackageACommonJsModule = [
-          "fs",
-          "path",
-          "child_process",
-        ].includes(importSource);
+        const isPackageACommonJsModule = ["fs", "path", "child_process"].includes(importSource);
 
-        if (
-          isAbsoluteImport &&
-          !isPackageIncluded &&
-          !isPackageACommonJsModule
-        ) {
+        if (isAbsoluteImport && !isPackageIncluded && !isPackageACommonJsModule) {
           context.report({
             node,
             message: `The import "${importSource}" is not listed in your package.json.`,

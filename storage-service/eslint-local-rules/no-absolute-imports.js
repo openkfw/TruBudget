@@ -38,8 +38,7 @@ module.exports = {
           !importSource.startsWith("./") && !importSource.startsWith("../");
         const importSourceLibNameFromPath = importSource.split("/")[0];
         const isPackageIncluded =
-          Object.keys(packageJsonDeps).includes(importSource) ||
-          Object.keys(packageJsonDeps).includes(importSourceLibNameFromPath);
+          Object.keys(packageJsonDeps).includes(importSource) || Object.keys(packageJsonDeps).includes(importSourceLibNameFromPath);
         const isPackageACommonJsModule = [
           "fs",
           "path",
