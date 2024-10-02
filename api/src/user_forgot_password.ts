@@ -73,7 +73,7 @@ interface Service {
 }
 
 /**
- * Creates an http handler that handles incoming http requests for the `/v2/project.list` route
+ * Creates an http handler that handles incoming http requests for the `/user.forgotPassword` route
  *
  * @param server the current fastify server instance
  * @param urlPrefix the prefix of the http url
