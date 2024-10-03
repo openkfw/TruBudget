@@ -1,21 +1,25 @@
 import { FastifyInstance } from "fastify";
+import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
+
+import {
+  accessTokenExpirationInMinutesWithrefreshToken,
+  createRefreshJWTToken,
+  refreshTokenExpirationInDays,
+} from "./authenticationUtils";
+import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
+import { saveValue } from "./lib/keyValueStore";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import Joi = require("joi");
-import { JwtConfig, config } from "./config";
-import { saveValue } from "./lib/keyValueStore";
 
 export const MAX_GROUPS_LENGTH = 3000;
-export const accessTokenExpirationInMinutesWithrefreshToken = 10;
-export const refreshTokenExpirationInDays = 8;
 
 /**
  * Represents the request body of the endpoint
@@ -304,19 +308,19 @@ export function addHttpHandler(
       reply
         .setCookie("token", signedJwt, {
           path: "/",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
         .setCookie("refreshToken", refreshToken, {
           path: "/api/user.refreshtoken",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
         .setCookie("refreshToken", refreshToken, {
           path: "/api/user.logout",
-          secure: process.env.NODE_ENV !== "development",
+          secure: config.secureCookie,
           httpOnly: true,
           sameSite: "strict",
         })
@@ -347,9 +351,10 @@ function createJWT(
   }
 
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
-  const expiresIn = config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)
-    ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
-    : "8h";
+  const expiresIn =
+    config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)
+      ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
+      : "8h";
   return jsonwebtoken.sign(
     {
       userId: token.userId,
@@ -361,22 +366,4 @@ function createJWT(
     secretOrPrivateKey,
     { expiresIn, algorithm },
   );
-}
-
-/**
- * Creates a refresh JWT Token
- *
- * @param userId the current user ID
- * @returns a string containing the encoded JWT token
- */
-function createRefreshJWTToken(
-  payload: {},
-  key: string,
-  algorithm: JwtConfig["algorithm"] = "HS256",
-): string {
-  const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
-  return jsonwebtoken.sign(payload, secretOrPrivateKey, {
-    expiresIn: `${refreshTokenExpirationInDays}d`,
-    algorithm,
-  });
 }

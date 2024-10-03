@@ -175,8 +175,9 @@ const mapDispatchToProps = (dispatch) => {
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
-    storeWorkflowDocument: (payload, fileName) => dispatch(storeWorkflowDocument(payload, fileName)),
-    storeWorkflowDocumentExternalLink: (link, fileName, linkedFileHash) => dispatch(storeWorkflowDocumentExternalLink(link, fileName, linkedFileHash)),
+    storeWorkflowDocument: (payload, fileName, comment) => dispatch(storeWorkflowDocument(payload, fileName, comment)),
+    storeWorkflowDocumentExternalLink: (link, fileName, linkedFileHash, comment) =>
+      dispatch(storeWorkflowDocumentExternalLink(link, fileName, linkedFileHash, comment)),
     defaultWorkflowExchangeRate: (exchangeRate) => dispatch(defaultWorkflowExchangeRate(exchangeRate)),
     storeWorkflowAssignee: (assignee) => dispatch(storeWorkflowAssignee(assignee)),
     assignWorkflowItem: (

@@ -1,8 +1,10 @@
 import * as crypto from "crypto";
-import logger from "lib/logger";
-import * as Result from "../../../result";
+
 import Joi = require("joi");
 import VError = require("verror");
+
+import logger from "../../../lib/logger";
+import * as Result from "../../../result";
 
 export const MAX_DOCUMENT_SIZE_BINARY = 108 * 1024 * 1024; // 108 MB
 export const MAX_DOCUMENT_SIZE_BASE64 = 108 * 1024 * 1024 * (4 / 3); // 108 MB encoded in Base64
@@ -30,6 +32,8 @@ export interface DocumentReference {
   fileName: string;
   hash: string;
   available?: boolean;
+  comment?: string;
+  lastModified?: string;
 }
 
 export interface DeleteDocumentResponse {
@@ -42,13 +46,16 @@ export interface ExternalLinkReference {
   link: string;
   available?: boolean;
   linkedFileHash?: string;
+  lastModified?: string;
+  comment?: string;
 }
 
 export type DocumentOrExternalLinkReference = DocumentReference | ExternalLinkReference;
 
 export type DocumentWithAvailability = DocumentOrExternalLinkReference & {
   isValidHash?: boolean;
-  message?: string;
+  comment?: string;
+  lastModified?: string;
 };
 
 export const documentReferenceSchema = Joi.alternatives([
@@ -57,6 +64,8 @@ export const documentReferenceSchema = Joi.alternatives([
     fileName: Joi.string().required(),
     hash: Joi.string().required(),
     available: Joi.boolean(),
+    comment: Joi.string().optional().allow(""),
+    lastModified: Joi.date().iso().optional(),
   }),
   Joi.object({
     id: Joi.string().required(),
@@ -64,6 +73,8 @@ export const documentReferenceSchema = Joi.alternatives([
     link: Joi.string().required(),
     linkedFileHash: Joi.string(),
     available: Joi.boolean(),
+    comment: Joi.string().optional().allow(""),
+    lastModified: Joi.date().iso().optional(),
   }),
 ]);
 
@@ -71,6 +82,8 @@ export interface UploadedDocument extends GenericDocument {
   id: string;
   base64: string;
   fileName: string;
+  comment?: string;
+  lastModified?: string;
 }
 
 export interface DocumentLink extends GenericDocument {
@@ -90,6 +103,7 @@ export const uploadedDocumentSchema = Joi.alternatives([
       .max(MAX_DOCUMENT_SIZE_BASE64)
       .error(() => new Error("Document is not valid")),
     fileName: Joi.string(),
+    comment: Joi.string().optional().allow(""),
   }),
   Joi.object({
     id: Joi.string(),
@@ -98,6 +112,7 @@ export const uploadedDocumentSchema = Joi.alternatives([
       .required()
       .error(() => new Error("Link is not valid")),
     fileName: Joi.string(),
+    comment: Joi.string().optional().allow(""),
     linkedFileHash: Joi.string(),
   }),
 ]);
@@ -114,6 +129,7 @@ export async function hashDocument(
     id: document.id,
     hash: hashValue,
     fileName: document.fileName,
+    comment: document.comment,
   }));
 }
 

@@ -1,6 +1,6 @@
 import { VError } from "verror";
 
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../lib/ctx";
 
 interface Info {
   ctx: Ctx;

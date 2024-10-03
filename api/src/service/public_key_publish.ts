@@ -1,14 +1,16 @@
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
+import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import { sourcePublicKeys } from "./domain/organization/public_key_eventsourcing";
 import { publicKeyAlreadyExists } from "./domain/organization/public_key_get";
 import * as PublicKeyPublish from "./domain/organization/public_key_publish";
 import { ServiceUser } from "./domain/organization/service_user";
 import { store } from "./store";
-import * as Cache from "./cache2";
-import logger from "../lib/logger";
 
 interface PublicKey {
   organization: string;

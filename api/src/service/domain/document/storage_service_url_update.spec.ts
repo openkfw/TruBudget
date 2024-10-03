@@ -1,7 +1,9 @@
 import { assert } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
+
 import { storageServiceUrlPublish } from "./storage_service_url_update";
 
 const ctx: Ctx = {

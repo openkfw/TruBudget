@@ -3,12 +3,8 @@ import { AxiosRequestConfig } from "axios";
 
 import "module-alias/register";
 
-import { Ctx } from "./lib/ctx";
-import { ServiceUser } from "./service/domain/organization/service_user";
-import * as WorkflowitemUpdate from "./service/workflowitem_update";
-import * as Project from "./service/domain/workflow/project";
-import * as Subproject from "./service/domain/workflow/subproject";
-import * as Workflowitem from "./service/domain/workflow/workflowitem";
+import * as AppLatestVersionAPI from "./app_latest_version";
+import * as AppUpgradeVersionAPI from "./app_upgrade";
 import getValidConfig, { config } from "./config";
 import * as GlobalPermissionGrantAPI from "./global_permission_grant";
 import * as GlobalPermissionRevokeAPI from "./global_permission_revoke";
@@ -21,6 +17,8 @@ import * as GroupMemberRemoveAPI from "./group_member_remove";
 import * as GroupPermissionsListAPI from "./group_permissions_list";
 import { registerRoutes } from "./httpd/router";
 import * as Server from "./httpd/server";
+import { Ctx } from "./lib/ctx";
+import DbConnector from "./lib/db";
 import deepcopy from "./lib/deepcopy";
 import logger from "./lib/logger";
 import { isReady } from "./lib/readiness";
@@ -54,7 +52,11 @@ import StorageServiceClient from "./service/Client_storage_service";
 import * as DocumentValidationService from "./service/document_validation";
 import { MAX_DOCUMENT_SIZE_BASE64 } from "./service/domain/document/document";
 import * as GroupQueryService from "./service/domain/organization/group_query";
+import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserQueryService from "./service/domain/organization/user_query";
+import * as Project from "./service/domain/workflow/project";
+import * as Subproject from "./service/domain/workflow/subproject";
+import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import * as GlobalPermissionGrantService from "./service/global_permission_grant";
 import * as GlobalPermissionRevokeService from "./service/global_permission_revoke";
 import * as GlobalPermissionsGetService from "./service/global_permissions_get";
@@ -94,7 +96,6 @@ import * as SubprojectProjectedBudgetUpdateService from "./service/subproject_pr
 import * as SubprojectUpdateService from "./service/subproject_update";
 import * as UserAssignmentsService from "./service/user_assignments_get";
 import * as UserAuthenticateService from "./service/user_authenticate";
-import * as UserAuthenticateRefreshTokenService from "./service/user_refresh_token";
 import * as UserCreateService from "./service/user_create";
 import * as UserDisableService from "./service/user_disable";
 import * as UserEnableService from "./service/user_enable";
@@ -102,6 +103,7 @@ import * as UserPasswordChangeService from "./service/user_password_change";
 import * as UserPermissionGrantService from "./service/user_permission_grant";
 import * as UserPermissionRevokeService from "./service/user_permission_revoke";
 import * as UserPermissionsListService from "./service/user_permissions_list";
+import * as UserAuthenticateRefreshTokenService from "./service/user_refresh_token";
 import * as WorkflowitemAssignService from "./service/workflowitem_assign";
 import * as WorkflowitemCloseService from "./service/workflowitem_close";
 import * as WorkflowitemCreateService from "./service/workflowitem_create";
@@ -114,6 +116,7 @@ import * as WorkflowitemListService from "./service/workflowitem_list";
 import * as WorkflowitemPermissionGrantService from "./service/workflowitem_permission_grant";
 import * as WorkflowitemPermissionRevokeService from "./service/workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListService from "./service/workflowitem_permissions_list";
+import * as WorkflowitemUpdate from "./service/workflowitem_update";
 import * as WorkflowitemUpdateService from "./service/workflowitem_update";
 import * as WorkflowitemsReorderService from "./service/workflowitems_reorder";
 import * as SubprojectAssignAPI from "./subproject_assign";
@@ -133,19 +136,19 @@ import ensurePublicKeyPublished from "./system/ensurePublicKeyPublished";
 import { AugmentedFastifyInstance } from "./types";
 import * as UserAuthenticateAPI from "./user_authenticate";
 import * as UserAuthenticateAdAPI from "./user_authenticateAd";
-import * as UserAuthenticateRefreshTokenAPI from "./user_refreshToken";
 import * as UserCreateAPI from "./user_create";
 import * as UserDisableAPI from "./user_disable";
 import * as UserEnableAPI from "./user_enable";
+import * as UserForgotPasswordAPI from "./user_forgot_password";
 import * as UserListAPI from "./user_list";
 import * as UserAssignmentsAPI from "./user_listAssignments";
-import * as UserForgotPasswordAPI from "./user_forgot_password";
-import * as UserResetPasswordAPI from "./user_password_reset";
 import * as UserLogoutAPI from "./user_logout";
 import * as UserPasswordChangeAPI from "./user_password_change";
+import * as UserResetPasswordAPI from "./user_password_reset";
 import * as UserPermissionGrantAPI from "./user_permission_grant";
 import * as UserPermissionRevokeAPI from "./user_permission_revoke";
 import * as UserPermissionsListAPI from "./user_permissions_list";
+import * as UserAuthenticateRefreshTokenAPI from "./user_refreshToken";
 import * as WorkflowitemAssignAPI from "./workflowitem_assign";
 import * as WorkflowitemCloseAPI from "./workflowitem_close";
 import * as WorkflowitemCreateAPI from "./workflowitem_create";
@@ -161,7 +164,6 @@ import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_docume
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
 import * as WorkflowitemsReorderAPI from "./workflowitems_reorder";
-import DbConnector from "./lib/db";
 
 const URL_PREFIX = "/api";
 const DAY_MS = 86400000;
@@ -193,7 +195,7 @@ const {
  */
 
 const rpcSettings: ConnectionSettings = {
-  protocol: "http",
+  protocol: rpc.protocol,
   host: rpc.host,
   port: rpc.port,
   username: rpc.user,
@@ -219,7 +221,7 @@ const { multichainClient } = db;
 let storageServiceSettings: AxiosRequestConfig;
 if (documentFeatureEnabled) {
   storageServiceSettings = {
-    baseURL: `http://${storageService.host}:${storageService.port}`,
+    baseURL: `${storageService.protocol}://${storageService.host}:${storageService.port}`,
     // 10 seconds request timeout
     timeout: 10000,
     maxBodyLength: MAX_DOCUMENT_SIZE_BASE64,
@@ -292,9 +294,23 @@ function registerSelf(): Promise<boolean> {
  * Deprecated API-setup
  */
 
-registerRoutes(server, db, URL_PREFIX, blockchain.host, blockchain.port, storageServiceClient, () =>
-  Cache.invalidateCache(db),
+registerRoutes(
+  server,
+  db,
+  URL_PREFIX,
+  blockchain.protocol,
+  blockchain.host,
+  blockchain.port,
+  storageServiceClient,
+  () => Cache.invalidateCache(db),
 );
+
+/*
+ * APIs related to App versioning
+ */
+
+AppLatestVersionAPI.addHttpHandler(server, URL_PREFIX);
+AppUpgradeVersionAPI.addHttpHandler(server, URL_PREFIX);
 
 /*
  * APIs related to Global Permissions
@@ -385,6 +401,8 @@ if (authProxy.enabled) {
         ),
       getGroupsForUser: (ctx, serviceUser, userId) =>
         GroupQueryService.getGroupsForUser(db, ctx, serviceUser, userId),
+      storeRefreshToken: async (userId, refreshToken, validUntil) =>
+        dbConnection?.insertRefreshToken(userId, refreshToken, validUntil),
     },
     jwt,
   );

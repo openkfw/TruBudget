@@ -60,6 +60,7 @@ The frontend can be configured to use the email-notification feature via the fol
 | REACT_APP_EMAIL_SERVICE_ENABLED | false         | When enabled, the frontend requests a email-service readiness call when entering the login screen.<br/>If true the email section in the user-profile is enabled |
 | EMAIL_HOST                      | -             | IP address of the email notification service                                                                                                                    |
 | EMAIL_PORT                      | 8890          | Port of the email notification service                                                                                                                          |
+| EMAIL_PROTOCOL                  | http          | Protocol of the email notification service. "http" or "https"                                                                                                   |
 
 #### JWT_SECRET
 

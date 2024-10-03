@@ -1,11 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { performance } from "perf_hooks";
+
+import { trace } from "@opentelemetry/api";
+import axios, { AxiosError, AxiosInstance, InternalAxiosRequestConfig, AxiosResponse } from "axios";
 import { VError } from "verror";
+
 import { config } from "../config";
 import logger from "../lib/logger";
 import { decrypt, encrypt } from "../lib/symmetricCrypto";
 import * as Result from "../result";
+
 import { Item } from "./liststreamitems";
 import {
   ConnectionSettings,
@@ -15,7 +19,7 @@ import {
 } from "./RpcClient.h";
 import RpcError from "./RpcError";
 import RpcRequest from "./RpcRequest.h";
-import { trace } from "@opentelemetry/api";
+
 
 const count = new Map();
 const durations = new Map();

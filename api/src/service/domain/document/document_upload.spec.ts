@@ -1,14 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { assert, expect } from "chai";
-import { Ctx } from "lib/ctx";
+import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotFound } from "../errors/not_found";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { UserRecord } from "../organization/user_record";
-import { uploadDocument } from "./document_upload";
+
 import { DocumentOrExternalLinkReference, StoredDocument } from "./document";
-import { VError } from "verror";
+import { uploadDocument } from "./document_upload";
 
 const ctx: Ctx = {
   requestId: "test",
@@ -56,7 +58,7 @@ const repository = {
   getAllDocumentInfos: (): Promise<StoredDocument[]> => Promise.resolve(existingDocuments),
   getAllDocumentReferences: (): Promise<DocumentOrExternalLinkReference[]> =>
     Promise.resolve(documentReferences),
-  storeDocument: (_id, _name, _hash): Promise<any> =>
+  storeDocument: (_file): Promise<any> =>
     Promise.resolve({
       id: "1",
       secret: "secret",
@@ -120,7 +122,7 @@ describe("Storage Service: Upload a document", async () => {
   it("Uploading document fails if storing the document failed", async () => {
     const result = await uploadDocument(ctx, alice, requestData, {
       ...repository,
-      storeDocument: (_id, _name, _hash) => Promise.resolve(new VError("failed to store document")),
+      storeDocument: (_file) => Promise.resolve(new VError("failed to store document")),
     });
     assert.isTrue(Result.isErr(result));
   });
@@ -128,7 +130,7 @@ describe("Storage Service: Upload a document", async () => {
   it("Uploading document fails if no secret is returned from storage service", async () => {
     const result = await uploadDocument(ctx, alice, requestData, {
       ...repository,
-      storeDocument: (id, _name, _hash) => Promise.resolve({ id, secret: undefined } as any),
+      storeDocument: (_file) => Promise.resolve({ id, secret: undefined } as any),
     });
     assert.isTrue(Result.isErr(result));
   });

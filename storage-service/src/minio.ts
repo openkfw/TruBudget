@@ -23,7 +23,7 @@ export const getMinioStatus = async (): Promise<{
 }> => {
   try {
     await axios.get(
-      `http://${config.storage.host}:${config.storage.port}/minio/health/ready`,
+      `${config.storage.protocol}://${config.storage.host}:${config.storage.port}/minio/health/ready`,
     );
   } catch (error) {
     log.error({ error }, "Error during health check on minio-server");
@@ -137,9 +137,9 @@ export const getMetadata = async (
 ): Promise<MetadataWithName> => {
   try {
     const stat = await minioClient.statObject(bucketName, fileHash);
-    const { metaData } = stat as BucketItemStatWithMeta;
+    const { metaData, lastModified } = stat as BucketItemStatWithMeta;
 
-    return metaData;
+    return { ...metaData, lastModified };
   } catch (err) {
     log.error({ err }, "Error while getting Metadata");
     throw err;

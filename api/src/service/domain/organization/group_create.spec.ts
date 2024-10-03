@@ -1,9 +1,11 @@
 import { assert } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { AlreadyExists } from "../errors/already_exists";
 import { NotAuthorized } from "../errors/not_authorized";
 import * as GlobalPermissions from "../workflow/global_permissions";
+
 import { createGroup, RequestData } from "./group_create";
 import { ServiceUser } from "./service_user";
 

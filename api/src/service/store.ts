@@ -1,9 +1,10 @@
 /* eslint-disable no-unreachable */
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+
+import { StreamKind } from "./Client.h";
 import { ConnToken } from "./conn";
 import { BusinessEvent } from "./domain/business_event";
-import { StreamKind } from "./Client.h";
 
 interface PublishableData {
   stream: String;

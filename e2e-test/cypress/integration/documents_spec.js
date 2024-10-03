@@ -72,7 +72,7 @@ describe("Attaching a document to a workflowitem.", function () {
         { action: "select" },
       );
     });
-    cy.get("[data-testid=PostAddIcon]").click();
+    cy.get("[data-testid=PublishIcon]").click();
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 
@@ -212,7 +212,7 @@ describe("Deleting a document from a workflowitem.", function () {
         { action: "select" },
       );
     });
-    cy.get("[data-testid=PostAddIcon]").click();
+    cy.get("[data-testid=PublishIcon]").click();
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 
@@ -286,7 +286,7 @@ describe("Deleting a document from a closed workflowitem.", function () {
         { action: "select" },
       );
     });
-    cy.get("[data-testid=PostAddIcon]").click();
+    cy.get("[data-testid=PublishIcon]").click();
     return cy.get("[data-test=workflowitemDocumentFileName]").should("contain", fileName);
   };
 

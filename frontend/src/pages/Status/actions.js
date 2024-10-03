@@ -11,6 +11,9 @@ export const FETCH_EXPORT_SERVICE_VERSION_FAILURE = "FETCH_EXPORT_SERVICE_VERSIO
 export const FETCH_EXPORT_SERVICE_VERSION_SUCCESS = "FETCH_EXPORT_SERVICE_VERSION_SUCCESS";
 export const SET_STORAGE_SERVICE_AVAILABLE = "SET_STORAGE_SERVICE_AVAILABLE";
 
+export const APP_LATEST_VERSION = "APP_LATEST_VERSION";
+export const UPGRADE_TO_LATEST_VERSION = "UPGRADE_TO_LATEST_VERSION";
+
 export function fetchVersions() {
   return {
     type: FETCH_VERSIONS
@@ -31,5 +34,18 @@ export function setStorageServiceAvailable(isAvailable) {
   return {
     type: SET_STORAGE_SERVICE_AVAILABLE,
     isAvailable
+  };
+}
+
+export function fetchAppLatestVersion() {
+  return {
+    type: APP_LATEST_VERSION
+  };
+}
+
+export function upgradeAppToLatestVersion(version) {
+  return {
+    type: UPGRADE_TO_LATEST_VERSION,
+    version
   };
 }

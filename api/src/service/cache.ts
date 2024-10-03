@@ -1,4 +1,5 @@
 import Intent from "../authz/intents";
+
 import { Stream } from "./Client.h";
 import Type from "./domain/workflowitem_types/types";
 

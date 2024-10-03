@@ -1,13 +1,14 @@
-import { AugmentedFastifyInstance } from "./types";
 import { VError } from "verror";
-import { AuthenticatedRequest } from "./httpd/lib";
+
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Notification from "./service/domain/workflow/notification";
-import { extractUser } from "./handlerUtils";
+import { AugmentedFastifyInstance } from "./types";
 
 /**
  * Creates the swagger schema for the `/notification.count` endpoint

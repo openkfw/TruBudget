@@ -63,6 +63,9 @@ export const SET_PAGE = "SET_PAGE";
 export const SET_ROWS_PER_PAGE = "SET_ROWS_PER_PAGE";
 export const SET_SORT = "SET_SORT";
 
+export const APP_LATEST_VERSION_FETCHED = "APP_LATEST_VERSION_FETCHED";
+export const APP_UPGRADE_VERSION_SUCCESS = "APP_UPGRADE_VERSION_SUCCESS";
+
 export function fetchAllProjects(showLoading = false) {
   return {
     type: FETCH_ALL_PROJECTS,

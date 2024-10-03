@@ -1,9 +1,9 @@
 import Joi = require("joi");
-
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent, { projectIntents } from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { randomString } from "../../hash";
 import * as AdditionalData from "../additional_data";
@@ -13,10 +13,11 @@ import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
 import { Permissions } from "../permissions";
+
 import * as GlobalPermissions from "./global_permissions";
 import * as Project from "./project";
-import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 import * as ProjectCreated from "./project_created";
+import { ProjectedBudget, projectedBudgetListSchema } from "./projected_budget";
 
 /**
  * Initial data for the new project as given in the request.

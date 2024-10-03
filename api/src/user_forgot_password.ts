@@ -1,11 +1,12 @@
-import { AugmentedFastifyInstance } from "./types";
-import { Ctx } from "./lib/ctx";
-import * as jsonwebtoken from "jsonwebtoken";
 import axios from "axios";
+import * as jsonwebtoken from "jsonwebtoken";
+
 import { JwtConfig, config } from "./config";
+import { Ctx } from "./lib/ctx";
 import { Type } from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { Permissions } from "service/domain/permissions";
+import { Permissions } from "./service/domain/permissions";
+import { AugmentedFastifyInstance } from "./types";
 
 const API_VERSION = "1.0";
 
@@ -95,7 +96,7 @@ export function addHttpHandler(
 
       try {
         const { data } = await axios.get(
-          `http://${emailService.host}:${emailService.port}/${getUserByEmailUrl}${email}`,
+          `${emailService.protocol}://${emailService.host}:${emailService.port}/${getUserByEmailUrl}${email}`,
         );
 
         const { user } = data;
@@ -113,7 +114,7 @@ export function addHttpHandler(
           );
           const link = `${url}/reset-password?id=${user.id}&resetToken=${signedJwt}`;
           await axios.post(
-            `http://${emailService.host}:${emailService.port}/${sendResetPasswordUrl}`,
+            `${emailService.protocol}://${emailService.host}:${emailService.port}/${sendResetPasswordUrl}`,
             { data: { ...user, link, lang } },
           );
           reply.status(200).send({

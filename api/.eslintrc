@@ -99,7 +99,7 @@
     "@typescript-eslint/no-empty-interface": "warn",
     "unused-imports/no-unused-imports": "warn",
     "import/order": [
-      "off",
+      "error",
       {
         "groups": [
           "builtin",
@@ -114,6 +114,12 @@
           "order": "asc",
           "caseInsensitive": true
         }
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": ["^[a-zA-Z]"]
       }
     ]
   }

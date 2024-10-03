@@ -1,11 +1,12 @@
 import Joi = require("joi");
-
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { ServiceUser } from "../organization/service_user";
+
 import * as StorageServiceUrlUpdated from "./storage_service_url_updated";
 
 export interface RequestData {

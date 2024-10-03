@@ -54,8 +54,8 @@ export async function documentUpload(
       getPublicKey: async (organization) => {
         return PublicKeyGet.getPublicKey(conn, ctx, organization);
       },
-      storeDocument: async (id, name, hash) => {
-        return storageServiceClient.uploadObject(id, name, hash);
+      storeDocument: async (file: DocumentUpload.File) => {
+        return storageServiceClient.uploadObject(file);
       },
       encryptWithKey: async (secret, publicKey) => {
         return encryptWithKey(secret, publicKey);

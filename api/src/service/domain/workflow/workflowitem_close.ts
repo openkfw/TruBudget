@@ -1,5 +1,7 @@
 import { VError } from "verror";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import { InvalidCommand } from "../errors/invalid_command";
@@ -8,6 +10,7 @@ import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
+
 import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
@@ -16,7 +19,6 @@ import { Id } from "./workflowitem";
 import * as WorkflowitemClosed from "./workflowitem_closed";
 import * as WorkflowitemEventSourcing from "./workflowitem_eventsourcing";
 import { sortWorkflowitems } from "./workflowitem_ordering";
-import logger from "lib/logger";
 
 interface Repository {
   getWorkflowitems(

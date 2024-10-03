@@ -1,8 +1,9 @@
 import { Ctx } from "../lib/ctx";
 import * as Result from "../result";
+
+import * as SnapshotService from "./cache_snapshot";
 import { ConnToken } from "./conn";
 import * as Project from "./domain/workflow/project";
-import * as SnapshotService from "./cache_snapshot";
 
 export async function getProject(
   conn: ConnToken,

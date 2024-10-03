@@ -1,5 +1,7 @@
 import * as Result from "../result";
 
+import { File } from "./domain/document/document_upload";
+
 type Base64String = string;
 
 export interface Version {
@@ -12,6 +14,7 @@ export interface StorageObject {
   id: string;
   fileName: string;
   base64: Base64String;
+  lastModified?: string;
 }
 
 export interface DeleteResponse {
@@ -34,13 +37,20 @@ export interface StorageServiceClientI {
    */
   getVersion(): Promise<Version>;
   /**
+   * @typedef {Object} File
+   * @property {string} id - The unique identifier for the file.
+   * @property {string} fileName - The name of the file.
+   * @property {string} documentBase64 - The base64 encoded content of the file.
+   * @property {string} [comment] - An optional comment about the file.
+   */
+
+  /**
    * Upload an object using the
    *
-   * @param id id of object
-   * @param name name of object
-   * @param data content of uploaded object base64 encoded
+   * @param {File} file - File object containing id, fileName, documentBase64, and an optional comment.
+   * @returns {Promise<Result.Type<UploadResponse>>} - A promise that resolves to the upload response.
    */
-  uploadObject(id: string, name: string, data: Base64String): Promise<Result.Type<UploadResponse>>;
+  uploadObject(file: File): Promise<Result.Type<UploadResponse>>;
   /**
    * Download an object using the matching secret
    *

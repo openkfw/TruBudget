@@ -1,9 +1,11 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import * as Result from "../../../result";
-import { Identity } from "../organization/identity";
-import * as Project from "./project";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
+
+import * as Project from "./project";
 
 type EventTypeType = "project_assigned";
 const eventType: EventTypeType = "project_assigned";

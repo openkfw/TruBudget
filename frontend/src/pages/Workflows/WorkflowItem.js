@@ -7,12 +7,15 @@ import RejectedIcon from "@mui/icons-material/Block";
 import DoneIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import ErrorOutlineIcon from "@mui/icons-material/ErrorOutline";
+import ExpandLess from "@mui/icons-material/ExpandLess";
+import ExpandMore from "@mui/icons-material/ExpandMore";
 import InfoIcon from "@mui/icons-material/InfoOutlined";
 import PermissionIcon from "@mui/icons-material/LockOpen";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import OpenIcon from "@mui/icons-material/Remove";
 import SwapIcon from "@mui/icons-material/SwapCalls";
 import HiddenIcon from "@mui/icons-material/VisibilityOff";
+import { Popover } from "@mui/material";
 import Card from "@mui/material/Card";
 import Checkbox from "@mui/material/Checkbox";
 import Chip from "@mui/material/Chip";
@@ -400,6 +403,18 @@ export const WorkflowItem = ({
   const canAssign = canAssignWorkflowItem(allowedIntents) && status !== "closed";
   const canCloseWorkflow = currentUser === assignee && workflowSelectable && status !== "closed";
 
+  const [anchorEl, setAnchorEl] = React.useState(null);
+  const open = Boolean(anchorEl);
+  const popoverId = open ? "simple-popover" : undefined;
+
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+
   const calculateStatus = (status, workflowSelectable, workflowSortEnabled) => {
     if (workflowSortEnabled) {
       return status;
@@ -452,14 +467,14 @@ export const WorkflowItem = ({
                     </Typography>
                   </Tooltip>
                 </div>
-                <div className={workflowSelectable ? "workflow-cell" : "workflow-cell not-selectable"}>
+                <div className={workflowSelectable ? "budget-cell" : "budget-cell not-selectable"}>
                   <Typography variant="body2" className="typographs" component="div" data-test="workflowitem-amount">
                     {amountType === "N/A"
                       ? amountTypes(amountType)
                       : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
                   </Typography>
                 </div>
-                <div className="workflow-cell">
+                <div className="status-cell">
                   <ChipStatus status={calculateStatus(status, workflowSelectable, workflowSortEnabled)} />
                 </div>
                 <div className="workflow-cell" data-test="outside">
@@ -474,14 +489,51 @@ export const WorkflowItem = ({
                 </div>
                 <div className="tag-cell">
                   {tags.length > 0 && (
-                    <Chip
-                      label={tags[0]}
-                      size="small"
-                      onClick={(event) => {
-                        props.storeWorkflowitemSearchTerm(`tag:${event.target.innerText}`);
-                      }}
-                      sx={{ backgroundColor: (theme) => theme.palette.tag.main, color: "white" }}
-                    />
+                    <div className="tags-row">
+                      <div className="tag-chips">
+                        <Chip
+                          label={tags[0]}
+                          size="small"
+                          onClick={(event) => {
+                            props.storeWorkflowitemSearchTerm(`tag:${event.target.innerText}`);
+                          }}
+                          sx={{ backgroundColor: (theme) => theme.palette.tag.main, color: "white" }}
+                        />
+                      </div>
+                      <div>
+                        <IconButton aria-label="expand" aria-describedby={popoverId} onClick={handleClick}>
+                          {open ? <ExpandLess /> : <ExpandMore />}
+                        </IconButton>
+                        <Popover
+                          id={popoverId}
+                          open={open}
+                          anchorEl={anchorEl}
+                          onClose={handleClose}
+                          anchorOrigin={{
+                            vertical: "top",
+                            horizontal: "left"
+                          }}
+                          transformOrigin={{
+                            vertical: "top",
+                            horizontal: "right"
+                          }}
+                        >
+                          <div className="tags-popover">
+                            {tags.map((tag) => (
+                              <Chip
+                                key={tag}
+                                label={tag}
+                                size="small"
+                                onClick={(event) => {
+                                  props.storeWorkflowitemSearchTerm(`tag:${event.target.innerText}`);
+                                }}
+                                sx={{ backgroundColor: (theme) => theme.palette.tag.main, color: "white" }}
+                              />
+                            ))}
+                          </div>
+                        </Popover>
+                      </div>
+                    </div>
                   )}
                 </div>
                 {renderActionButtons({

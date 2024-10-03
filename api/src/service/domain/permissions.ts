@@ -1,5 +1,7 @@
 import Joi = require("joi");
+
 import Intent, { allIntents, ExposableIntent } from "../../authz/intents";
+
 import { Identity } from "./organization/identity";
 
 export type Permissions = { [key in Intent]?: Identity[] };

@@ -8,7 +8,7 @@ The easiest way to get started is to use our [`docker-compose`](../docker-compos
 
 ```bash
 cd docker-compose
-cp .env_example .env
+cp .env.example .env
 docker compose --project-directory . -f blockchain/docker-compose.alphanode.yml -f api/docker-compose.yml -f frontend/docker-compose.yml -f excel-export-service/docker-compose.yml up
 ```
 

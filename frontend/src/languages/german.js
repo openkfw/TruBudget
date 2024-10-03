@@ -99,6 +99,7 @@ const de = {
     ok: "Ok",
     ongoing: "Laufend",
     open: "Offen",
+    optional: "Optional",
     organization: "Organisation",
     password: "Passwort",
     permission: "Berechtigung",
@@ -223,7 +224,7 @@ const de = {
     subproject_restricted_workflowitem_type:
       "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
     workflowitem_assignee: "Fester Zuständiger",
-    organization_info: "Organization",
+    organization_info: "Förderer",
     total_budget_info: "Total budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
@@ -257,6 +258,7 @@ const de = {
     workflow_document_validated: "Validiert",
     workflow_document_validation_not_ok: "Unterschiedliches Dokument",
     workflow_document_validation_ok: "Identisches Dokument",
+    workflow_document_last_modified: "Zuletzt geändert",
     workflow_documents: "Dokumente",
     workflow_documents_add_file: "Datei hinzufügen",
     workflow_documents_add_link: "Externen Link hinzufügen",
@@ -289,6 +291,7 @@ const de = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Typ",
     workflow_upload_document: "Upload",
+    workflow_select_document: "Dokument auswählen",
     workflowitem_details_documents: "Dokumente",
     workflowitem_details_history: "Historie",
     workflowitem_details_overview: "Übersicht",

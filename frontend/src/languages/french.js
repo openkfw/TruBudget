@@ -106,6 +106,7 @@ const fr = {
     not_projected: "Non estimé",
     ongoing: "En cours",
     open: "Ouvert",
+    optional: "Optionnel",
     organization: "Organisation",
     password: "Mot de passe",
     permission: "Autorisation",
@@ -227,7 +228,7 @@ const fr = {
     subproject_restricted_workflowitem_type:
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
     workflowitem_assignee: "Fixed assignee",
-    organization_info: "Organization",
+    organization_info: "Organisme de financement",
     total_budget_info: "Total budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
@@ -261,6 +262,7 @@ const fr = {
     workflow_document_validated: "Validé",
     workflow_document_validation_not_ok: "Document différent",
     workflow_document_validation_ok: "Document identique",
+    workflow_document_last_modified: "Dernière modification",
     workflow_documents: "Documents de l’étape de workflow",
     workflow_documents_add_file: "Ajouter un fichier",
     workflow_documents_add_link: "Ajouter un lien externe",
@@ -293,6 +295,7 @@ const fr = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Type du Workflow",
     workflow_upload_document: "Charger",
+    workflow_select_document: "Sélectionner un document",
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "Historique",
     workflowitem_details_overview: "Sommaire",

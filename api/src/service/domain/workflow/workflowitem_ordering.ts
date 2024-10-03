@@ -1,6 +1,8 @@
 import { AssertionError } from "assert";
-import * as Workflowitem from "./workflowitem";
+
 import logger from "../../../lib/logger";
+
+import * as Workflowitem from "./workflowitem";
 
 export type WorkflowitemOrdering = Workflowitem.Id[];
 

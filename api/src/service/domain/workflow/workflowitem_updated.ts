@@ -1,6 +1,8 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import { safeStringSchema } from "../../../lib/joiValidation";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import * as AdditionalData from "../additional_data";
 import {
@@ -9,13 +11,13 @@ import {
   ExternalLinkReference,
   documentReferenceSchema,
 } from "../document/document";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
+
 import { conversionRateSchema, moneyAmountSchema } from "./money";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
-import { UserMetadata, userMetadataSchema } from "../metadata";
-import { safeStringSchema } from "../../../lib/joiValidation";
 
 type EventTypeType = "workflowitem_updated";
 const eventType: EventTypeType = "workflowitem_updated";

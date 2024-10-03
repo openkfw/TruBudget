@@ -1,8 +1,10 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent from "../authz/intents";
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import { Identity } from "./domain/organization/identity";
 import { ServiceUser } from "./domain/organization/service_user";
@@ -10,8 +12,8 @@ import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectPermissionRevoke from "./domain/workflow/subproject_permission_revoke";
 import * as SubprojectSnapshotPublish from "./domain/workflow/subproject_snapshot_publish";
-import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import { store } from "./store";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
 
 export { RequestData } from "./domain/workflow/project_create";
 

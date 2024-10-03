@@ -1,16 +1,18 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
-import * as WorkflowitemsReorder from "./domain/workflow/workflowitems_reorder";
-import { WorkflowitemOrdering } from "./domain/workflow/workflowitem_ordering";
-import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import * as SubprojectSnapshotPublish from "./domain/workflow/subproject_snapshot_publish";
+import { WorkflowitemOrdering } from "./domain/workflow/workflowitem_ordering";
+import * as WorkflowitemsReorder from "./domain/workflow/workflowitems_reorder";
 import { store } from "./store";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
 
 export async function setWorkflowitemOrdering(
   conn: ConnToken,

@@ -1,4 +1,4 @@
-import logger from "lib/logger";
+import logger from "../../../lib/logger";
 import { BusinessEvent } from "../business_event";
 
 export function sourceStorageServiceUrls(events: BusinessEvent[]): Map<string, string> {

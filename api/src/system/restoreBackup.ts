@@ -1,10 +1,12 @@
 import axios from "axios";
 import { VError } from "verror";
+
 import { TruBudgetError } from "../error";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import logger from "../lib/logger";
 
 export const restoreBackup = async (
+  blockchainProtocol: "http" | "https",
   blockchainHost: string,
   blockchainPort: number,
   req: AuthenticatedRequest,
@@ -27,7 +29,11 @@ export const restoreBackup = async (
     maxBodyLength: 1074790400,
   };
   try {
-    await axios.post(`http://${blockchainHost}:${blockchainPort}/chain`, data, config);
+    await axios.post(
+      `${blockchainProtocol}://${blockchainHost}:${blockchainPort}/chain`,
+      data,
+      config,
+    );
     logger.info("backup restored successfully");
   } catch (error) {
     const cause = error.response.status === 400 ? new Error(error.response.data) : error;

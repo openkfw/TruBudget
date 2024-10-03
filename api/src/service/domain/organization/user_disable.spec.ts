@@ -1,16 +1,18 @@
 import { assert } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
 import { ServiceUser } from "../organization/service_user";
-import { disableUser, RequestData } from "./user_disable";
-import { UserRecord } from "./user_record";
 import * as GlobalPermissions from "../workflow/global_permissions";
-import * as UserAssignments from "../workflow/user_assignments";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
+import * as UserAssignments from "../workflow/user_assignments";
 import * as Workflowitem from "../workflow/workflowitem";
+
+import { disableUser, RequestData } from "./user_disable";
+import { UserRecord } from "./user_record";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";

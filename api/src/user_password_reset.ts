@@ -1,6 +1,8 @@
-import { AugmentedFastifyInstance } from "./types";
-import { VError } from "verror";
+import Joi = require("joi");
 import { verify } from "jsonwebtoken";
+import { VError } from "verror";
+
+import { JwtConfig } from "./config";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
 import { Ctx } from "./lib/ctx";
@@ -8,8 +10,7 @@ import { safeIdSchema, safePasswordSchema } from "./lib/joiValidation";
 import { Type, isErr } from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
 import { RequestData } from "./service/domain/organization/user_password_change";
-import Joi = require("joi");
-import { JwtConfig } from "./config";
+import { AugmentedFastifyInstance } from "./types";
 
 const API_VERSION = "1.0";
 

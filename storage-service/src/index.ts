@@ -27,6 +27,7 @@ interface DocumentUploadRequest extends express.Request {
   body: {
     fileName: string;
     content: string;
+    comment?: string;
   };
   log: Logger;
 }
@@ -147,6 +148,7 @@ app.post(
   query("docId").isString(),
   body("content").isString().isBase64(),
   body("fileName").isString(),
+  body("comment").optional({ nullable: true }).isString(),
   (req: DocumentUploadRequest, res: express.Response) => {
     const errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -155,13 +157,14 @@ app.post(
     }
 
     const docId: string = req.query.docId;
-    const { content, fileName } = req.body;
+    const { content, fileName, comment } = req.body;
 
     (async (): Promise<void> => {
       log.debug({ req }, "Uploading document");
       const result = await uploadDocument(docId, content, {
         fileName,
         docId,
+        comment,
       });
       res.send({ docId, secret: result }).end();
     })().catch((err) => {

@@ -4,6 +4,7 @@ import { config } from "../config";
 import { toHttpError } from "../http_errors";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+import { silentRouteSettings } from "../lib/loggingTools";
 import { isReady } from "../lib/readiness";
 import { approveNewNodeForExistingOrganization } from "../network/controller/approveNewNodeForExistingOrganization";
 import { approveNewOrganization } from "../network/controller/approveNewOrganization";
@@ -21,7 +22,6 @@ import { restoreBackup } from "../system/restoreBackup";
 
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
-import { silentRouteSettings } from "../lib/loggingTools";
 
 const send = (res, httpResponse: HttpResponse): void => {
   const [code, body] = httpResponse;
@@ -221,6 +221,7 @@ export const registerRoutes = (
   server: FastifyInstance,
   conn: ConnToken,
   urlPrefix: string,
+  blockchainProtocol: "http" | "https",
   blockchainHost: string,
   blockchainPort: number,
   storageServiceClient: StorageServiceClient,
@@ -265,7 +266,13 @@ export const registerRoutes = (
       `${urlPrefix}/version`,
       silentRouteSettings(getSchema(server, "version")),
       (request, reply) => {
-        getVersion(blockchainHost, blockchainPort, multichainClient, storageServiceClient)
+        getVersion(
+          blockchainProtocol,
+          blockchainHost,
+          blockchainPort,
+          multichainClient,
+          storageServiceClient,
+        )
           .then((response) => {
             send(reply, response);
           })
@@ -367,7 +374,7 @@ export const registerRoutes = (
       `${urlPrefix}/system.createBackup`,
       getSchema(server, "createBackup"),
       (req: AuthenticatedRequest, reply) => {
-        createBackup(blockchainHost, blockchainPort, req)
+        createBackup(blockchainProtocol, blockchainHost, blockchainPort, req)
           .then((data) => {
             reply.header("Content-Type", "application/gzip");
             reply.header("Content-Disposition", 'attachment; filename="backup.gz"');
@@ -381,7 +388,7 @@ export const registerRoutes = (
       `${urlPrefix}/system.restoreBackup`,
       getSchema(server, "restoreBackup"),
       async (req: AuthenticatedRequest, reply) => {
-        await restoreBackup(blockchainHost, blockchainPort, req)
+        await restoreBackup(blockchainProtocol, blockchainHost, blockchainPort, req)
           .then((response) => send(reply, response))
           .catch((err) => handleError(req, reply, err));
         // Invalidate the cache, regardless of the outcome:

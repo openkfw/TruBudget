@@ -9,12 +9,14 @@ The provisioning project creates a bunch of test data via api requests.
 | PROVISIONING_TYPE | TEST          | If set to PROD the prod data is provisioned otherwise the test data is used                                                                                                                                                                                                   |
 | API_HOST          | localhost     | IP address of the api                                                                                                                                                                                                                                                         |
 | API_PORT          | 8080          | Port of the api                                                                                                                                                                                                                                                               |
+| API_PROTOCOL      | http          | Protocol of the api. "http" or "https"                                                                                                                                            |
 | ROOT_SECRET       | root-secret   | The root secret is the password for the root user. If you start with an empty blockchain, the root user is needed to add other users, approve new nodes,.. If you don't set a value via the environment variable, the API generates one randomly and prints it to the console |
 | ORGANIZATION      | -             | In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain and is also displayed in the frontend's top right corner.                 |
 | LOG_LEVEL         | info          | Defines the log output. Supported levels are `trace`, `debug`, `info`, `warn`, `error`, `fatal`                                                                                                                                                                               |
 | PROVISIONING_SERVICE_USER | mstein | Provisioning service user. Custom user should be defined in `users.json` and have appropriate permissions. |
 | PROVISIONING_SERVICE_PASSWORD | test | |
 | PROVISIONING_BETA | `false` | Flag for additional provisioning of users and groups. If set to `true`, provisioning tries to create users and groups in already provisioned TB chain. | 
+| PROVISIONING_TIMEOUT | `30` | Number of seconds in which an individual provisioning request times out. |
 
 ## Setup
 
@@ -44,7 +46,7 @@ export PROVISIONING_TYPE=PROD
 npm start
 ```
 
-By default, the script expects the API to listen on `127.0.0.1:8080`, but this can be customized using the `API_HOST` and `API_PORT` environment variables.
+By default, the script expects the API to listen on `127.0.0.1:8080`, but this can be customized using the `API_HOST`, `API_PORT` and `API_PROTOCOL` environment variables.
 
 ## Provisioning data
 

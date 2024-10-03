@@ -1,6 +1,7 @@
 import { assert } from "chai";
-import { Ctx } from "lib/ctx";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { NotAuthorized } from "../errors/not_authorized";
 import { ServiceUser } from "../organization/service_user";
@@ -8,6 +9,7 @@ import * as UserRecord from "../organization/user_record";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
+
 import { getUserAssignments } from "./user_assignments_get";
 
 const ctx: Ctx = { requestId: "", source: "test" };

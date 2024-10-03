@@ -1,4 +1,5 @@
-import logger from "lib/logger";
+import logger from "../lib/logger";
+
 import { MultichainClient } from "./Client.h";
 
 export function grantpermissiontoaddress(

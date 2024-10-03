@@ -105,6 +105,7 @@ const en = {
     not_projected: "Not projected",
     ongoing: "Ongoing",
     open: "Open",
+    optional: "Optional",
     organization: "Organization",
     password: "Password",
     permission: "Permission",
@@ -307,7 +308,7 @@ const en = {
     subproject_restricted_workflowitem_type:
       "Only allow workflowitem of type restricted. When assigning a restricted workflowitem permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
     workflowitem_assignee: "Fixed assignee",
-    organization_info: "Organization",
+    organization_info: "Funding organization",
     total_budget_info: "Total budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
@@ -340,6 +341,7 @@ const en = {
     workflow_document_validated: "Validated",
     workflow_document_validation_not_ok: "Different document",
     workflow_document_validation_ok: "Identical document",
+    workflow_document_last_modified: "Last modified",
     workflow_documents: "Documents",
     workflow_documents_add_file: "Add file",
     workflow_documents_add_link: "Add external link",
@@ -372,6 +374,7 @@ const en = {
     workflow_type_workflow: "Workflow",
     workflow_type: "Type",
     workflow_upload_document: "Upload",
+    workflow_select_document: "Select a file",
     workflowitem_details_documents: "Documents",
     workflowitem_details_history: "History",
     workflowitem_details_overview: "Overview",

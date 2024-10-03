@@ -1,17 +1,19 @@
 import * as crypto from "crypto";
+
 import { VError } from "verror";
+
 import { config } from "../config";
 import * as AsymmetricCrypto from "../lib/asymmetricCrypto";
-import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { getPrivateKey, publishPrivateKey } from "../organization/organization";
 import * as Result from "../result";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
+import { getselfaddress } from "../service/getselfaddress";
 import { getPublicKey } from "../service/public_key_get";
 import { publishPublicKey } from "../service/public_key_publish";
-import { getselfaddress } from "../service/getselfaddress";
 
 type PublicKey = string;
 type Organization = string;

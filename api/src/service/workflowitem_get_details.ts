@@ -1,17 +1,19 @@
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
+import { StorageServiceClientI } from "./Client_storage_service.h";
 import { ConnToken } from "./conn";
 import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
-import * as WorkflowitemGetDetails from "./domain/workflow/workflowitem_get_details";
 import * as WorkflowitemGet from "./domain/workflow/workflowitem_get";
-import * as WorkflowitemDocumentDownloadService from "./workflowitem_document_download";
-import { StorageServiceClientI } from "./Client_storage_service.h";
+import * as WorkflowitemGetDetails from "./domain/workflow/workflowitem_get_details";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
-import logger from "lib/logger";
+import * as WorkflowitemDocumentDownloadService from "./workflowitem_document_download";
 
 export async function getWorkflowitemDetails(
   conn: ConnToken,

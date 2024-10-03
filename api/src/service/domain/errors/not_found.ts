@@ -1,4 +1,4 @@
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
 
 export class NotFound extends Error {
   constructor(

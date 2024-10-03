@@ -1,15 +1,17 @@
 import { VError } from "verror";
+
 import { config } from "../../../config";
-import { Ctx } from "lib/ctx";
+import { Ctx } from "../../../lib/ctx";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
-import { ServiceUser } from "../organization/service_user";
-import * as DocumentShared from "./document_shared";
-import * as Workflowitem from "../workflow/workflowitem";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
-import logger from "lib/logger";
+import { ServiceUser } from "../organization/service_user";
+import * as Workflowitem from "../workflow/workflowitem";
+
 import { StoredDocument } from "./document";
+import * as DocumentShared from "./document_shared";
 
 type Base64String = string;
 

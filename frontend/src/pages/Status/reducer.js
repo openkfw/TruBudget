@@ -1,5 +1,7 @@
 import { fromJS } from "immutable";
 
+import { APP_LATEST_VERSION_FETCHED } from "../Overview/actions";
+
 import {
   FETCH_EMAIL_SERVICE_VERSION,
   FETCH_EMAIL_SERVICE_VERSION_FAILURE,
@@ -26,11 +28,17 @@ const defaultState = fromJS({
   isFetchingVersions: false,
   isFetchingEmailVersion: false,
   isFetchingExportVersion: false,
-  storageServiceAvailable: false
+  storageServiceAvailable: false,
+  latestVersion: null
 });
 
 export default function nodeDashboardReducer(state = defaultState, action) {
   switch (action.type) {
+    case APP_LATEST_VERSION_FETCHED:
+      if (action.version) {
+        return state.set("latestVersion", action.version.version);
+      }
+      return state;
     case FETCH_VERSIONS:
       return state.set("isFetchingVersions", true);
     case FETCH_VERSIONS_SUCCESS:
