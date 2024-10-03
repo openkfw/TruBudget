@@ -22,15 +22,11 @@ const { importWallet, listAvailableWallets } = require("./wallet-backup");
 
 const { moveBackup, verifyHashSha256, removeFile, createMetadataFileSha256 } = require("./shell");
 
-const app = express();
-const port = process.env.PORT || 8085;
+const config = require("./config");
 
-const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
+const app = express();
+
 const CHAINNAME = "TrubudgetChain";
-const MULTICHAIN_RPC_PORT = process.env.MULTICHAIN_RPC_PORT || 8000;
-const MULTICHAIN_RPC_USER = process.env.MULTICHAIN_RPC_USER || "multichainrpc";
-const MULTICHAIN_RPC_PASSWORD = process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
-const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
 const CERT_PATH = process.env.CERT_PATH || undefined;
 const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
 const CERT_KEY_PATH = process.env.CERT_KEY_PATH || undefined;
@@ -127,10 +123,10 @@ configureChain(
   isAlpha,
   CHAINNAME,
   multichainDir,
-  MULTICHAIN_RPC_PORT,
-  MULTICHAIN_RPC_USER,
-  MULTICHAIN_RPC_PASSWORD,
-  RPC_ALLOW_IP,
+  config.multichain.rpcPort,
+  config.multichain.rpcUser,
+  config.multichain.rpcPassword,
+  config.multichain.rpcAllowIp,
   isMultichainFeedEnabled,
 );
 
@@ -156,11 +152,20 @@ function initMultichain() {
         blockNotifyArg,
         externalIpArg,
         multichainDir,
-        ORGANIZATION,
+        config.orgazation,
       ),
     );
     setTimeout(
-      () => registerNodeAtAlpha(ORGANIZATION, API_PROTOCOL, API_HOST, API_PORT, CERT_PATH, CERT_CA_PATH, CERT_KEY_PATH),
+      () =>
+        registerNodeAtAlpha(
+          config.orgazation,
+          API_PROTOCOL,
+          API_HOST,
+          API_PORT,
+          CERT_PATH,
+          CERT_CA_PATH,
+          CERT_KEY_PATH,
+        ),
       5000,
     );
   }
@@ -228,7 +233,7 @@ app.get("/chain-sha256", async (req, res) => {
     log.info("Start packaging");
     AUTOSTART = false;
     await stopMultichain(mcproc);
-    await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
+    await createMetadataFileSha256(CHAINNAME, multichainDir, config.orgazation);
     res.setHeader("Content-Type", "application/gzip");
     res.setHeader("Content-Disposition", ` attachment; filename="${CHAINNAME}.gz"`);
     tar
@@ -307,17 +312,17 @@ app.post("/restoreWallet", async (req, res) => {
         if (isMultichainFeedEnabled) {
           log.info("Multichain feed is enabled");
           shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-rpcport=${MULTICHAIN_RPC_PORT}
-rpcuser=${MULTICHAIN_RPC_USER}
-rpcpassword=${MULTICHAIN_RPC_PASSWORD}
-rpcallowip=${RPC_ALLOW_IP}
+rpcport=${config.multichain.rpcPort}
+rpcuser=${config.multichain.rpcUser}
+rpcpassword=${config.multichain.rpcPassword}
+rpcallowip=${config.multichain.rpcAllowIp}
 walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j`);
         } else {
           shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-rpcport=${MULTICHAIN_RPC_PORT}
-rpcuser=${MULTICHAIN_RPC_USER}
-rpcpassword=${MULTICHAIN_RPC_PASSWORD}
-rpcallowip=${RPC_ALLOW_IP}`);
+rpcport=${config.multichain.rpcPort}
+rpcuser=${config.multichain.rpcUser}
+rpcpassword=${config.multichain.rpcPassword}
+rpcallowip=${config.multichain.rpcAllowIp}`);
         }
         await spawnProcess(() =>
           startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
@@ -354,18 +359,18 @@ app.post("/chain", async (req, res) => {
     const stream = file.pipe(extract);
     stream.on("finish", async () => {
       if (fs.existsSync(metadataPath)) {
-        const config = loadConfig(metadataPath);
-        const validSha256 = await verifyHashSha256(config.DirectoryHash, extractPath);
+        const metadataConfig = loadConfig(metadataPath);
+        const validSha256 = await verifyHashSha256(metadataConfig.DirectoryHash, extractPath);
         const chainConfig = yaml.load(fs.readFileSync(chainConfigPath, "utf8"));
-        let correctConfig = chainConfig.includes(MULTICHAIN_RPC_PASSWORD);
+        let correctConfig = chainConfig.includes(config.multichain.rpcPassword);
 
-        if (config.hasOwnProperty("Organisation")) {
-          const correctOrg = config.Organisation === ORGANIZATION;
+        if (metadataConfig.hasOwnProperty("Organisation")) {
+          const correctOrg = metadataConfig.Organisation === config.orgazation;
           correctConfig = correctConfig && correctOrg;
         }
         //Check for major version compatibility
         const compatibleVersions =
-          config.hasOwnProperty("Version") && config.Version.split(".")[0] === version.split(".")[0];
+          metadataConfig.hasOwnProperty("Version") && metadataConfig.Version.split(".")[0] === version.split(".")[0];
 
         if (correctConfig && compatibleVersions) {
           if (validSha256) {
@@ -401,6 +406,6 @@ app.post("/chain", async (req, res) => {
   }
 });
 
-app.listen(port, function () {
-  log.info(`App listening on ${port}`);
+app.listen(config.port, function () {
+  log.info(`App listening on ${config.port}`);
 });
