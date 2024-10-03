@@ -139,9 +139,11 @@ export const envVarsSchema = Joi.object({
     .note(
       "If set to `development` api will allow any string as password. If set to `production` passwords must satisfy safePasswordSchema, see lib/joiValidation-.ts & -.spec.ts files",
     ),
-  ENCRYPTION_PASSWORD: Joi.string().note(
-    "If set, all data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_PASSWORD",
-  ),
+  ENCRYPTION_PASSWORD: Joi.string()
+    .allow("")
+    .note(
+      "If set, all data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_PASSWORD",
+    ),
   SIGNING_METHOD: Joi.string()
     .default("node")
     .allow("node", "user")
