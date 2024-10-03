@@ -77,7 +77,7 @@ export const envVarsSchema = Joi.object({
     ),
   JWT_ALGORITHM: Joi.string()
     .default("HS256")
-    .allow("HS256", "RS256")
+    .allow("HS256", "RS256", "")
     .note("Algorithm used for signing and verifying JWTs."),
   JWT_SECRET: Joi.string()
     .min(10)
