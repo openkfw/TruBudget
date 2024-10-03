@@ -327,7 +327,7 @@ const pt = {
     exit_sort_mode:
       "Este botão agora está desativado. Saia do modo de classificação para criar novos itens de fluxo de trabalho",
     exchange_rate: "Taxa de câmbio",
-    search_text: "Buscar",
+    search_text: "Pesquisar ações de fluxo de trabalho",
     workflow_budget_allocated: "alocado",
     workflow_budget_disbursed: "pago",
     workflow_budget_na: "não se aplica",

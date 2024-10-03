@@ -240,7 +240,7 @@ const de = {
     exit_sort_mode:
       "Diese Schaltfläche ist jetzt deaktiviert. Verlassen Sie den Sortiermodus, um neue Workflow-Elemente zu erstellen",
     exchange_rate: "Wechselkurs",
-    search_text: "Workflow actions durchsuchen",
+    search_text: "Suchen Sie nach Workflow-Aktionen",
     workflow_budget_allocated: "Zugeteilt",
     workflow_budget_disbursed: "Ausgezahlt",
     workflow_budget_na: "Nicht anwendbar",

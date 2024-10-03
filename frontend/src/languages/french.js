@@ -245,7 +245,7 @@ const fr = {
     exit_sort_mode:
       "Ce bouton est désormais désactivé. Quitter le mode de tri pour créer de nouveaux éléments de workflow action",
     exchange_rate: "taux de change",
-    search_text: "rechercher des éléments",
+    search_text: "Rechercher des actions de flux de travail",
     workflow_budget_allocated: "engagé",
     workflow_budget_disbursed: "payé",
     workflow_budget_na: "N/A",

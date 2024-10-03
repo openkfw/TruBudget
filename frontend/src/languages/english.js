@@ -324,7 +324,7 @@ const en = {
     edit_item: "Edit workflow action",
     exit_sort_mode: "This button is now disabled. Exit sort mode to create new workflow items",
     exchange_rate: "Exchange rate",
-    search_text: "Search workflowitems",
+    search_text: "Search workflow actions",
     workflow_budget_allocated: "allocated",
     workflow_budget_disbursed: "paid",
     workflow_budget_na: "not applicable",
