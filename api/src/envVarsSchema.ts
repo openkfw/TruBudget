@@ -76,8 +76,9 @@ export const envVarsSchema = Joi.object({
       "This variable was used to choose which environment (prod or test) is used for testing the requests. The variable is deprecated now, as the Swagger documentation can be used for the prod and test environment separately.",
     ),
   JWT_ALGORITHM: Joi.string()
+    .allow("HS256", "RS256", "", null)
+    .empty(["", null])
     .default("HS256")
-    .valid("HS256", "RS256")
     .note("Algorithm used for signing and verifying JWTs."),
   JWT_SECRET: Joi.string()
     .min(10)
