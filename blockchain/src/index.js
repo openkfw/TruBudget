@@ -27,51 +27,12 @@ const config = require("./config");
 const app = express();
 
 const CHAINNAME = "TrubudgetChain";
-
 let AUTOSTART = config.autostart;
-
 let isRunning = AUTOSTART ? true : false;
-
-// Email Service
-const EMAIL_HOST = process.env.EMAIL_HOST;
-const EMAIL_PORT = process.env.EMAIL_PORT;
-const EMAIL_SSL = process.env.EMAIL_SSL || false;
-const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
-const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
-const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
-const emailAuthSecret = process.env.JWT_SECRET;
-
-const EMAIL_SERVICE_ENABLED = process.env.EMAIL_SERVICE_ENABLED === "true" ? true : false;
-const MULTICHAIN_FEED_ENABLED = process.env.MULTICHAIN_FEED_ENABLED === "true" ? true : false;
-const isMultichainFeedEnabled = MULTICHAIN_FEED_ENABLED;
-
-const ENV = process.env.NODE_ENV || "production";
-
 const connectArg = `${CHAINNAME}@${config.p2p.host}:${config.p2p.port}`;
-
-const multichainDir = `${config.multichainDir}/.multichain`;
+const multichainDir = `${config.multichain.dir}/.multichain`;
 const isAlpha = config.p2p.host ? false : true;
-const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT ? `-blocknotify=${process.env.BLOCKNOTIFY_SCRIPT}` : "";
-
-const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
-const NAMESPACE = process.env.KUBE_NAMESPACE || "";
-const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
-
-const isEmailConfigured = EMAIL_HOST && EMAIL_PORT && emailAuthSecret;
-
-if (EMAIL_SERVICE_ENABLED && !isEmailConfigured) {
-  if (!EMAIL_HOST) {
-    log.fatal("Env variable EMAIL_HOST is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
-  }
-  if (!EMAIL_PORT) {
-    log.fatal("Env variable EMAIL_PORT is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
-  }
-  if (!emailAuthSecret) {
-    log.fatal("Env variable JWT_SECRET is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
-  }
-  log.fatal("Incorrectly set env vars, exiting ...");
-  process.exit(1);
-}
+const blockNotifyArg = config.blocknotifyScript ? `-blocknotify=${config.blocknotifyScript}` : "";
 
 app.use(logService.createPinoExpressLogger(log));
 
@@ -116,7 +77,7 @@ configureChain(
   config.multichain.rpcUser,
   config.multichain.rpcPassword,
   config.multichain.rpcAllowIp,
-  isMultichainFeedEnabled,
+  config.multichainFeedEnabled,
 );
 
 function initMultichain() {
@@ -162,7 +123,7 @@ function initMultichain() {
 
 let externalIpArg = process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== "" ? `-externalip=${config.externalIp}` : "";
 
-if (EXPOSE_MC) {
+if (config.exposeMc) {
   const kc = new k8s.KubeConfig();
 
   if (fs.existsSync(os.homedir() + "/.kube/config") /* ? */) {
@@ -174,34 +135,34 @@ if (EXPOSE_MC) {
   const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
   const kubernetesClient = new KubernetesClient(k8sApi);
 
-  kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then((response) => {
+  kubernetesClient.getServiceIp(config.kubeServiceName, config.kubeNamespace).then((response) => {
     log.info(`externalIp: ${response}`);
     if (response) {
       externalIpArg = `-externalip=${response}`;
     }
 
     initMultichain();
-    if (EMAIL_SERVICE_ENABLED) {
+    if (config.emailServiceEnabled) {
       startEmailNotificationWatcher(
-        NOTIFICATION_PATH,
-        `${EMAIL_HOST}:${EMAIL_PORT}`,
-        emailAuthSecret,
-        NOTIFICATION_MAX_LIFETIME,
-        NOTIFICATION_SEND_INTERVAL,
-        EMAIL_SSL,
+        config.notification.path,
+        `${config.email.host}:${config.email.port}`,
+        config.email.jwtSecret,
+        config.notification.maxLifetime,
+        config.notification.sendInterval,
+        config.email.ssl,
       );
     }
   });
 } else {
   initMultichain();
-  if (EMAIL_SERVICE_ENABLED) {
+  if (config.emailServiceEnabled) {
     startEmailNotificationWatcher(
-      NOTIFICATION_PATH,
-      `${EMAIL_HOST}:${EMAIL_PORT}`,
-      emailAuthSecret,
-      NOTIFICATION_MAX_LIFETIME,
-      NOTIFICATION_SEND_INTERVAL,
-      EMAIL_SSL,
+      config.notification.path,
+      `${config.email.host}:${config.email.port}`,
+      config.email.jwtSecret,
+      config.notification.maxLifetime,
+      config.notification.sendInterval,
+      config.email.ssl,
     );
   }
 }
@@ -280,7 +241,7 @@ const loadConfig = (path) => {
 };
 
 app.post("/restoreWallet", async (req, res) => {
-  if (!ENV === "development") {
+  if (!config.nodeEnv === "development") {
     return res.status(401).send();
   }
 
@@ -300,7 +261,7 @@ app.post("/restoreWallet", async (req, res) => {
         AUTOSTART = false;
         if (isRunning) await stopMultichain(mcproc);
         await importWallet(`${extractPath}`, CHAINNAME);
-        if (isMultichainFeedEnabled) {
+        if (config.multichainFeedEnabled) {
           log.info("Multichain feed is enabled");
           shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
 rpcport=${config.multichain.rpcPort}

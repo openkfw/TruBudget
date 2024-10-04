@@ -43,6 +43,8 @@ const config = {
   },
   externalIp: envVars.EXTERNAL_IP,
   autostart: envVars.AUTOSTART,
+  emailServiceEnabled: envVars.EMAIL_SERVICE_ENABLED,
+  multichainFeedEnabled: envVars.MULTICHAIN_FEED_ENABLED,
   nodeEnv: envVars.NODE_ENV,
   blocknotifyScript: envVars.BLOCKNOTIFY_SCRIPT,
   kubeServiceName: envVars.KUBE_SERVICE_NAME,
