@@ -18,7 +18,7 @@ const de = {
     add_without_budget: "Hinzufügen ohne Budget",
     added: "Hinzugefügt",
     additional_data: "Zusätzliche Daten",
-    amount: "Betrag",
+    amount: "Finanzierungsbetrag",
     approver: "Genehmiger",
     assign: "Zuweisen",
     assigned: "Zugewiesen",

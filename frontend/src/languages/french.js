@@ -19,7 +19,7 @@ const fr = {
     add_without_budget: "Ajouter sans budget",
     added: "Ajouté",
     additional_data: "Données Supplémentaires",
-    amount: "Montant",
+    amount: "Montant du financement",
     approver: "Approbateur",
     assign: "Allouer",
     assigned_budget: "Budget engagé",
