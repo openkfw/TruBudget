@@ -3,6 +3,7 @@ import Joi = require("joi");
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
 import * as UserRecord from "../organization/user_record";
+
 import { NotificationTraceEvent, notificationTraceEventSchema } from "./notification_trace_event";
 
 export type Id = string;

@@ -1,10 +1,12 @@
-import * as Multichain from ".";
 import deepcopy from "../lib/deepcopy";
 import { isEmpty } from "../lib/emptyChecks";
 import logger from "../lib/logger";
+
 import { MultichainClient } from "./Client.h";
 import { ConnToken } from "./conn";
 import * as Liststreamkeyitems from "./liststreamkeyitems";
+
+import * as Multichain from ".";
 
 export function getUsers(conn: ConnToken, groupId: string): Promise<string[]> {
   if (isEmpty(groupId)) return Promise.resolve([]);

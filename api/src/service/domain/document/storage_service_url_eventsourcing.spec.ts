@@ -1,6 +1,8 @@
 import { assert, expect } from "chai";
+
 import * as Result from "../../../result";
 import { BusinessEvent } from "../business_event";
+
 import { sourceStorageServiceUrls } from "./storage_service_url_eventsourcing";
 
 const existingOrganization1 = "organization1";

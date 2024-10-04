@@ -1,11 +1,12 @@
-import { getOrganizationAddress } from "../organization/organization";
 import { AuthToken } from "../authz/token";
 import { AuthenticatedRequest, HttpResponse } from "../httpd/lib";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+import { getOrganizationAddress } from "../organization/organization";
 import { MultichainClient } from "../service/Client.h";
 import { ConnToken } from "../service/conn";
 import { ServiceUser } from "../service/domain/organization/service_user";
+
 import { getCurrentVote, voteForNetworkPermission } from "./controller/vote";
 import * as AccessVote from "./model/AccessVote";
 import * as Nodes from "./model/Nodes";

@@ -1,13 +1,15 @@
 import { assert } from "chai";
-import { Ctx } from "lib/ctx";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { AlreadyExists } from "../errors/already_exists";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
+import * as GlobalPermissions from "../workflow/global_permissions";
+
+import { KeyPair } from "./key_pair";
 import { ServiceUser } from "./service_user";
 import { createUser, RequestData } from "./user_create";
-import { KeyPair } from "./key_pair";
-import * as GlobalPermissions from "../workflow/global_permissions";
 
 const ctx: Ctx = { requestId: "", source: "test" };
 const address = "address";

@@ -180,6 +180,8 @@ fi
 SCRIPT_DIR=$(dirname -- $0)
 echo "INFO: Current script directory: $SCRIPT_DIR"
 
+source $SCRIPT_DIR/../common/extract-variables.sh
+
 # Check if .env file exists in script directory
 if [ ! -f ${SCRIPT_DIR}/.env ]; then
     echo "${orange}WARNING: .env file not found in current directory: ${SCRIPT_DIR}${colorReset}"
@@ -276,6 +278,27 @@ $COMPOSE pull $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES
 
 echo "INFO: Since images are used, building is not necessary and will be skipped."
 #$COMPOSE build
+
+# Read logs from servises to check if there is any error. Stop the environment if there is any error.
+# e.g. alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend
+read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
+
+# loop through the services array
+for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
+do
+    echo "INFO: Validating environment variables for $service_to_be_started service ..."
+    SERVICE_ENV_VARS=$(parse_services_and_environment_variables "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
+    # Run environenment variables check
+    OUTPUT=$(docker run ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
+
+    if [[ $OUTPUT =~ "Config validation error" ]]; then
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo $OUTPUT
+        echo ""
+        echo "$SERVICE_ENV_VARS"
+        exit 1
+    fi
+done
 
 # Start docker containers
 echo "INFO: Executing command: $COMPOSE up $LOG_OPTION $COMPOSE_SERVICES $ENABLED_SERVICES $BETA_SERVICES"

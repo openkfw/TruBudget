@@ -1,8 +1,12 @@
+import VError = require("verror");
+
 import { config } from "../config";
 import { decryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as PrivateKeyGet from "../organization/organization";
 import * as Result from "../result";
+
 import * as Cache from "./cache2";
 import StorageServiceClient from "./Client_storage_service";
 import { StorageServiceClientI } from "./Client_storage_service.h";
@@ -15,8 +19,6 @@ import { ServiceUser } from "./domain/organization/service_user";
 import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
-import VError = require("verror");
-import logger from "lib/logger";
 import * as ProjectCacheHelper from "./project_cache_helper";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";

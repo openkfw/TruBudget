@@ -1,8 +1,10 @@
 import { assert } from "chai";
-import { Ctx } from "lib/ctx";
 import { VError } from "verror";
+
+import { Ctx } from "../../../lib/ctx";
 import * as Result from "../../../result";
 import { ServiceUser } from "../organization/service_user";
+
 import { updatePublicKey } from "./public_key_update";
 
 const ctx: Ctx = {

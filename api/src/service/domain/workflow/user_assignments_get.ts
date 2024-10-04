@@ -1,16 +1,18 @@
 import { VError } from "verror";
-import { isEmpty } from "lib/emptyChecks";
+
+import Intent from "../../../authz/intents";
+import { Ctx } from "../../../lib/ctx";
+import { isEmpty } from "../../../lib/emptyChecks";
+import logger from "../../../lib/logger";
+import * as Result from "../../../result";
+import { NotAuthorized } from "../errors/not_authorized";
+import { ServiceUser } from "../organization/service_user";
+import * as UserRecord from "../organization/user_record";
+
 import * as Project from "./project";
 import * as Subproject from "./subproject";
-import * as Workflowitem from "./workflowitem";
-import * as Result from "../../../result";
 import * as UserAssignments from "./user_assignments";
-import * as UserRecord from "../organization/user_record";
-import Intent from "../../../authz/intents";
-import { ServiceUser } from "../organization/service_user";
-import { NotAuthorized } from "../errors/not_authorized";
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
+import * as Workflowitem from "./workflowitem";
 
 export interface RequestData {
   userId: string;

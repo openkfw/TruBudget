@@ -1,11 +1,13 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent, { projectIntents } from "../../../authz/intents";
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
-import { Identity } from "../organization/identity";
-import * as Project from "./project";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
+
+import * as Project from "./project";
 
 type EventTypeType = "project_permission_revoked";
 const eventType: EventTypeType = "project_permission_revoked";

@@ -1,11 +1,12 @@
 import Joi = require("joi");
 import { VError } from "verror";
+
 import * as Result from "../../../result";
+import { UserMetadata, userMetadataSchema } from "../metadata";
 import { Identity } from "../organization/identity";
 import * as Project from "../workflow/project";
 import * as Subproject from "../workflow/subproject";
 import * as Workflowitem from "../workflow/workflowitem";
-import { UserMetadata, userMetadataSchema } from "../metadata";
 
 type EventTypeType = "workflowitem_document_validated";
 const eventType: EventTypeType = "workflowitem_document_validated";

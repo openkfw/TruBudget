@@ -1,11 +1,13 @@
-import { Ctx } from "lib/ctx";
-import logger from "lib/logger";
-import { isNonemptyString, value } from "lib/validation";
 import { VError } from "verror";
+
 import { throwIfUnauthorized } from "../../authz";
 import Intent from "../../authz/intents";
 import { config } from "../../config";
 import { HttpResponse } from "../../httpd/lib";
+import { Ctx } from "../../lib/ctx";
+import logger from "../../lib/logger";
+import { isNonemptyString, value } from "../../lib/validation";
+import { getOrganizationAddress } from "../../organization/organization";
 import * as Result from "../../result";
 import { ConnToken } from "../../service";
 import { MultichainClient } from "../../service/Client.h";
@@ -13,7 +15,6 @@ import { ServiceUser } from "../../service/domain/organization/service_user";
 import * as GlobalPermissionsGet from "../../service/global_permissions_get";
 import * as AccessVote from "../model/AccessVote";
 import * as Nodes from "../model/Nodes";
-import { getOrganizationAddress } from "../../organization/organization";
 
 export async function voteForNetworkPermission(
   conn: ConnToken,

@@ -1,8 +1,11 @@
 import { FastifyReply, FastifyRequest, RequestGenericInterface } from "fastify";
-import { AugmentedFastifyInstance } from "./types";
-import { AuthenticatedRequest } from "./httpd/lib";
+import Joi = require("joi");
+import VError = require("verror");
+
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
 import * as NotAuthenticated from "./http_errors/not_authenticated";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { isNonemptyString } from "./lib/validation";
 import * as Result from "./result";
@@ -13,9 +16,7 @@ import * as Project from "./service/domain/workflow/project";
 import * as Subproject from "./service/domain/workflow/subproject";
 import * as Workflowitem from "./service/domain/workflow/workflowitem";
 import { WorkflowitemTraceEvent } from "./service/domain/workflow/workflowitem_trace_event";
-import { extractUser } from "./handlerUtils";
-import Joi = require("joi");
-import VError = require("verror");
+import { AugmentedFastifyInstance } from "./types";
 
 const requestBodySchema = Joi.array().items({
   entityId: Joi.string().required(),

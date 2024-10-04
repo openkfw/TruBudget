@@ -709,8 +709,12 @@ if (isBeta) {
     process.exit(0);
   });
 } else {
-  provisionBlockchain(protocol, host, port, rootSecret, organization).then(() => {
-    log.info("\x1b[32m%s\x1b[0m", "Successfully provisioned Trubudget!");
+  (async () => {
+    for (let i = 0; i < 5; i++) {
+      await provisionBlockchain(protocol, host, port, rootSecret, organization);
+      log.info("\x1b[32m%s\x1b[0m", `Successfully provisioned Trubudget! Iteration: ${i + 1}`);
+      await new Promise(resolve => setTimeout(resolve, 20000)); // Wait for 20 seconds
+    }
     process.exit(0);
-  });
+  })();
 }

@@ -1,20 +1,19 @@
+import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
+
+import { accessTokenExpirationInMinutesWithrefreshToken } from "./authenticationUtils";
+import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import Joi = require("joi");
-import { JwtConfig, config } from "./config";
 import { AugmentedFastifyInstance } from "./types";
-import {
-  MAX_GROUPS_LENGTH,
-  accessTokenExpirationInMinutesWithrefreshToken,
-} from "./user_authenticate";
-import { AuthenticatedRequest } from "./httpd/lib";
+import { MAX_GROUPS_LENGTH } from "./user_authenticate";
 
 /**
  * Represents the request body of the endpoint

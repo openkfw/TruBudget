@@ -1,7 +1,9 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as Result from "../result";
+
 import { ConnToken } from "./conn";
 import * as GroupQuery from "./domain/organization/group_query";
 import { Identity } from "./domain/organization/identity";
@@ -10,8 +12,8 @@ import * as Project from "./domain/workflow/project";
 import * as Subproject from "./domain/workflow/subproject";
 import * as SubprojectAssign from "./domain/workflow/subproject_assign";
 import * as SubprojectSnapshotPublish from "./domain/workflow/subproject_snapshot_publish";
-import * as SubprojectCacheHelper from "./subproject_cache_helper";
 import { store } from "./store";
+import * as SubprojectCacheHelper from "./subproject_cache_helper";
 
 export async function assignSubproject(
   conn: ConnToken,

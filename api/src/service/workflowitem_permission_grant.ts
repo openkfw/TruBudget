@@ -1,11 +1,13 @@
-import logger from "lib/logger";
 import { VError } from "verror";
+
 import Intent from "../authz/intents";
 import { config } from "../config";
 import { decryptWithKey, encryptWithKey } from "../lib/asymmetricCrypto";
 import { Ctx } from "../lib/ctx";
+import logger from "../lib/logger";
 import * as PrivateKeyGet from "../organization/organization";
 import * as Result from "../result";
+
 import * as Cache from "./cache2";
 import { ConnToken } from "./conn";
 import * as DocumentGet from "./domain/document/document_get";
@@ -20,11 +22,11 @@ import * as Subproject from "./domain/workflow/subproject";
 import * as Workflowitem from "./domain/workflow/workflowitem";
 import * as WorkflowitemPermissionGrant from "./domain/workflow/workflowitem_permission_grant";
 import * as WorkflowitemSnapshotPublish from "./domain/workflow/workflowitem_snapshot_publish";
+import * as ProjectCacheHelper from "./project_cache_helper";
 import * as PublicKeyGet from "./public_key_get";
 import { store } from "./store";
-import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 import * as SubprojectCacheHelper from "./subproject_cache_helper";
-import * as ProjectCacheHelper from "./project_cache_helper";
+import * as WorkflowitemCacheHelper from "./workflowitem_cache_helper";
 
 export { RequestData } from "./domain/workflow/project_create";
 

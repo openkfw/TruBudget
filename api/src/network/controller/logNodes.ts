@@ -1,4 +1,4 @@
-import logger from "lib/logger";
+import logger from "../../lib/logger";
 import { WalletAddress } from "../../network/model/Nodes";
 import { MultichainClient } from "../../service/Client.h";
 import * as NodesLogged from "../../service/domain/network/nodes_logged";

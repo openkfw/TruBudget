@@ -1,9 +1,11 @@
 import { VError } from "verror";
+
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { Organization, WalletAddress } from "../network/model/Nodes";
 import * as Result from "../result";
 import { MultichainClient } from "../service/Client.h";
+
 import { organizationStreamName } from "./streamNames";
 
 type Base64String = string;

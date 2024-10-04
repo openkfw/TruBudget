@@ -1,10 +1,12 @@
 import Joi = require("joi");
-import logger from "lib/logger";
 import { VError } from "verror";
+
+import logger from "../../../lib/logger";
 import * as Result from "../../../result";
-import { Identity } from "../organization/identity";
-import * as Group from "./group";
 import { UserMetadata, userMetadataSchema } from "../metadata";
+import { Identity } from "../organization/identity";
+
+import * as Group from "./group";
 
 type EventTypeType = "group_member_added";
 const eventType: EventTypeType = "group_member_added";

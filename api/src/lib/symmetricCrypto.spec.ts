@@ -1,4 +1,5 @@
 import { expect } from "chai";
+
 import * as SUT from "./symmetricCrypto";
 
 describe("Symmetric Crypto", () => {

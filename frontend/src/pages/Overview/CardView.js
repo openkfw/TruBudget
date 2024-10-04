@@ -145,16 +145,17 @@ const CardView = (props) => {
         />
         <Box className="add-project">
           <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
-            <Fab
-              className="project-add-button"
-              aria-label="create"
-              disabled={!canCreateProject(allowedIntents) || isRoot}
-              onClick={() => showCreationDialog()}
-              color="primary"
-              data-test="add-project-button"
-            >
-              <ContentAdd />
-            </Fab>
+            <div className="project-add-button">
+              <Fab
+                aria-label="create"
+                disabled={!canCreateProject(allowedIntents) || isRoot}
+                onClick={() => showCreationDialog()}
+                color="primary"
+                data-test="add-project-button"
+              >
+                <ContentAdd />
+              </Fab>
+            </div>
           </Tooltip>
         </Box>
       </div>

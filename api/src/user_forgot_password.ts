@@ -1,11 +1,12 @@
-import { AugmentedFastifyInstance } from "./types";
-import { Ctx } from "./lib/ctx";
-import * as jsonwebtoken from "jsonwebtoken";
 import axios from "axios";
+import * as jsonwebtoken from "jsonwebtoken";
+
 import { JwtConfig, config } from "./config";
+import { Ctx } from "./lib/ctx";
 import { Type } from "./result";
 import { ServiceUser } from "./service/domain/organization/service_user";
-import { Permissions } from "service/domain/permissions";
+import { Permissions } from "./service/domain/permissions";
+import { AugmentedFastifyInstance } from "./types";
 
 const API_VERSION = "1.0";
 
@@ -72,7 +73,7 @@ interface Service {
 }
 
 /**
- * Creates an http handler that handles incoming http requests for the `/v2/project.list` route
+ * Creates an http handler that handles incoming http requests for the `/user.forgotPassword` route
  *
  * @param server the current fastify server instance
  * @param urlPrefix the prefix of the http url
