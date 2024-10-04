@@ -21,7 +21,7 @@ export const envVarsSchema = Joi.object({
       "The port used to expose the API for your installation. <br/>Example: If you run TruBudget locally and set API_PORT to `8080`, you can reach the API via `localhost:8080/api`.",
     ),
   ORGANIZATION_VAULT_SECRET: Joi.string()
-    .min(8)
+    .min(5)
     .required()
     .note(
       "This is the key to en-/decrypt user data of an organization. If you want to add a new node for your organization, you want users to be able to log in on either node. <br/>**Caution:** If you want to run TruBudget in production, make sure NOT to use the default value from the `.env.example` file!",
