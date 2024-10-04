@@ -27,21 +27,10 @@ const config = require("./config");
 const app = express();
 
 const CHAINNAME = "TrubudgetChain";
-const CERT_PATH = process.env.CERT_PATH || undefined;
-const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
-const CERT_KEY_PATH = process.env.CERT_KEY_PATH || undefined;
-let AUTOSTART = process.env.AUTOSTART === "false" ? false : true;
+
+let AUTOSTART = config.autostart;
 
 let isRunning = AUTOSTART ? true : false;
-
-const EXTERNAL_IP = process.env.EXTERNAL_IP;
-const P2P_HOST = process.env.P2P_HOST;
-const P2P_PORT = process.env.P2P_PORT || 7447;
-
-const API_PROTOCOL = process.env.API_PROTOCOL === "https" ? "https" : "http";
-const API_HOST = process.env.API_HOST || "localhost";
-const API_PORT = process.env.API_PORT || "8080";
-const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
 
 // Email Service
 const EMAIL_HOST = process.env.EMAIL_HOST;
@@ -58,10 +47,10 @@ const isMultichainFeedEnabled = MULTICHAIN_FEED_ENABLED;
 
 const ENV = process.env.NODE_ENV || "production";
 
-const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
+const connectArg = `${CHAINNAME}@${config.p2p.host}:${config.p2p.port}`;
 
-const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
-const isAlpha = P2P_HOST ? false : true;
+const multichainDir = `${config.multichainDir}/.multichain`;
+const isAlpha = config.p2p.host ? false : true;
 const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT ? `-blocknotify=${process.env.BLOCKNOTIFY_SCRIPT}` : "";
 
 const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
@@ -139,15 +128,15 @@ function initMultichain() {
     return;
   }
   if (isAlpha) {
-    spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir));
+    spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir));
   } else {
     spawnProcess(() =>
       startBeta(
         CHAINNAME,
-        API_PROTOCOL,
-        API_HOST,
-        API_PORT,
-        P2P_PORT,
+        config.api.protocol,
+        config.api.host,
+        config.api.port,
+        config.p2p.port,
         connectArg,
         blockNotifyArg,
         externalIpArg,
@@ -159,19 +148,19 @@ function initMultichain() {
       () =>
         registerNodeAtAlpha(
           config.orgazation,
-          API_PROTOCOL,
-          API_HOST,
-          API_PORT,
-          CERT_PATH,
-          CERT_CA_PATH,
-          CERT_KEY_PATH,
+          config.api.protocol,
+          config.api.host,
+          config.api.port,
+          config.cert.path,
+          config.cert.caPath,
+          config.cert.keyPath,
         ),
       5000,
     );
   }
 }
 
-let externalIpArg = process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== "" ? `-externalip=${EXTERNAL_IP}` : "";
+let externalIpArg = process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== "" ? `-externalip=${config.externalIp}` : "";
 
 if (EXPOSE_MC) {
   const kc = new k8s.KubeConfig();
@@ -240,7 +229,9 @@ app.get("/chain-sha256", async (req, res) => {
       .pack(`${multichainDir}/${CHAINNAME}`, {
         finish: () => {
           log.info("Restarting multichain");
-          spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir));
+          spawnProcess(() =>
+            startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir),
+          );
           AUTOSTART = true;
         },
       })
@@ -325,7 +316,7 @@ rpcpassword=${config.multichain.rpcPassword}
 rpcallowip=${config.multichain.rpcAllowIp}`);
         }
         await spawnProcess(() =>
-          startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
+          startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir),
         );
         AUTOSTART = true;
         /*eslint no-promise-executor-return: "off"*/
@@ -378,7 +369,7 @@ app.post("/chain", async (req, res) => {
             await stopMultichain(mcproc);
             await moveBackup(multichainDir, extractPath, CHAINNAME);
             spawnProcess(() =>
-              startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
+              startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir),
             );
             AUTOSTART = true;
             res.send("OK");
