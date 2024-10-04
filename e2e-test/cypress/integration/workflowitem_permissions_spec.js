@@ -695,7 +695,7 @@ describe("Workflowitem Permissions", function () {
       ];
       assertTableData("permission-required-intent-table", intentValues);
 
-      const userValues = ["Project", "mstein", "Subproject", "mstein", "Workflow action", "mstein"];
+      const userValues = ["Project", "mstein", "Subproject", "mstein", "Workflowitem", "mstein"];
       assertTableData("permission-required-user-table", userValues);
       cy.wait(7000);
       // Reset permissions
@@ -768,7 +768,7 @@ describe("Workflowitem Permissions", function () {
       const intentValues = ["Workflow action", "witem-witem-assign", "Grant workflow action permission"];
       assertTableData("permission-required-intent-table", intentValues);
 
-      const userValues = ["Workflow action", "mstein"];
+      const userValues = ["Workflowitem", "mstein"];
       assertTableData("permission-required-user-table", userValues);
     });
 
