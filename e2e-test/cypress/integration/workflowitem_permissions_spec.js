@@ -689,9 +689,9 @@ describe("Workflowitem Permissions", function () {
         "Subproject",
         "subp-witem-assign",
         "Grant subproject permissions",
-        "Workflowitem",
+        "Workflow action",
         "witem-witem-assign",
-        "Grant workflowitem permission",
+        "Grant workflow action permission",
       ];
       assertTableData("permission-required-intent-table", intentValues);
 
@@ -765,7 +765,7 @@ describe("Workflowitem Permissions", function () {
         .should("contain", "Permissions required");
 
       // Since Project & Sub-Project permissions are in place, only workflowitem permission is listed
-      const intentValues = ["Workflowitem", "witem-witem-assign", "Grant workflowitem permission"];
+      const intentValues = ["Workflow action", "witem-witem-assign", "Grant workflow action permission"];
       assertTableData("permission-required-intent-table", intentValues);
 
       const userValues = ["Workflowitem", "mstein"];
