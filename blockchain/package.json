@@ -27,6 +27,7 @@
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
     "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\"",
+    "validate-env-variables": "node ./scripts/envVarsValidator.js",
     "generate-env-vars-docs": "node ./scripts/envVarsDocsGenerator.js"
   },
   "nyc": {
