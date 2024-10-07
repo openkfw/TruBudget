@@ -20,6 +20,32 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Fixed -->
   
   
+## [2.16.0] - 2024-10-04
+
+<!-- ## Unreleased -->
+
+### Added
+  
+- Create Joi validation for env variables in all services [#1953](https://github.com/openkfw/TruBudget/issues/1953)
+- Addition of text in info box/tool tip for organisation [#1872](https://github.com/openkfw/TruBudget/issues/1872)
+
+### Changed
+
+- Change Comment to Subtitle during project creation [#1870](https://github.com/openkfw/TruBudget/issues/1870)
+- Change of the Workflowitem designation [#1886](https://github.com/openkfw/TruBudget/issues/1886)
+- Changing the owner designation for a project  [#1884](https://github.com/openkfw/TruBudget/issues/1884)
+
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+### Fixed
+
+- api: When user logs in using Auth Proxy, refresh token is not issued [#2000](https://github.com/openkfw/TruBudget/issues/2000)
+- frontend: Fix console warnings [#1989](https://github.com/openkfw/TruBudget/issues/1989)
+  
+  
 ## [2.15.0] - 2024-09-23
 
 <!-- ## Unreleased -->
@@ -1243,7 +1269,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.15.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.16.0...main
+[2.16.0]: https://github.com/openkfw/TruBudget/compare/v2.15.0...v2.16.0
 [2.15.0]: https://github.com/openkfw/TruBudget/compare/v2.14.0...v2.15.0
 [2.14.0]: https://github.com/openkfw/TruBudget/compare/v2.13.0...v2.14.0
 [2.13.0]: https://github.com/openkfw/TruBudget/compare/v2.12.0...v2.13.0

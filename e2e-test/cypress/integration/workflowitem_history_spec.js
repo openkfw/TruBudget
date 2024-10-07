@@ -45,7 +45,7 @@ describe("Workflowitem's history", function () {
     cy.get("[data-test=history-list]").find("li.history-item").should("have.length", 1);
 
     // Make sure it's a creation event
-    cy.get("[data-test=history-list]").find("li.history-item").first().should("contain", "created workflowitem");
+    cy.get("[data-test=history-list]").find("li.history-item").first().should("contain", "created");
   });
 
   it("The history is sorted from new to old", function () {
@@ -71,9 +71,9 @@ describe("Workflowitem's history", function () {
       .find("li.history-item")
       .should("have.length", 2)
       .last()
-      .should("contain", "created workflowitem");
+      .should("contain", "created");
     // The newest entry is the update event
-    cy.get("[data-test=history-list]").find("li.history-item").first().should("contain", "changed workflowitem");
+    cy.get("[data-test=history-list]").find("li.history-item").first().should("contain", "changed");
   });
 
   it("When changing the tab, the history is fetched correctly", function () {

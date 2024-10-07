@@ -38,13 +38,13 @@ const extractSchemaInfo = (schema) => {
                 additionalEntries.push(`Maximal value: ${(_b = max === null || max === void 0 ? void 0 : max.args) === null || _b === void 0 ? void 0 : _b.limit}.`);
             }
             if (invalid) {
-                additionalEntries.push(`Invalid values: ${invalid.join(", ")}.`);
+                additionalEntries.push(`Invalid values: "${invalid.join("\", \"")}".`);
             }
             if (examples) {
-                additionalEntries.push(`Example values: ${examples.join(", ")}.`);
+                additionalEntries.push(`Example values: "${examples.join("\", \"")}".`);
             }
             if (valid) {
-                additionalEntries.push(`Allowed values: ${valid.join(", ")}.`);
+                additionalEntries.push(`Allowed values: "${valid.join("\", \"")}".`);
             }
             if (port) {
                 additionalEntries.push("Value is a port with minimal value 0 and maximal value 65535");

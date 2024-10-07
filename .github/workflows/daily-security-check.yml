@@ -10,7 +10,7 @@ jobs:
     if: always()
     strategy:
       matrix:
-        tags: ["main", "v2.15.0", "v2.14.0"]
+        tags: ["main", "v2.16.0"]
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js 18.x

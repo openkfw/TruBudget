@@ -21,10 +21,10 @@ export const envVarsSchema = Joi.object({
       "The port used to expose the API for your installation. <br/>Example: If you run TruBudget locally and set API_PORT to `8080`, you can reach the API via `localhost:8080/api`.",
     ),
   ORGANIZATION_VAULT_SECRET: Joi.string()
-    .invalid("secret")
+    .min(5)
     .required()
     .note(
-      "This is the key to en-/decrypt user data of an organization. If you want to add a new node for your organization, you want users to be able to log in on either node. <br/>**Caution:** If you want to run TruBudget in production, make sure NOT to use the default value from the `.env_example` file!",
+      "This is the key to en-/decrypt user data of an organization. If you want to add a new node for your organization, you want users to be able to log in on either node. <br/>**Caution:** If you want to run TruBudget in production, make sure NOT to use the default value from the `.env.example` file!",
     ),
   ROOT_SECRET: Joi.string()
     .min(8)
@@ -76,8 +76,9 @@ export const envVarsSchema = Joi.object({
       "This variable was used to choose which environment (prod or test) is used for testing the requests. The variable is deprecated now, as the Swagger documentation can be used for the prod and test environment separately.",
     ),
   JWT_ALGORITHM: Joi.string()
+    .allow("HS256", "RS256", "", null)
+    .empty(["", null])
     .default("HS256")
-    .valid("HS256", "RS256")
     .note("Algorithm used for signing and verifying JWTs."),
   JWT_SECRET: Joi.string()
     .min(10)
@@ -138,9 +139,11 @@ export const envVarsSchema = Joi.object({
     .note(
       "If set to `development` api will allow any string as password. If set to `production` passwords must satisfy safePasswordSchema, see lib/joiValidation-.ts & -.spec.ts files",
     ),
-  ENCRYPTION_PASSWORD: Joi.string().note(
-    "If set, all data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_PASSWORD",
-  ),
+  ENCRYPTION_PASSWORD: Joi.string()
+    .allow("")
+    .note(
+      "If set, all data that is send to the MultiChain node and external storage will be symmetrically encrypted by the ENCRYPTION_PASSWORD",
+    ),
   SIGNING_METHOD: Joi.string()
     .default("node")
     .allow("node", "user")
