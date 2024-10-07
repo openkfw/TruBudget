@@ -58,6 +58,8 @@
   },
   "overrides": {
     "browserify-sign": "^4.2.2",
-    "follow-redirects": "^1.15.6"
+    "follow-redirects": "^1.15.6",
+    "cookie": "^0.7.0",
+    "semver": "^7.6.3"
   }
 }

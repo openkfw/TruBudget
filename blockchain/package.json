@@ -74,6 +74,8 @@
     "jose": "^2.0.7",
     "follow-redirects": "^1.15.6",
     "tar": "^6.2.1",
-    "find-my-way": "^8.2.2"
+    "find-my-way": "^8.2.2",
+    "cookie": "^0.7.0",
+    "semver": "^7.6.3"
   }
 }
