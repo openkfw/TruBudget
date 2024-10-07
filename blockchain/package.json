@@ -26,7 +26,8 @@
     "check-backup": "node check-backup.js",
     "lint": "eslint src",
     "lint:fix": "eslint src --fix",
-    "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\""
+    "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\"",
+    "generate-env-vars-docs": "node ./scripts/envVarsDocsGenerator.js"
   },
   "nyc": {
     "include": [

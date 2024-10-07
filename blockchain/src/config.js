@@ -1,4 +1,4 @@
-const envVarsSchema = require("./envVarsSchema");
+const { envVarsSchema } = require("./envVarsSchema");
 
 const { error, value: envVars } = envVarsSchema.validate(process.env);
 if (error) {
