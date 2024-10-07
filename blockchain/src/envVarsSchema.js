@@ -56,7 +56,7 @@ const envVarsSchema = Joi.object({
   API_PROTOCOL: Joi.string()
     .allow("http", "https")
     .default("http")
-    .note("The Protocol which should be used to connect to the alpha-node's api. (http, https)"),
+    .note("The Protocol which should be used to connect to the alpha-node's api."),
   API_HOST: Joi.string()
     .default("localhost")
     .note(
