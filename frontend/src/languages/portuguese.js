@@ -19,7 +19,7 @@ const pt = {
     add_without_budget: "Adicionar sem orçamento",
     added: "Adicionado",
     additional_data: "Dados Adicionais",
-    amount: "Valor",
+    amount: "Valor do Financiamento",
     approver: "Aprovador",
     assign: "Atribuir",
     assigned_budget: "Orçamento atribuído",

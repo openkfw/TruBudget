@@ -19,7 +19,7 @@ const ka = {
     add_without_budget: "დაამატეთ ბიუჯეტის გარეშე",
     added: "დამატებულია",
     additional_data: "დამატებითი ინფორმაცია",
-    amount: "რაოდენობა",
+    amount: "დაფინანსების თანხა",
     approver: "Approver",
     assign: "assign",
     assigned_budget: "გამოყოფილი ბიუჯეტი",

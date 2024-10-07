@@ -19,7 +19,7 @@ const en = {
     add_without_budget: "Add without budget",
     added: "Added",
     additional_data: "Additional Data",
-    amount: "Amount",
+    amount: "Financing Amount",
     approver: "Approver",
     assign: "assign",
     assigned_budget: "Assigned Budget",
