@@ -425,18 +425,12 @@ const getNotificationState = (state) => {
 
 function* callApi(func, ...args) {
   try {
-    // Call setBaseUrl and then the API function
     yield call(api.setBaseUrl);
     const { data = {} } = yield call(func, ...args);
-    console.log(data);
-
-    // Return the API response data
     return data;
   } catch (error) {
-    // Log the error
+    // eslint-disable-next-line no-console
     console.error("API error:", error.message);
-
-    // Return null or some default value on error
     return null;
   }
 }
@@ -962,30 +956,25 @@ export function* createWorkflowFromTemplateSaga({ type, ...workflowTemplateData 
 
 export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId, changes }) {
   yield execute(function* () {
-    try {
-      let editWorkflowItemEndpoint = api.editWorkflowItem;
-      if (changes.documents && changes.documents.length > 0 && changes.documents.some((doc) => doc.base64)) {
-        editWorkflowItemEndpoint = api.editWorkflowItemV2;
-      }
-
-      yield callApi(editWorkflowItemEndpoint, projectId, subprojectId, workflowitemId, changes);
-
-      yield showSnackbarSuccess();
-
-      // Dispatch success action
-      yield put({ type: EDIT_WORKFLOW_ITEM_SUCCESS });
-
-      // Fetch updated subproject details
-      yield put({
-        type: FETCH_ALL_SUBPROJECT_DETAILS,
-        projectId: projectId,
-        subprojectId: subprojectId,
-        showLoading: true
-      });
-    } catch (error) {
-      // Handle any errors
-      console.error("Error editing workflow item:", error);
+    let editWorkflowItemEndpoint = api.editWorkflowItem;
+    if (changes.documents && changes.documents.length > 0 && changes.documents.some((doc) => doc.base64)) {
+      editWorkflowItemEndpoint = api.editWorkflowItemV2;
     }
+
+    yield callApi(editWorkflowItemEndpoint, projectId, subprojectId, workflowitemId, changes);
+
+    yield showSnackbarSuccess();
+
+    // Dispatch success action
+    yield put({ type: EDIT_WORKFLOW_ITEM_SUCCESS });
+
+    // Fetch updated subproject details
+    yield put({
+      type: FETCH_ALL_SUBPROJECT_DETAILS,
+      projectId: projectId,
+      subprojectId: subprojectId,
+      showLoading: true
+    });
   }, true);
 }
 
