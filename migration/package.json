@@ -31,6 +31,8 @@
     "tar-fs": "^2.1.1"
   },
   "overrides": {
-    "follow-redirects": "^1.15.6"
+    "follow-redirects": "^1.15.6",
+    "semver": "^7.6.3",
+    "braces": "^3.0.3"
   }
 }

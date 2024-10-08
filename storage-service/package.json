@@ -1,6 +1,6 @@
 {
   "name": "storage-service",
-  "version": "2.15.0",
+  "version": "2.16.0",
   "private": true,
   "description": "Handles the TruBudget object storage",
   "main": "src/index.js",
@@ -58,6 +58,8 @@
   },
   "overrides": {
     "browserify-sign": "^4.2.2",
-    "follow-redirects": "^1.15.6"
+    "follow-redirects": "^1.15.6",
+    "cookie": "^0.7.0",
+    "semver": "^7.6.3"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "trubudget-provisioning",
-  "version": "2.15.0",
+  "version": "2.16.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -41,6 +41,8 @@
   },
   "overrides": {
     "follow-redirects": "^1.15.6",
-    "find-my-way": "^8.2.2"
+    "find-my-way": "^8.2.2",
+    "cookie": "^0.7.0",
+    "semver": "^7.6.3"
   }
 }
