@@ -651,6 +651,7 @@ const ka = {
     workflowitem_intent_grantPermission: "მიანიჭეთ workflow action-ის ნებართვები",
     workflowitem_intent_listPermissions: "იხილეთ workflow action-ის ნებართვები",
     workflowitem_intent_revokePermission: "გააუქმეთ workflow action-ის ნებართვები",
+    workflowitem_list: "იხილეთ workflowitem-ები",
     workflowitem_update: "განაახლეთ workflow action-ები",
     workflowitem_view: "იხილეთ workflow action-ები",
     write: "გაეცით ნებართვები"

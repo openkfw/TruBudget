@@ -653,6 +653,7 @@ const de = {
     workflowitem_intent_grantPermission: "Workflow action-Erlaubnis erteilen",
     workflowitem_intent_listPermissions: "Workflow action-Berechtigungen anzeigen",
     workflowitem_intent_revokePermission: "Workflow action-Erlaubnis widerrufen",
+    workflowitem_list: "Workflow-Eintrag anzeigen",
     workflowitem_update: "Workflow-Eintrag aktualisieren",
     workflowitem_view: "Workflow-Eintrag anzeigen",
     write: "Schreibberechtigungen"
