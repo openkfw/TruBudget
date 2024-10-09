@@ -649,6 +649,7 @@ const en = {
     workflowitem_intent_grantPermission: "Grant workflow action permission",
     workflowitem_intent_listPermissions: "View workflow action permissions",
     workflowitem_intent_revokePermission: "Revoke workflow action permission",
+    workflowitem_list: "View workflow action",
     workflowitem_update: "Update workflow action",
     workflowitem_view: "View workflow action",
     write: "Write permissions"

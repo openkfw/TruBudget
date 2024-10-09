@@ -653,8 +653,9 @@ const pt = {
     workflowitem_intent_grantPermission: "Conceder permissões do item de workflow action",
     workflowitem_intent_listPermissions: "Visualizar permissões do item de workflow action",
     workflowitem_intent_revokePermission: "Revogar permissões do item de workflow action",
-    workflowitem_update: "Atualizar item de worflow",
-    workflowitem_view: "Visualizar item de workflow action",
+    workflowitem_list: "Visualizar action de workflow",
+    workflowitem_update: "Atualizar action de worflow",
+    workflowitem_view: "Visualizar action de workflow action",
     write: "Permissões de escrita"
   },
 
