@@ -30,6 +30,7 @@ export const parseMultiPartRequest = async (request: AuthenticatedRequest): Prom
     if (part.type === "file") {
       uploadedDocuments.push(await parseMultiPartFile(part));
     } else {
+      // TODO if there is a mix of binary files and links, both with comments, this fails
       if (part.fieldname.includes("comment_")) {
         const index = parseInt(part.fieldname.split("_")[1]);
         uploadedDocuments[index].comment = part.value;
