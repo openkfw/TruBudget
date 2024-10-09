@@ -219,10 +219,6 @@ const DocumentUpload = ({
             error={false}
             helperText={strings.common.optional}
             className="document-comment-field"
-            sx={{
-              width: "35ch",
-              marginTop: "0.9rem"
-            }}
           />
           <div className="document-upload-flex-container" style={{ marginTop: "0.9rem" }}>
             <Button onClick={addFile} className="document-upload-button" component="div" disabled={!fileToUpload}>
@@ -245,28 +241,20 @@ const DocumentUpload = ({
       <div className="document-upload-container">
         <Table className="document-upload-table">{body}</Table>
       </div>
-      <Grid container spacing={2}>
+      <Grid>
         {storageServiceAvailable && (
-          <Grid item xs={6}>
+          <Grid>
             <Paper className="paper-forms">
               <h4>{strings.workflow.workflow_documents_upload_heading}</h4>
               <div className="document-upload-flex-container">{renderFileUpload(fileToUpload, isLoading)}</div>
             </Paper>
           </Grid>
         )}
-        <Grid item xs={6}>
+        <Grid>
           <Paper className="paper-forms">
             <h4>{strings.workflow.workflow_documents_add_link}</h4>
 
-            <Stack
-              component="form"
-              sx={{
-                width: "35ch"
-              }}
-              spacing={2}
-              noValidate
-              autoComplete="off"
-            >
+            <Stack component="form" spacing={2} noValidate autoComplete="off">
               <TextField
                 id="external-document-url"
                 label={strings.workflow.workflow_documents_link_url}
