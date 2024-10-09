@@ -347,7 +347,7 @@ const saveRefreshTokenToLocalStorage = (data) => {
 function* execute(fn, showLoading = false, errorCallback = undefined) {
   const done = yield handleLoading(showLoading);
   try {
-    yield* fn();
+    yield fn();
   } catch (error) {
     if (typeof errorCallback === "function") {
       yield errorCallback(error);
@@ -424,15 +424,9 @@ const getNotificationState = (state) => {
 };
 
 function* callApi(func, ...args) {
-  try {
-    yield call(api.setBaseUrl);
-    const { data = {} } = yield call(func, ...args);
-    return data;
-  } catch (error) {
-    // eslint-disable-next-line no-console
-    console.error("API error:", error.message);
-    return null;
-  }
+  yield call(api.setBaseUrl);
+  const { data = {} } = yield call(func, ...args);
+  return data;
 }
 
 function* executeOriginalAction(func, originalAction, ...args) {
