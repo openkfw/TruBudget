@@ -856,14 +856,14 @@ export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
         subprojectId: subprojectId,
         additionalActions
       });
-      // use v1 endpoint (json) if there are documents that are links, v2 (multipart) if files
-      let createWorkflowEndpoint = api.createWorkflowItemV2;
+      // use v2 endpoint (multipart) if there are files
+      let createWorkflowEndpoint = api.createWorkflowItem;
       if (
         workflowitemData.documents &&
         workflowitemData.documents.length > 0 &&
-        workflowitemData.documents.some((doc) => doc.link)
+        workflowitemData.documents.some((doc) => doc.base64)
       ) {
-        createWorkflowEndpoint = api.createWorkflowItem;
+        createWorkflowEndpoint = api.createWorkflowItemV2;
       }
       const { data } = yield* executeOriginalAction(createWorkflowEndpoint, originalAction, workflowitemData);
       yield put({
