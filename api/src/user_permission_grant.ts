@@ -13,7 +13,6 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as UserRecord from "./service/domain/organization/user_record";
 import { AugmentedFastifyInstance } from "./types";
 
-
 /**
  * Represents the request body of the endpoint
  */
