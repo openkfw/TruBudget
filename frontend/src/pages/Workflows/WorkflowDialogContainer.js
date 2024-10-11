@@ -157,9 +157,9 @@ const mapStateToProps = (state) => {
     workflowTemplate: state.getIn(["workflow", "workflowTemplate"]),
     workflowTemplates: state.getIn(["workflow", "workflowTemplates"]),
     workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
-    deleteDocument: state.getIn(["documents", "deleteDocument"]),
-    deleteWorkflowDocument: state.getIn(["workflow", "workflowToAdd"]),
-    deleteWorkflowDocumentExternalLink: state.getIn(["workflow", "workflowToAdd"])
+    documentToDelete: state.getIn(["documents", "deleteDocument"]),
+    workflowDocumentToDelete: state.getIn(["workflow", "workflowToAdd"]),
+    workflowDocumentExternalLinkToDelete: state.getIn(["workflow", "workflowToAdd"])
   };
 };
 
