@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import { withRouter } from "../../wrappers/withRouter";
+import { deleteDocument } from "../Documents/actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
@@ -13,6 +14,8 @@ import {
   createWorkflowFromTemplateAction,
   createWorkflowItemAction,
   defaultWorkflowExchangeRate,
+  deleteWorkflowDocument,
+  deleteWorkflowDocumentExternalLink,
   editWorkflowItem,
   hideWorkflowDialog,
   removeWorkflowitemTag,
@@ -153,7 +156,10 @@ const mapStateToProps = (state) => {
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowTemplate: state.getIn(["workflow", "workflowTemplate"]),
     workflowTemplates: state.getIn(["workflow", "workflowTemplates"]),
-    workflowToAdd: state.getIn(["workflow", "workflowToAdd"])
+    workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
+    deleteDocument: state.getIn(["documents", "deleteDocument"]),
+    deleteWorkflowDocument: state.getIn(["workflow", "workflowToAdd"]),
+    deleteWorkflowDocumentExternalLink: state.getIn(["workflow", "workflowToAdd"])
   };
 };
 
@@ -206,7 +212,11 @@ const mapDispatchToProps = (dispatch) => {
     setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable)),
     addWorkflowitemTag: (tag) => dispatch(addWorkflowitemTag(tag)),
     removeWorkflowitemTag: (tag) => dispatch(removeWorkflowitemTag(tag)),
-    showErrorSnackbar: () => dispatch(showSnackbar(true))
+    showErrorSnackbar: () => dispatch(showSnackbar(true)),
+    deleteDocument: (projectId, subprojectId, workflowitemId, documentId) =>
+      dispatch(deleteDocument(projectId, subprojectId, workflowitemId, documentId)),
+    deleteWorkflowDocument: (base64) => dispatch(deleteWorkflowDocument(base64)),
+    deleteWorkflowDocumentExternalLink: (linkedFileHash) => dispatch(deleteWorkflowDocumentExternalLink(linkedFileHash))
   };
 };
 

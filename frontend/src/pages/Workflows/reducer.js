@@ -18,6 +18,8 @@ import {
   CLEAR_REJECT_REASON,
   CREATE_WORKFLOW_SUCCESS,
   DEFAULT_WORKFLOW_EXCHANGERATE,
+  DELETE_WORKFLOW_DOCUMENT,
+  DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK,
   DISABLE_LIVE_UPDATES_SUBPROJECT,
   DISABLE_WORKFLOW_EDIT,
   EDIT_WORKFLOW_ITEM_SUCCESS,
@@ -367,6 +369,14 @@ export default function detailviewReducer(state = defaultState, action) {
             comment: action.comment
           })
         ])
+      );
+    case DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK:
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
+        documents.filter((item) => item.get("linkedFileHash") !== action.linkedFileHash)
+      );
+    case DELETE_WORKFLOW_DOCUMENT:
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
+        documents.filter((item) => item.get("base64") !== action.base64)
       );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
