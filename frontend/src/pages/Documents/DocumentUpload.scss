@@ -25,6 +25,13 @@
   background-color: #f3f3f3;
 }
 
+.document-link-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
 .document-upload-container {
   display: flex;
   flex-direction: row;

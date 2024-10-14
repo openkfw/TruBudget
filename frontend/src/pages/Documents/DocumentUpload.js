@@ -158,27 +158,30 @@ const DocumentUpload = ({
             <TableRow key={`${index}-${document.fileName}`}>
               <TableCell className="document-link-cell" data-test="workflowitemDocumentFileName">
                 <Typography variant="body1" component="div">
-                  {document.fileName}
-                  {document.link && (
-                    <Tooltip title={document.link}>
+                  <div className="document-link-wrapper">
+                    {document.fileName}
+                    <div>
+                      {document.link && (
+                        <Tooltip title={document.link}>
+                          <Button
+                            onClick={(event) => {
+                              event.preventDefault();
+                              window.open(document.link, "_blank");
+                            }}
+                            component="div"
+                          >
+                            <Publish />
+                          </Button>
+                        </Tooltip>
+                      )}
+
                       <Button
-                        onClick={(event) => {
-                          event.preventDefault();
-                          window.open(document.link, "_blank");
-                        }}
-                        component="div"
+                        onClick={() => handleDeleteDocument(document.id, document.base64, document.linkedFileHash)}
                       >
-                        <Publish />
+                        <DeleteIcon />
                       </Button>
-                    </Tooltip>
-                  )}
-                  <Button
-                    component="span"
-                    disabled={!document.available && !document.link}
-                    onClick={() => handleDeleteDocument(document.id, document.base64, document.linkedFileHash)}
-                  >
-                    <DeleteIcon />
-                  </Button>
+                    </div>
+                  </div>
                 </Typography>
               </TableCell>
             </TableRow>

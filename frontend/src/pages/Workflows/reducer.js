@@ -589,10 +589,20 @@ export default function detailviewReducer(state = defaultState, action) {
     case SEARCH_TAGS_WORKFLOWITEM: {
       return state.set("searchOnlyTags", action.tagsOnly);
     }
-    case DELETE_DOCUMENT_SUCCESS:
-      return state.updateIn(["showDetailsItem", "data", "documents"], (documents) =>
-        Immutable.List([...documents.filter((doc) => doc.id !== action.payload.documentId)])
-      );
+    case DELETE_DOCUMENT_SUCCESS: {
+      const filteredShowDetailsDocuments = state
+        .getIn(["showDetailsItem", "data", "documents"], Immutable.List())
+        .filter((doc) => doc.id !== action.payload.documentId);
+
+      const filteredWorkflowToAddDocuments = state
+        .getIn(["workflowToAdd", "documents"])
+        .toJS()
+        .filter((doc) => doc.id !== action.payload.documentId);
+
+      return state
+        .setIn(["showDetailsItem", "data", "documents"], Immutable.List(filteredShowDetailsDocuments))
+        .setIn(["workflowToAdd", "documents"], Immutable.List(filteredWorkflowToAddDocuments));
+    }
     default:
       return state;
   }
