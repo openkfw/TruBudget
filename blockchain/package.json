@@ -37,7 +37,7 @@
     ]
   },
   "dependencies": {
-    "@kubernetes/client-node": "1.0.0-rc2",
+    "@kubernetes/client-node": "1.0.0-rc6",
     "async-each": "^1.0.3",
     "axios": "^1.7.4",
     "better-npm-audit": "^3.7.3",
@@ -76,6 +76,7 @@
     "tar": "^6.2.1",
     "find-my-way": "^8.2.2",
     "cookie": "^0.7.0",
-    "semver": "^7.6.3"
+    "semver": "^7.6.3",
+    "jsonpath-plus": "^10.0.0"
   }
 }
