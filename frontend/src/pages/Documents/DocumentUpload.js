@@ -2,6 +2,7 @@ import React, { useCallback, useState } from "react";
 import * as Yup from "yup";
 
 import AddLink from "@mui/icons-material/AddLink";
+import DeleteIcon from "@mui/icons-material/Delete";
 import PostAdd from "@mui/icons-material/PostAdd";
 import Publish from "@mui/icons-material/Publish";
 import { CircularProgress, Grid, Paper, TableHead, TextField, Tooltip } from "@mui/material";
@@ -39,7 +40,13 @@ const DocumentUpload = ({
   workflowDocuments,
   storageServiceAvailable,
   storeSnackbarMessage,
-  showErrorSnackbar
+  showErrorSnackbar,
+  deleteDocument,
+  deleteWorkflowDocument,
+  deleteWorkflowDocumentExternalLink,
+  projectId,
+  subprojectId,
+  workflowitemId
 }) => {
   const defaultDocumentUrl = "https://";
   const defaultDocumentName = "";
@@ -128,6 +135,16 @@ const DocumentUpload = ({
     setComment(event.target.value);
   };
 
+  const handleDeleteDocument = (id, base64, linkedFileHash) => {
+    if (id !== undefined) {
+      deleteDocument(projectId, subprojectId, workflowitemId, id);
+    } else if (base64 !== undefined) {
+      deleteWorkflowDocument(base64);
+    } else {
+      deleteWorkflowDocumentExternalLink(linkedFileHash);
+    }
+  };
+
   const body = (
     <TableBody>
       {workflowDocuments.length > 0 ? (
@@ -141,20 +158,30 @@ const DocumentUpload = ({
             <TableRow key={`${index}-${document.fileName}`}>
               <TableCell className="document-link-cell" data-test="workflowitemDocumentFileName">
                 <Typography variant="body1" component="div">
-                  {document.fileName}
-                  {document.link && (
-                    <Tooltip title={document.link}>
+                  <div className="document-link-wrapper">
+                    {document.fileName}
+                    <div>
+                      {document.link && (
+                        <Tooltip title={document.link}>
+                          <Button
+                            onClick={(event) => {
+                              event.preventDefault();
+                              window.open(document.link, "_blank");
+                            }}
+                            component="div"
+                          >
+                            <Publish />
+                          </Button>
+                        </Tooltip>
+                      )}
+
                       <Button
-                        onClick={(event) => {
-                          event.preventDefault();
-                          window.open(document.link, "_blank");
-                        }}
-                        component="div"
+                        onClick={() => handleDeleteDocument(document.id, document.base64, document.linkedFileHash)}
                       >
-                        <Publish />
+                        <DeleteIcon />
                       </Button>
-                    </Tooltip>
-                  )}
+                    </div>
+                  </div>
                 </Typography>
               </TableCell>
             </TableRow>
