@@ -35,6 +35,8 @@ export const WORKFLOW_DUEDATE = "WORKFLOW_DUEDATE";
 export const WORKFLOW_ASSIGNEE = "WORKFLOW_ASSIGNEE";
 export const WORKFLOW_DOCUMENT = "WORKFLOW_DOCUMENT";
 export const WORKFLOW_DOCUMENT_EXTERNAL_LINK = "WORKFLOW_DOCUMENT_EXTERNAL_LINK";
+export const DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK = "DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK";
+export const DELETE_WORKFLOW_DOCUMENT = "DELETE_WORKFLOW_DOCUMENT";
 export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_FROM_TEMPLATE = "CREATE_WORKFLOW_FROM_TEMPLATE";
@@ -550,6 +552,20 @@ export function storeWorkflowDocumentExternalLink(link, fileName, linkedFileHash
     fileName,
     linkedFileHash,
     comment
+  };
+}
+
+export function deleteWorkflowDocumentExternalLink(linkedFileHash) {
+  return {
+    type: DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK,
+    linkedFileHash
+  };
+}
+
+export function deleteWorkflowDocument(base64) {
+  return {
+    type: DELETE_WORKFLOW_DOCUMENT,
+    base64
   };
 }
 

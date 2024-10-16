@@ -181,7 +181,10 @@ const WorkflowDialog = (props) => {
     setStorageServiceAvailable,
     workflowTemplate,
     dialogTitle,
-    hideWorkflowDialog
+    hideWorkflowDialog,
+    deleteDocument,
+    deleteWorkflowDocument,
+    deleteWorkflowDocumentExternalLink
   } = props;
 
   useEffect(() => {
@@ -234,10 +237,13 @@ const WorkflowDialog = (props) => {
         handleSubmit: handleCreate,
         dialogShown: creationDialogShown
       };
-  const { displayName, amountType, amount } = workflowToAdd;
+  const { displayName, amountType, amount, id } = workflowToAdd;
+  const { location } = props;
   const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);
   delete changes.assignee;
+  const projectId = location.pathname.split("/")[2];
+  const subprojectId = location.pathname.split("/")[3];
   const documentStep = {
     title: strings.workflow.workflow_documents,
     content: (
@@ -245,6 +251,12 @@ const WorkflowDialog = (props) => {
         storeWorkflowDocument={storeWorkflowDocument}
         storeWorkflowDocumentExternalLink={storeWorkflowDocumentExternalLink}
         workflowDocuments={workflowToAdd.documents}
+        deleteDocument={deleteDocument}
+        deleteWorkflowDocument={deleteWorkflowDocument}
+        deleteWorkflowDocumentExternalLink={deleteWorkflowDocumentExternalLink}
+        projectId={projectId}
+        subprojectId={subprojectId}
+        workflowitemId={id}
         {...props}
       />
     ),
