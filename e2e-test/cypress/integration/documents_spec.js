@@ -77,7 +77,7 @@ describe("Attaching a document to a workflowitem.", function () {
   };
 
   it("A document can be validated.", function () {
-    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/v2/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
 
@@ -112,7 +112,7 @@ describe("Attaching a document to a workflowitem.", function () {
   });
 
   it("Validation of wrong document fails.", function () {
-    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/v2/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
 
@@ -148,7 +148,7 @@ describe("Attaching a document to a workflowitem.", function () {
   });
 
   it("The filename and document name are shown correctly", function () {
-    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/v2/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.validate*").as("validate");
 
@@ -217,7 +217,7 @@ describe("Deleting a document from a workflowitem.", function () {
   };
 
   it("A document can be deleted.", function () {
-    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/v2/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.deleteDocument*").as("deleteDocument");
 
@@ -291,7 +291,7 @@ describe("Deleting a document from a closed workflowitem.", function () {
   };
 
   it("A document cannot be deleted from a closed workflowitem.", function () {
-    cy.intercept(apiRoute + "/workflowitem.update*").as("update");
+    cy.intercept(apiRoute + "/v2/workflowitem.update*").as("update");
     cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
     cy.intercept(apiRoute + "/workflowitem.deleteDocument*").as("deleteDocument");
 
