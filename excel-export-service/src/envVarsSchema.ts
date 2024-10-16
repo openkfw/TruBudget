@@ -16,7 +16,6 @@ export const envVarsSchema = Joi.object({
     ),
   RATE_LIMIT: Joi.number()
     .empty("")
-    .default(undefined)
     .note("Defines the limit each IP to {RATE_LIMIT} requests per windowMs (1 minute)"),
   NODE_ENV: Joi.string().default("production"),
   LOG_LEVEL: Joi.string()
@@ -29,4 +28,6 @@ export const envVarsSchema = Joi.object({
   BUILDTIMESTAMP: Joi.string().note(
     "Defines the BUILDTIMESTAMP property returned by the version endpoint.",
   ),
-});
+})
+  .unknown()
+  .required();

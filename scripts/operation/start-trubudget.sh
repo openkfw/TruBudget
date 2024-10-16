@@ -292,9 +292,10 @@ do
     OUTPUT=$(docker run ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
 
     if [[ $OUTPUT =~ "Config validation error" ]]; then
-        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file $SCRIPT_DIR/.env.${colorReset}"
         echo $OUTPUT
         echo ""
+        echo "List of environment variables set for $service_to_be_started service:"
         echo "$SERVICE_ENV_VARS"
         exit 1
     fi

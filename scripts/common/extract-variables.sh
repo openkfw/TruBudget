@@ -44,7 +44,7 @@ parse_services_and_environment_variables() {
             key="${BASH_REMATCH[1]}"
             value="${BASH_REMATCH[2]}"
 
-            # Check if it's an environment variable or a hardcoded value
+            # Check if it's an environment variable 
             if [[ $value =~ ^\$\{(.+)\}$ ]]; then
                 env_var="${BASH_REMATCH[1]}"
                 real_value="${!env_var}"  # Get the value of the environment variable by name
@@ -55,17 +55,19 @@ parse_services_and_environment_variables() {
                         echo "-e $key=$real_value"
                     else
                         # Output with quotes for non-numeric and non-boolean values
-                        echo "-e $key='$real_value'"
+                        echo "-e $key=$real_value"
                     fi
-                    
+                else
+                    echo "-e $key="
                 fi
+            # or a hardcoded value
             else
                 if [[ "$value" =~ ^-?[0-9]+$ || "$value" == "true" || "$value" == "false" ]]; then
                     # Output without quotes for numeric and boolean values
                     echo "-e $key=$value"
                 else
                     # Output with quotes for non-numeric and non-boolean values
-                    echo "-e $key='$value'"
+                    echo "-e $key=$value"
                 fi
                                 
             fi

@@ -1,5 +1,7 @@
 import * as Joi from "joi";
 
+const extendedEmailRegex = /^"?[\w\s]+"?\s*<\s*[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}\s*>$/;
+
 export const envVarsSchema = Joi.object({
   AUTHENTICATION: Joi.string()
     .allow("none", "jwt")
@@ -26,6 +28,7 @@ export const envVarsSchema = Joi.object({
   DB_SCHEMA: Joi.string().default("public").note("Schema of connected database"),
   SQL_DEBUG: Joi.boolean()
     .default(false)
+    .empty("")
     .note("The SQL Debug option is forwarded to the knex configuration."),
   USER_TABLE: Joi.string()
     .default("users")
@@ -36,6 +39,7 @@ export const envVarsSchema = Joi.object({
   SMTP_PORT: Joi.number().port().default(2500).note("Port of external SMTP-Server."),
   SMTP_SSL: Joi.boolean()
     .default(false)
+    .empty("")
     .note("If true the external SMTP-Server connection is using the SSL protocol."),
   SMTP_USER: Joi.string()
     .default("")
@@ -46,7 +50,21 @@ export const envVarsSchema = Joi.object({
     .default("")
     .note("Password of external SMTP-Server used to actually send notification emails."),
   EMAIL_FROM: Joi.string()
-    .email()
+    .custom((value, helpers) => {
+      const emailSchema = Joi.string().email();
+      const emailValidation = emailSchema.validate(value);
+
+      if (emailValidation.error && !extendedEmailRegex.test(value)) {
+        return helpers.message({
+          custom:
+            '"{{#label}}" must be a valid email or extended email format, e.g. "Name" <email@example.com>. But ' +
+            value +
+            " was provided.",
+        });
+      }
+
+      return value; // valid
+    }, "Email or Extended Email Validation")
     .required()
     .note("This is injected into the `from` field of the email notification."),
   EMAIL_SUBJECT: Joi.string()
@@ -82,6 +100,7 @@ export const envVarsSchema = Joi.object({
     ),
   JWT_ALGORITHM: Joi.string()
     .allow("HS256", "RS256")
+    .empty("")
     .default("HS256")
     .note(
       "Algorithm used for signing and verifying JWTs. Currently `HS256` or `RS256` are supported.",
@@ -90,5 +109,10 @@ export const envVarsSchema = Joi.object({
     .allow("trace", "debug", "info", "warn", "error", "fatal")
     .default("info")
     .note("Defines the log output."),
-  PRETTY_PRINT: Joi.boolean().default(false).note("If true the log output is pretty printed."),
-});
+  PRETTY_PRINT: Joi.boolean()
+    .default(false)
+    .empty("")
+    .note("If true the log output is pretty printed."),
+})
+  .unknown()
+  .required();

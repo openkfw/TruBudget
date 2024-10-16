@@ -1,3 +1,4 @@
+import { envVarsSchema } from "./envVarsSchema";
 interface MinioConfig {
   accessKey: string;
   secretKey: string;
@@ -5,6 +6,7 @@ interface MinioConfig {
   port: number;
   protocol: "http" | "https";
   bucketName: string;
+  region: string;
 }
 interface AzureBlobConfig {
   azureStorageUrl: string;
@@ -22,35 +24,35 @@ interface Config {
   shortRoutesLogging: boolean;
 }
 
+const { error, value: envVars } = envVarsSchema.validate(process.env);
+if (error) {
+  throw new Error(`Config validation error: ${error.message}`);
+}
+
 const config: Config = {
-  port: Number(process.env.STORAGE_SERVICE_PORT) || 8090,
-  allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
-  rateLimit:
-    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
-      ? undefined
-      : Number(process.env.RATE_LIMIT),
-  storageProvider:
-    process.env.STORAGE_PROVIDER === "azure-storage"
-      ? "azure-storage"
-      : "minio",
+  port: envVars.STORAGE_SERVICE_PORT,
+  allowOrigin: envVars.ACCESS_CONTROL_ALLOW_ORIGIN,
+  rateLimit: envVars.RATE_LIMIT,
+  storageProvider: envVars.STORAGE_PROVIDER,
   storage: {
-    accessKey: process.env.MINIO_ACCESS_KEY || "minio",
-    secretKey: process.env.MINIO_SECRET_KEY || "minio123",
-    host: process.env.MINIO_HOST || "localhost",
-    port: Number(process.env.MINIO_PORT) || 9000,
-    protocol: process.env.MINIO_PROTOCOL === "https" ? "https" : "http",
-    bucketName: process.env.MINIO_BUCKET_NAME || "trubudget",
+    accessKey: envVars.MINIO_ACCESS_KEY,
+    secretKey: envVars.MINIO_SECRET_KEY,
+    host: envVars.MINIO_HOST,
+    port: envVars.MINIO_PORT,
+    protocol: envVars.MINIO_PROTOCOL,
+    bucketName: envVars.MINIO_BUCKET_NAME,
+    region: envVars.MINIO_REGION,
   },
   azureBlobStorage: {
-    azureConnectionString: process.env.AZURE_STORAGE_CONNECTION_STRING,
+    azureConnectionString: envVars.AZURE_STORAGE_CONNECTION_STRING,
     azureStorageUrl:
-      process.env.AZURE_STORAGE_URL && process.env.AZURE_STORAGE_URL !== ""
-        ? process.env.AZURE_STORAGE_URL
-        : `https://${process.env.AZURE_ACCOUNT_NAME}.blob.core.windows.net`,
-    containerName: process.env.AZURE_CONTAINER_NAME || "container",
+      envVars.AZURE_STORAGE_URL && envVars.AZURE_STORAGE_URL !== ""
+        ? envVars.AZURE_STORAGE_URL
+        : `https://${envVars.AZURE_ACCOUNT_NAME}.blob.core.windows.net`,
+    containerName: envVars.AZURE_CONTAINER_NAME,
   },
-  silenceLoggingOnFrequentRoutes: process.env.SILENCE_LOGGING_ON_FREQUENT_ROUTES === "true",
-  shortRoutesLogging: process.env.SHORT_ROUTES_LOGGING_OUTPUT === "true",
+  silenceLoggingOnFrequentRoutes: envVars.SILENCE_LOGGING_ON_FREQUENT_ROUTES,
+  shortRoutesLogging: envVars.SHORT_ROUTES_LOGGING_OUTPUT,
 };
 
 export default config;

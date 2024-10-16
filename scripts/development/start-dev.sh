@@ -403,19 +403,32 @@ fi
 # e.g. alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend
 read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
 
+SERVICES_WITH_ENV_VARS="alpha-node alpha-api email-service excel-export-service storage-service"
 # loop through the services array
 for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
 do
+    # Check if service is included in the list of services to be started
+    if [[ ! $SERVICES_WITH_ENV_VARS =~ $service_to_be_started ]]; then
+        continue
+    fi
+    echo ""
     echo "INFO: Validating environment variables for $service_to_be_started service ..."
     SERVICE_ENV_VARS=$(parse_services_and_environment_variables "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
     # Run environenment variables check
     OUTPUT=$(docker run ${SERVICE_ENV_VARS} ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
-
+    echo $OUTPUT
     if [[ $OUTPUT =~ "Config validation error" ]]; then
-        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file $SCRIPT_DIR/.env.${colorReset}"
         echo $OUTPUT
         echo ""
+        echo "List of environment variables set for $service_to_be_started service:"
         echo "$SERVICE_ENV_VARS"
+        exit 1
+    elif [[ $OUTPUT =~ "Environment variables are valid." ]]; then
+        echo " - Environment variables are valid for $service_to_be_started service."
+    else
+        echo "${red}ERROR: Unexpected error occurred while validating environment variables for $service_to_be_started service.${colorReset}"
+        echo $OUTPUT
         exit 1
     fi
 done

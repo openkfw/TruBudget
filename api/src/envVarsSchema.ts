@@ -50,6 +50,7 @@ export const envVarsSchema = Joi.object({
       "The protocol used to expose the multichain daemon of your Trubudget blockchain installation(bc). The protocol used to connect to the multichain daemon(api). This will be used internally for the communication between the API and the multichain daemon.",
     ),
   MULTICHAIN_RPC_USER: Joi.string()
+    .empty("")
     .default("multichainrpc")
     .note("The user used to connect to the multichain daemon."),
   MULTICHAIN_RPC_PASSWORD: Joi.string()
@@ -100,12 +101,14 @@ export const envVarsSchema = Joi.object({
       "If JWT_ALGORITHM is set to `RS256`, this is required and holds BASE64 encoded PEM encoded public key for RSA.",
     ),
   DOCUMENT_FEATURE_ENABLED: Joi.boolean()
+    .empty("")
     .default(false)
     .note(
       "If true, all uploaded documents are stored using trubudget's storage-service. If false, the document feature of TruBudget is disabled, and trying to upload a document will result in an error.",
     ),
   DOCUMENT_EXTERNAL_LINKS_ENABLED: Joi.boolean()
     .default(false)
+    .empty("")
     .note(
       'If true, it is possible to use external documents links also without TruBudget\'s storage-service. If false, the external documents links feature of TruBudget is still possible to use in case DOCUMENT_FEATURE_ENABLED equals "true".',
     ),
@@ -158,6 +161,7 @@ export const envVarsSchema = Joi.object({
     ),
   AUTHPROXY_ENABLED: Joi.boolean()
     .default(false)
+    .empty("")
     .note("Enables logging in using the authorization token from authentication proxy"),
   AUTHPROXY_JWS_SIGNATURE: Joi.string()
     .when("AUTHPROXY_ENABLED", {
@@ -166,7 +170,7 @@ export const envVarsSchema = Joi.object({
     })
     .note("secret/public key/certificate for verifying auth proxy token signature"),
   DB_TYPE: Joi.string().default("pg"),
-  SQL_DEBUG: Joi.boolean().default(false),
+  SQL_DEBUG: Joi.boolean().default(false).empty(""),
   API_DB_USER: Joi.string()
     .default("postgres")
     .when("REFRESH_TOKEN_STORAGE", {
@@ -209,6 +213,7 @@ export const envVarsSchema = Joi.object({
       then: Joi.required(),
     })
     .default(false)
+    .empty("")
     .note('Database SSL connection. Allowed values: "true" or "false".'),
   API_DB_SCHEMA: Joi.string()
     .when("REFRESH_TOKEN_STORAGE", {
@@ -232,6 +237,7 @@ export const envVarsSchema = Joi.object({
   SNAPSHOT_EVENT_INTERVAL: Joi.number().default(3),
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: Joi.boolean()
     .default(false)
+    .empty("")
     .note(
       'Set to "true" if you want to hide route logging on frequent and technical endpoints like `/readiness`, `/version`, etc.',
     ),
