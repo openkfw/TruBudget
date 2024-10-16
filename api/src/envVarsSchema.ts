@@ -232,6 +232,7 @@ export const envVarsSchema = Joi.object({
   SNAPSHOT_EVENT_INTERVAL: Joi.number().default(3),
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: Joi.boolean()
     .default(false)
+    .empty("")
     .note(
       'Set to "true" if you want to hide route logging on frequent and technical endpoints like `/readiness`, `/version`, etc.',
     ),
