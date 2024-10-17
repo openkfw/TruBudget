@@ -71,6 +71,16 @@ class SubProjectContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.router.location.pathname !== prevProps.router.location.pathname) {
+      const newProjectId = this.props.router.location.pathname.split("/")[2];
+      if (newProjectId !== this.projectId) {
+        this.setState({ isDataFetched: false });
+        this.projectId = newProjectId;
+        this.props.setSelectedView(this.projectId, "project");
+        this.props.fetchAllProjectDetails(this.projectId, true);
+        this.setState({ isDataFetched: true });
+      }
+    }
     const searchTermChanges = this.props.searchTerm !== prevProps.searchTerm;
     const projectsChange = !_isEqual(this.props.subProjects, prevProps.subProjects);
 
