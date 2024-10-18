@@ -1,32 +1,30 @@
-import React, { Component } from "react";
+import React from "react";
 
 import TextInput from "./TextInput";
 
 import "./index.scss";
 
-class Identifier extends Component {
-  render() {
-    return (
-      <div className="identifier">
-        <TextInput
-          label={this.props.nameLabel}
-          value={this.props.name}
-          onChange={this.props.nameOnChange}
-          data-test={this.props.commentId || "nameinput"}
-          disabled={this.props.disabled}
-        />
+const Identifier = (props) => {
+  return (
+    <div className="identifier">
+      <TextInput
+        label={props.nameLabel}
+        value={props.name}
+        onChange={props.nameOnChange}
+        data-test={props.commentId || "nameinput"}
+        disabled={props.disabled}
+      />
 
-        <TextInput
-          label={this.props.commentLabel}
-          value={this.props.comment}
-          onChange={this.props.commentOnChange}
-          multiline={true}
-          data-test={this.props.commentId || "commentinput"}
-          disabled={this.props.disabled}
-        />
-      </div>
-    );
-  }
-}
+      <TextInput
+        label={props.commentLabel}
+        value={props.comment}
+        onChange={props.commentOnChange}
+        multiline={true}
+        data-test={props.commentId || "commentinput"}
+        disabled={props.disabled}
+      />
+    </div>
+  );
+};
 
 export default Identifier;
