@@ -14,7 +14,7 @@ class Identifier extends Component {
           onChange={this.props.nameOnChange}
           data-test={this.props.commentId || "nameinput"}
           disabled={this.props.disabled}
-          maxLengthValue={35}
+          maxLengthValue={75}
         />
 
         <TextInput
@@ -24,7 +24,7 @@ class Identifier extends Component {
           multiline={true}
           data-test={this.props.commentId || "commentinput"}
           disabled={this.props.disabled}
-          maxLengthValue={60}
+          maxLengthValue={75}
         />
       </div>
     );
