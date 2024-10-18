@@ -27,7 +27,7 @@ const handleEdit = (props) => {
   const { editProject, onDialogCancel, projectToAdd, projects, storeSnackbarMessage } = props;
 
   const changes = compareObjects(projects, projectToAdd);
-  const hasChanges = !isEmptyDeep(changes);
+  const hasChanges = !isEmptyDeep(changes) || Object.hasOwn(changes, "tags");
 
   if (hasChanges) {
     editProject(
@@ -56,7 +56,7 @@ const ProjectDialog = (props) => {
   const { projects, projectToAdd, editDialogShown, creationDialogShown } = props;
   const { displayName } = projectToAdd;
   const changes = compareObjects(projects, projectToAdd);
-  const hasChanges = !isEmptyDeep(changes);
+  const hasChanges = !isEmptyDeep(changes) || Object.hasOwn(changes, "tags");
 
   const specificProps = props.editDialogShown
     ? {
