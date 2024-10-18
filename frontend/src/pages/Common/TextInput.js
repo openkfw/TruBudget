@@ -13,6 +13,7 @@ const TextInput = ({
   multiline = false,
   disabled = false,
   id,
+  maxLengthValue,
   // eslint-disable-next-line no-useless-computed-key
   ["data-test"]: dataTest
 }) => (
@@ -30,6 +31,7 @@ const TextInput = ({
     onBlur={onBlur}
     pattern={pattern}
     data-test={dataTest}
+    inputProps={{ maxLength: maxLengthValue }}
   />
 );
 
