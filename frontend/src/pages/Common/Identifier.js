@@ -24,7 +24,7 @@ class Identifier extends Component {
           multiline={true}
           data-test={this.props.commentId || "commentinput"}
           disabled={this.props.disabled}
-          maxLengthValue={35}
+          maxLengthValue={60}
         />
       </div>
     );
