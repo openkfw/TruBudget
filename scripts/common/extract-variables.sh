@@ -54,8 +54,10 @@ parse_services_and_environment_variables() {
                         # Output without quotes for numeric and boolean values
                         echo "-e $key=$real_value"
                     else
+                        # Escape double quotes in the real_value
+                        escaped_real_value="${real_value//\"/\\\"}"
                         # Output with quotes for non-numeric and non-boolean values
-                        echo "-e $key=$real_value"
+                        echo "-e $key=\"$escaped_real_value\""
                     fi
                 else
                     echo "-e $key="
@@ -66,8 +68,10 @@ parse_services_and_environment_variables() {
                     # Output without quotes for numeric and boolean values
                     echo "-e $key=$value"
                 else
+                    # Escape double quotes in the real_value
+                    escaped_value="${value//\"/\\\"}"
                     # Output with quotes for non-numeric and non-boolean values
-                    echo "-e $key=$value"
+                    echo "-e $key=\"$escaped_value\""
                 fi
                                 
             fi

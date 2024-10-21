@@ -404,6 +404,7 @@ fi
 read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
 
 SERVICES_WITH_ENV_VARS="alpha-node alpha-api email-service excel-export-service storage-service"
+
 # loop through the services array
 for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
 do
@@ -415,8 +416,8 @@ do
     echo "INFO: Validating environment variables for $service_to_be_started service ..."
     SERVICE_ENV_VARS=$(parse_services_and_environment_variables "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
     # Run environenment variables check
-    OUTPUT=$(docker run ${SERVICE_ENV_VARS} ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
-    echo $OUTPUT
+    OUTPUT=$(eval docker run ${SERVICE_ENV_VARS} ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
+    
     if [[ $OUTPUT =~ "Config validation error" ]]; then
         echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file $SCRIPT_DIR/.env.${colorReset}"
         echo $OUTPUT
