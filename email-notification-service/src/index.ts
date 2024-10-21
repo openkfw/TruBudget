@@ -63,7 +63,7 @@ const limiter = rateLimit({
 if (config.authentication === "jwt") {
   configureJWT();
 } else {
-  logger.info("No authentication method configured");
+  logger.info("No API authentication method configured");
 }
 
 if (config.rateLimit) {

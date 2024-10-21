@@ -19,8 +19,8 @@
   "main": "index.js",
   "devDependencies": {
     "accounting": "^0.4.1",
-    "cypress": "^13.13.3",
-    "cypress-mochawesome-reporter": "^3.7.0",
+    "cypress": "^13.15.0",
+    "cypress-mochawesome-reporter": "^3.8.2",
     "dotenv": "^16.3.1",
     "eslint": "^8.54.0",
     "eslint-config-prettier": "^9.0.0",

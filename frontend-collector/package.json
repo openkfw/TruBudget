@@ -30,6 +30,7 @@
     "trubudget-logging-service": "^2.6.0"
   },
   "overrides": {
-    "find-my-way": "^8.2.2"
+    "find-my-way": "^8.2.2",
+    "cookie": "^0.7.0"
   }
 }

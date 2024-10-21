@@ -312,7 +312,7 @@ const ka = {
       "მხოლოდ ტიპის workflow action- ის აკრძალვა შეზღუდულია. შეზღუდული workflow action- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
     workflowitem_assignee: "ფიქსირებული მიმწოდებელი",
     organization_info: "დამფინანსებელი ორგანიზაცია",
-    total_budget_info: "Total budget",
+    total_budget_info: "მონაწილე დაინტერესებული მხარე",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow actions in subproject without an option to change it."
@@ -651,6 +651,7 @@ const ka = {
     workflowitem_intent_grantPermission: "მიანიჭეთ workflow action-ის ნებართვები",
     workflowitem_intent_listPermissions: "იხილეთ workflow action-ის ნებართვები",
     workflowitem_intent_revokePermission: "გააუქმეთ workflow action-ის ნებართვები",
+    workflowitem_list: "იხილეთ workflowitem-ები",
     workflowitem_update: "განაახლეთ workflow action-ები",
     workflowitem_view: "იხილეთ workflow action-ები",
     write: "გაეცით ნებართვები"
