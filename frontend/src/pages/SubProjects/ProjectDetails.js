@@ -35,15 +35,16 @@ import {
 import strings from "../../localizeStrings";
 import ProjectAnalyticsDialog from "../Analytics/ProjectAnalyticsDialog";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
+import LinkItems from "../Common/LinkItems.js";
 
 import ProjectAssigneeContainer from "./ProjectAssigneeContainer";
 
 import "./ProjectDetails.scss";
 
 const displayTags = (tags) => {
-  return tags.map((tag, i) => (
+  return tags.map((tag, idx) => (
     <Chip
-      key={`${tag}-${i}`}
+      key={`${tag}-${idx}`}
       label={`#${formattedTag(tag)}`}
       style={{ margin: "1px" }}
       clickable={false}
@@ -77,6 +78,7 @@ const ProjectDetails = (props) => {
   const hasOpenSubprojects = !_isEmpty(subProjects.find((subproject) => subproject.data.status === "open"));
   const closeDisabled = !canClose || hasOpenSubprojects || projectStatus === "closed";
   const tags = displayTags(projectTags || []);
+
   return (
     <div className="project-details-container">
       <Card className="project-details-card">
@@ -107,6 +109,7 @@ const ProjectDetails = (props) => {
               <ListItemText primary={tags} />
             </ListItem>
           ) : null}
+          <LinkItems projectComment={projectComment} />
         </List>
         <div className="project-projected-budget" data-test="project-projected-budget">
           <Typography variant="body1">{strings.common.total_budget}</Typography>
