@@ -23,7 +23,7 @@ describe("Workflowitem edit", function () {
     "When editing a workflow item with a different currency than the subproject currency, " +
       "the selected currency is displayed",
     function () {
-      cy.intercept(apiRoute + "/v2/subproject.createWorkflowitem*").as("create");
+      cy.intercept(apiRoute + "/subproject.createWorkflowitem*").as("create");
       cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
       // Create a workflow item and select a different currency
       cy.get("[data-test=createWorkflowitem]").click();
