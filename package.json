@@ -8,7 +8,8 @@
     "danger": "danger",
     "audit": "better-npm-audit audit",
     "generate-changelog": "node generate-latest-changelog.js",
-    "update-logging": "(cd provisioning && npm i trubudget-logging-service@latest --save); (cd blockchain && npm i trubudget-logging-service@latest --save); (cd api && npm i trubudget-logging-service@latest --save); (cd email-notification-service && npm i trubudget-logging-service@latest --save); (cd excel-export-service && npm i trubudget-logging-service@latest --save); (cd storage-service && npm i trubudget-logging-service@latest --save); (cd frontend-collector && npm i trubudget-logging-service@latest --save)"
+    "update-logging": "(cd provisioning && npm i trubudget-logging-service@latest --save); (cd blockchain && npm i trubudget-logging-service@latest --save); (cd api && npm i trubudget-logging-service@latest --save); (cd email-notification-service && npm i trubudget-logging-service@latest --save); (cd excel-export-service && npm i trubudget-logging-service@latest --save); (cd storage-service && npm i trubudget-logging-service@latest --save); (cd frontend-collector && npm i trubudget-logging-service@latest --save)",
+    "build-docs": "bash ./build-docs.sh"
   },
   "type": "module",
   "dependencies": {
