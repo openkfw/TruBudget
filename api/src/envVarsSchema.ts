@@ -194,6 +194,7 @@ export const envVarsSchema = Joi.object({
       then: Joi.required(),
     })
     .default("trubudget_email_service")
+    .empty("")
     .example("trubudget-db")
     .note("Name of the used database"),
   API_DB_PORT: Joi.number()
