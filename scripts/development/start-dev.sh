@@ -427,6 +427,11 @@ do
         exit 1
     elif [[ $OUTPUT =~ "Environment variables are valid." ]]; then
         echo " - Environment variables are valid for $service_to_be_started service."
+    elif [[ $OUTPUT =~ "Unable to find image" ]]; then
+        echo "${red}ERROR: Unable to find $service_to_be_started. Is it possible that image is not build?"
+        echo "Try running the command with --build argument, e.g. sh scripts/development/start-dev.sh --slim --build .${colorReset}"
+        echo $OUTPUT
+        exit 1
     else
         echo "${red}ERROR: Unexpected error occurred while validating environment variables for $service_to_be_started service.${colorReset}"
         echo $OUTPUT

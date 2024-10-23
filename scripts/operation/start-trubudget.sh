@@ -310,7 +310,6 @@ do
     else
         echo "${red}ERROR: Unexpected error occurred while validating environment variables for $service_to_be_started service.${colorReset}"
         echo $OUTPUT
-        exit 1
     fi
 done
 
