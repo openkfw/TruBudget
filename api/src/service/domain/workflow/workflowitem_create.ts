@@ -51,6 +51,7 @@ export interface RequestData {
   additionalData?: object;
   workflowitemType?: Type;
   tags?: string[];
+  fundingOrganization?: string;
 }
 
 const requestDataSchema = Joi.object({
@@ -71,6 +72,7 @@ const requestDataSchema = Joi.object({
   additionalData: AdditionalData.schema,
   workflowitemType: workflowitemTypeSchema,
   tags: Joi.array().items(Project.tagsSchema),
+  fundingOrganization: Joi.string().allow(""),
 });
 
 export function validate(input): Result.Type<RequestData> {
@@ -225,6 +227,7 @@ export async function createWorkflowitem(
   }
 
   logger.trace({ req: reqData }, "Trying to create 'WorkflowitemCreated' Event from request data");
+  console.log("omfg", reqData);
   const workflowitemCreated = WorkflowitemCreated.createEvent(
     ctx.source,
     publisher,
@@ -247,10 +250,12 @@ export async function createWorkflowitem(
       additionalData: reqData.additionalData || {},
       workflowitemType: reqData.workflowitemType || "general",
       tags: reqData.tags || [],
+      fundingOrganization: reqData.fundingOrganization,
     },
     new Date().toISOString(),
     issuer.metadata,
   );
+  console.log("kekw", workflowitemCreated);
   if (Result.isErr(workflowitemCreated)) {
     return new VError(workflowitemCreated, "failed to create workflowitem created event");
   }
@@ -352,6 +357,7 @@ export async function createWorkflowitem(
     workflowitemCreated.workflowitem.id,
   );
 
+  console.log("kekw", workflowitemCreated);
   return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 
   function newDefaultPermissionsFor(userId: string): Permissions {

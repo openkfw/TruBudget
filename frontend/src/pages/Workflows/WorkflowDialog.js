@@ -31,8 +31,10 @@ const handleCreate = (props) => {
     exchangeRate,
     dueDate,
     workflowitemType,
-    tags
+    tags,
+    fundingOrganization
   } = workflowToAdd;
+  console.log("workflowToAdd", workflowToAdd);
 
   createWorkflowItem(
     displayName,
@@ -47,7 +49,8 @@ const handleCreate = (props) => {
     workflowitemType,
     projectDisplayName,
     subprojectDisplayName,
-    tags
+    tags,
+    fundingOrganization
   );
 
   storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
@@ -75,7 +78,8 @@ const handleCreateFromTemplate = (props) => {
     dueDate,
     exchangeRate,
     status,
-    workflowitemType
+    workflowitemType,
+    fundingOrganization
   } = workflowToAdd;
 
   const workflowitems = createWorkflowItemsFromTemplate(workflowTemplate, workflowToAdd);
@@ -94,7 +98,8 @@ const handleCreateFromTemplate = (props) => {
     subprojectDisplayName,
     workflowitemType,
     workflowTemplate,
-    workflowitems
+    workflowitems,
+    fundingOrganization
   });
 
   storeSnackbarMessage(strings.formatString(strings.snackbar.permissions_warning, shortenedDisplayName(displayName)));
@@ -110,10 +115,12 @@ const handleEdit = (props) => {
       delete workflowToAdd.amount;
       delete workflowToAdd.currency;
       delete workflowToAdd.exchangeRate;
+      delete workflowToAdd.fundingOrganization;
     } else {
       workflowToAdd.amount = "";
       workflowToAdd.currency = "";
       workflowToAdd.exchangeRate = 1;
+      workflowToAdd.fundingOrganization = "";
     }
   }
   const changes = compareWorkflowItems(originalWorkflowItem, workflowToAdd);
@@ -140,8 +147,18 @@ const handleEdit = (props) => {
 };
 
 const createWorkflowItemsFromTemplate = (selectedTemplate, workflowToAdd) => {
-  const { amount, amountType, currency, description, documents, dueDate, exchangeRate, status, workflowitemType } =
-    workflowToAdd;
+  const {
+    amount,
+    amountType,
+    currency,
+    description,
+    documents,
+    dueDate,
+    exchangeRate,
+    status,
+    workflowitemType,
+    fundingOrganization
+  } = workflowToAdd;
   const template = templates[selectedTemplate];
   return template.steps.map((step) => {
     return {
@@ -154,7 +171,8 @@ const createWorkflowItemsFromTemplate = (selectedTemplate, workflowToAdd) => {
       dueDate,
       exchangeRate,
       status,
-      workflowitemType
+      workflowitemType,
+      fundingOrganization
     };
   });
 };
@@ -234,7 +252,7 @@ const WorkflowDialog = (props) => {
         handleSubmit: handleCreate,
         dialogShown: creationDialogShown
       };
-  const { displayName, amountType, amount } = workflowToAdd;
+  const { displayName, amountType, amount, fundingOrganization } = workflowToAdd;
   const exchangeRate = fromAmountString(workflowToAdd.exchangeRate);
   const changes = compareObjects(workflowItems, workflowToAdd);
   delete changes.assignee;
@@ -249,8 +267,11 @@ const WorkflowDialog = (props) => {
       />
     ),
     nextDisabled:
-      workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 2
-        ? Object.keys(changes).length === 2 && Object.hasOwn(changes, "currency") && Object.hasOwn(changes, "amount")
+      workflowToAdd.amountType === "N/A" && Object.keys(changes).length === 3
+        ? Object.keys(changes).length === 3 &&
+          Object.hasOwn(changes, "currency") &&
+          Object.hasOwn(changes, "amount") &&
+          Object.hasOwn(changes, "fundingOrganization")
         : _isEmpty(changes)
   };
 
@@ -260,6 +281,7 @@ const WorkflowDialog = (props) => {
       nextDisabled:
         (workflowTemplate === "" && _isEmpty(displayName)) ||
         (amountType !== "N/A" && amount === "") ||
+        fundingOrganization === "" ||
         (amountType !== "N/A" && (!Number.isFinite(exchangeRate) || exchangeRate === 0)),
       content: (
         <div className="workflow-dialog-content">

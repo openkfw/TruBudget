@@ -117,8 +117,10 @@ export function executeActions({
           subprojectDisplayName,
           assignee,
           assigneeDisplayName,
-          tags
+          tags,
+          fundingOrganization
         } = action.payload.workflowitem;
+        console.log("divne", action.payload);
         createWorkflowitem(
           projectId,
           subprojectId,
@@ -136,7 +138,8 @@ export function executeActions({
           subprojectDisplayName,
           assignee,
           assigneeDisplayName,
-          tags
+          tags,
+          fundingOrganization
         );
         break;
       }

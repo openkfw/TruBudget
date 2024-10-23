@@ -100,16 +100,29 @@ const getMenuItems = (currencies) => {
   });
 };
 
+const getOrganizationMenuItems = (organizations) => {
+  return organizations.map((organization, index) => {
+    return (
+      <MenuItem key={index} value={organization}>
+        {organization}
+      </MenuItem>
+    );
+  });
+};
+
 const showAmountInputFields = (
   {
     storeWorkflowAmount,
     storeWorkflowCurrency,
+    storeWorkflowFundingOrga,
     workflowCurrency,
     workflowAmount,
     subProjectCurrency,
     storeWorkflowExchangeRate,
     exchangeRate,
-    defaultWorkflowExchangeRate
+    defaultWorkflowExchangeRate,
+    fundingOrganization,
+    projectedBudgets
   },
   isWorkflowAmountValid,
   setIsWorkflowAmountValid,
@@ -118,8 +131,18 @@ const showAmountInputFields = (
 ) => {
   const currencies = getCurrencies();
   const floatingLabelText = strings.workflow.workflow_budget;
+  const organizations = projectedBudgets.map((budget) => budget.organization);
   return (
     <div className="amount-input-fields">
+      <DropDown
+        className="organization-dropdown"
+        floatingLabel={strings.subproject.organization_info}
+        value={fundingOrganization}
+        onChange={(value) =>  storeWorkflowFundingOrga(value)}
+        id="fundingOrganization"
+      >
+        {getOrganizationMenuItems(organizations)}
+      </DropDown>
       <DropDown
         className="currency-dropdown"
         floatingLabel={strings.common.currency}

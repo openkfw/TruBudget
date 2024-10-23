@@ -41,6 +41,7 @@ export interface RequestData {
   documents?: UploadedDocumentOrLink[];
   additionalData?: object;
   tags?: string[];
+  fundingOrganization?: string;
 }
 
 export type EventData = WorkflowitemUpdated.Modification;

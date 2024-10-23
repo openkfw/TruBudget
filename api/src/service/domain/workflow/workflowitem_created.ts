@@ -37,6 +37,7 @@ interface InitialData {
   additionalData: object;
   workflowitemType?: Type;
   tags?: string[];
+  fundingOrganization?: string;
 }
 
 const initialDataSchema = Joi.object({
@@ -56,6 +57,7 @@ const initialDataSchema = Joi.object({
   additionalData: AdditionalData.schema.required(),
   workflowitemType: workflowitemTypeSchema,
   tags: Joi.array().items(safeStringSchema),
+  fundingOrganization: Joi.string().allow(""),
 }).options({ stripUnknown: true });
 
 export interface Event {
@@ -114,6 +116,7 @@ export function validate(input: any): Result.Type<Event> {
 
 export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Workflowitem> {
   const initialData = event.workflowitem;
+  console.log("lmao", initialData);
 
   const workflowitem: Workflowitem.Workflowitem = {
     isRedacted: false,
@@ -137,6 +140,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Wor
     additionalData: initialData.additionalData,
     workflowitemType: initialData.workflowitemType,
     tags: initialData.tags || [],
+    fundingOrganization: initialData.fundingOrganization,
   };
 
   return Result.mapErr(

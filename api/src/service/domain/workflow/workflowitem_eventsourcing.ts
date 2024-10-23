@@ -106,6 +106,7 @@ export function parseWorkflowitemFromSnapshot(workflowitemJson): Workflowitem.Wo
     amount: workflowitemJson.amount,
     currency: workflowitemJson.currency,
     tags: workflowitemJson.tags,
+    fundingOrganization: workflowitemJson.fundingOrganization,
   };
 }
 
