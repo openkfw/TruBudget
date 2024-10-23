@@ -230,7 +230,7 @@ const fr = {
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
     workflowitem_assignee: "Fixed assignee",
     organization_info: "Organisme de financement",
-    total_budget_info: "Total budget",
+    total_budget_info: "Partie prenante participante",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow action items in subproject without an option to change it."
@@ -659,6 +659,7 @@ const fr = {
     workflowitem_intent_grantPermission: "Accorder des autorisations sur l’étape de workflow action",
     workflowitem_intent_listPermissions: "Afficher les autorisations sur l’étape de workflow action",
     workflowitem_intent_revokePermission: "Révoquer des autorisations sur l’étape de workflow action ",
+    workflowitem_list: "Voir l’étape de workflow action",
     workflowitem_update: "Mettre à jour l’étape de workflow action",
     workflowitem_view: "Voir l’étape de workflow action",
     write: "Autorisations d'écriture"

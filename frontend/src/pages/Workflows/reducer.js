@@ -18,6 +18,8 @@ import {
   CLEAR_REJECT_REASON,
   CREATE_WORKFLOW_SUCCESS,
   DEFAULT_WORKFLOW_EXCHANGERATE,
+  DELETE_WORKFLOW_DOCUMENT,
+  DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK,
   DISABLE_LIVE_UPDATES_SUBPROJECT,
   DISABLE_WORKFLOW_EDIT,
   EDIT_WORKFLOW_ITEM_SUCCESS,
@@ -373,6 +375,14 @@ export default function detailviewReducer(state = defaultState, action) {
           })
         ])
       );
+    case DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK:
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
+        documents.filter((item) => item.get("linkedFileHash") !== action.linkedFileHash)
+      );
+    case DELETE_WORKFLOW_DOCUMENT:
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
+        documents.filter((item) => item.get("base64") !== action.base64)
+      );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
     case CREATE_WORKFLOW_SUCCESS:
@@ -584,10 +594,20 @@ export default function detailviewReducer(state = defaultState, action) {
     case SEARCH_TAGS_WORKFLOWITEM: {
       return state.set("searchOnlyTags", action.tagsOnly);
     }
-    case DELETE_DOCUMENT_SUCCESS:
-      return state.updateIn(["showDetailsItem", "data", "documents"], (documents) =>
-        Immutable.List([...documents.filter((doc) => doc.id !== action.payload.documentId)])
-      );
+    case DELETE_DOCUMENT_SUCCESS: {
+      const filteredShowDetailsDocuments = state
+        .getIn(["showDetailsItem", "data", "documents"], Immutable.List())
+        .filter((doc) => doc.id !== action.payload.documentId);
+
+      const filteredWorkflowToAddDocuments = state
+        .getIn(["workflowToAdd", "documents"])
+        .toJS()
+        .filter((doc) => doc.id !== action.payload.documentId);
+
+      return state
+        .setIn(["showDetailsItem", "data", "documents"], Immutable.List(filteredShowDetailsDocuments))
+        .setIn(["workflowToAdd", "documents"], Immutable.List(filteredWorkflowToAddDocuments));
+    }
     default:
       return state;
   }

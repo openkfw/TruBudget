@@ -194,6 +194,7 @@ export const envVarsSchema = Joi.object({
       then: Joi.required(),
     })
     .default("trubudget_email_service")
+    .empty("")
     .example("trubudget-db")
     .note("Name of the used database"),
   API_DB_PORT: Joi.number()
@@ -232,6 +233,7 @@ export const envVarsSchema = Joi.object({
   SNAPSHOT_EVENT_INTERVAL: Joi.number().default(3),
   SILENCE_LOGGING_ON_FREQUENT_ROUTES: Joi.boolean()
     .default(false)
+    .empty("")
     .note(
       'Set to "true" if you want to hide route logging on frequent and technical endpoints like `/readiness`, `/version`, etc.',
     ),
