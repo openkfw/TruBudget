@@ -83,3 +83,42 @@ parse_services_and_environment_variables() {
         fi
     done < "$COMPOSE_FILE"
 }
+
+# Function to get the docker image name from the docker-compose.yml file
+get_docker_image_name() {
+    # Path to the docker-compose.yml file
+    COMPOSE_FILE=$1
+    ENV_FILE=$2
+    SERVICE_NAME=$3
+
+    source $ENV_FILE
+
+    if [ ! -f "$COMPOSE_FILE" ]; then
+      echo "Error: Dockerfile does not exist at $COMPOSE_FILE"
+      exit 1  # Exit with failure status
+    fi
+
+    image=""
+    in_service_block=0
+
+    while IFS= read -r line; do
+        # Detect service block (indented with 2 spaces)
+        if [[ $line =~ ^[[:space:]]{2}([a-zA-Z0-9_-]+):[[:space:]]*$ ]]; then
+            service="${BASH_REMATCH[1]}"
+            in_service_block=0
+        fi
+        
+        if [[ $service != $SERVICE_NAME ]]; then
+            continue
+        fi
+
+        # Parse image name inside the service block
+        if [[ $line =~ ^[[:space:]]{4}image:[[:space:]]*(.+)[[:space:]]*$ ]]; then
+            image="${BASH_REMATCH[1]}"
+            # Replace "${TAG}" with the value of the variable $TAG
+            image="${image//\${TAG\}/$TAG}"
+            echo "${image}"
+            break
+        fi
+    done < "$COMPOSE_FILE"
+}
