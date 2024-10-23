@@ -47,10 +47,8 @@ export async function getAllWorkflowitems(
     }
     return acc;
   }, [] as Promise<Result.Type<Workflowitem.Workflowitem>>[]);
-  console.log("omg", wfiPromises);
 
   const results = await Promise.all(wfiPromises);
-  console.log("pepega", results);
 
   return results.reduce((acc, currentResult, next) => {
     const result = currentResult;

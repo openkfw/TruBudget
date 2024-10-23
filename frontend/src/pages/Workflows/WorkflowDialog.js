@@ -34,7 +34,6 @@ const handleCreate = (props) => {
     tags,
     fundingOrganization
   } = workflowToAdd;
-  console.log("workflowToAdd", workflowToAdd);
 
   createWorkflowItem(
     displayName,

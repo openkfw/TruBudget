@@ -620,7 +620,6 @@ export function storeWorkflowCurrency(currency) {
 }
 
 export function storeWorkflowFundingOrga(fundingOrganization) {
-  console.log("action store orga", fundingOrganization);
   return {
     type: WORKFLOW_FUNDING_ORGANIZATION,
     fundingOrganization
@@ -682,7 +681,6 @@ export function createWorkflowItemAction(
   tags,
   fundingOrganization
 ) {
-  console.log("action create WF", fundingOrganization);
   return {
     type: CREATE_WORKFLOW,
     projectId,

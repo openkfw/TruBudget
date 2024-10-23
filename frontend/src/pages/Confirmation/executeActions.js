@@ -120,7 +120,6 @@ export function executeActions({
           tags,
           fundingOrganization
         } = action.payload.workflowitem;
-        console.log("divne", action.payload);
         createWorkflowitem(
           projectId,
           subprojectId,

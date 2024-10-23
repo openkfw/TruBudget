@@ -227,7 +227,6 @@ export async function createWorkflowitem(
   }
 
   logger.trace({ req: reqData }, "Trying to create 'WorkflowitemCreated' Event from request data");
-  console.log("omfg", reqData);
   const workflowitemCreated = WorkflowitemCreated.createEvent(
     ctx.source,
     publisher,
@@ -255,7 +254,6 @@ export async function createWorkflowitem(
     new Date().toISOString(),
     issuer.metadata,
   );
-  console.log("kekw", workflowitemCreated);
   if (Result.isErr(workflowitemCreated)) {
     return new VError(workflowitemCreated, "failed to create workflowitem created event");
   }
@@ -357,7 +355,6 @@ export async function createWorkflowitem(
     workflowitemCreated.workflowitem.id,
   );
 
-  console.log("kekw", workflowitemCreated);
   return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
 
   function newDefaultPermissionsFor(userId: string): Permissions {

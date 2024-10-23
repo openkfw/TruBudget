@@ -116,7 +116,6 @@ export function validate(input: any): Result.Type<Event> {
 
 export function createFrom(ctx: Ctx, event: Event): Result.Type<Workflowitem.Workflowitem> {
   const initialData = event.workflowitem;
-  console.log("lmao", initialData);
 
   const workflowitem: Workflowitem.Workflowitem = {
     isRedacted: false,
