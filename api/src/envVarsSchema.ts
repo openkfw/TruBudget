@@ -160,6 +160,8 @@ export const envVarsSchema = Joi.object({
     .default(false)
     .note("Enables logging in using the authorization token from authentication proxy"),
   AUTHPROXY_JWS_SIGNATURE: Joi.string()
+    .allow("")
+    .empty("")
     .when("AUTHPROXY_ENABLED", {
       is: true,
       then: Joi.required(),
@@ -169,12 +171,16 @@ export const envVarsSchema = Joi.object({
   SQL_DEBUG: Joi.boolean().default(false),
   API_DB_USER: Joi.string()
     .default("postgres")
+    .allow("")
+    .empty("")
     .when("REFRESH_TOKEN_STORAGE", {
       is: "db",
       then: Joi.required(),
     })
     .note("Database user for database connection, e.g. postgres"),
   API_DB_PASSWORD: Joi.string()
+    .allow("")
+    .empty("")
     .when("REFRESH_TOKEN_STORAGE", {
       is: "db",
       then: Joi.required(),
@@ -186,6 +192,8 @@ export const envVarsSchema = Joi.object({
       is: "db",
       then: Joi.required(),
     })
+    .allow("")
+    .empty("")
     .default("localhost")
     .note("Database host"),
   API_DB_NAME: Joi.string()
@@ -202,6 +210,8 @@ export const envVarsSchema = Joi.object({
       is: "db",
       then: Joi.required(),
     })
+    .allow("")
+    .empty("")
     .default(5432)
     .note("Database port, e.g. 5432"),
   API_DB_SSL: Joi.boolean()
@@ -209,6 +219,8 @@ export const envVarsSchema = Joi.object({
       is: "db",
       then: Joi.required(),
     })
+    .allow("")
+    .empty("")
     .default(false)
     .note('Database SSL connection. Allowed values: "true" or "false".'),
   API_DB_SCHEMA: Joi.string()

@@ -16,6 +16,7 @@ scripts/development/certs
 scripts/operation/.env
 .idea/
 docs/developer/api-docs
+scripts/development/.env.bak
 scripts/operation/.env.bak
 scripts/operation/cronjob.err
 scripts/operation/cronjob.output
