@@ -15,8 +15,9 @@ const envVarsSchema = Joi.object({
       "The port used to expose the multichain daemon of your Trubudget blockchain installation(bc). The port used to connect to the multichain daemon(api). This will be used internally for the communication between the API and the multichain daemon.",
     ),
   MULTICHAIN_RPC_USER: Joi.string()
-    .default("multichainrpc")
+    .allow("")
     .empty("")
+    .default("multichainrpc")
     .required()
     .note("The user used to connect to the multichain daemon."),
   MULTICHAIN_RPC_PASSWORD: Joi.string()

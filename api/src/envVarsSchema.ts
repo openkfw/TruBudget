@@ -50,6 +50,7 @@ export const envVarsSchema = Joi.object({
       "The protocol used to expose the multichain daemon of your Trubudget blockchain installation(bc). The protocol used to connect to the multichain daemon(api). This will be used internally for the communication between the API and the multichain daemon.",
     ),
   MULTICHAIN_RPC_USER: Joi.string()
+    .allow("")
     .empty("")
     .default("multichainrpc")
     .note("The user used to connect to the multichain daemon."),
@@ -113,7 +114,11 @@ export const envVarsSchema = Joi.object({
       'If true, it is possible to use external documents links also without TruBudget\'s storage-service. If false, the external documents links feature of TruBudget is still possible to use in case DOCUMENT_FEATURE_ENABLED equals "true".',
     ),
   STORAGE_SERVICE_HOST: Joi.string().default("localhost").note("IP of connected storage service"),
-  STORAGE_SERVICE_PORT: Joi.number().default(8090).note("Port of connected storage service"),
+  STORAGE_SERVICE_PORT: Joi.number()
+    .allow("")
+    .empty("")
+    .default(8090)
+    .note("Port of connected storage service"),
   STORAGE_SERVICE_PROTOCOL: Joi.string()
     .default("http")
     .allow("http", "https")
@@ -193,6 +198,8 @@ export const envVarsSchema = Joi.object({
     .default("localhost")
     .note("Database host"),
   API_DB_NAME: Joi.string()
+    .allow("")
+    .empty("")
     .when("REFRESH_TOKEN_STORAGE", {
       is: "db",
       then: Joi.required(),
