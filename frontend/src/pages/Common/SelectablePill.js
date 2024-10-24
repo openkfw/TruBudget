@@ -25,7 +25,6 @@ export default function SelectablePill(props) {
       }}
       clickable={true}
       onClick={onClick}
-      component="span"
     />
   );
 }
