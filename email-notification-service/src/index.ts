@@ -32,12 +32,6 @@ import {
   passwordResetEmailFooter,
 } from "./constants";
 
-if (config.email.from === undefined) {
-  logger.warn(
-    "The 'EMAIL_FROM' env variable is not set. The email service will not be able to send emails.",
-  );
-}
-
 // Setup
 let corsOptions = {
   credentials: true,
@@ -430,23 +424,6 @@ function isAllowed(requestedUserId: string, res: express.Response): boolean {
 
 function configureJWT(): void {
   logger.info("Configure with JWT authentication ...");
-
-  if (config.jwt.algorithm === "HS256" && !config.jwt.secretOrPrivateKey) {
-    logger.error(
-      "The 'JWT_SECRET' env variable is not set. Without the JWT secret of the token providing Trubudget API the server cannot identify the user.",
-    );
-    process.exit();
-  }
-  if (config.jwt.algorithm === "RS256" && !config.jwt.publicKey) {
-    logger.error(
-      "JWT algorithm is set to RS256, but no public key in'JWT_PUBLIC_KEY' is provided.",
-    );
-    process.exit();
-  }
-
-  if (config.jwt.algorithm === "HS256" && config.jwt.secretOrPrivateKey.length < 32) {
-    logger.warn("JWT_SECRET should be at least 32 characters long.");
-  }
 
   // Add middlewares
   emailService.all("/user*", (req, res, next) => Middleware.verifyUserJWT(req, res, next));

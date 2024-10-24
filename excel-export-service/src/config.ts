@@ -1,3 +1,5 @@
+import { envVarsSchema } from "./envVarsSchema";
+
 interface Config {
   apiHost: string;
   apiPort: number;
@@ -8,15 +10,17 @@ interface Config {
   NODE_ENV: string;
 }
 
+const { error, value: envVars } = envVarsSchema.validate(process.env);
+if (error) {
+  throw new Error(`Config validation error: ${error.message}`);
+}
+
 export const config: Config = {
-  apiHost: process.env.API_HOST || "localhost",
-  apiPort: (process.env.API_PORT && parseInt(process.env.API_PORT, 10)) || 8080,
-  apiProtocol: process.env.API_PROTOCOL === "https" ? "https" : "http",
-  serverPort: (process.env.PORT && parseInt(process.env.PORT, 10)) || 8888,
-  accessControlAllowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
-  rateLimit:
-    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
-      ? undefined
-      : Number(process.env.RATE_LIMIT),
-  NODE_ENV: process.env.NODE_ENV || "production",
+  apiHost: envVars.API_HOST,
+  apiPort: envVars.API_PORT,
+  apiProtocol: envVars.API_PROTOCOL,
+  serverPort: envVars.PORT,
+  accessControlAllowOrigin: envVars.ACCESS_CONTROL_ALLOW_ORIGIN,
+  rateLimit: envVars.RATE_LIMIT,
+  NODE_ENV: envVars.NODE_ENV,
 };

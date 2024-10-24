@@ -11,7 +11,9 @@
     "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)",
     "watch": "concurrently \"tsc --watch\" \"nodemon --inspect=0.0.0.0:9229 dist\"",
     "lint": "eslint src --ext ts",
-    "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\""
+    "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\"",
+    "validate-env-variables": "node ./dist/scripts/envVarsValidator.js",
+    "generate-env-vars-docs": "ts-node ./scripts/envVarsDocsGenerator.ts"
   },
   "repository": {
     "type": "git",
@@ -33,6 +35,7 @@
     "express-rate-limit": "^7.2.0",
     "express-validator": "^6.14.2",
     "helmet": "^7.1.0",
+    "joi": "^17.13.3",
     "minio": "^7.1.0",
     "pino": "^9.1.0",
     "trubudget-logging-service": "^2.7.0",
@@ -54,6 +57,7 @@
     "nodemon": "^2.0.19",
     "prettier": "^2.8.8",
     "rimraf": "*",
+    "ts-node": "^10.9.2",
     "typescript": "^4.7.4"
   },
   "overrides": {
