@@ -18,6 +18,7 @@ import { File } from "../document/document_upload";
 import { isDocumentLink } from "../document/workflowitem_document_delete";
 import { NotAuthorized } from "../errors/not_authorized";
 import { NotFound } from "../errors/not_found";
+import { PreconditionError } from "../errors/precondition_error";
 import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
@@ -161,12 +162,17 @@ export async function updateWorkflowitem(
     return new VError(newEvent, "cannot update workflowitem");
   }
 
-  logger.trace({ issuer }, "Checking if user has permissions");
-  if (issuer.id !== "root") {
-    const intent = "workflowitem.update";
-    if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
-      return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
-    }
+  logger.trace({ user: issuer }, "Checking if user is authorized");
+  if (issuer.id === "root") {
+    return new PreconditionError(
+      ctx,
+      newEvent,
+      "user 'root' is not allowed to update workflowitems",
+    );
+  }
+  const intent = "workflowitem.update";
+  if (!Workflowitem.permits(workflowitem, issuer, [intent])) {
+    return new NotAuthorized({ ctx, userId: issuer.id, intent, target: workflowitem });
   }
 
   logger.trace({ event: newEvent }, "Checking event validity");
