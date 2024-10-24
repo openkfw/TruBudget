@@ -138,7 +138,7 @@ const showAmountInputFields = (
         className="organization-dropdown"
         floatingLabel={strings.subproject.organization_info}
         value={fundingOrganization}
-        onChange={(value) =>  storeWorkflowFundingOrga(value)}
+        onChange={(value) => storeWorkflowFundingOrga(value)}
         id="fundingOrganization"
       >
         {getOrganizationMenuItems(organizations)}

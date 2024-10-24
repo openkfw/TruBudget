@@ -182,7 +182,7 @@ const WorkflowDialogContent = (props) => {
           exchangeRate={workflowToAdd.exchangeRate}
           workflowAmountType={workflowToAdd.amountType}
           workflowCurrency={workflowToAdd.currency}
-          fundingOrganization={workflowToAdd.fundingOrganization}
+          fundingOrganization={workflowToAdd.fundingOrganization || ""}
           projectedBudgets={projectedBudgets}
           defaultWorkflowExchangeRate={defaultWorkflowExchangeRate}
           disabled={isWorkflowFromTemplate}

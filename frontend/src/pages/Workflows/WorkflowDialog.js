@@ -291,8 +291,7 @@ const WorkflowDialog = (props) => {
       title: strings.workflow.workflow_name,
       nextDisabled:
         (workflowTemplate === "" && _isEmpty(displayName)) ||
-        (amountType !== "N/A" && amount === "") ||
-        fundingOrganization === "" ||
+        (amountType !== "N/A" && (amount === "" || fundingOrganization === "")) ||
         (amountType !== "N/A" && (!Number.isFinite(exchangeRate) || exchangeRate === 0)),
       content: (
         <div className="workflow-dialog-content">
