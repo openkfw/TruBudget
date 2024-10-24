@@ -16,9 +16,8 @@ const envVarsSchema = Joi.object({
     ),
   MULTICHAIN_RPC_USER: Joi.string()
     .allow("")
-    .empty("")
+    .empty(["", null])
     .default("multichainrpc")
-    .required()
     .note("The user used to connect to the multichain daemon."),
   MULTICHAIN_RPC_PASSWORD: Joi.string()
     .min(32)
