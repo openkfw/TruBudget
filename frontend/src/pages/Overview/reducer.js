@@ -18,6 +18,7 @@ import {
   CREATE_PROJECT_SUCCESS,
   EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT,
   FETCH_ALL_PROJECTS_SUCCESS,
+  FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
   FETCH_PROJECTS_V2_SUCCESS,
   HIDE_PROJECT_ADDITIONAL_DATA,
@@ -239,6 +240,9 @@ export default function overviewReducer(state = defaultState, action) {
         state = state.set("pagination", fromJS(action.pagination));
       }
       return state;
+    case FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS:
+        state = state.set("projectsAll", fromJS(action.projects));
+        return state;
     case ADD_TEMPORARY_PROJECT_PERMISSION:
       return state.updateIn(["temporaryPermissions", action.permission], (users) => users.push(action.userId));
     case REMOVE_TEMPORARY_PROJECT_PERMISSION:
