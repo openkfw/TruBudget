@@ -238,7 +238,8 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
       documents,
       dueDate,
       workflowitemType,
-      tags
+      tags,
+      fundingOrganization
     ) =>
       dispatch(
         showEditDialog(
@@ -252,7 +253,8 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
           documents,
           dueDate,
           workflowitemType,
-          tags
+          tags,
+          fundingOrganization
         )
       ),
     saveWorkflowItemsBeforeSort: (workflowItems) => dispatch(saveWorkflowItemsBeforeSort(workflowItems)),

@@ -86,6 +86,7 @@ interface CreateWorkflowV2RequestBody {
     additionalData?: object;
     workflowitemType?: Type;
     tags?: string[];
+    fundingOrganization?: string;
   };
 }
 
@@ -108,6 +109,7 @@ const requestBodyV2Schema = Joi.object({
     additionalData: Joi.object(),
     workflowitemType: workflowitemTypeSchema,
     tags: Joi.array().items(safeStringSchema),
+    fundingOrganization: safeStringSchema.allow(""),
   }).required(),
 });
 
@@ -155,6 +157,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
         "- `additionalData` (object): additional data\n" +
         "- `workflowitemType` (string): the type of the workflowitem\n" +
         "- `tags` (array): an array of tags\n\n" +
+        "- `fundingOrganization` (string): name of funding organization\n\n" +
         "Note that the only possible values for 'amountType' are: 'disbursed', 'allocated', 'N/A'\n.\n" +
         "The only possible values for 'status' are: 'open' and 'closed'\n\n",
       tags: ["subproject", "v2"],
@@ -265,6 +268,7 @@ export function addHttpHandler(
           documents: bodyResult.data.documents,
           workflowitemType: bodyResult.data.workflowitemType,
           tags: bodyResult.data.tags,
+          fundingOrganization: bodyResult.data.fundingOrganization,
         };
 
         try {

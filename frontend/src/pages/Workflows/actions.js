@@ -38,6 +38,7 @@ export const WORKFLOW_DOCUMENT_EXTERNAL_LINK = "WORKFLOW_DOCUMENT_EXTERNAL_LINK"
 export const DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK = "DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK";
 export const DELETE_WORKFLOW_DOCUMENT = "DELETE_WORKFLOW_DOCUMENT";
 export const WORKFLOWITEM_TYPE = "WORKFLOWITEM_TYPE";
+export const WORKFLOW_FUNDING_ORGANIZATION = "WORKFLOW_FUNDING_ORGANIZATION";
 export const CREATE_WORKFLOW = "CREATE_WORKFLOW";
 export const CREATE_WORKFLOW_FROM_TEMPLATE = "CREATE_WORKFLOW_FROM_TEMPLATE";
 export const CREATE_WORKFLOW_FAILURE = "CREATE_WORKFLOW_FAILURE";
@@ -497,7 +498,8 @@ export function showEditDialog(
   documents,
   dueDate,
   workflowitemType,
-  tags
+  tags,
+  fundingOrganization
 ) {
   return {
     type: SHOW_WORKFLOW_EDIT,
@@ -511,7 +513,8 @@ export function showEditDialog(
     documents,
     dueDate,
     workflowitemType,
-    tags
+    tags,
+    fundingOrganization
   };
 }
 
@@ -616,6 +619,13 @@ export function storeWorkflowCurrency(currency) {
   };
 }
 
+export function storeWorkflowFundingOrga(fundingOrganization) {
+  return {
+    type: WORKFLOW_FUNDING_ORGANIZATION,
+    fundingOrganization
+  };
+}
+
 export function storeWorkflowComment(description) {
   return {
     type: WORKFLOW_PURPOSE,
@@ -668,7 +678,8 @@ export function createWorkflowItemAction(
   subprojectDisplayName,
   assignee,
   assigneeDisplayName,
-  tags
+  tags,
+  fundingOrganization
 ) {
   return {
     type: CREATE_WORKFLOW,
@@ -688,7 +699,8 @@ export function createWorkflowItemAction(
     subprojectDisplayName,
     assignee,
     assigneeDisplayName,
-    tags
+    tags,
+    fundingOrganization
   };
 }
 

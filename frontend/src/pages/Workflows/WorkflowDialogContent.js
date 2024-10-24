@@ -63,8 +63,10 @@ const WorkflowDialogContent = (props) => {
     storeWorkflowAmountType,
     storeWorkflowCurrency,
     storeWorkflowExchangeRate,
+    storeWorkflowFundingOrga,
     defaultWorkflowExchangeRate,
-    tags
+    tags,
+    projectedBudgets
   } = props;
   const { workflowitemType } = workflowToAdd;
   const isWorkflowFromTemplate = !!workflowTemplate;
@@ -174,11 +176,14 @@ const WorkflowDialogContent = (props) => {
           storeWorkflowAmount={storeWorkflowAmount}
           storeWorkflowAmountType={storeWorkflowAmountType}
           storeWorkflowCurrency={storeWorkflowCurrency}
+          storeWorkflowFundingOrga={storeWorkflowFundingOrga}
           workflowAmount={workflowToAdd.amount}
           storeWorkflowExchangeRate={storeWorkflowExchangeRate}
           exchangeRate={workflowToAdd.exchangeRate}
           workflowAmountType={workflowToAdd.amountType}
           workflowCurrency={workflowToAdd.currency}
+          fundingOrganization={workflowToAdd.fundingOrganization || ""}
+          projectedBudgets={projectedBudgets}
           defaultWorkflowExchangeRate={defaultWorkflowExchangeRate}
           disabled={isWorkflowFromTemplate}
         />

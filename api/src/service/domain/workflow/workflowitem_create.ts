@@ -51,6 +51,7 @@ export interface RequestData {
   additionalData?: object;
   workflowitemType?: Type;
   tags?: string[];
+  fundingOrganization?: string;
 }
 
 const requestDataSchema = Joi.object({
@@ -71,6 +72,7 @@ const requestDataSchema = Joi.object({
   additionalData: AdditionalData.schema,
   workflowitemType: workflowitemTypeSchema,
   tags: Joi.array().items(Project.tagsSchema),
+  fundingOrganization: Joi.string().allow(""),
 });
 
 export function validate(input): Result.Type<RequestData> {
@@ -247,6 +249,7 @@ export async function createWorkflowitem(
       additionalData: reqData.additionalData || {},
       workflowitemType: reqData.workflowitemType || "general",
       tags: reqData.tags || [],
+      fundingOrganization: reqData.fundingOrganization,
     },
     new Date().toISOString(),
     issuer.metadata,
