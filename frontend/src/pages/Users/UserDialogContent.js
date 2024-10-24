@@ -130,11 +130,14 @@ const UserDialogContent = ({
                 className="password short"
                 iconDisplayed={true}
                 label={strings.common.password}
-                password={values.password}
+                value={values.password}
                 error={Boolean(errors.password && touched.password)}
                 data-test="password-new-user"
-                onKeyUp={(e) => {
-                  setPassword(e.target.value);
+                onKeyUp={() => {
+                  setPassword(values.password);
+                  handleIsFormValid(errors, isValid);
+                }}
+                onBlur={() => {
                   handleIsFormValid(errors, isValid);
                 }}
                 as={UserPassword}
