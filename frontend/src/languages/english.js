@@ -557,6 +557,7 @@ const en = {
     workflowitem_intent_revokePermission: "The permissions for workflow action {0} changed",
     workflowitem_update: "Workflow action {0} was updated",
     workflowitem_updated: "Workflow action {0} was updated",
+    workflowitem_created: "Workflow action {0} was created",
     payload_error_message:
       "Oops!...Its not your fault - A client side validation error occured. Please inform the administrator."
   },

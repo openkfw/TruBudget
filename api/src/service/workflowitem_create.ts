@@ -12,6 +12,7 @@ import { BusinessEvent } from "./domain/business_event";
 import * as DocumentGet from "./domain/document/document_get";
 import * as DocumentUpload from "./domain/document/document_upload";
 import * as DocumentUploaded from "./domain/document/document_uploaded";
+import * as GroupQuery from "./domain/organization/group_query";
 import { ServiceUser } from "./domain/organization/service_user";
 import { userExists } from "./domain/organization/user_query";
 import * as UserQuery from "./domain/organization/user_query";
@@ -127,6 +128,9 @@ export async function createWorkflowitem(
             );
           },
         });
+      },
+      getUsersForIdentity: async (identity) => {
+        return GroupQuery.resolveUsers(conn, ctx, serviceUser, identity);
       },
     });
   });

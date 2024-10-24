@@ -561,6 +561,7 @@ const de = {
     workflowitem_intent_revokePermission: "Die Berechtigungen für Workflow action {0} wurden geändert",
     workflowitem_update: "Workflow action {0} wurde aktualisiert",
     workflowitem_updated: "Workflow action {0} wurde aktualisiert",
+    workflowitem_created: "Workflow action {0} wurde Ihnen zugewiesen",
     payload_error_message:
       "Ups! ... Es ist nicht deine Schuld - Ein clientseitiger Validierungsfehler ist aufgetreten. Bitte informieren Sie den Administrator."
   },
