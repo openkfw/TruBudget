@@ -113,6 +113,8 @@ import {
   EDIT_PROJECT_SUCCESS,
   FETCH_ALL_PROJECTS,
   FETCH_ALL_PROJECTS_SUCCESS,
+  FETCH_COMPLETE_LIST_OF_PROJECTS,
+  FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_FAILURE,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
@@ -1704,6 +1706,16 @@ export function* fetchAllProjectsSaga({ showLoading }) {
     const [{ data }] = yield all([yield callApi(api.listProjects)]);
     yield put({
       type: FETCH_ALL_PROJECTS_SUCCESS,
+      projects: data.items
+    });
+  }, showLoading);
+}
+
+export function* fetchCompleteListOfProjectsSaga({ showLoading }) {
+  yield execute(function* () {
+    const [{ data }] = yield all([yield callApi(api.listProjects)]);
+    yield put({
+      type: FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS,
       projects: data.items
     });
   }, showLoading);
@@ -3501,6 +3513,7 @@ export default function* rootSaga() {
 
       // Project
       yield takeEvery(FETCH_ALL_PROJECTS, fetchProjectsV2Saga),
+      yield takeEvery(FETCH_COMPLETE_LIST_OF_PROJECTS, fetchCompleteListOfProjectsSaga),
       yield takeEvery(CREATE_PROJECT, createProjectSaga),
       yield takeEvery(EDIT_PROJECT, editProjectSaga),
       yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga),

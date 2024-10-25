@@ -34,7 +34,7 @@ const WorkflowEditDrawer = (props) => {
     groups,
     createWorkflowItem,
     disableWorkflowEdit,
-    fetchAllProjects,
+    fetchCompleteListOfProjects,
     fetchAllProjectDetailsNotCurrentProject,
     loadedProjectDetails,
     tempDrawerAssignee,
@@ -56,7 +56,7 @@ const WorkflowEditDrawer = (props) => {
   const permissions = _isEmpty(tempDrawerPermissions) ? getDefaultPermissions() : tempDrawerPermissions;
 
   useEffect(() => {
-    fetchAllProjects();
+    fetchCompleteListOfProjects();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
