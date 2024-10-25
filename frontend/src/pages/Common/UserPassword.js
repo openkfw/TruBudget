@@ -18,7 +18,7 @@ const handleEnter = (e, action = () => {}) => {
 
 const UserPassword = ({
   name,
-  password,
+  value,
   error,
   onChange,
   onBlur,
@@ -45,7 +45,7 @@ const UserPassword = ({
           variant="standard"
           error={error}
           label={label}
-          value={password}
+          value={value}
           margin="normal"
           id={id}
           onChange={onChange}

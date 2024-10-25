@@ -148,11 +148,11 @@ const UserDialogContent = ({
                 className="password short"
                 iconDisplayed={true}
                 label={strings.users.new_user_password_confirmation}
-                password={values.confirmPassword}
+                value={values.confirmPassword}
                 error={Boolean(errors.confirmPassword && touched.confirmPassword)}
                 data-test="password-new-user-confirm"
                 onKeyUp={(e) => {
-                  setConfirmPassword(e.target.value);
+                  setConfirmPassword(values.confirmPassword);
                   handleIsFormValid(errors, isValid);
                 }}
                 as={UserPassword}
