@@ -137,9 +137,6 @@ const UserDialogContent = ({
                   setPassword(values.password);
                   handleIsFormValid(errors, isValid);
                 }}
-                onBlur={() => {
-                  handleIsFormValid(errors, isValid);
-                }}
                 as={UserPassword}
                 required
               />
