@@ -241,7 +241,7 @@ describe("Workflowitem create", function () {
   it("When no validator is set in a subproject, the workflowitem assignee can be changed", function () {
     cy.intercept(apiRoute + "/project.viewDetails*").as("loadPage");
     cy.intercept(apiRoute + `/project.createSubproject`).as("subprojectCreated");
-    cy.intercept(apiRoute + `/v2/subproject.createWorkflowitem`).as("workflowitemCreated");
+    cy.intercept(apiRoute + `/subproject.createWorkflowitem`).as("workflowitemCreated");
 
     //Create a subproject
     cy.visit(`/projects/${projectId}`);
