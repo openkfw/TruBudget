@@ -455,13 +455,14 @@ class Api {
   };
 
   editWorkflowItemV2 = (projectId, subprojectId, workflowitemId, changes) => {
-    const { currency, amount, exchangeRate, documents, ...minimalChanges } = changes;
+    const { currency, amount, exchangeRate, fundingOrganization, documents, ...minimalChanges } = changes;
 
     const changesToSend =
       changes.amountType === "N/A"
         ? minimalChanges
         : {
             ...minimalChanges,
+            fundingOrganization,
             currency,
             amount,
             exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
