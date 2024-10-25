@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 
 import { Alert } from "@mui/material";
 import Divider from "@mui/material/Divider";
@@ -38,12 +38,14 @@ const getDropdownMenuItems = (types) => {
 
 const SubProjectDialogContent = (props) => {
   const currencies = getCurrencies();
-
+  const { editDialogShown, storeFixedWorkflowitemType } = props;
   // creation of restricted workflow item types is deprecated
   // all new subprojects will have general workflow item types
-  if (!props.editDialogShown) {
-    props.storeFixedWorkflowitemType("general");
-  }
+  useEffect(() => {
+    if (!editDialogShown) {
+      storeFixedWorkflowitemType("general");
+    }
+  }, [editDialogShown, storeFixedWorkflowitemType]);
 
   return (
     <div data-test="subproject-dialog-content">
