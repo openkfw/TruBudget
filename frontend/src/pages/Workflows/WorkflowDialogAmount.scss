@@ -44,7 +44,13 @@
 }
 
 .currency-dropdown {
-  min-width: 10rem;
+  min-width: 5rem;
+  padding-right: 1.25rem;
+}
+
+.organization-dropdown {
+  min-width: 12rem;
+  padding-right: 1.25rem;
 }
 
 .amount-checkbox-container {
