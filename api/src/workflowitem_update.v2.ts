@@ -36,6 +36,7 @@ interface UpdateWorkflowV2RequestBody {
     documents?: UploadedDocumentOrLink[];
     additionalData?: object;
     tags?: string[];
+    fundingOrganization?: string;
   };
 }
 

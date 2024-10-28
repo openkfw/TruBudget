@@ -29,6 +29,7 @@ import {
   storeWorkflowDocumentExternalLink,
   storeWorkflowDueDate,
   storeWorkflowExchangeRate,
+  storeWorkflowFundingOrga,
   storeWorkflowitemType,
   storeWorkflowName,
   storeWorkflowStatus,
@@ -50,7 +51,8 @@ class WorkflowDialogContainer extends Component {
     workflowitemType,
     projectDisplayName,
     subprojectDisplayName,
-    tags
+    tags,
+    fundingOrganization
   ) => {
     const path = this.props.router.location.pathname.split("/");
     const projectId = path[2];
@@ -75,7 +77,8 @@ class WorkflowDialogContainer extends Component {
       subprojectDisplayName,
       assignee,
       assigneeDisplayName,
-      tags
+      tags,
+      fundingOrganization
     );
   };
 
@@ -145,6 +148,7 @@ const mapStateToProps = (state) => {
     hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"]),
     hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
     projectDisplayName: state.getIn(["workflow", "parentProject", "displayName"]),
+    projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     selectedAssignee: state.getIn(["workflow", "workflowToAdd", "assignee"]),
     storageServiceAvailable: state.getIn(["status", "storageServiceAvailable"]),
     subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"]),
@@ -178,6 +182,7 @@ const mapDispatchToProps = (dispatch) => {
     storeWorkflowDueDate: (dueDate) => dispatch(storeWorkflowDueDate(dueDate)),
     storeWorkflowitemType: (workflowitemType) => dispatch(storeWorkflowitemType(workflowitemType)),
     storeWorkflowTemplate: (workflowTemplate) => dispatch(storeWorkflowTemplate(workflowTemplate)),
+    storeWorkflowFundingOrga: (fundingOrganization) => dispatch(storeWorkflowFundingOrga(fundingOrganization)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),

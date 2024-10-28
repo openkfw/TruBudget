@@ -354,7 +354,7 @@ class Api {
     });
 
   createWorkflowItem = (payload) => {
-    const { currency, amount, exchangeRate, ...minimalPayload } = payload;
+    const { fundingOrganization, currency, amount, exchangeRate, ...minimalPayload } = payload;
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
@@ -362,7 +362,8 @@ class Api {
             ...minimalPayload,
             currency,
             amount,
-            exchangeRate: exchangeRate.toString()
+            exchangeRate: exchangeRate.toString(),
+            fundingOrganization
           };
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
@@ -370,7 +371,7 @@ class Api {
   };
 
   createWorkflowItemV2 = (payload) => {
-    const { currency, amount, exchangeRate, documents, ...minimalPayload } = payload;
+    const { fundingOrganization, currency, amount, exchangeRate, documents, ...minimalPayload } = payload;
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
@@ -378,7 +379,8 @@ class Api {
             ...minimalPayload,
             currency,
             amount,
-            exchangeRate: exchangeRate.toString()
+            exchangeRate: exchangeRate.toString(),
+            fundingOrganization
           };
 
     const formData = new FormData();
@@ -432,13 +434,14 @@ class Api {
     });
 
   editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) => {
-    const { currency, amount, exchangeRate, ...minimalChanges } = changes;
+    const { currency, amount, exchangeRate, fundingOrganization, ...minimalChanges } = changes;
 
     const changesToSend =
       changes.amountType === "N/A"
         ? minimalChanges
         : {
             ...minimalChanges,
+            fundingOrganization,
             currency,
             amount,
             exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
@@ -452,13 +455,14 @@ class Api {
   };
 
   editWorkflowItemV2 = (projectId, subprojectId, workflowitemId, changes) => {
-    const { currency, amount, exchangeRate, documents, ...minimalChanges } = changes;
+    const { currency, amount, exchangeRate, fundingOrganization, documents, ...minimalChanges } = changes;
 
     const changesToSend =
       changes.amountType === "N/A"
         ? minimalChanges
         : {
             ...minimalChanges,
+            fundingOrganization,
             currency,
             amount,
             exchangeRate: exchangeRate ? exchangeRate.toString() : undefined

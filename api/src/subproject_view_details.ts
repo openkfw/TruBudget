@@ -174,6 +174,7 @@ interface ExposedWorkflowitem {
     additionalData: object | null;
     workflowitemType?: WorkflowitemType;
     tags: string[];
+    fundingOrganization?: string | null;
   };
   allowedIntents: Intent[];
 }
@@ -336,6 +337,7 @@ export function addHttpHandler(
               additionalData: workflowitem.additionalData,
               workflowitemType: workflowitem.workflowitemType,
               tags: workflowitem.tags || [],
+              fundingOrganization: workflowitem.fundingOrganization,
             },
           }));
 
