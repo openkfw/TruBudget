@@ -23,10 +23,10 @@ const envVarsSchema = Joi.object({
     .default("multichainrpc")
     .note("The user used to connect to the multichain daemon."),
   MULTICHAIN_RPC_PASSWORD: Joi.string()
-    .min(32)
     .required()
+    .min(32)
     .note(
-      "Password used by the API to connect to the blockchain. The password is set by the origin node upon start. Every beta node needs to use the same RPC password in order to be able to connect to the blockchain. <br/>**Hint:** Although the MULTICHAIN_RPC_PASSWORD is not required it is highly recommended to set an own secure one.",
+      "Password used by the API to connect to the blockchain. The password is set by the origin node upon start. Every beta node needs to use the same RPC password in order to be able to connect to the blockchain. <br/>**Hint:** It is highly recommended to set a secure one, at least 32 characters long.",
     ),
   RPC_ALLOW_IP: Joi.string()
     .default("0.0.0.0/0")
