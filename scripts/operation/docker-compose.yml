@@ -109,6 +109,7 @@ services:
       API_DB_PORT: ${API_DB_PORT}
       API_DB_SSL: ${API_DB_SSL}
       API_DB_SCHEMA: ${API_DB_SCHEMA}
+      API_DB_NAME: ${API_DB_NAME}
       API_REFRESH_TOKENS_TABLE: ${API_REFRESH_TOKENS_TABLE}
     depends_on:
       - alpha-node

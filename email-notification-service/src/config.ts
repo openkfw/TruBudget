@@ -1,4 +1,5 @@
 import Mail = require("nodemailer/lib/mailer");
+import { envVarsSchema } from "./envVarsSchema";
 
 type DatabaseType = "pg" | "sqlite3" | "mysql" | "mysql2" | "oracledb" | "mssql";
 
@@ -35,44 +36,46 @@ interface Config {
   };
 }
 
+const { error, value: envVars } = envVarsSchema.validate(process.env);
+if (error) {
+  throw new Error(`Config validation error: ${error.message}`);
+}
+
 const config: Config = {
-  authentication: process.env.AUTHENTICATION?.toLowerCase() || "jwt",
+  authentication: envVars.AUTHENTICATION?.toLowerCase(),
   http: {
-    port: Number(process.env.PORT) || 8890,
+    port: envVars.PORT,
   },
-  dbType: process.env.DB_TYPE || "pg",
+  dbType: envVars.DB_TYPE,
   db: {
-    user: process.env.DB_USER || "postgres",
-    password: process.env.DB_PASSWORD || "test",
-    host: process.env.DB_HOST || "localhost",
-    database: process.env.DB_NAME || "trubudget_email_service",
-    port: Number(process.env.DB_PORT) || 5432,
-    ssl: process.env.DB_SSL === "true",
-    schema: process.env.DB_SCHEMA || "public",
+    user: envVars.DB_USER,
+    password: envVars.DB_PASSWORD,
+    host: envVars.DB_HOST,
+    database: envVars.DB_NAME,
+    port: envVars.DB_PORT,
+    ssl: envVars.DB_SSL,
+    schema: envVars.DB_SCHEMA,
   },
-  sqlDebug: process.env.SQL_DEBUG === "true",
-  userTable: process.env.USER_TABLE || "users",
+  sqlDebug: envVars.SQL_DEBUG,
+  userTable: envVars.USER_TABLE,
   smtpServer: {
-    host: process.env.SMTP_HOST || "localhost",
-    port: Number(process.env.SMTP_PORT) || 2500,
-    secure: process.env.SMTP_SSL === "true",
-    user: process.env.SMTP_USER || "",
-    password: process.env.SMTP_PASSWORD || "",
+    host: envVars.SMTP_HOST,
+    port: envVars.SMTP_PORT,
+    secure: envVars.SMTP_SSL,
+    user: envVars.SMTP_USER,
+    password: envVars.SMTP_PASSWORD,
   },
   email: {
-    from: process.env.EMAIL_FROM || undefined,
-    subject: process.env.EMAIL_SUBJECT || "Trubudget Notification",
-    text: process.env.EMAIL_TEXT || "You have received a notification.",
+    from: envVars.EMAIL_FROM,
+    subject: envVars.EMAIL_SUBJECT,
+    text: envVars.EMAIL_TEXT,
   },
-  allowOrigin: process.env.ACCESS_CONTROL_ALLOW_ORIGIN || "*",
-  rateLimit:
-    process.env.RATE_LIMIT === "" || isNaN(Number(process.env.RATE_LIMIT))
-      ? undefined
-      : Number(process.env.RATE_LIMIT),
+  allowOrigin: envVars.ACCESS_CONTROL_ALLOW_ORIGIN,
+  rateLimit: envVars.RATE_LIMIT,
   jwt: {
-    secretOrPrivateKey: process.env.JWT_SECRET || "",
-    publicKey: process.env.JWT_PUBLIC_KEY || "",
-    algorithm: process.env.JWT_ALGORITHM === "RS256" ? "RS256" : "HS256",
+    secretOrPrivateKey: envVars.JWT_SECRET,
+    publicKey: envVars.JWT_PUBLIC_KEY,
+    algorithm: envVars.JWT_ALGORITHM,
   },
 };
 
