@@ -45,7 +45,7 @@ parse_services_and_environment_variables() {
             value="${BASH_REMATCH[2]}"
 
             # Check if it's an environment variable 
-            if [[ $value =~ ^\$\{(.+)\}$ ]]; then
+            if [[ $value =~ ^\$\{(.+)\}[[:space:]]*$ ]]; then
                 env_var="${BASH_REMATCH[1]}"
                 real_value="${!env_var}"  # Get the value of the environment variable by name
 
