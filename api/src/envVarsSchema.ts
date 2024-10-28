@@ -159,8 +159,9 @@ export const envVarsSchema = Joi.object({
       "Possible signing methods are: `node` and `user`. Transactions on the chain will be signed using either the address of the node or the address of the specific user publishing that transaction.",
     ),
   RATE_LIMIT: Joi.number()
-    .allow(["", null])
+    .allow("", null)
     .empty(["", null])
+    .optional()
     .note(
       "If set, API will limit the number of requests from any individual IP address to the set number per minute. Can be set to any `number`, but shouldn't be set too low.",
     ),
