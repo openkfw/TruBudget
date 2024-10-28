@@ -4,13 +4,16 @@ import { randomString } from "./service/hash";
 
 export const envVarsSchema = Joi.object({
   LOG_LEVEL: Joi.string()
+    .allow("trace", "debug", "info", "warn", "error", "fatal", "", null)
+    .empty(["", null])
     .default("info")
-    .allow("trace", "debug", "info", "warn", "error", "fatal")
     .note("Defines the log output."),
   ORGANIZATION: Joi.string()
+    .allow("")
+    .empty(["", null])
     .min(1)
     .max(100)
-    .required()
+    .default("MyOrga")
     .note(
       "In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain and is also displayed in the frontend's top right corner.",
     ),
@@ -28,7 +31,8 @@ export const envVarsSchema = Joi.object({
     ),
   ROOT_SECRET: Joi.string()
     .min(8)
-    .required()
+    .allow("")
+    .empty(["", null])
     .default(randomString(32))
     .note(
       "The root secret is the password for the root user. If you start with an empty blockchain, the root user is needed to add other users, approve new nodes,.. If you don't set a value via the environment variable, the API generates one randomly and prints it to the console <br/>**Caution:** If you want to run TruBudget in production, make sure to set a secure root secret.",
@@ -83,16 +87,19 @@ export const envVarsSchema = Joi.object({
     .default("HS256")
     .note("Algorithm used for signing and verifying JWTs."),
   JWT_SECRET: Joi.string()
-    .min(10)
+    .allow("")
+    .empty(["", null])
     .default(randomString(10))
     .when("JWT_ALGORITHM", {
       is: "RS256",
-      then: Joi.string().base64().required(),
+      then: Joi.string().min(10).base64().required(),
     })
     .note(
       "A string that is used to sign JWT which are created by the authenticate endpoint of the api. If JWT_ALGORITHM is set to `RS256`, this is required and holds BASE64 encoded PEM encoded private key for RSA.",
     ),
   JWT_PUBLIC_KEY: Joi.string()
+    .allow("")
+    .empty(["", null])
     .default("")
     .when("JWT_ALGORITHM", {
       is: "RS256",
@@ -124,26 +131,31 @@ export const envVarsSchema = Joi.object({
     .allow("http", "https")
     .note("Protocol of connected storage service."),
   STORAGE_SERVICE_EXTERNAL_URL: Joi.string()
+    .allow("")
+    .empty(null)
     .default("")
     .when("DOCUMENT_FEATURE_ENABLED", {
       is: true,
       then: Joi.required(),
     })
     .note("IP and port of own connected storage service accessible externally"),
-  EMAIL_HOST: Joi.string().default("localhost"),
-  EMAIL_PORT: Joi.number().default(8089),
+  EMAIL_HOST: Joi.string().allow("").empty(["", null]).default("localhost"),
+  EMAIL_PORT: Joi.number().allow("").empty(["", null]).default(8089),
   EMAIL_PROTOCOL: Joi.string()
     .default("http")
     .allow("http", "https")
     .note("Protocol of connected storage service."),
   ACCESS_CONTROL_ALLOW_ORIGIN: Joi.string()
+    .allow("")
+    .empty(["", null])
     .default("*")
     .note(
       "Since the service uses CORS, the domain by which it can be called needs to be set. Setting this value to `*` means that it can be called from any domain. Read more about this topic [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/CORS).",
     ),
   NODE_ENV: Joi.string()
     .default("production")
-    .allow("production", "development", "testing")
+    .allow("production", "development", "testing", "", null)
+    .empty(["", null])
     .note(
       "If set to `development` api will allow any string as password. If set to `production` passwords must satisfy safePasswordSchema, see lib/joiValidation-.ts & -.spec.ts files",
     ),
@@ -154,7 +166,8 @@ export const envVarsSchema = Joi.object({
     ),
   SIGNING_METHOD: Joi.string()
     .default("node")
-    .allow("node", "user")
+    .allow("node", "user", "", null)
+    .empty(["", null])
     .note(
       "Possible signing methods are: `node` and `user`. Transactions on the chain will be signed using either the address of the node or the address of the specific user publishing that transaction.",
     ),
@@ -243,6 +256,7 @@ export const envVarsSchema = Joi.object({
     .default("public")
     .note('Database schema, e.g. "public".'),
   API_REFRESH_TOKENS_TABLE: Joi.string()
+    .empty(["", null])
     .default("refresh_token")
     .when("REFRESH_TOKEN_STORAGE", {
       is: "db",
