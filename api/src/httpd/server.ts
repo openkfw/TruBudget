@@ -254,8 +254,6 @@ export const createBasicApp = (
 
   server.register(fastifyMultipart, {
     limits: { fileSize: MAX_DOCUMENT_SIZE_BINARY },
-    // routes that use Multipart Form:
-    prefix: "/v2/subproject.createWorkflowitem",
   });
 
   return server;
