@@ -36,12 +36,14 @@ const envVarsSchema = Joi.object({
       "It refers to an allowed IP address range, given either by IP or CIDR notation. 0.0.0.0/0 will allow access from anywhere. ",
     ),
   CERT_PATH: Joi.string()
-    .empty("")
+    .allow("", null)
+    .empty(["", null])
     .note(
       "The path to the certificate used by the blockchain to authenticate with the connection peer. Note that self-signed certificates are not allowed in production environments. [More information can be found here](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-authentication/) ",
     ),
   CERT_CA_PATH: Joi.string()
-    .empty("")
+    .allow("", null)
+    .empty(["", null])
     .note(
       "The path to the certificate authority root certificate by the blockchain to authenticate with the connection peer. Note that self-signed certificates are not allowed in production environments.[More information can be found here](https://www.cloudflare.com/en-gb/learning/access-management/what-is-mutual-authentication/)",
     ),
