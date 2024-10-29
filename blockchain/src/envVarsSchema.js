@@ -3,14 +3,17 @@ const Joi = require("joi");
 const envVarsSchema = Joi.object({
   PORT: Joi.number().port().default(8085).note("This is the port where the multichain can be downloaded (backup)"),
   ORGANIZATION: Joi.string()
+    .allow("")
+    .empty(["", null])
     .default("MyOrga")
     .note(
       "In the blockchain network, each node is represented by its organization name. This environment variable sets this organization name. It is used to create the organization stream on the blockchain.",
     ),
   MULTICHAIN_RPC_PORT: Joi.number()
     .port()
+    .allow("")
+    .empty(["", null])
     .default(8000)
-    .required()
     .note(
       "The port used to expose the multichain daemon of your Trubudget blockchain installation(bc). The port used to connect to the multichain daemon(api). This will be used internally for the communication between the API and the multichain daemon.",
     ),
@@ -20,10 +23,12 @@ const envVarsSchema = Joi.object({
     .default("multichainrpc")
     .note("The user used to connect to the multichain daemon."),
   MULTICHAIN_RPC_PASSWORD: Joi.string()
+    .allow("")
+    .empty(["", null])
+    .default("s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j")
     .min(32)
-    .required()
     .note(
-      "Password used by the API to connect to the blockchain. The password is set by the origin node upon start. Every beta node needs to use the same RPC password in order to be able to connect to the blockchain. <br/>**Hint:** Although the MULTICHAIN_RPC_PASSWORD is not required it is highly recommended to set an own secure one.",
+      "Password used by the API to connect to the blockchain. The password is set by the origin node upon start. Every beta node needs to use the same RPC password in order to be able to connect to the blockchain. <br/>**Hint:** Although the MULTICHAIN_RPC_PASSWORD is not required it is highly recommended to set an own secure one, at least 32 characters long.",
     ),
   RPC_ALLOW_IP: Joi.string()
     .default("0.0.0.0/0")
@@ -54,7 +59,8 @@ const envVarsSchema = Joi.object({
   ),
   LOG_LEVEL: Joi.string()
     .default("info")
-    .allow("fatal", "error", "warn", "info", "debug", "trace")
+    .allow("fatal", "error", "warn", "info", "debug", "trace", "")
+    .empty(["", null])
     .note("Defines the log output."),
   P2P_HOST: Joi.string().note(
     "The IP address of the blockchain node you want to connect to. When given, the node joins the existing network rather than creating its own chain.",
@@ -79,6 +85,8 @@ const envVarsSchema = Joi.object({
       "The path to the multichain folder where the blockchain data is persisted. For installations via `docker compose`, this refers to the path within the docker container of the blockchain. For bare metal installations, this refers to the path on the machine the blockchain is running on.",
     ),
   EMAIL_HOST: Joi.string()
+    .allow("")
+    .empty(["", null])
     .when("EMAIL_SERVICE_ENABLED", {
       is: true,
       then: Joi.required(),
@@ -86,6 +94,8 @@ const envVarsSchema = Joi.object({
     })
     .note("The IP address from the email-notification service."),
   EMAIL_PORT: Joi.number()
+    .allow("")
+    .empty(["", null])
     .when("EMAIL_SERVICE_ENABLED", {
       is: true,
       then: Joi.required(),
@@ -110,6 +120,8 @@ const envVarsSchema = Joi.object({
       "This number configure in which interval the notifications in the NOTIFICATION_PATH should be checked and send.",
     ),
   JWT_SECRET: Joi.string()
+    .allow("")
+    .empty(["", null])
     .when("EMAIL_SERVICE_ENABLED", {
       is: true,
       then: Joi.required(),
@@ -129,6 +141,8 @@ const envVarsSchema = Joi.object({
       "If set to true the multichain-feed go script in src/multichain-feed/multichain-feed is passed to the multichain daemon and executed in a separate process. ",
     ),
   NODE_ENV: Joi.string()
+    .allow("")
+    .empty(["", null])
     .default("production")
     .note(
       "Environment: Default development when running development-script. Production when running production-script",
