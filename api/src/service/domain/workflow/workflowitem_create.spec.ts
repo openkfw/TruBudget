@@ -14,6 +14,13 @@ const address = "address";
 const root: ServiceUser = { id: "root", groups: [], address };
 const alice: ServiceUser = { id: "alice", groups: [], address };
 
+async function getUsersForIdentityStump(identity): Promise<string[]> {
+  if (identity === "alice") return ["alice"];
+  if (identity === "bob") return ["bob"];
+  if (identity === "root") return ["root"];
+  throw Error(`unexpected identity: ${identity}`);
+}
+
 const baseSubproject: Subproject = {
   id: "dummy-subproject",
   projectId: "test",
@@ -75,6 +82,7 @@ describe("Create workflowitem", () => {
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
       getAllDocumentReferences: async () => [],
+      getUsersForIdentity: getUsersForIdentityStump,
     });
 
     assert.isTrue(Result.isErr(result));
@@ -98,6 +106,7 @@ describe("Create workflowitem", () => {
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
       getAllDocumentReferences: async () => [],
+      getUsersForIdentity: getUsersForIdentityStump,
     });
 
     assert.isTrue(Result.isErr(result));
@@ -121,6 +130,7 @@ describe("Create workflowitem", () => {
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
       getAllDocumentReferences: async () => [],
+      getUsersForIdentity: getUsersForIdentityStump,
     });
 
     assert.isTrue(Result.isErr(result));
@@ -144,6 +154,7 @@ describe("Create workflowitem", () => {
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
       getAllDocumentReferences: async () => [],
+      getUsersForIdentity: getUsersForIdentityStump,
     });
 
     assert.isTrue(Result.isErr(result));
@@ -167,6 +178,7 @@ describe("Create workflowitem", () => {
       applyWorkflowitemType: () => [],
       uploadDocumentToStorageService: () => Promise.resolve([]),
       getAllDocumentReferences: async () => [],
+      getUsersForIdentity: getUsersForIdentityStump,
     });
 
     assert.isFalse(Result.isErr(result));

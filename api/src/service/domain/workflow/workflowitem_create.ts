@@ -23,11 +23,13 @@ import { AlreadyExists } from "../errors/already_exists";
 import { InvalidCommand } from "../errors/invalid_command";
 import { NotAuthorized } from "../errors/not_authorized";
 import { PreconditionError } from "../errors/precondition_error";
+import { Identity } from "../organization/identity";
 import { ServiceUser } from "../organization/service_user";
 import * as UserRecord from "../organization/user_record";
 import { Permissions } from "../permissions";
 import Type, { workflowitemTypeSchema } from "../workflowitem_types/types";
 
+import * as NotificationCreated from "./notification_created";
 import * as Project from "./project";
 import * as Subproject from "./subproject";
 import * as Workflowitem from "./workflowitem";
@@ -98,6 +100,7 @@ interface Repository {
   ): Result.Type<BusinessEvent[]>;
   uploadDocumentToStorageService(file: File): Promise<Result.Type<BusinessEvent[]>>;
   getAllDocumentReferences(): Promise<Result.Type<GenericDocument[]>>;
+  getUsersForIdentity(identity: Identity): Promise<Result.Type<UserRecord.Id[]>>;
 }
 
 function docIdAlreadyExists(allDocuments: GenericDocument[], docId: string): boolean {
@@ -355,7 +358,50 @@ export async function createWorkflowitem(
     workflowitemCreated.workflowitem.id,
   );
 
-  return [workflowitemCreated, ...documentUploadedEvents, ...workflowitemTypeEvents];
+  logger.trace("Creating notification events");
+  let notifications: Result.Type<NotificationCreated.Event[]> = [];
+  if (workflowitemCreated.workflowitem.assignee !== undefined) {
+    const recipientsResult = await repository.getUsersForIdentity(
+      workflowitemCreated.workflowitem.assignee,
+    );
+    if (Result.isErr(recipientsResult)) {
+      return new VError(
+        recipientsResult,
+        `fetch users for ${workflowitemCreated.workflowitem.assignee} failed`,
+      );
+    }
+    notifications = recipientsResult.reduce((notifications, recipient) => {
+      // The issuer doesn't receive a notification:
+      if (recipient !== issuer.id) {
+        const notification = NotificationCreated.createEvent(
+          ctx.source,
+          issuer.id,
+          recipient,
+          workflowitemCreated,
+          reqData.projectId,
+          undefined,
+          undefined,
+          new Date().toISOString(),
+          issuer.metadata,
+        );
+        if (Result.isErr(notification)) {
+          return new VError(notification, "failed to create notification event");
+        }
+        notifications.push(notification);
+      }
+      return notifications;
+    }, [] as NotificationCreated.Event[]);
+  }
+  if (Result.isErr(notifications)) {
+    return new VError(notifications, "failed to create notification events");
+  }
+
+  return [
+    workflowitemCreated,
+    ...documentUploadedEvents,
+    ...notifications,
+    ...workflowitemTypeEvents,
+  ];
 
   function newDefaultPermissionsFor(userId: string): Permissions {
     // The user can always do anything anyway:
