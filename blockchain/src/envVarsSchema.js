@@ -156,8 +156,9 @@ const envVarsSchema = Joi.object({
   KUBE_NAMESPACE: Joi.string().default(""),
   EXPOSE_MC: Joi.boolean().default(false),
   PRETTY_PRINT: Joi.boolean()
+    .allow("", null)
+    .empty(["", null])
     .default(false)
-    .empty("")
     .note(
       "Decides whether the logs printed by the API are pretty printed or not. Pretty printed logs are easier to read while non-pretty printed logs are easier to store and use e.g. in the ELK (Elasticsearch-Logstash-Kabana) stack.",
     ),
