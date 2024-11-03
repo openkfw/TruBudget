@@ -71,6 +71,14 @@ export default class StorageServiceClient implements StorageServiceClientI {
     return result?.data as Version;
   }
 
+  public async getTimestamp(): Promise<number[]> {
+    const result: AxiosResponse<unknown> = await this.axiosInstance.get("/timestamp");
+    if (result.status !== 200) {
+      return [];
+    }
+    return result.data as number[];
+  }
+
   public async uploadObject(file: File): Promise<Result.Type<UploadResponse>> {
     logger.debug(`Uploading Object "${file.fileName}"`);
 
