@@ -38,7 +38,7 @@ export const verifyUserJWT = (req: Request, res, next): void => {
     });
 };
 export const verifyNotificationJWT = (req: Request, res, next): void => {
-  logger.trace("Verifying Notification-JWT ...");
+  logger.debug("Verifying Notification-JWT ...");
   const token: string = getJWTToken(req);
 
   verifyJWTToken(token)
@@ -47,7 +47,7 @@ export const verifyNotificationJWT = (req: Request, res, next): void => {
       next();
     })
     .catch((err) => {
-      logger.trace({ err, token }, "Notification-JWT invalid");
+      logger.error({ err, token }, "Notification-JWT invalid");
       const body: InvalidJWTResponseBody = { message: "Invalid JWT token provided." };
       res.status(400).json(body);
     });

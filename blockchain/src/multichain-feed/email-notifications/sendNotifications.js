@@ -135,15 +135,15 @@ function sleep(s) {
 
 const args = process.argv.slice(2);
 log.debug(`${process.argv[0]} is executed with following arguments: ${args}`);
-if (args.length !== 6) {
+if (args.length !== 7) {
   log.error("Wrong amount of arguments");
   process.exit(1);
 }
-const [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl] = args;
+const [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl, algorithm] = args;
 const absolutePath = process.cwd() + "/" + path;
 
 (async () => {
-  let token = createJWT(secret, "notification-watcher");
+  let token = createJWT(secret, "notification-watcher", algorithm);
 
   while (true) {
     log.trace("Checking for new notifications");
