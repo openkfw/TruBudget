@@ -37,7 +37,7 @@ const sendNotifications = async (path, emailServiceSocketAddress, token, ssl = f
   for (let i = 0; i < (await files.length); i++) {
     const file = files[i];
     let recipient;
-    const proto = "http";
+    const proto = ssl === "true" || ssl === true ? "https" : "http";
 
     try {
       recipient = await getRecipientFromFile(path, file);
@@ -142,21 +142,20 @@ if (args.length !== 6) {
 const [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl] = args;
 const absolutePath = process.cwd() + "/" + path;
 
-let token = "";
 (async () => {
+  let token = createJWT(secret, "notification-watcher");
+
   while (true) {
     log.trace("Checking for new notifications");
     try {
-      // Check/Send/Delete notification transaction files in notification directory
       await sendNotifications(absolutePath, emailServiceSocketAddress, token, ssl);
       await deleteFilesOlderThan(maxPersistenceHours, absolutePath);
     } catch (error) {
-      // If Bearer Token expired
       if (error.name === "ExpiredTokenException") {
         token = createJWT(secret, "notification-watcher");
-        log.info("New JWT-Token created due to expiration.");
+        log.info("New JWT token created due to expiration.");
       } else {
-        log.error(error, "Error while creating new jwt token");
+        log.error("Error during notification processing:", error);
       }
     }
     await sleep(loopIntervalSeconds);
