@@ -165,6 +165,7 @@ const envVarsSchema = Joi.object({
     .note(
       "The `JWT_SECRET` is only required if the Email feature is enabled. It is used to authenticate the blockchain at the email-service, so it can send notifications.",
     ),
+  JWT_ALGORITHM: Joi.string().allow("", null).empty(["", null]).valid("", null, "HS256", "RS256").default("HS256"),
   EMAIL_SERVICE_ENABLED: Joi.boolean()
     .default(false)
     .allow("", null)

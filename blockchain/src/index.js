@@ -150,6 +150,7 @@ if (config.exposeMc) {
         config.notification.maxLifetime,
         config.notification.sendInterval,
         config.email.ssl,
+        config.email.jwtAlgorithm,
       );
     }
   });
@@ -163,6 +164,7 @@ if (config.exposeMc) {
       config.notification.maxLifetime,
       config.notification.sendInterval,
       config.email.ssl,
+      config.email.jwtAlgorithm,
     );
   }
 }
