@@ -37,7 +37,7 @@ const sendNotifications = async (path, emailServiceSocketAddress, token, ssl = f
   for (let i = 0; i < (await files.length); i++) {
     const file = files[i];
     let recipient;
-    const proto = "http";
+    const proto = ssl ? "https" : "http";
 
     try {
       recipient = await getRecipientFromFile(path, file);
