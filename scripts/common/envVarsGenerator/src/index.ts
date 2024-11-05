@@ -8,6 +8,12 @@ interface EnvVariable {
   description: string;
 }
 
+interface Options {
+  serviceNameColumn?: string;
+  skipTableHeader?: boolean;
+  skipText?: boolean;
+}
+
 // Helper function to extract Joi schema information
 export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
   const envVariables: EnvVariable[] = [];
@@ -76,16 +82,24 @@ export const extractSchemaInfo = (schema: Joi.ObjectSchema) => {
 };
 
 // Generate Markdown table
-const generateMarkdown = (envVariables: EnvVariable[]) => {
+const generateMarkdown = (envVariables: EnvVariable[], options: Options = {}) => {
   const table: string[][] = [];
-  table.push(["Env Variable name", "Required", "Default Value", "Description"]);
-  table.push(["---","---","---","---"]);
+  if (!options?.skipTableHeader) {
+    table.push(!options?.serviceNameColumn ?
+      ["Env Variable name", "Required", "Default Value", "Description"] :
+      ["Env Variable name", "Required", "Default Value", "Used By", "Description"]);
+    table.push(!options?.serviceNameColumn ? ["---","---","---","---"] : ["---","---","---","---","---"]);
+  }
   envVariables
     .forEach(
       (varInfo: EnvVariable) => {
-        table.push([`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${
+        table.push(!options?.serviceNameColumn ? 
+          [`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${
           varInfo.required
-        }`, `${varInfo.default}`, `${varInfo.description}`])
+        }`, `${varInfo.default}`, `${varInfo.description}`] : 
+          [`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${
+            varInfo.required
+          }`, `${varInfo.default}`, options?.serviceNameColumn || "", `${varInfo.description}`]);
       });
 
   // get max column length for each column
@@ -110,9 +124,9 @@ const generateMarkdown = (envVariables: EnvVariable[]) => {
   return finalMarkdownTable.join("\n");
 };
 
-export const generateMarkdownFile = (envVarsSchema) => {
+export const generateMarkdownFile = (envVarsSchema, options = {}) => {
   const schema = extractSchemaInfo(envVarsSchema);
-  const mdTable = generateMarkdown(schema);
+  const mdTable = generateMarkdown(schema, options);
 
   return mdTable;
 };

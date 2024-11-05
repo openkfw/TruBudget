@@ -3,9 +3,22 @@ const { generateMarkdownFile } = require("../../scripts/common/envVarsGenerator/
 const { envVarsSchema } = require("../src/envVarsSchema");
 
 function updateReadme() {
-  const mdTable = generateMarkdownFile(envVarsSchema);
+  // read arguments from the command line
+  const args = process.argv.slice(2);
 
-  const md = `# Trubudget Blockchain
+  const options = {};
+  if (args.includes("--add-service-name-column")) {
+    options.serviceNameColumn = "Blockchain";
+  }
+
+  if (args.includes("--skip-table-header")) {
+    options.skipTableHeader = true;
+  }
+  const mdTable = generateMarkdownFile(envVarsSchema, options);
+
+  const md = args.includes("--skip-text")
+    ? mdTable
+    : `# Trubudget Blockchain
 
 ## Environment Variables
 
@@ -20,6 +33,11 @@ ${mdTable}
 The email-service can be configured via the following environment variables.
 To get started have a look at dedicated [documentation](../email-notification-service/README.md)
 `;
+
+  if (args.includes("--output-table")) {
+    console.log(md);
+    return;
+  }
 
   writeFileSync("./environment-variables.md", md, "utf-8");
 }

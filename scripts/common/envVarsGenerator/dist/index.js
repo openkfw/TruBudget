@@ -62,13 +62,19 @@ const extractSchemaInfo = (schema) => {
 };
 exports.extractSchemaInfo = extractSchemaInfo;
 // Generate Markdown table
-const generateMarkdown = (envVariables) => {
+const generateMarkdown = (envVariables, options = {}) => {
     const table = [];
-    table.push(["Env Variable name", "Required", "Default Value", "Description"]);
-    table.push(["---", "---", "---", "---"]);
+    if (!(options === null || options === void 0 ? void 0 : options.skipTableHeader)) {
+        table.push(!(options === null || options === void 0 ? void 0 : options.serviceNameColumn) ?
+            ["Env Variable name", "Required", "Default Value", "Description"] :
+            ["Env Variable name", "Required", "Default Value", "Used By", "Description"]);
+        table.push(!(options === null || options === void 0 ? void 0 : options.serviceNameColumn) ? ["---", "---", "---", "---"] : ["---", "---", "---", "---", "---"]);
+    }
     envVariables
         .forEach((varInfo) => {
-        table.push([`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${varInfo.required}`, `${varInfo.default}`, `${varInfo.description}`]);
+        table.push(!(options === null || options === void 0 ? void 0 : options.serviceNameColumn) ?
+            [`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${varInfo.required}`, `${varInfo.default}`, `${varInfo.description}`] :
+            [`**${varInfo.name}**${varInfo.deprecated ? " `deprecated`" : ""}`, `${varInfo.required}`, `${varInfo.default}`, (options === null || options === void 0 ? void 0 : options.serviceNameColumn) || "", `${varInfo.description}`]);
     });
     // get max column length for each column
     const tableColumnsLength = [];
@@ -88,9 +94,9 @@ const generateMarkdown = (envVariables) => {
     });
     return finalMarkdownTable.join("\n");
 };
-const generateMarkdownFile = (envVarsSchema) => {
+const generateMarkdownFile = (envVarsSchema, options = {}) => {
     const schema = (0, exports.extractSchemaInfo)(envVarsSchema);
-    const mdTable = generateMarkdown(schema);
+    const mdTable = generateMarkdown(schema, options);
     return mdTable;
 };
 exports.generateMarkdownFile = generateMarkdownFile;
