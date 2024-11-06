@@ -10,10 +10,10 @@ Following diagram shows the tech stack of the core TruBudget:
 ## Additional Services
 TruBudget offers additional services, that enhance the core TruBudget experience through additional features. These services are:
 
-- [Provisioning Service](../../provisioning/README.md) - Used for populating TruBudget with test data
-- [Email Notification Service](../../email-notification-service/README.md) - Used to enable the email-notification feature
-- [Export Service](../../excel-export-service/README.md) - Used for exporting TruBudget data in an excel file.
-- [Storage Service](../../storage-service/README.md) - Used to enable users to attach documents to workflowitems, which are then stored in a separate storage.
+- [Provisioning Service](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md) - Used for populating TruBudget with test data
+- [Email Notification Service](https://github.com/openkfw/TruBudget/blob/main/email-notification-service/README.md) - Used to enable the email-notification feature
+- [Export Service](https://github.com/openkfw/TruBudget/blob/main/excel-export-service/README.md) - Used for exporting TruBudget data in an excel file.
+- [Storage Service](https://github.com/openkfw/TruBudget/blob/main/storage-service/README.md) - Used to enable users to attach documents to workflowitems, which are then stored in a separate storage.
 
 > Each service can be activated and deactivated individually.
 

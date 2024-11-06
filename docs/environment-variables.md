@@ -23,7 +23,7 @@ If you need a `.env.example` file as a template, use the `.env.example` file in 
 [email]: ./environment-variables/email-environment-variables.md
 [excel]: ./environment-variables/excel-environment-variables.md
 [storage]: ./environment-variables/storage-environment-variables.md
-[ui]: ./environment-variables/ui-environment-variables.md
+[ui]: ./environment-variables/frontend-environment-variables.md
 
 
 | Env Variable                       | Required | Default Value                     | Used by              | Description                                                                                                                                                                                                                                                                                                                                                                                     |

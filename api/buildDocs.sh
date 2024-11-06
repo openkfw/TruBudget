@@ -21,13 +21,13 @@ for file in ./*.md ./*/*.md; do
     sed -i ${delimiter:+""} 's/# Interface:/#/g' $file
     sed -i ${delimiter:+""} 's/# Enumeration:/#/g' $file
     sed -i ${delimiter:+""} 's/# Module:/#/g' $file
-    
+
     title=$(sed '1q;d' $file)
-    
+
     if [[ $title == "# Event" ]]; then
         pathToDoc=$(echo $(sed '4q;d' $file) | sed 's/.*\[\([^]]*\)\].*/\1/g')
         sed -i ${delimiter:+""} 's|# Event|# Event: '$pathToDoc'|g' $file
-        
+
     fi
     if [[ $title == "# RequestData" ]]; then
         pathToDoc=$(echo $(sed '4q;d' $file) | sed 's/.*\[\([^]]*\)\].*/\1/g')

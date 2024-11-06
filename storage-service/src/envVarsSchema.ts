@@ -12,7 +12,7 @@ export const envVarsSchema = Joi.object({
   RATE_LIMIT: Joi.number()
     .empty("")
     .note(
-      "Defines the limit each IP to {RATE_LIMIT} requests per windowMs (1 minute).",
+      "Defines the limit each IP to RATE_LIMIT requests per windowMs (1 minute).",
     ),
   STORAGE_PROVIDER: Joi.string()
     .empty("")
