@@ -152,7 +152,7 @@ const absolutePath = process.cwd() + "/" + path;
       await deleteFilesOlderThan(maxPersistenceHours, absolutePath);
     } catch (error) {
       if (error.name === "ExpiredTokenException") {
-        token = createJWT(secret, "notification-watcher");
+        token = createJWT(secret, "notification-watcher", algorithm);
         log.info("New JWT token created due to expiration.");
       } else {
         log.error("Error during notification processing:", error);
