@@ -35,7 +35,7 @@ export const envVarsSchema = Joi.object({
     .allow("", null)
     .empty(["", null])
     .empty("")
-    .note("Defines the limit each IP to {RATE_LIMIT} requests per windowMs (1 minute)"),
+    .note("Defines the limit each IP to RATE_LIMIT requests per windowMs (1 minute)"),
   NODE_ENV: Joi.string().allow("", null).empty(["", null]).default("production"),
   LOG_LEVEL: Joi.string()
     .allow("trace", "debug", "info", "warn", "error", "fatal", "", null)

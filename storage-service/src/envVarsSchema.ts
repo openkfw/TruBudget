@@ -16,7 +16,7 @@ export const envVarsSchema = Joi.object({
     .allow("", null)
     .empty(["", null])
     .note(
-      "Defines the limit each IP to {RATE_LIMIT} requests per windowMs (1 minute).",
+      "Defines the limit each IP to RATE_LIMIT requests per windowMs (1 minute).",
     ),
   STORAGE_PROVIDER: Joi.string()
     .allow("azure-storage", "minio", "", null)
