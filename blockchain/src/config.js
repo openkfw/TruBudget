@@ -30,6 +30,7 @@ const config = {
     ssl: envVars.EMAIL_SSL,
     serviceEnabled: envVars.EMAIL_SERVICE_ENABLED,
     jwtSecret: envVars.JWT_SECRET,
+    jwtAlgorithm: envVars.JWT_ALGORITHM,
   },
   notification: {
     path: envVars.NOTIFICATION_PATH,

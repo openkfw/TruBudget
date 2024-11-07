@@ -10,6 +10,7 @@ const startEmailNotificationWatcher = (
   maxPersistenceHours = 24,
   loopIntervalSeconds = 10,
   ssl = false,
+  algorithm = "HS256",
 ) => {
   if (!fs.existsSync(path)) {
     fs.mkdirSync(path);
@@ -18,7 +19,7 @@ const startEmailNotificationWatcher = (
   log.info("Starting email notification watcher process");
   const emailproc = fork(
     `${__dirname}/sendNotifications.js`,
-    [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl],
+    [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl, algorithm],
     {},
   );
 

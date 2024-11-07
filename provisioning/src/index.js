@@ -340,7 +340,7 @@ async function testWorkflowitemUpdate(folder) {
     workflowitemTemplate
   );
 
-  const { amountType, amount, currency } = workflowitem.data;
+  const { amountType, amount, currency, exchangeRate } = workflowitem.data;
   if (amountType === "N/A" || !amount || !currency) {
     throw Error(
       `unexpected test data: ${JSON.stringify(workflowitem, null, 2)}`
@@ -374,6 +374,7 @@ async function testWorkflowitemUpdate(folder) {
     amountType,
     amount,
     currency,
+    exchangeRate
   });
 
   const updatedWorkflowitem = await findWorkflowitem(
@@ -388,6 +389,7 @@ async function testWorkflowitemUpdate(folder) {
     updatedWorkflowitem.data.amountType !== amountType ||
     updatedWorkflowitem.data.amount !== amount ||
     updatedWorkflowitem.data.currency !== currency ||
+    updatedWorkflowitem.data.exchangeRate !== exchangeRate ||
     updatedWorkflowitem.data.status !== "open"
   ) {
     throw Error(
@@ -467,6 +469,7 @@ async function testWorkflowitemUpdate(folder) {
     amountType,
     amount,
     currency,
+    exchangeRate
   });
 }
 

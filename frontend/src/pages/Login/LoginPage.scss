@@ -1,3 +1,5 @@
+@import "../../mixins.scss";
+
 .login-page-container {
   background-image: url(../../../public/welcome.jpg);
   background-size: cover;
@@ -11,11 +13,16 @@
 }
 
 .login-card {
-  width: 21.875rem;
+  width: 28rem;
   z-index: 1100;
   opacity: 0.9;
-  &.with-authproxy {
-    width: 37.5rem;
+  @include mobile {
+    width: auto;
+    margin: 0 2.5rem 0 2.5rem;
+  }
+  @include tablet {
+    width: 50%;
+    margin: 0 2.5rem 0 0;
   }
 }
 
@@ -38,35 +45,67 @@
   flex-direction: row;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .login-dropdown {
-  margin-left: 0.625rem;
+  margin-bottom: 0.5rem;
 }
 
 .login-button {
-  margin-right: 1.25rem;
-  margin-top: 0.3rem;
+  width: 50%;
 }
 
-.admin-settings {
+.admin-login-settings {
+  margin: 0.3rem 2.5rem 0.3rem 2.5rem;
   display: flex;
   flex-direction: row;
-  justify-content: center;
-  float: right;
+  justify-content: space-between;
 }
 
 .login-button-proxy-container {
-  padding: 1.25rem;
+  margin: 1rem 0 1rem 0;
   display: flex;
   flex-direction: row;
   width: 100%;
   align-items: center;
-  justify-content: space-between;
+  justify-content: center;
 }
 
 .forgot-password {
   display: flex;
   justify-content: center;
+}
+
+.divider-with-margin {
+  margin-left: 2.5rem;
+  margin-right: 2.5rem;
+}
+
+.card-header-content {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 2rem;
+  margin-bottom: 2rem;
+}
+
+.trubudget-logo {
+  margin-bottom: 3.25rem;
+}
+
+.login-page-content {
+  display: flex;
+  flex-direction: row;
+}
+
+.login-image {
+  @include tablet {
+    width: 50%;
+    margin-left: 2.5rem;
+  }
+
+  @include mobile {
+    display: none;
+  }
 }

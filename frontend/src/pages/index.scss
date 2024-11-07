@@ -1,5 +1,8 @@
 .password {
   width: 100%;
+  &.login {
+    width: 70%;
+  }
   &.short {
     width: 50%;
   }

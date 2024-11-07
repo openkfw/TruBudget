@@ -2,10 +2,10 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 
 import SettingsIcon from "@mui/icons-material/Settings";
+import { Typography } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
 import Divider from "@mui/material/Divider";
 import Grid from "@mui/material/Grid";
 import IconButton from "@mui/material/IconButton";
@@ -39,21 +39,31 @@ const LoginPage = ({
 
   return (
     <div data-test="loginpage" id="loginpage" className="login-page-container">
-      <Card className={isAuthProxyEnabled ? "login-card with-authproxy" : "login-card"}>
-        <div className="login-card-content">
-          <div className="login-card-header">
-            <CardHeader title={strings.login.frontend_name} subheader={strings.login.frontend_description} />
+      <div className="login-page-content">
+        <img src="/Left-side-login.png" alt="Left-side-login" className="login-image" />
+        <Card className="login-card" sx={{ borderTopLeftRadius: 0, borderBottomLeftRadius: 0, boxShadow: "none" }}>
+          <div className="login-card-content">
+            <div className="login-card-header">
+              <div className="card-header-content">
+                <img
+                  className="trubudget-logo"
+                  src="/Trubudget-logo.png"
+                  alt="trubudget-logo"
+                  width="142px"
+                  height="28.5px"
+                />
+                <Typography>{strings.login.frontend_description}</Typography>
+              </div>
+            </div>
           </div>
-        </div>
-        <Divider />
-        <Box sx={{ width: "100%" }}>
-          <Grid container>
-            <Grid item xs>
+          <Divider className="divider-with-margin" />
+          <Box sx={{ width: "100%" }}>
+            <Grid sx={{ display: "flex", flexDirection: "column" }} container>
               <Username username={username} storeUsername={storeUsername} failed={loginError} id="username" />
               <Password
-                className="password short"
+                className="password login"
                 password={password}
-                iconDisplayed={true}
+                iconDisplayed={false}
                 storePassword={storePassword}
                 setPassword={storePassword}
                 label={strings.common.password}
@@ -68,17 +78,10 @@ const LoginPage = ({
                 </Button>
               </Box>
               <div className="login-card-footer">
-                <Dropdown value={language} id="language_selection" onChange={setLanguage} className="login-dropdown">
-                  <MenuItem value="en-gb">{strings.language.english}</MenuItem>
-                  <MenuItem value="fr">{strings.language.french}</MenuItem>
-                  <MenuItem value="pt">{strings.language.portuguese}</MenuItem>
-                  <MenuItem value="de">{strings.language.german}</MenuItem>
-                  <MenuItem value="ka">{strings.language.georgian}</MenuItem>
-                </Dropdown>
                 <Button
+                  className="login-button"
                   disabled={isLoginDisabled}
                   aria-label="loginbutton"
-                  className="login-button"
                   onClick={() => loginWithCredentials(username, password)}
                   variant="contained"
                   id="loginbutton"
@@ -87,39 +90,44 @@ const LoginPage = ({
                 </Button>
               </div>
             </Grid>
-            {isAuthProxyEnabled && (
-              <>
-                <Divider orientation="vertical" flexItem></Divider>
-                <Grid item xs>
-                  <div className="login-button-proxy-container">
-                    <Button
-                      aria-label="loginbutton"
-                      className="login-button"
-                      onClick={() => window.open(authProxyUri, "_self")}
-                      variant="contained"
-                      id="orgaloginbutton"
-                    >
-                      {strings.login.login_authproxy_button_title}
-                    </Button>
-                  </div>
-                </Grid>
-              </>
-            )}
-          </Grid>
-        </Box>
-        <Box>{loading && <LinearProgress />}</Box>
-        <Divider />
-        <div className="admin-settings">
-          <IconButton
-            aria-label="admin settings"
-            disabled={!(connectedToAdminNode > -1)}
-            onClick={() => navigate("/admin")}
-            size="large"
-          >
-            <SettingsIcon />
-          </IconButton>
-        </div>
-      </Card>
+          </Box>
+          <Divider className="divider-with-margin" />
+          {isAuthProxyEnabled && (
+            <>
+              <div className="login-button-proxy-container">
+                <Button
+                  aria-label="loginbutton"
+                  onClick={() => window.open(authProxyUri, "_self")}
+                  variant="contained"
+                  id="orgaloginbutton"
+                  className="login-button"
+                >
+                  {strings.login.login_authproxy_button_title}
+                </Button>
+              </div>
+              <Divider className="divider-with-margin" />
+            </>
+          )}
+          <Box>{loading && <LinearProgress />}</Box>
+          <div className="admin-login-settings">
+            <Dropdown value={language} id="language_selection" onChange={setLanguage} className="login-dropdown">
+              <MenuItem value="en-gb">{strings.language.english}</MenuItem>
+              <MenuItem value="fr">{strings.language.french}</MenuItem>
+              <MenuItem value="pt">{strings.language.portuguese}</MenuItem>
+              <MenuItem value="de">{strings.language.german}</MenuItem>
+              <MenuItem value="ka">{strings.language.georgian}</MenuItem>
+            </Dropdown>
+            <IconButton
+              aria-label="admin settings"
+              disabled={!(connectedToAdminNode > -1)}
+              onClick={() => navigate("/admin")}
+              size="large"
+            >
+              <SettingsIcon />
+            </IconButton>
+          </div>
+        </Card>
+      </div>
     </div>
   );
 };

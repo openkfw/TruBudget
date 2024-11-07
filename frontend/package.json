@@ -116,9 +116,6 @@
     "moment": false
   },
   "overrides": {
-    "yaml": "^2.2.2",
-    "follow-redirects": "^1.15.6",
-    "cookie": "^0.7.0",
     "nth-check": "^2.0.1",
     "postcss": "^8.4.31"
   }
