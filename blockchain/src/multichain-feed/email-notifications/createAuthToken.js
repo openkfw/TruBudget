@@ -13,7 +13,7 @@ function createJWT(secret, id, algorithm = "HS256") {
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(secret, "base64") : secret;
 
   try {
-    return jwt.sign({ id }, secretOrPrivateKey, { expiresIn: "1", algorithm });
+    return jwt.sign({ id }, secretOrPrivateKey, { expiresIn: "8h", algorithm });
   } catch (error) {
     throw new Error(`JWT creation failed: ${error.message}`);
   }
