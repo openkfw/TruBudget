@@ -178,7 +178,7 @@ const absolutePath = process.cwd() + "/" + path;
       } else if (error.name === "InvalidAlgorithmException") {
         log.error(error, `Notification e-mail request signed with invalid algorithm: ${algorithm}`);
       } else {
-        log.error(error, "Error during notification processing: ", error);
+        log.error(error, "Error during notification processing");
       }
     }
     await sleep(loopIntervalSeconds);
