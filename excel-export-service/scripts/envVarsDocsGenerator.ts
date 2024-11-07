@@ -8,7 +8,7 @@ function updateReadme(): void {
 
   const options = {};
   if (args.includes("--add-service-name-column")) {
-    options["serviceNameColumn"] = "Excel Export Service";
+    options["serviceNameColumn"] = "Email Notification Service";
   }
 
   if (args.includes("--skip-table-header")) {

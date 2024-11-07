@@ -8,7 +8,7 @@ function updateReadme(): void {
 
   const options = {};
   if (args.includes("--add-service-name-column")) {
-    options["serviceNameColumn"] = "Email notofocation service";
+    options["serviceNameColumn"] = "Email notification service";
   }
 
   if (args.includes("--skip-table-header")) {
