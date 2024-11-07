@@ -51,19 +51,19 @@ Orga3 wants to join the network and connects to Orga1. The request for approval 
 
 ## Further reading
 
-If you want to read more about the concept of organizations, have a look at the [Multi Node Setup ADR](../../developer/architecture/0010-multi-node-setup-and-user-management.md).
+If you want to read more about the concept of organizations, have a look at the [Multi Node Setup ADR](../developer/architecture/0010-multi-node-setup-and-user-management.md).
 
 ## Configuring TruBudget
 Configuration in TruBudget is individual for each service. Every service as seen below uses environment variables for its configuration.
 
 
-- [Blockchain](https://github.com/openkfw/TruBudget/blob/main/blockchain/environment-variables.md)
-- [API](https://github.com/openkfw/TruBudget/blob/main/api/environment-variables.md)
-- [Frontend](https://github.com/openkfw/TruBudget/blob/main/frontend/environment-variables.md)
+- [Blockchain](../environment-variables/blockchain-environment-variables.md)
+- [API](../environment-variables/api-environment-variables.md)
+- [Frontend](../environment-variables/frontend-environment-variables.md)
 - [Provisioning (Optional)](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md)
-- [Excel-Export (Optional)](https://github.com/openkfw/TruBudget/blob/main/excel-export-service/environment-variables.md)
-- [Email-Notification (Optional)](https://github.com/openkfw/TruBudget/blob/main/email-notification-service/environment-variables.md)
-- [Storage-Service (Optional)](https://github.com/openkfw/TruBudget/blob/main/storage-service/environment-variables.md)
+- [Excel-Export (Optional)](../environment-variables/excel-export-service-environment-variables.md)
+- [Email-Notification (Optional)](../environment-variables/email-notification-service-environment-variables.md)
+- [Storage-Service (Optional)](../environment-variables/storage-service-environment-variables.md)
 
 While configuring TruBudget, pay attention to environment variables used for communication between services, such as **_PORT** variables or **_IP**.
 

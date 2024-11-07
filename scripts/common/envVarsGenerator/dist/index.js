@@ -19,7 +19,7 @@ const extractSchemaInfo = (schema) => {
             const invalid = item.invalid;
             const deprecated = item.notes && item.notes.find((note) => note === "deprecated");
             const examples = item.examples;
-            const valid = item.allow;
+            const valid = item.valid;
             const port = item.rules && item.rules.find((rule) => rule.name === "port");
             if (item.whens) {
                 item.whens.forEach(when => {
