@@ -18,7 +18,7 @@ const handleEnter = (e, action = () => {}) => {
 
 const UserPassword = ({
   name,
-  password,
+  value,
   error,
   onChange,
   onBlur,
@@ -45,12 +45,12 @@ const UserPassword = ({
           variant="standard"
           error={error}
           label={label}
-          value={password}
+          value={value}
           margin="normal"
           id={id}
           onChange={onChange}
           onBlur={onBlur}
-          onKeyPress={(e) => handleEnter(e, nextBestAction)}
+          onKeyUp={(e) => handleEnter(e, nextBestAction)}
           helperText={<ErrorMessage name={name}>{(msg) => <span style={{ color: "red" }}>{msg}</span>}</ErrorMessage>}
           type={isPasswordVisible ? "text" : "password"}
           InputProps={{

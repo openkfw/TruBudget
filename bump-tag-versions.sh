@@ -31,3 +31,6 @@ eval "npm audit fix"
 echo "Auditing dependencies ..."
 eval "npm run audit"
 eval "npm install --no-audit"
+
+echo "Generating environment variables documentation in docs folder..."
+bash update-docs.sh

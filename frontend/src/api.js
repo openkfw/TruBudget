@@ -84,7 +84,10 @@ class Api {
    * Returns URL for calling Email service
    * @param {*} urlSlug tail segment of the URL
    */
-  getEmailServiceUrl = (urlSlug) => `${devMode ? `${config.email.serviceProtocol}://${config.email.serviceHost}:${config.email.servicePort}` : "/email"}/${urlSlug}`;
+  getEmailServiceUrl = (urlSlug) =>
+    `${
+      devMode ? `${config.email.serviceProtocol}://${config.email.serviceHost}:${config.email.servicePort}` : "/email"
+    }/${urlSlug}`;
 
   checkAccessTokenExpiration = () => {
     return localStorage.getItem("refresh_token_expiration");
@@ -351,7 +354,7 @@ class Api {
     });
 
   createWorkflowItem = (payload) => {
-    const { currency, amount, exchangeRate, ...minimalPayload } = payload;
+    const { fundingOrganization, currency, amount, exchangeRate, ...minimalPayload } = payload;
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
@@ -359,7 +362,8 @@ class Api {
             ...minimalPayload,
             currency,
             amount,
-            exchangeRate: exchangeRate.toString()
+            exchangeRate: exchangeRate.toString(),
+            fundingOrganization
           };
     return instance.post(`/subproject.createWorkflowitem`, {
       ...payloadToSend
@@ -367,7 +371,7 @@ class Api {
   };
 
   createWorkflowItemV2 = (payload) => {
-    const { currency, amount, exchangeRate, documents, ...minimalPayload } = payload;
+    const { fundingOrganization, currency, amount, exchangeRate, documents, ...minimalPayload } = payload;
     const payloadToSend =
       payload.amountType === "N/A"
         ? minimalPayload
@@ -375,7 +379,8 @@ class Api {
             ...minimalPayload,
             currency,
             amount,
-            exchangeRate: exchangeRate.toString()
+            exchangeRate: exchangeRate.toString(),
+            fundingOrganization
           };
 
     const formData = new FormData();
@@ -392,6 +397,11 @@ class Api {
           const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
           formData.append("documents", blob, documents[i].fileName);
           formData.append(`comment_${i}`, documents[i].comment);
+        } else if (documents[i].link) {
+          formData.append(
+            `link_${i}`,
+            JSON.stringify({ link: documents[i].link, fileName: documents[i].fileName, comment: documents[i].comment })
+          );
         }
       }
     }
@@ -424,13 +434,14 @@ class Api {
     });
 
   editWorkflowItem = (projectId, subprojectId, workflowitemId, changes) => {
-    const { currency, amount, exchangeRate, ...minimalChanges } = changes;
+    const { currency, amount, exchangeRate, fundingOrganization, ...minimalChanges } = changes;
 
     const changesToSend =
       changes.amountType === "N/A"
         ? minimalChanges
         : {
             ...minimalChanges,
+            fundingOrganization,
             currency,
             amount,
             exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
@@ -440,6 +451,52 @@ class Api {
       subprojectId,
       workflowitemId,
       ...changesToSend
+    });
+  };
+
+  editWorkflowItemV2 = (projectId, subprojectId, workflowitemId, changes) => {
+    const { currency, amount, exchangeRate, fundingOrganization, documents, ...minimalChanges } = changes;
+
+    const changesToSend =
+      changes.amountType === "N/A"
+        ? minimalChanges
+        : {
+            ...minimalChanges,
+            fundingOrganization,
+            currency,
+            amount,
+            exchangeRate: exchangeRate ? exchangeRate.toString() : undefined
+          };
+    const formData = new FormData();
+
+    formData.append("apiVersion", "2.0");
+    formData.append("projectId", projectId);
+    formData.append("subprojectId", subprojectId);
+    formData.append("workflowitemId", workflowitemId);
+
+    for (const key in changesToSend) {
+      formData.append(key, changesToSend[key]);
+    }
+
+    if (documents && documents.length > 0) {
+      for (let i = 0; i < documents.length; i++) {
+        if (documents[i].base64) {
+          const blob = base64ToBlob(documents[i].base64, documents[i].type); // data in redux store needs to be serializable, so we store base64 string
+          formData.append("documents", blob, documents[i].fileName);
+          formData.append(`comment_${i}`, documents[i].comment);
+        } else if (documents[i].link) {
+          formData.append(
+            `link_${i}`,
+            JSON.stringify({ link: documents[i].link, fileName: documents[i].fileName, comment: documents[i].comment })
+          );
+        }
+      }
+    }
+
+    return instance.post(`/v2/workflowitem.update`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data"
+      }
     });
   };
 

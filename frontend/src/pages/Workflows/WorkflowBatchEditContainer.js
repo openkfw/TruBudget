@@ -3,7 +3,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
-import { fetchAllProjects } from "../Overview/actions";
+import { fetchCompleteListOfProjects } from "../Overview/actions";
 import { fetchAllProjectDetailsNotCurrentProject } from "../SubProjects/actions";
 
 import {
@@ -44,7 +44,7 @@ const mapStateToProps = (state) => {
     permissions: state.getIn(["workflow", "permissions", "workflowitem"]),
     users: state.getIn(["login", "enabledUsers"]),
     groups: state.getIn(["login", "groupList"]),
-    projects: state.getIn(["overview", "projects"]),
+    projects: state.getIn(["overview", "projectsAll"]),
     workflowActions: state.getIn(["workflow", "workflowActions"]),
     submittedWorkflowItems: state.getIn(["workflow", "submittedWorkflowItems"]),
     failedWorkflowItem: state.getIn(["workflow", "failedWorkflowItem"]),
@@ -64,7 +64,7 @@ const mapDispatchToProps = (dispatch) => {
     assignWorkflow: (projectId, subProjectId, workflowId, identity) =>
       dispatch(assignWorkflowItem(projectId, subProjectId, workflowId, identity)),
     createWorkflowItem: (...data) => dispatch(createWorkflowItemAction(...data)),
-    fetchAllProjects: () => dispatch(fetchAllProjects()),
+    fetchCompleteListOfProjects: () => dispatch(fetchCompleteListOfProjects()),
     fetchAllProjectDetailsNotCurrentProject: (projectId, showLoading) =>
       dispatch(fetchAllProjectDetailsNotCurrentProject(projectId, showLoading)),
     resetSucceededWorkflowitems: () => dispatch(resetSucceededWorkflowitems()),

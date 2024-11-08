@@ -1,12 +1,13 @@
 let jwt = require("jsonwebtoken");
 
-function createJWT(secret, id) {
+function createJWT(secret, id, algorithm = "HS256") {
+  const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(secret, "base64") : secret;
   return jwt.sign(
     {
       id,
     },
-    secret,
-    { expiresIn: "8h" },
+    secretOrPrivateKey,
+    { expiresIn: "8h", algorithm },
   );
 }
 

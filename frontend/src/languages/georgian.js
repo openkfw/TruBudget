@@ -559,6 +559,7 @@ const ka = {
     workflowitem_intent_revokePermission: "Workflow action-ის {0} ნებართები შეცვლილია",
     workflowitem_update: "Workflow action-ი {0} განახლებულია",
     workflowitem_updated: "Workflow action-ი {0} განახლებულია",
+    workflowitem_created: "Workflow action-ი {0} გადმოგეგზავნათ განსახილველად",
     payload_error_message:
       "უი! ... ეს არ არის თქვენი ბრალი - მოხდა კლიენტის მხრიდან ვალიდაციის შეცდომა. გთხოვთ, აცნობოთ ადმინისტრატორს."
   },

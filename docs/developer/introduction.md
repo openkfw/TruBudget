@@ -83,8 +83,7 @@ When creating a new branch, you should consider the following guidelines regardi
 
 ### Git Workflow
 
-To get an idea about the workflow used in our project you should read this [how to / git].
-So when working on a feature branch make sure to:
+When working on a feature branch make sure to:
 
 1. Checkout the main branch and pull the recent changes
 2. Create a new feature branch respecting the guidelines mentioned above
@@ -160,5 +159,4 @@ Docker:
 [guidelines]: https://keepachangelog.com/en/1.0.0/
 [git commit guidelines]: https://chris.beams.io/posts/git-commit/
 [open a pull request]: https://github.com/openkfw/TruBudget/pulls
-[how to / git]: https://gist.github.com/robertpataki/1b70e22d14ef92e1be1338314809b46e
-[documentation]: https://github.com/openkfw/TruBudget/tree/main/doc
+[documentation]: https://github.com/openkfw/TruBudget/tree/main/docs

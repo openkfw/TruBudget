@@ -22,71 +22,17 @@ const { importWallet, listAvailableWallets } = require("./wallet-backup");
 
 const { moveBackup, verifyHashSha256, removeFile, createMetadataFileSha256 } = require("./shell");
 
+const config = require("./config");
+
 const app = express();
-const port = process.env.PORT || 8085;
 
-const ORGANIZATION = process.env.ORGANIZATION || "MyOrga";
 const CHAINNAME = "TrubudgetChain";
-const MULTICHAIN_RPC_PORT = process.env.MULTICHAIN_RPC_PORT || 8000;
-const MULTICHAIN_RPC_USER = process.env.MULTICHAIN_RPC_USER || "multichainrpc";
-const MULTICHAIN_RPC_PASSWORD = process.env.MULTICHAIN_RPC_PASSWORD || "s750SiJnj50yIrmwxPnEdSzpfGlTAHzhaUwgqKeb0G1j";
-const RPC_ALLOW_IP = process.env.RPC_ALLOW_IP || "0.0.0.0/0";
-const CERT_PATH = process.env.CERT_PATH || undefined;
-const CERT_CA_PATH = process.env.CERT_CA_PATH || undefined;
-const CERT_KEY_PATH = process.env.CERT_KEY_PATH || undefined;
-let AUTOSTART = process.env.AUTOSTART === "false" ? false : true;
-
+let AUTOSTART = config.autostart;
 let isRunning = AUTOSTART ? true : false;
-
-const EXTERNAL_IP = process.env.EXTERNAL_IP;
-const P2P_HOST = process.env.P2P_HOST;
-const P2P_PORT = process.env.P2P_PORT || 7447;
-
-const API_PROTOCOL = process.env.API_PROTOCOL === "https" ? "https" : "http";
-const API_HOST = process.env.API_HOST || "localhost";
-const API_PORT = process.env.API_PORT || "8080";
-const MULTICHAIN_DIR = process.env.MULTICHAIN_DIR || "/root";
-
-// Email Service
-const EMAIL_HOST = process.env.EMAIL_HOST;
-const EMAIL_PORT = process.env.EMAIL_PORT;
-const EMAIL_SSL = process.env.EMAIL_SSL || false;
-const NOTIFICATION_PATH = process.env.NOTIFICATION_PATH || "./notifications/";
-const NOTIFICATION_MAX_LIFETIME = process.env.NOTIFICATION_MAX_LIFETIME || 24;
-const NOTIFICATION_SEND_INTERVAL = process.env.NOTIFICATION_SEND_INTERVAL || 10;
-const emailAuthSecret = process.env.JWT_SECRET;
-
-const EMAIL_SERVICE_ENABLED = process.env.EMAIL_SERVICE_ENABLED === "true" ? true : false;
-const MULTICHAIN_FEED_ENABLED = process.env.MULTICHAIN_FEED_ENABLED === "true" ? true : false;
-const isMultichainFeedEnabled = MULTICHAIN_FEED_ENABLED;
-
-const ENV = process.env.NODE_ENV || "production";
-
-const connectArg = `${CHAINNAME}@${P2P_HOST}:${P2P_PORT}`;
-
-const multichainDir = `${MULTICHAIN_DIR}/.multichain`;
-const isAlpha = P2P_HOST ? false : true;
-const blockNotifyArg = process.env.BLOCKNOTIFY_SCRIPT ? `-blocknotify=${process.env.BLOCKNOTIFY_SCRIPT}` : "";
-
-const SERVICE_NAME = process.env.KUBE_SERVICE_NAME || "";
-const NAMESPACE = process.env.KUBE_NAMESPACE || "";
-const EXPOSE_MC = process.env.EXPOSE_MC === "true" ? true : false;
-
-const isEmailConfigured = EMAIL_HOST && EMAIL_PORT && emailAuthSecret;
-
-if (EMAIL_SERVICE_ENABLED && !isEmailConfigured) {
-  if (!EMAIL_HOST) {
-    log.fatal("Env variable EMAIL_HOST is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
-  }
-  if (!EMAIL_PORT) {
-    log.fatal("Env variable EMAIL_PORT is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
-  }
-  if (!emailAuthSecret) {
-    log.fatal("Env variable JWT_SECRET is not set. Either set this variable or set EMAIL_SERVICE_ENABLED to false");
-  }
-  log.fatal("Incorrectly set env vars, exiting ...");
-  process.exit(1);
-}
+const connectArg = `${CHAINNAME}@${config.p2p.host}:${config.p2p.port}`;
+const multichainDir = `${config.multichain.dir}/.multichain`;
+const isAlpha = config.p2p.host ? false : true;
+const blockNotifyArg = config.blocknotifyScript ? `-blocknotify=${config.blocknotifyScript}` : "";
 
 app.use(logService.createPinoExpressLogger(log));
 
@@ -127,11 +73,11 @@ configureChain(
   isAlpha,
   CHAINNAME,
   multichainDir,
-  MULTICHAIN_RPC_PORT,
-  MULTICHAIN_RPC_USER,
-  MULTICHAIN_RPC_PASSWORD,
-  RPC_ALLOW_IP,
-  isMultichainFeedEnabled,
+  config.multichain.rpcPort,
+  config.multichain.rpcUser,
+  config.multichain.rpcPassword,
+  config.multichain.rpcAllowIp,
+  config.multichainFeedEnabled,
 );
 
 function initMultichain() {
@@ -143,32 +89,41 @@ function initMultichain() {
     return;
   }
   if (isAlpha) {
-    spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir));
+    spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir));
   } else {
     spawnProcess(() =>
       startBeta(
         CHAINNAME,
-        API_PROTOCOL,
-        API_HOST,
-        API_PORT,
-        P2P_PORT,
+        config.api.protocol,
+        config.api.host,
+        config.api.port,
+        config.p2p.port,
         connectArg,
         blockNotifyArg,
         externalIpArg,
         multichainDir,
-        ORGANIZATION,
+        config.orgazation,
       ),
     );
     setTimeout(
-      () => registerNodeAtAlpha(ORGANIZATION, API_PROTOCOL, API_HOST, API_PORT, CERT_PATH, CERT_CA_PATH, CERT_KEY_PATH),
+      () =>
+        registerNodeAtAlpha(
+          config.orgazation,
+          config.api.protocol,
+          config.api.host,
+          config.api.port,
+          config.cert.path,
+          config.cert.caPath,
+          config.cert.keyPath,
+        ),
       5000,
     );
   }
 }
 
-let externalIpArg = process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== "" ? `-externalip=${EXTERNAL_IP}` : "";
+let externalIpArg = process.env.EXTERNAL_IP && process.env.EXTERNAL_IP !== "" ? `-externalip=${config.externalIp}` : "";
 
-if (EXPOSE_MC) {
+if (config.exposeMc) {
   const kc = new k8s.KubeConfig();
 
   if (fs.existsSync(os.homedir() + "/.kube/config") /* ? */) {
@@ -180,34 +135,36 @@ if (EXPOSE_MC) {
   const k8sApi = kc.makeApiClient(k8s.CoreV1Api);
   const kubernetesClient = new KubernetesClient(k8sApi);
 
-  kubernetesClient.getServiceIp(SERVICE_NAME, NAMESPACE).then((response) => {
+  kubernetesClient.getServiceIp(config.kubeServiceName, config.kubeNamespace).then((response) => {
     log.info(`externalIp: ${response}`);
     if (response) {
       externalIpArg = `-externalip=${response}`;
     }
 
     initMultichain();
-    if (EMAIL_SERVICE_ENABLED) {
+    if (config.emailServiceEnabled) {
       startEmailNotificationWatcher(
-        NOTIFICATION_PATH,
-        `${EMAIL_HOST}:${EMAIL_PORT}`,
-        emailAuthSecret,
-        NOTIFICATION_MAX_LIFETIME,
-        NOTIFICATION_SEND_INTERVAL,
-        EMAIL_SSL,
+        config.notification.path,
+        `${config.email.host}:${config.email.port}`,
+        config.email.jwtSecret,
+        config.notification.maxLifetime,
+        config.notification.sendInterval,
+        config.email.ssl,
+        config.email.jwtAlgorithm,
       );
     }
   });
 } else {
   initMultichain();
-  if (EMAIL_SERVICE_ENABLED) {
+  if (config.emailServiceEnabled) {
     startEmailNotificationWatcher(
-      NOTIFICATION_PATH,
-      `${EMAIL_HOST}:${EMAIL_PORT}`,
-      emailAuthSecret,
-      NOTIFICATION_MAX_LIFETIME,
-      NOTIFICATION_SEND_INTERVAL,
-      EMAIL_SSL,
+      config.notification.path,
+      `${config.email.host}:${config.email.port}`,
+      config.email.jwtSecret,
+      config.notification.maxLifetime,
+      config.notification.sendInterval,
+      config.email.ssl,
+      config.email.jwtAlgorithm,
     );
   }
 }
@@ -228,14 +185,16 @@ app.get("/chain-sha256", async (req, res) => {
     log.info("Start packaging");
     AUTOSTART = false;
     await stopMultichain(mcproc);
-    await createMetadataFileSha256(CHAINNAME, multichainDir, ORGANIZATION);
+    await createMetadataFileSha256(CHAINNAME, multichainDir, config.orgazation);
     res.setHeader("Content-Type", "application/gzip");
     res.setHeader("Content-Disposition", ` attachment; filename="${CHAINNAME}.gz"`);
     tar
       .pack(`${multichainDir}/${CHAINNAME}`, {
         finish: () => {
           log.info("Restarting multichain");
-          spawnProcess(() => startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir));
+          spawnProcess(() =>
+            startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir),
+          );
           AUTOSTART = true;
         },
       })
@@ -284,7 +243,7 @@ const loadConfig = (path) => {
 };
 
 app.post("/restoreWallet", async (req, res) => {
-  if (!ENV === "development") {
+  if (!config.nodeEnv === "development") {
     return res.status(401).send();
   }
 
@@ -304,23 +263,23 @@ app.post("/restoreWallet", async (req, res) => {
         AUTOSTART = false;
         if (isRunning) await stopMultichain(mcproc);
         await importWallet(`${extractPath}`, CHAINNAME);
-        if (isMultichainFeedEnabled) {
+        if (config.multichainFeedEnabled) {
           log.info("Multichain feed is enabled");
           shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-rpcport=${MULTICHAIN_RPC_PORT}
-rpcuser=${MULTICHAIN_RPC_USER}
-rpcpassword=${MULTICHAIN_RPC_PASSWORD}
-rpcallowip=${RPC_ALLOW_IP}
+rpcport=${config.multichain.rpcPort}
+rpcuser=${config.multichain.rpcUser}
+rpcpassword=${config.multichain.rpcPassword}
+rpcallowip=${config.multichain.rpcAllowIp}
 walletnotifynew=${__dirname}/multichain-feed/multichain-feed %j`);
         } else {
           shell.exec(`cat <<EOF >"${multichainDir}/multichain.conf"
-rpcport=${MULTICHAIN_RPC_PORT}
-rpcuser=${MULTICHAIN_RPC_USER}
-rpcpassword=${MULTICHAIN_RPC_PASSWORD}
-rpcallowip=${RPC_ALLOW_IP}`);
+rpcport=${config.multichain.rpcPort}
+rpcuser=${config.multichain.rpcUser}
+rpcpassword=${config.multichain.rpcPassword}
+rpcallowip=${config.multichain.rpcAllowIp}`);
         }
         await spawnProcess(() =>
-          startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
+          startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir),
         );
         AUTOSTART = true;
         /*eslint no-promise-executor-return: "off"*/
@@ -354,18 +313,18 @@ app.post("/chain", async (req, res) => {
     const stream = file.pipe(extract);
     stream.on("finish", async () => {
       if (fs.existsSync(metadataPath)) {
-        const config = loadConfig(metadataPath);
-        const validSha256 = await verifyHashSha256(config.DirectoryHash, extractPath);
+        const metadataConfig = loadConfig(metadataPath);
+        const validSha256 = await verifyHashSha256(metadataConfig.DirectoryHash, extractPath);
         const chainConfig = yaml.load(fs.readFileSync(chainConfigPath, "utf8"));
-        let correctConfig = chainConfig.includes(MULTICHAIN_RPC_PASSWORD);
+        let correctConfig = chainConfig.includes(config.multichain.rpcPassword);
 
-        if (config.hasOwnProperty("Organisation")) {
-          const correctOrg = config.Organisation === ORGANIZATION;
+        if (metadataConfig.hasOwnProperty("Organisation")) {
+          const correctOrg = metadataConfig.Organisation === config.orgazation;
           correctConfig = correctConfig && correctOrg;
         }
         //Check for major version compatibility
         const compatibleVersions =
-          config.hasOwnProperty("Version") && config.Version.split(".")[0] === version.split(".")[0];
+          metadataConfig.hasOwnProperty("Version") && metadataConfig.Version.split(".")[0] === version.split(".")[0];
 
         if (correctConfig && compatibleVersions) {
           if (validSha256) {
@@ -373,7 +332,7 @@ app.post("/chain", async (req, res) => {
             await stopMultichain(mcproc);
             await moveBackup(multichainDir, extractPath, CHAINNAME);
             spawnProcess(() =>
-              startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, P2P_PORT, multichainDir),
+              startMultichainDaemon(CHAINNAME, externalIpArg, blockNotifyArg, config.p2p.port, multichainDir),
             );
             AUTOSTART = true;
             res.send("OK");
@@ -401,6 +360,6 @@ app.post("/chain", async (req, res) => {
   }
 });
 
-app.listen(port, function () {
-  log.info(`App listening on ${port}`);
+app.listen(config.port, function () {
+  log.info(`App listening on ${config.port}`);
 });

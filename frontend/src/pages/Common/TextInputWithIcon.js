@@ -5,7 +5,7 @@ import TextField from "@mui/material/TextField";
 const TextInputWithIcon = ({ name, value, onChange, helperText, failed, icon, label, id, ...props }) => {
   return (
     <div className="text-input-container">
-      <div className="icon">{icon}</div>
+      {icon ? <div className="icon">{icon}</div> : null}
       <TextField
         name={name}
         variant="standard"

@@ -95,8 +95,16 @@ export function addHttpHandler(
       const sendResetPasswordUrl = "sendResetPasswordEmail";
 
       try {
+        const emailServiceToken = createJWT(
+          { userId: "TrubudgetApi", intent: "user.changePassword" },
+          jwt.secretOrPrivateKey,
+          jwt.algorithm,
+        );
+        const headers = { Authorization: `Bearer ${emailServiceToken}` };
+
         const { data } = await axios.get(
           `${emailService.protocol}://${emailService.host}:${emailService.port}/${getUserByEmailUrl}${email}`,
+          { headers },
         );
 
         const { user } = data;
@@ -116,6 +124,7 @@ export function addHttpHandler(
           await axios.post(
             `${emailService.protocol}://${emailService.host}:${emailService.port}/${sendResetPasswordUrl}`,
             { data: { ...user, link, lang } },
+            { headers },
           );
           reply.status(200).send({
             apiVersion: API_VERSION,
