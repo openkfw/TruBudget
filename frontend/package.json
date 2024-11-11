@@ -1,6 +1,6 @@
 {
   "name": "trubudget-frontend",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -116,7 +116,7 @@
     "moment": false
   },
   "overrides": {
-    "yaml": "^2.2.2",
-    "follow-redirects": "^1.15.6"
+    "nth-check": "^2.0.1",
+    "postcss": "^8.4.31"
   }
 }

@@ -18,6 +18,8 @@ import {
   CLEAR_REJECT_REASON,
   CREATE_WORKFLOW_SUCCESS,
   DEFAULT_WORKFLOW_EXCHANGERATE,
+  DELETE_WORKFLOW_DOCUMENT,
+  DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK,
   DISABLE_LIVE_UPDATES_SUBPROJECT,
   DISABLE_WORKFLOW_EDIT,
   EDIT_WORKFLOW_ITEM_SUCCESS,
@@ -79,6 +81,7 @@ import {
   WORKFLOW_DOCUMENT_EXTERNAL_LINK,
   WORKFLOW_DUEDATE,
   WORKFLOW_EXCHANGERATE,
+  WORKFLOW_FUNDING_ORGANIZATION,
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
   WORKFLOW_SEARCH_BAR_DISPLAYED,
@@ -119,7 +122,8 @@ const defaultState = fromJS({
     documents: [],
     workflowitemType: "general",
     assignee: "",
-    tags: []
+    tags: [],
+    fundingOrganization: ""
   },
   showWorkflowPermissions: false,
   idsPermissionsUnassigned: [],
@@ -243,7 +247,8 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("documents", fromJS(action.documents))
           .set("dueDate", action.dueDate)
           .set("workflowitemType", action.workflowitemType)
-          .set("tags", action.tags),
+          .set("tags", action.tags)
+          .set("fundingOrganization", action.fundingOrganization),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
@@ -343,6 +348,8 @@ export default function detailviewReducer(state = defaultState, action) {
       return state.merge({
         workflowToAdd: state.getIn(["workflowToAdd"]).set("currency", action.currency)
       });
+    case WORKFLOW_FUNDING_ORGANIZATION:
+      return state.setIn(["workflowToAdd", "fundingOrganization"], action.fundingOrganization);
     case DEFAULT_WORKFLOW_EXCHANGERATE:
       return state.merge({
         workflowToAdd: state.getIn(["workflowToAdd"]).set("exchangeRate", 1)
@@ -367,6 +374,14 @@ export default function detailviewReducer(state = defaultState, action) {
             comment: action.comment
           })
         ])
+      );
+    case DELETE_WORKFLOW_DOCUMENT_EXTERNAL_LINK:
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
+        documents.filter((item) => item.get("linkedFileHash") !== action.linkedFileHash)
+      );
+    case DELETE_WORKFLOW_DOCUMENT:
+      return state.updateIn(["workflowToAdd", "documents"], (documents) =>
+        documents.filter((item) => item.get("base64") !== action.base64)
       );
     case WORKFLOWITEM_TYPE:
       return state.setIn(["workflowToAdd", "workflowitemType"], action.workflowitemType);
@@ -579,10 +594,20 @@ export default function detailviewReducer(state = defaultState, action) {
     case SEARCH_TAGS_WORKFLOWITEM: {
       return state.set("searchOnlyTags", action.tagsOnly);
     }
-    case DELETE_DOCUMENT_SUCCESS:
-      return state.updateIn(["showDetailsItem", "data", "documents"], (documents) =>
-        Immutable.List([...documents.filter((doc) => doc.id !== action.payload.documentId)])
-      );
+    case DELETE_DOCUMENT_SUCCESS: {
+      const filteredShowDetailsDocuments = state
+        .getIn(["showDetailsItem", "data", "documents"], Immutable.List())
+        .filter((doc) => doc.id !== action.payload.documentId);
+
+      const filteredWorkflowToAddDocuments = state
+        .getIn(["workflowToAdd", "documents"])
+        .toJS()
+        .filter((doc) => doc.id !== action.payload.documentId);
+
+      return state
+        .setIn(["showDetailsItem", "data", "documents"], Immutable.List(filteredShowDetailsDocuments))
+        .setIn(["workflowToAdd", "documents"], Immutable.List(filteredWorkflowToAddDocuments));
+    }
     default:
       return state;
   }

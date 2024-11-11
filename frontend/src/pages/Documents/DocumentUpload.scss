@@ -25,6 +25,13 @@
   background-color: #f3f3f3;
 }
 
+.document-link-wrapper {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-direction: row;
+}
+
 .document-upload-container {
   display: flex;
   flex-direction: row;
@@ -61,8 +68,8 @@
 }
 
 .paper-forms {
-  padding: 10px 25px 10px 15px;
-  margin-top: 20px;
+  padding: 0.625rem 1.5rem 0.625rem 1rem;
+  margin-top: 1.25rem;
   justify-content: center;
-  min-width: 32ch;
+  min-width: 32rem;
 }

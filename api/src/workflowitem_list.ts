@@ -82,6 +82,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                           additionalData: { type: "object", additionalProperties: true },
                           workflowitemType: { type: "string", example: "general" },
                           tags: { type: "array", items: { type: "string", example: "test" } },
+                          fundingOrganization: { type: "string", example: "organization name" },
                           documents: {
                             type: "array",
                             items: {
@@ -146,6 +147,7 @@ interface ExposedWorkflowitem {
     additionalData: object;
     workflowitemType: Type | undefined;
     tags?: string[];
+    fundingOrganization?: string | null | undefined;
   };
 }
 
@@ -244,6 +246,7 @@ export function addHttpHandler(
                   additionalData: workflowitem.additionalData,
                   workflowitemType: workflowitem.workflowitemType,
                   tags: workflowitem.tags,
+                  fundingOrganization: workflowitem.fundingOrganization,
                 },
               };
               return exposedWorkflowitem;

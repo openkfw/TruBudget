@@ -283,20 +283,38 @@ echo "INFO: Since images are used, building is not necessary and will be skipped
 # e.g. alpha-node emaildb minio alpha-api email-service excel-export-service storage-service provisioning frontend
 read -a ALL_SERVICES_ARRAY <<< "$COMPOSE_SERVICES $ENABLED_SERVICES"
 
+SERVICES_WITH_ENV_VARS="alpha-node alpha-api email-service excel-export-service storage-service"
+
 # loop through the services array
 for service_to_be_started in "${ALL_SERVICES_ARRAY[@]}"
 do
-    echo "INFO: Validating environment variables for $service_to_be_started service ..."
+    # Check if service is included in the list of services to be started
+    if [[ ! $SERVICES_WITH_ENV_VARS =~ $service_to_be_started ]]; then
+        continue
+    fi
+    # Get correct docker image name
+    DOCKER_IMAGE_NAME=$(get_docker_image_name "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
+    echo ""
+    echo "INFO: Validating environment variables for $DOCKER_IMAGE_NAME service ..."
     SERVICE_ENV_VARS=$(parse_services_and_environment_variables "$SCRIPT_DIR/docker-compose.yml" "$SCRIPT_DIR/.env" $service_to_be_started)
     # Run environenment variables check
-    OUTPUT=$(docker run ${CONTAINERS_PREFIX}-${service_to_be_started} npm run validate-env-variables 2>&1)
+    OUTPUT=$(eval docker run ${SERVICE_ENV_VARS} ${DOCKER_IMAGE_NAME} npm run validate-env-variables 2>&1)
 
     if [[ $OUTPUT =~ "Config validation error" ]]; then
-        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file.${colorReset}"
+        echo "${red}ERROR: The .env file is not valid for the $service_to_be_started service. Please check the .env file $SCRIPT_DIR/.env.${colorReset}"
         echo $OUTPUT
         echo ""
+        echo "List of environment variables set for $service_to_be_started service:"
         echo "$SERVICE_ENV_VARS"
         exit 1
+    elif [[ $OUTPUT =~ "Environment variables are valid." ]]; then
+        echo " - Environment variables are valid for $service_to_be_started service."
+    elif [[ $OUTPUT =~ "Missing script: \"validate-env-variables\"" ]]; then
+        echo "NOTIFICATION: Service $service_to_be_started doesn't have environment variables validation implemented."
+        echo $OUTPUT
+    else
+        echo "${red}ERROR: Unexpected error occurred while validating environment variables for $service_to_be_started service.${colorReset}"
+        echo $OUTPUT
     fi
 done
 

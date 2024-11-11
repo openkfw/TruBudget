@@ -19,7 +19,7 @@ const en = {
     add_without_budget: "Add without budget",
     added: "Added",
     additional_data: "Additional Data",
-    amount: "Amount",
+    amount: "Financing Amount",
     approver: "Approver",
     assign: "assign",
     assigned_budget: "Assigned Budget",
@@ -129,7 +129,7 @@ const en = {
     tag: "Tag",
     task_status: "Task status",
     thumbnail: "Thumbnail",
-    total_budget: "Total Budget",
+    total_budget: "Participating Stakeholder",
     type: "Type",
     update: "Update",
     username: "Login ID",
@@ -310,7 +310,7 @@ const en = {
       "Only allow workflow action of type restricted. When assigning a restricted workflow action permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
     workflowitem_assignee: "Fixed assignee",
     organization_info: "Funding organization",
-    total_budget_info: "Total budget",
+    total_budget_info: "Participating Stakeholder",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
@@ -473,7 +473,7 @@ const en = {
     projected_budget_ratio: "Projected Budget Ratio",
     projected_budgets_distribution: "Projected Budgets Distribution",
     subproject_analytics: "Subproject Analytics",
-    total_budget_distribution: "Total Budget Distribution",
+    total_budget_distribution: "Participating Stakeholder Distribution",
     total: "Total:"
   },
 
@@ -557,6 +557,7 @@ const en = {
     workflowitem_intent_revokePermission: "The permissions for workflow action {0} changed",
     workflowitem_update: "Workflow action {0} was updated",
     workflowitem_updated: "Workflow action {0} was updated",
+    workflowitem_created: "Workflow action {0} was created",
     payload_error_message:
       "Oops!...Its not your fault - A client side validation error occured. Please inform the administrator."
   },
@@ -649,6 +650,7 @@ const en = {
     workflowitem_intent_grantPermission: "Grant workflow action permission",
     workflowitem_intent_listPermissions: "View workflow action permissions",
     workflowitem_intent_revokePermission: "Revoke workflow action permission",
+    workflowitem_list: "View workflow action",
     workflowitem_update: "Update workflow action",
     workflowitem_view: "View workflow action",
     write: "Write permissions"

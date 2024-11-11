@@ -20,6 +20,45 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Fixed -->
   
   
+## [2.17.0] - 2024-11-11
+
+<!-- ## Unreleased -->
+
+### Added
+  
+- UI: New design for Login Page [#2040](https://github.com/openkfw/TruBudget/issues/2040)
+- notifications: Added a notification when creating a workflow action [#2035](https://github.com/openkfw/TruBudget/issues/2035)
+- email-notification-service: Create transport without authentication [#2021](https://github.com/openkfw/TruBudget/issues/2021)
+- Add Remove button for each document/external link in DocumentUpload modal [#2018](https://github.com/openkfw/TruBudget/issues/2018)
+- Joi validation of environment variables for all services [#2005](https://github.com/openkfw/TruBudget/issues/2005)
+- Workflow item level have an option to specify the funding source [#1901](https://github.com/openkfw/TruBudget/issues/1901)
+
+
+
+### Changed
+
+- Change wording when changing permissions [#1889](https://github.com/openkfw/TruBudget/issues/1889)
+- In the ‘Total Budget’ overview  the term ‘Amount’ should be changed to ‘Financing Amount’.  [#1875](https://github.com/openkfw/TruBudget/issues/1875)
+- Rename the ‘Total Budget’ overview to ‘Participating Stakeholder’.  [#1874](https://github.com/openkfw/TruBudget/issues/1874)
+
+
+<!-- ### Deprecated -->
+
+<!-- ### Removed -->
+
+### Fixed
+
+- Reset password email not working with RS256 [#2082](https://github.com/openkfw/TruBudget/issues/2082)
+- blockchain<->email-service not working properly with RS256 [#2080](https://github.com/openkfw/TruBudget/issues/2080)
+- blockchain: Email notification protocol bug [#2077](https://github.com/openkfw/TruBudget/issues/2077)
+- Fix warning for nested div in console [#2042](https://github.com/openkfw/TruBudget/issues/2042)
+- ui: Creating new user often failing with "password cannot be empty" [#2034](https://github.com/openkfw/TruBudget/issues/2034)
+- ui: Cannot submit project edit when deleting tags [#2026](https://github.com/openkfw/TruBudget/issues/2026)
+- Some workflowitems cannot be closed due to error [#1894](https://github.com/openkfw/TruBudget/issues/1894)
+- Fix warning in subproject modal [#2032](https://github.com/openkfw/TruBudget/issues/2032)
+- Copy Paste functionality seems to work only on page 1 of projects [#1944](https://github.com/openkfw/TruBudget/issues/1944)
+- Documentation: Link to eMail service incorrect [#1943](https://github.com/openkfw/TruBudget/issues/1943)
+  
 ## [2.16.0] - 2024-10-04
 
 <!-- ## Unreleased -->
@@ -1269,7 +1308,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.16.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.17.0...main
+[2.17.0]: https://github.com/openkfw/TruBudget/compare/v2.16.0...v2.17.0
 [2.16.0]: https://github.com/openkfw/TruBudget/compare/v2.15.0...v2.16.0
 [2.15.0]: https://github.com/openkfw/TruBudget/compare/v2.14.0...v2.15.0
 [2.14.0]: https://github.com/openkfw/TruBudget/compare/v2.13.0...v2.14.0

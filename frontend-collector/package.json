@@ -1,6 +1,6 @@
 {
   "name": "trubudget-frontend-collector",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "description": "Collector for TruBudget frontend logs",
   "main": "serve.js",
   "repository": {
@@ -30,6 +30,7 @@
     "trubudget-logging-service": "^2.6.0"
   },
   "overrides": {
-    "find-my-way": "^8.2.2"
+    "find-my-way": "^8.2.2",
+    "cookie": "^0.7.0"
   }
 }

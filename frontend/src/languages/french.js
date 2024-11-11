@@ -19,7 +19,7 @@ const fr = {
     add_without_budget: "Ajouter sans budget",
     added: "Ajouté",
     additional_data: "Données Supplémentaires",
-    amount: "Montant",
+    amount: "Montant du financement",
     approver: "Approbateur",
     assign: "Allouer",
     assigned_budget: "Budget engagé",
@@ -230,7 +230,7 @@ const fr = {
       "Autoriser uniquement l'élément de flux de travail de type restreint. Lors de l'attribution d'un élément de flux de travail restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations d'affichage.",
     workflowitem_assignee: "Fixed assignee",
     organization_info: "Organisme de financement",
-    total_budget_info: "Total budget",
+    total_budget_info: "Partie prenante participante",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow action items in subproject without an option to change it."
@@ -555,14 +555,15 @@ const fr = {
     subproject_reorderWorkflowitems: "Les étapes de workflow action {0} ont été restauré",
     subproject_update: "Composante {0} a été actualisée",
     subproject_updated: "Composante {0} a été actualisée",
-    workflowitem_assign: " L’étape de workflow action {0} vous a été assignée",
-    workflowitem_assigned: " L’étape de workflow action {0} vous a été assignée",
-    workflowitem_close: " L’étape de workflow action {0} a été fermée",
-    workflowitem_closed: " L’étape de workflow action {0} a été fermée",
+    workflowitem_assign: "L’étape de workflow action {0} vous a été assignée",
+    workflowitem_assigned: "L’étape de workflow action {0} vous a été assignée",
+    workflowitem_close: "L’étape de workflow action {0} a été fermée",
+    workflowitem_closed: "L’étape de workflow action {0} a été fermée",
     workflowitem_intent_grantPermission: "Les autorisations sur l’étape de workflow action {0} ont changées",
     workflowitem_intent_revokePermission: "Les autorisations sur l’étape de workflow action {0} ont changées",
-    workflowitem_update: " L’étape de workflow action {0} a été actualisée",
-    workflowitem_updated: " L’étape de workflow action {0} a été actualisé",
+    workflowitem_update: "L’étape de workflow action {0} a été actualisée",
+    workflowitem_updated: "L’étape de workflow action {0} a été actualisé",
+    workflowitem_created: "L’étape de workflow action {0} vous a été assignée",
     payload_error_message:
       "Oups! ... Ce n'est pas de votre faute - Une erreur de validation côté client s'est produite. Veuillez informer l'administrateur."
   },
@@ -659,6 +660,7 @@ const fr = {
     workflowitem_intent_grantPermission: "Accorder des autorisations sur l’étape de workflow action",
     workflowitem_intent_listPermissions: "Afficher les autorisations sur l’étape de workflow action",
     workflowitem_intent_revokePermission: "Révoquer des autorisations sur l’étape de workflow action ",
+    workflowitem_list: "Voir l’étape de workflow action",
     workflowitem_update: "Mettre à jour l’étape de workflow action",
     workflowitem_view: "Voir l’étape de workflow action",
     write: "Autorisations d'écriture"

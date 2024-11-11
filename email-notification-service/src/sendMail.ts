@@ -3,6 +3,8 @@ import * as SMTPTransport from "nodemailer/lib/smtp-transport";
 import * as Mail from "nodemailer/lib/mailer";
 import config from "./config";
 import logger from "./logger";
+import SMTPConnection from "nodemailer/lib/smtp-connection";
+import { isEmpty } from "./util";
 
 const sendMail = async (
   emailAddresses: string | string[],
@@ -10,15 +12,21 @@ const sendMail = async (
   emailText?: string,
   template?: unknown,
 ): Promise<void> => {
+  const auth: SMTPConnection.AuthenticationType | undefined =
+    isEmpty(config.smtpServer.user) && isEmpty(config.smtpServer.password)
+      ? undefined
+      : {
+          user: config.smtpServer.user,
+          pass: config.smtpServer.password,
+        };
+
   const transportOptions: SMTPTransport.Options = {
     host: config.smtpServer.host,
     port: config.smtpServer.port,
     secure: config.smtpServer.secure,
-    auth: {
-      user: config.smtpServer.user,
-      pass: config.smtpServer.password,
-    },
+    auth,
   };
+
   try {
     logger.debug({ transportOptions }, "Sending email with transport options");
     const transporter = nodemailer.createTransport(transportOptions);

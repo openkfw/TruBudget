@@ -43,6 +43,7 @@ export interface Workflowitem {
   additionalData: object;
   workflowitemType?: Type;
   tags?: string[]; // todo not optional?
+  fundingOrganization?: string;
 }
 
 export interface RedactedWorkflowitem {
@@ -67,6 +68,7 @@ export interface RedactedWorkflowitem {
   additionalData: {};
   workflowitemType?: Type;
   tags?: string[];
+  fundingOrganization?: string;
 }
 
 export type ScrubbedWorkflowitem = Workflowitem | RedactedWorkflowitem;
@@ -134,6 +136,7 @@ export const schema = Joi.object().keys({
   additionalData: AdditionalData.schema.required(),
   workflowitemType: workflowitemTypeSchema,
   tags: Joi.array().items(safeStringSchema),
+  fundingOrganization: Joi.string(),
 });
 
 export function validate(input): Result.Type<Workflowitem> {
@@ -178,6 +181,7 @@ export function redact(workflowitem: Workflowitem): RedactedWorkflowitem {
     log: redactLog(workflowitem.log),
     additionalData: {},
     tags: workflowitem.tags || [],
+    fundingOrganization: "",
   };
 }
 

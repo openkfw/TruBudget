@@ -130,11 +130,11 @@ const UserDialogContent = ({
                 className="password short"
                 iconDisplayed={true}
                 label={strings.common.password}
-                password={values.password}
+                value={values.password}
                 error={Boolean(errors.password && touched.password)}
                 data-test="password-new-user"
-                onKeyUp={(e) => {
-                  setPassword(e.target.value);
+                onKeyUp={() => {
+                  setPassword(values.password);
                   handleIsFormValid(errors, isValid);
                 }}
                 as={UserPassword}
@@ -145,11 +145,11 @@ const UserDialogContent = ({
                 className="password short"
                 iconDisplayed={true}
                 label={strings.users.new_user_password_confirmation}
-                password={values.confirmPassword}
+                value={values.confirmPassword}
                 error={Boolean(errors.confirmPassword && touched.confirmPassword)}
                 data-test="password-new-user-confirm"
                 onKeyUp={(e) => {
-                  setConfirmPassword(e.target.value);
+                  setConfirmPassword(values.confirmPassword);
                   handleIsFormValid(errors, isValid);
                 }}
                 as={UserPassword}

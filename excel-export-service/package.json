@@ -1,6 +1,6 @@
 {
   "name": "excel-export",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "private": true,
   "description": "Export TruBudget data to Excel",
   "main": "src/index.js",
@@ -11,7 +11,9 @@
     "dev": "rimraf dist && tsc --watch & (sleep 10 && nodemon --inspect=0.0.0.0:9229 dist)",
     "watch": "tsc --watch & (sleep 30 && nodemon --inspect=0.0.0.0:9229 dist)",
     "lint": "eslint src --ext ts",
-    "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\""
+    "format": "prettier --write \"src/**/*.+(js|jsx|ts|tsx|yaml|mjs)\"",
+    "validate-env-variables": "node ./dist/scripts/envVarsValidator.js",
+    "generate-env-vars-docs": "ts-node ./scripts/envVarsDocsGenerator.ts"
   },
   "repository": {
     "type": "git",
@@ -31,6 +33,7 @@
     "express": "^4.21.0",
     "express-rate-limit": "^7.2.0",
     "helmet": "^7.1.0",
+    "joi": "^17.13.3",
     "jwt-decode": "^3.1.2",
     "localized-strings": "^0.2.4",
     "prettier": "^2.8.8",
@@ -51,9 +54,11 @@
     "nodemon": "^3.0.2",
     "prettier": "^2.8.8",
     "rimraf": "*",
+    "ts-node": "^10.9.2",
     "typescript": "^4.7.4"
   },
   "overrides": {
-    "follow-redirects": "^1.15.6"
+    "follow-redirects": "^1.15.6",
+    "cookie": "^0.7.0"
   }
 }

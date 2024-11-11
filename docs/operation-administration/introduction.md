@@ -57,13 +57,13 @@ If you want to read more about the concept of organizations, have a look at the 
 Configuration in TruBudget is individual for each service. Every service as seen below uses environment variables for its configuration.
 
 
-- [Blockchain](../../blockchain/environment-variables.md)
-- [API](../../api/environment-variables.md)
-- [Frontend](../../frontend/environment-variables.md)
-- [Provisioning (Optional)](../../provisioning/README.md)
-- [Excel-Export (Optional)](../../excel-export-service/environment-variables.md)
-- [Email-Notification (Optional)](../../email-notification-service/environment-variables.md)
-- [Storage-Service (Optional)](../../storage-service/environment-variables.md)
+- [Blockchain](../environment-variables/blockchain-environment-variables.md)
+- [API](../environment-variables/api-environment-variables.md)
+- [Frontend](../environment-variables/frontend-environment-variables.md)
+- [Provisioning (Optional)](https://github.com/openkfw/TruBudget/blob/main/provisioning/README.md)
+- [Excel-Export (Optional)](../environment-variables/excel-export-service-environment-variables.md)
+- [Email-Notification (Optional)](../environment-variables/email-notification-service-environment-variables.md)
+- [Storage-Service (Optional)](../environment-variables/storage-service-environment-variables.md)
 
 While configuring TruBudget, pay attention to environment variables used for communication between services, such as **_PORT** variables or **_IP**.
 

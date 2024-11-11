@@ -151,7 +151,7 @@ To ensure that the code is formatted properly we recommend following 
 
 If you are testing and debugging in Google Chrome, we recommend the following extensions:
 
-- [React Developer Tools](https://chrome.google.com/webstore/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi/related/)
+- [React Developer Tools](https://chromewebstore.google.com/detail/react-developer-tools/fmkadmapgofadopljbjfkapdkoienihi)
 
 - [Redux Developer Tools](https://chrome.google.com/webstore/detail/redux-devtools/lmhkpmbekcpmknklioeibfkpmmfibljd)
 
@@ -344,7 +344,7 @@ The API-Documentation should then be available at http://localhost:8080/api/docu
 
 ##### Using Postman
 
-One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/openkfw/TruBudget/blob/main/api/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
+One tool that can be used for REST calls is called [Postman](https://www.getpostman.com/). There is a [collection of API calls](https://github.com/openkfw/TruBudget/blob/main/postman/TruBudget.postman_collection.json) ready to be imported into Postman.
 
 #### Frontend
 
@@ -590,7 +590,7 @@ Here you can find a summary of all the technologies used in TruBudget with links
 [axios]: https://github.com/axios/axios
 [joi]: https://github.com/sideway/joi
 [postman]: https://www.postman.com/downloads/
-[react]: https://reactjs.org/docs/getting-started.html
+[react]: https://react.dev/
 [redux-saga]: https://redux-saga.js.org/
 [material-ui]: https://material-ui.com/
 [exceljs]: https://github.com/exceljs/exceljs

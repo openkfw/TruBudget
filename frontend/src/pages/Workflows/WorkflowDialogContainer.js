@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import { withRouter } from "../../wrappers/withRouter";
+import { deleteDocument } from "../Documents/actions";
 import withInitialLoading from "../Loading/withInitialLoading";
 import { showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import { fetchVersions, setStorageServiceAvailable } from "../Status/actions";
@@ -13,6 +14,8 @@ import {
   createWorkflowFromTemplateAction,
   createWorkflowItemAction,
   defaultWorkflowExchangeRate,
+  deleteWorkflowDocument,
+  deleteWorkflowDocumentExternalLink,
   editWorkflowItem,
   hideWorkflowDialog,
   removeWorkflowitemTag,
@@ -26,6 +29,7 @@ import {
   storeWorkflowDocumentExternalLink,
   storeWorkflowDueDate,
   storeWorkflowExchangeRate,
+  storeWorkflowFundingOrga,
   storeWorkflowitemType,
   storeWorkflowName,
   storeWorkflowStatus,
@@ -47,7 +51,8 @@ class WorkflowDialogContainer extends Component {
     workflowitemType,
     projectDisplayName,
     subprojectDisplayName,
-    tags
+    tags,
+    fundingOrganization
   ) => {
     const path = this.props.router.location.pathname.split("/");
     const projectId = path[2];
@@ -72,7 +77,8 @@ class WorkflowDialogContainer extends Component {
       subprojectDisplayName,
       assignee,
       assigneeDisplayName,
-      tags
+      tags,
+      fundingOrganization
     );
   };
 
@@ -142,6 +148,7 @@ const mapStateToProps = (state) => {
     hasFixedWorkflowitemType: state.getIn(["workflow", "hasFixedWorkflowitemType"]),
     hasSubprojectValidator: state.getIn(["workflow", "hasSubprojectValidator"]),
     projectDisplayName: state.getIn(["workflow", "parentProject", "displayName"]),
+    projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     selectedAssignee: state.getIn(["workflow", "workflowToAdd", "assignee"]),
     storageServiceAvailable: state.getIn(["status", "storageServiceAvailable"]),
     subProjectCurrency: state.getIn(["workflow", "subProjectCurrency"]),
@@ -153,7 +160,10 @@ const mapStateToProps = (state) => {
     workflowItems: state.getIn(["workflow", "workflowItems"]),
     workflowTemplate: state.getIn(["workflow", "workflowTemplate"]),
     workflowTemplates: state.getIn(["workflow", "workflowTemplates"]),
-    workflowToAdd: state.getIn(["workflow", "workflowToAdd"])
+    workflowToAdd: state.getIn(["workflow", "workflowToAdd"]),
+    documentToDelete: state.getIn(["documents", "deleteDocument"]),
+    workflowDocumentToDelete: state.getIn(["workflow", "workflowToAdd"]),
+    workflowDocumentExternalLinkToDelete: state.getIn(["workflow", "workflowToAdd"])
   };
 };
 
@@ -172,6 +182,7 @@ const mapDispatchToProps = (dispatch) => {
     storeWorkflowDueDate: (dueDate) => dispatch(storeWorkflowDueDate(dueDate)),
     storeWorkflowitemType: (workflowitemType) => dispatch(storeWorkflowitemType(workflowitemType)),
     storeWorkflowTemplate: (workflowTemplate) => dispatch(storeWorkflowTemplate(workflowTemplate)),
+    storeWorkflowFundingOrga: (fundingOrganization) => dispatch(storeWorkflowFundingOrga(fundingOrganization)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),
@@ -206,7 +217,11 @@ const mapDispatchToProps = (dispatch) => {
     setStorageServiceAvailable: (isAvailable) => dispatch(setStorageServiceAvailable(isAvailable)),
     addWorkflowitemTag: (tag) => dispatch(addWorkflowitemTag(tag)),
     removeWorkflowitemTag: (tag) => dispatch(removeWorkflowitemTag(tag)),
-    showErrorSnackbar: () => dispatch(showSnackbar(true))
+    showErrorSnackbar: () => dispatch(showSnackbar(true)),
+    deleteDocument: (projectId, subprojectId, workflowitemId, documentId) =>
+      dispatch(deleteDocument(projectId, subprojectId, workflowitemId, documentId)),
+    deleteWorkflowDocument: (base64) => dispatch(deleteWorkflowDocument(base64)),
+    deleteWorkflowDocumentExternalLink: (linkedFileHash) => dispatch(deleteWorkflowDocumentExternalLink(linkedFileHash))
   };
 };
 

@@ -19,7 +19,7 @@ const ka = {
     add_without_budget: "დაამატეთ ბიუჯეტის გარეშე",
     added: "დამატებულია",
     additional_data: "დამატებითი ინფორმაცია",
-    amount: "რაოდენობა",
+    amount: "დაფინანსების თანხა",
     approver: "Approver",
     assign: "assign",
     assigned_budget: "გამოყოფილი ბიუჯეტი",
@@ -312,7 +312,7 @@ const ka = {
       "მხოლოდ ტიპის workflow action- ის აკრძალვა შეზღუდულია. შეზღუდული workflow action- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
     workflowitem_assignee: "ფიქსირებული მიმწოდებელი",
     organization_info: "დამფინანსებელი ორგანიზაცია",
-    total_budget_info: "Total budget",
+    total_budget_info: "მონაწილე დაინტერესებული მხარე",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow actions in subproject without an option to change it."
@@ -559,6 +559,7 @@ const ka = {
     workflowitem_intent_revokePermission: "Workflow action-ის {0} ნებართები შეცვლილია",
     workflowitem_update: "Workflow action-ი {0} განახლებულია",
     workflowitem_updated: "Workflow action-ი {0} განახლებულია",
+    workflowitem_created: "Workflow action-ი {0} გადმოგეგზავნათ განსახილველად",
     payload_error_message:
       "უი! ... ეს არ არის თქვენი ბრალი - მოხდა კლიენტის მხრიდან ვალიდაციის შეცდომა. გთხოვთ, აცნობოთ ადმინისტრატორს."
   },
@@ -651,6 +652,7 @@ const ka = {
     workflowitem_intent_grantPermission: "მიანიჭეთ workflow action-ის ნებართვები",
     workflowitem_intent_listPermissions: "იხილეთ workflow action-ის ნებართვები",
     workflowitem_intent_revokePermission: "გააუქმეთ workflow action-ის ნებართვები",
+    workflowitem_list: "იხილეთ workflowitem-ები",
     workflowitem_update: "განაახლეთ workflow action-ები",
     workflowitem_view: "იხილეთ workflow action-ები",
     write: "გაეცით ნებართვები"
