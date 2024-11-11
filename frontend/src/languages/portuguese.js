@@ -281,7 +281,8 @@ const pt = {
     project_thumbnail: "Miniatura",
     project_title_description: "Descrição do projeto",
     project_title: "Nome do projeto",
-    project_searchtext: "Pesquisar projectos"
+    project_searchtext: "Pesquisar projectos",
+    markdown: "Descrição do projeto"
   },
 
   subproject: {

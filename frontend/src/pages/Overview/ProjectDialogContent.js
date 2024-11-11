@@ -1,5 +1,6 @@
 import React from "react";
 
+import { Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 
 import { trimSpecialChars } from "../../helper";
@@ -7,6 +8,7 @@ import strings from "../../localizeStrings";
 import Budget from "../Common/Budget";
 import Identifier from "../Common/Identifier";
 import ImageSelector from "../Common/ImageSelector";
+import Markdown from "../Common/Markdown";
 import TagEditor from "../Common/TagEditor";
 
 const ProjectDialogContent = (props) => {
@@ -49,6 +51,11 @@ const ProjectDialogContent = (props) => {
           projectTags={props.projectToAdd.tags}
           tagText={strings.common.add_tag_text}
         />
+      </div>
+      <Divider />
+      <div>
+        <Typography variant="subtitle2">{strings.project.markdown}</Typography>
+        <Markdown onChangeFunc={props.storeProjectMarkdown} markdown={props.projectToAdd.markdown} />
       </div>
     </div>
   );

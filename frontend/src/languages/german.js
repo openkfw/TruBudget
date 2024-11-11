@@ -196,7 +196,8 @@ const de = {
     project_thumbnail: "Thumbnail",
     project_title: "Projekt Titel",
     project_title_description: "Name des Projekts",
-    project_searchtext: "Projekte durchsuchen"
+    project_searchtext: "Projekte durchsuchen",
+    markdown: "Projektbeschreibung"
   },
 
   subproject: {

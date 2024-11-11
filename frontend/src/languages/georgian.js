@@ -281,7 +281,8 @@ const ka = {
     project_thumbnail: "Thumbnail",
     project_title_description: "პროექტის სახელწოდება",
     project_title: "პროექტის სათაური",
-    project_searchtext: "პროექტების ძებნა"
+    project_searchtext: "პროექტების ძებნა",
+    markdown: "პროექტის აღწერა"
   },
 
   subproject: {

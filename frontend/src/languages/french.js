@@ -198,7 +198,8 @@ const fr = {
     project_thumbnail: "Vignette",
     project_title_description: "Description du titre du projet",
     project_title: "Titre de projet",
-    project_searchtext: "Recherche de projets"
+    project_searchtext: "Recherche de projets",
+    markdown: "Commentaire sur le projet"
   },
 
   subproject: {

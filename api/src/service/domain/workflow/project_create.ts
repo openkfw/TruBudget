@@ -35,6 +35,7 @@ export interface RequestData {
   projectedBudgets?: ProjectedBudget[];
   additionalData?: AdditionalData.AdditionalData;
   tags?: string[];
+  markdown?: string;
 }
 
 const requestDataSchema = Joi.object({
@@ -47,6 +48,7 @@ const requestDataSchema = Joi.object({
   projectedBudgets: projectedBudgetListSchema,
   additionData: AdditionalData.schema,
   tags: Joi.array().items(Project.tagsSchema),
+  markdown: Joi.string().allow(""),
 });
 
 export function validate(input): Result.Type<RequestData> {
@@ -83,6 +85,7 @@ export async function createProject(
       permissions: newDefaultPermissionsFor(creatingUser),
       additionalData: data.additionalData || {},
       tags: data.tags || [],
+      markdown: data.markdown,
     },
     new Date().toISOString(),
     creatingUser.metadata,

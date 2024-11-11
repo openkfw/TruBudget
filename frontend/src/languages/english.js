@@ -280,7 +280,8 @@ const en = {
     project_thumbnail: "Thumbnail",
     project_title_description: "Name of the project",
     project_title: "Project title",
-    project_searchtext: "Search projects"
+    project_searchtext: "Search projects",
+    markdown: "Project description"
   },
 
   subproject: {
