@@ -159,7 +159,7 @@ const envVarsSchema = Joi.object({
   JWT_SECRET: Joi.string()
     .when("EMAIL_SERVICE_ENABLED", {
       is: true,
-      then: Joi.required(),
+      then: Joi.required().when("JWT_ALGORITHM", { is: "RS256", then: Joi.string().base64().min(2240) }),
       otherwise: Joi.optional().allow("", null),
     })
     .note(
