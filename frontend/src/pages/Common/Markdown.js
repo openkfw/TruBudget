@@ -13,11 +13,11 @@ import {
 
 import "@mdxeditor/editor/style.css";
 
-const Markdown = ({ markdown, onChangeFunc }) => {
+const Markdown = ({ text, onChangeFunc }) => {
   return (
     <MDXEditor
-      markdown={markdown || "TODO: FIX *undefined*"}
-      onChange={(markdown) => onChangeFunc(markdown)}
+      markdown={text || "TODO: FIX *undefined*"}
+      onChange={onChangeFunc}
       plugins={[
         toolbarPlugin({
           toolbarContents: () => (

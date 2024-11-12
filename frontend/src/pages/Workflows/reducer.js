@@ -123,7 +123,8 @@ const defaultState = fromJS({
     workflowitemType: "general",
     assignee: "",
     tags: [],
-    fundingOrganization: ""
+    fundingOrganization: "",
+    markdown: ""
   },
   showWorkflowPermissions: false,
   idsPermissionsUnassigned: [],

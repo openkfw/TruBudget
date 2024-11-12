@@ -300,7 +300,8 @@ const de = {
     workflowitem_type_general: "Legen Sie ein Workflow-Item vom Typ 'general' an.",
     workflowitem_type_restricted:
       "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
-    workflowitem_type: "Workflow action Typ"
+    workflowitem_type: "Workflow action Typ",
+    markdown: "Beschreibung der Workflow-Aktion"
   },
 
   workflowTemplate: {

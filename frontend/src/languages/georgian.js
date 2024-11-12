@@ -387,7 +387,8 @@ const ka = {
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
-    workflowitem_type: "Workflow action ტიპი"
+    workflowitem_type: "Workflow action ტიპი",
+    markdown: "აღწერა"
   },
 
   workflowTemplate: {

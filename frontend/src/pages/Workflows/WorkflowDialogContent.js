@@ -2,6 +2,7 @@ import React from "react";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
@@ -200,7 +201,8 @@ const WorkflowDialogContent = (props) => {
       </div>
       <Divider />
       <div>
-        <Markdown markdown={""} onChangeFunc={() => {}} />
+        <Typography variant="subtitle2">{strings.workflow.markdown}</Typography>
+        <Markdown text={workflowToAdd.markdown} onChangeFunc={() => {}} />
       </div>
     </div>
   );
