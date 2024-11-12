@@ -10,6 +10,7 @@ import Tooltip from "@mui/material/Tooltip";
 import strings from "../../localizeStrings";
 import DatePicker from "../Common/DatePicker";
 import Identifier from "../Common/Identifier";
+import Markdown from "../Common/Markdown";
 import Dropdown from "../Common/NewDropdown";
 import SingleSelection from "../Common/SingleSelection";
 import TagEditor from "../Common/TagEditor";
@@ -196,6 +197,10 @@ const WorkflowDialogContent = (props) => {
           projectTags={tags}
           tagText={strings.workflow.add_tag_wfi_text}
         />
+      </div>
+      <Divider />
+      <div>
+        <Markdown markdown={""} onChangeFunc={() => {}} />
       </div>
     </div>
   );

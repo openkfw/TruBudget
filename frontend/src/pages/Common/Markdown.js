@@ -16,7 +16,7 @@ import "@mdxeditor/editor/style.css";
 const Markdown = ({ markdown, onChangeFunc }) => {
   return (
     <MDXEditor
-      markdown={markdown || "TODO: TABLE VIEW EDIT FAILS"}
+      markdown={markdown || "TODO: FIX *undefined*"}
       onChange={(markdown) => onChangeFunc(markdown)}
       plugins={[
         toolbarPlugin({
