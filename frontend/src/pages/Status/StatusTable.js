@@ -1,8 +1,11 @@
 import React, { useCallback, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
+import CircleIcon from "@mui/icons-material/Circle";
+import DesktopMacOutlinedIcon from "@mui/icons-material/DesktopMacOutlined";
 import {
   Button,
+  Chip,
   CircularProgress,
   Paper,
   Table,
@@ -33,7 +36,7 @@ const getConnectionDescription = (ping) => {
   ping = Number(ping);
   if (ping <= FAST_CONNECTION_PING) {
     return {
-      circleColor: "green",
+      circleColor: "#39F439",
       connectionDescription: strings.status.fast
     };
   }
@@ -57,18 +60,18 @@ const getConnectionDescription = (ping) => {
 
 function renderCircularProgressRow(service) {
   return (
-    <TableRow key={`status-${service}-row`}>
-      <TableCell>{service}</TableCell>
-      <TableCell>
+    <TableRow key={`status-${service}-row`} className="status-table-row">
+      <TableCell className="status-table-cell first-table-cell">{service}</TableCell>
+      <TableCell className="status-table-cell">
         <CircularProgress size={20} />
       </TableCell>
-      <TableCell>
+      <TableCell className="status-table-cell">
         <CircularProgress size={20} />
       </TableCell>
-      <TableCell className="centered-table-cell">
+      <TableCell className="status-table-cell">
         <CircularProgress size={20} />
       </TableCell>
-      <TableCell />
+      <TableCell className="status-table-cell" />
     </TableRow>
   );
 }
@@ -139,12 +142,23 @@ const StatusTable = (props) => {
   const renderEmptyStatusRow = (service) => {
     const release = filteredVersions[service].release || "?";
     return (
-      <TableRow key={`status-${service}-row`}>
-        <TableCell>{service}</TableCell>
-        <TableCell data-test={`release-version-${service}`}>{release}</TableCell>
-        <TableCell />
-        <TableCell />
-        <TableCell />
+      <TableRow key={`status-${service}-row`} className="status-table-row">
+        <TableCell className="status-table-cell first-table-cell">{service}</TableCell>
+        <TableCell className="status-table-cell" data-test={`release-version-${service}`}>
+          {release}
+        </TableCell>
+        <TableCell className="status-table-cell">-</TableCell>
+        <TableCell className="status-table-cell">
+          <Chip
+            label="N/A"
+            sx={{
+              backgroundColor: "rgba(23, 68, 229, 0.1)",
+              color: "rgba(63, 67, 77, 1)"
+            }}
+            size="small"
+          />
+        </TableCell>
+        <TableCell className="status-table-cell">-</TableCell>
       </TableRow>
     );
   };
@@ -153,19 +167,40 @@ const StatusTable = (props) => {
     const ping = filteredVersions[service].ping;
     const release = filteredVersions[service].release || "?";
     const { circleColor, connectionDescription } = getConnectionDescription(ping);
-    const circle = <div className="status-circle" style={{ backgroundColor: circleColor }} />;
+    const circle = (
+      <Chip
+        label={strings.status.connected}
+        sx={{
+          backgroundColor: "rgba(23, 68, 229, 0.1)",
+          color: "rgba(63, 67, 77, 1)"
+        }}
+        size="small"
+        icon={
+          <CircleIcon
+            color="info"
+            sx={{
+              backgroundColor: "white",
+              color: circleColor,
+              borderRadius: "100%",
+              width: "0.75rem",
+              height: "0.75rem"
+            }}
+          />
+        }
+      />
+    );
     if (!isFetchingVersion(service)) {
       return (
-        <TableRow key={`status-${service}-row`}>
-          <TableCell>{service}</TableCell>
-          <TableCell data-test={`release-version-${service}`}>{release}</TableCell>
-          <TableCell>
-            <Typography>{ping ? `${ping.toFixed(0)} ms` : strings.status.no_ping_available}</Typography>
+        <TableRow key={`status-${service}-row`} className="status-table-row">
+          <TableCell className="status-table-cell first-table-cell">{service}</TableCell>
+          <TableCell className="status-table-cell" data-test={`release-version-${service}`}>
+            {release}
           </TableCell>
-          <TableCell className="centered-table-cell">{circle}</TableCell>
-          <TableCell>
-            <Typography>{connectionDescription}</Typography>
+          <TableCell className="status-table-cell">
+            {ping ? `${ping.toFixed(0)} ms` : strings.status.no_ping_available}
           </TableCell>
+          <TableCell className="status-table-cell">{circle}</TableCell>
+          <TableCell className="status-table-cell">{connectionDescription}</TableCell>
         </TableRow>
       );
     } else {
@@ -200,15 +235,19 @@ const StatusTable = (props) => {
             <p>This will turn off, upgrade and restart the application.</p>
           </div>
         )}
-        <Paper>
+        <Paper sx={{ padding: "1.5rem" }}>
+          <div className="title-row">
+            <DesktopMacOutlinedIcon fontSize="small" />
+            <Typography className="status-card-title">{strings.navigation.service_status}</Typography>
+          </div>
           <Table>
             <TableHead>
-              <TableRow>
-                <TableCell>{strings.status.service}</TableCell>
-                <TableCell>{strings.status.version}</TableCell>
-                <TableCell>{strings.status.ping}</TableCell>
-                <TableCell className="centered-table-cell">{strings.status.connection}</TableCell>
-                <TableCell />
+              <TableRow className="status-table-header">
+                <TableCell className="status-header-cell first-table-cell">{strings.status.service}</TableCell>
+                <TableCell className="status-header-cell">{strings.status.version}</TableCell>
+                <TableCell className="status-header-cell">{strings.status.ping}</TableCell>
+                <TableCell className="status-header-cell">{strings.status.connection}</TableCell>
+                <TableCell className="status-header-cell">{strings.status.speed}</TableCell>
               </TableRow>
             </TableHead>
             <TableBody data-test="status-table-body">

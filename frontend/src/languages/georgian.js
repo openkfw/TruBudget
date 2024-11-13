@@ -701,7 +701,9 @@ const ka = {
     error: "შეცდომა",
     warning: "გაფრთხილება",
     done: "შესრულებულია",
-    toBeDone: "უნდა გაკეთდეს"
+    toBeDone: "უნდა გაკეთდეს",
+    speed: "სიჩქარე",
+    connected: "დაკავშირებულია"
   },
 
   picture: {

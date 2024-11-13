@@ -701,7 +701,9 @@ const de = {
     error: "Fehler",
     warning: "Warnung",
     done: "Fertig",
-    toBeDone: "Ist noch offen"
+    toBeDone: "Ist noch offen",
+    speed: "Geschwindigkeit",
+    connected: "Verbunden"
   },
 
   picture: {

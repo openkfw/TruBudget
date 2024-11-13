@@ -699,7 +699,9 @@ const en = {
     error: "Error",
     warning: "Warning",
     done: "Done",
-    toBeDone: "To Be Done"
+    toBeDone: "To Be Done",
+    speed: "Speed",
+    connected: "Connected"
   },
 
   picture: {
