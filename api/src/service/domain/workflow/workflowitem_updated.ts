@@ -36,6 +36,7 @@ export interface Modification {
   additionalData?: object;
   tags?: string[];
   fundingOrganization?: string;
+  markdown?: string;
 }
 
 export const modificationSchema = Joi.object({
@@ -52,6 +53,7 @@ export const modificationSchema = Joi.object({
   additionalData: AdditionalData.schema,
   tags: Joi.array().items(safeStringSchema),
   fundingOrganization: safeStringSchema.allow(""),
+  markdown: Joi.string().allow(""),
 });
 
 export interface Event {

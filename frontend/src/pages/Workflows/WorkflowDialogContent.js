@@ -67,6 +67,7 @@ const WorkflowDialogContent = (props) => {
     storeWorkflowExchangeRate,
     storeWorkflowFundingOrga,
     defaultWorkflowExchangeRate,
+    storeWorkflowMarkdown,
     tags,
     projectedBudgets
   } = props;
@@ -202,7 +203,7 @@ const WorkflowDialogContent = (props) => {
       <Divider />
       <div>
         <Typography variant="subtitle2">{strings.workflow.markdown}</Typography>
-        <Markdown text={workflowToAdd.markdown} onChangeFunc={() => {}} />
+        <Markdown text={workflowToAdd.markdown} onChangeFunc={storeWorkflowMarkdown} />
       </div>
     </div>
   );

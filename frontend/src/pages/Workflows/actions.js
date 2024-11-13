@@ -156,6 +156,8 @@ export const SEARCH_TAGS_WORKFLOWITEM = "SEARCH_TAGS_WORKFLOWITEM";
 export const WORKFLOW_SEARCH_BAR_DISPLAYED = "WORKFLOW_SEARCH_BAR_DISPLAYED";
 export const WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY = "WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY";
 
+export const WORKFLOW_MARKDOWN = "WORKFLOW_MARKDOWN";
+
 export function fetchAllSubprojectDetails(projectId, subprojectId, showLoading = false) {
   return {
     type: FETCH_ALL_SUBPROJECT_DETAILS,
@@ -499,7 +501,8 @@ export function showEditDialog(
   dueDate,
   workflowitemType,
   tags,
-  fundingOrganization
+  fundingOrganization,
+  markdown
 ) {
   return {
     type: SHOW_WORKFLOW_EDIT,
@@ -514,7 +517,8 @@ export function showEditDialog(
     dueDate,
     workflowitemType,
     tags,
-    fundingOrganization
+    fundingOrganization,
+    markdown
   };
 }
 
@@ -948,5 +952,12 @@ export function storeWorkflowSearchTermArray(searchTerms) {
   return {
     type: WORKFLOW_STORE_SEARCH_TERMS_AS_ARRAY,
     searchTerms
+  };
+}
+
+export function storeWorkflowMarkdown(markdown) {
+  return {
+    type: WORKFLOW_MARKDOWN,
+    markdown
   };
 }

@@ -82,6 +82,7 @@ import {
   WORKFLOW_DUEDATE,
   WORKFLOW_EXCHANGERATE,
   WORKFLOW_FUNDING_ORGANIZATION,
+  WORKFLOW_MARKDOWN,
   WORKFLOW_NAME,
   WORKFLOW_PURPOSE,
   WORKFLOW_SEARCH_BAR_DISPLAYED,
@@ -249,7 +250,8 @@ export default function detailviewReducer(state = defaultState, action) {
           .set("dueDate", action.dueDate)
           .set("workflowitemType", action.workflowitemType)
           .set("tags", action.tags)
-          .set("fundingOrganization", action.fundingOrganization),
+          .set("fundingOrganization", action.fundingOrganization)
+          .set("markdown", action.markdown),
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
@@ -357,6 +359,9 @@ export default function detailviewReducer(state = defaultState, action) {
       });
     case WORKFLOW_STATUS:
       return state.setIn(["workflowToAdd", "status"], action.status);
+    case WORKFLOW_MARKDOWN: {
+      return state.setIn(["workflowToAdd", "markdown"], action.markdown);
+    }
     case WORKFLOW_DOCUMENT:
       return state.updateIn(["workflowToAdd", "documents"], (documents) =>
         Immutable.List([
