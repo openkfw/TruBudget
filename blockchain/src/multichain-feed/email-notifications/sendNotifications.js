@@ -20,6 +20,16 @@ function ExpiredTokenException(message) {
   this.name = "ExpiredTokenException";
 }
 
+function InvalidAlgorithmException(message) {
+  this.message = message;
+  this.name = "InvalidAlgorithmException";
+}
+
+function InvalidTokenException(message) {
+  this.message = message;
+  this.name = "InvalidTokenException";
+}
+
 function ConnectionRefusedException(message) {
   this.message = message;
   this.name = "ECONNREFUSED";
@@ -79,10 +89,15 @@ const sendNotifications = async (path, emailServiceSocketAddress, token, ssl = f
         }
       }
       switch (error.response.status) {
-        case 400:
-          // If Bearer token has expired
-          throw new ExpiredTokenException("JWT-Token expired");
-
+        case 400: {
+          if (error.response.data.message === "invalid algorithm") {
+            throw new InvalidAlgorithmException("invalid algorithm");
+          }
+          if (error.response.data.message === "jwt expired") {
+            throw new ExpiredTokenException("JWT-Token expired");
+          }
+          throw new InvalidTokenException("invalid token");
+        }
         case 404:
           // If no email address is found in the database delete the notification file
           if (error.response.data.notification.emailAddress === "Not Found") {
@@ -143,7 +158,13 @@ const [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopInterva
 const absolutePath = process.cwd() + "/" + path;
 
 (async () => {
-  let token = createJWT(secret, "notification-watcher", algorithm);
+  let token;
+  try {
+    token = createJWT(secret, "notification-watcher", algorithm);
+  } catch (error) {
+    log.error(error, "Error creating JWT. Notification Watcher exiting.");
+    process.exit(1);
+  }
 
   while (true) {
     log.trace("Checking for new notifications");
@@ -154,8 +175,10 @@ const absolutePath = process.cwd() + "/" + path;
       if (error.name === "ExpiredTokenException") {
         token = createJWT(secret, "notification-watcher", algorithm);
         log.info("New JWT token created due to expiration.");
+      } else if (error.name === "InvalidAlgorithmException") {
+        log.error(error, `Notification e-mail request signed with invalid algorithm: ${algorithm}`);
       } else {
-        log.error("Error during notification processing:", error);
+        log.error(error, "Error during notification processing");
       }
     }
     await sleep(loopIntervalSeconds);
