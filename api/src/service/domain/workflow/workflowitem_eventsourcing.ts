@@ -124,6 +124,7 @@ function newTraceEvent(
       amount: workflowitem.amount,
       currency: workflowitem.currency,
       amountType: workflowitem.amountType,
+      markdown: workflowitem.markdown,
     },
   };
 }

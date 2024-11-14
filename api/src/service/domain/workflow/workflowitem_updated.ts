@@ -168,6 +168,7 @@ function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modificati
     "dueDate",
     "tags",
     "fundingOrganization",
+    "markdown",
   ].forEach((propname) => {
     if (update[propname] !== undefined) {
       workflowitem[propname] = update[propname];

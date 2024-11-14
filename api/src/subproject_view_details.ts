@@ -97,6 +97,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                           },
                         },
                         additionalData: { type: "object", additionalProperties: true },
+                        markdown: { type: "string", example: "Bla bla bla" },
                       },
                     },
                     allowedIntents: { type: "array", items: { type: "string" } },
@@ -175,7 +176,7 @@ interface ExposedWorkflowitem {
     workflowitemType?: WorkflowitemType;
     tags: string[];
     fundingOrganization?: string | null;
-    markdown: string;
+    markdown?: string;
   };
   allowedIntents: Intent[];
 }

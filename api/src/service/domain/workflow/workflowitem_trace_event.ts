@@ -11,6 +11,7 @@ export interface WorkflowitemTraceEvent {
     amount?: string;
     currency?: string;
     amountType?: string;
+    markdown?: string;
   };
 }
 
@@ -23,5 +24,6 @@ export const workflowitemTraceEventSchema = Joi.object({
     amount: Joi.string(),
     currency: Joi.string(),
     amountType: Joi.string(),
+    markdown: Joi.string(),
   }).required(),
 });

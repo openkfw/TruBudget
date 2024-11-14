@@ -25,7 +25,7 @@ interface RequestBodyV1 {
     thumbnail?: string;
     additionalData?: object;
     tags?: string[];
-    markdown: string;
+    markdown?: string;
   };
 }
 

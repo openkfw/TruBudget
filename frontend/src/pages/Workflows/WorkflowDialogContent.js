@@ -71,6 +71,7 @@ const WorkflowDialogContent = (props) => {
     tags,
     projectedBudgets
   } = props;
+  console.log(workflowToAdd.markdown);
   const { workflowitemType } = workflowToAdd;
   const isWorkflowFromTemplate = !!workflowTemplate;
 
