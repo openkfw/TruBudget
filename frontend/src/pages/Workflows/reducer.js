@@ -235,7 +235,7 @@ export default function detailviewReducer(state = defaultState, action) {
         showDetails: false,
         showDetailsItem: defaultState.get("showDetailsItem")
       });
-    case SHOW_WORKFLOW_EDIT:
+    case SHOW_WORKFLOW_EDIT: {
       return state.merge({
         workflowToAdd: state
           .getIn(["workflowToAdd"])
@@ -255,6 +255,7 @@ export default function detailviewReducer(state = defaultState, action) {
         editDialogShown: true,
         dialogTitle: strings.workflow.edit_item
       });
+    }
     case ASSIGN_WORKFLOWITEM_SUCCESS:
       return state.updateIn(["submittedWorkflowItems"], (workflowitems) => [
         ...workflowitems,

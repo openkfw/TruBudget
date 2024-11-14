@@ -24,6 +24,6 @@ export const workflowitemTraceEventSchema = Joi.object({
     amount: Joi.string(),
     currency: Joi.string(),
     amountType: Joi.string(),
-    markdown: Joi.string(),
+    markdown: Joi.string().allow(""),
   }).required(),
 });
