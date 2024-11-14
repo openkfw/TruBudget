@@ -11,7 +11,8 @@
   font-size: 0.75rem;
   line-height: 1.05rem;
   vertical-align: top;
-  border-bottom: 1px solid rgba(63, 67, 77, 0.1);
+  border-bottom: 1px solid;
+  border-color: var(--mui-palette-menuBorder);
 }
 
 .status-table-cell {
@@ -20,7 +21,8 @@
   font-weight: 400;
   font-size: 0.875rem;
   line-height: 1.269rem;
-  border-bottom: 1px solid rgba(63, 67, 77, 0.1);
+  border-bottom: 1px solid;
+  border-color: var(--mui-palette-menuBorder);
 }
 
 .first-table-cell {

@@ -151,10 +151,7 @@ const StatusTable = (props) => {
         <TableCell className="status-table-cell">
           <Chip
             label="N/A"
-            sx={{
-              backgroundColor: "rgba(23, 68, 229, 0.1)",
-              color: "rgba(63, 67, 77, 1)"
-            }}
+            sx={(theme) => ({ backgroundColor: theme.palette.primaryBlue, color: theme.palette.darkGrey })}
             size="small"
           />
         </TableCell>
@@ -170,10 +167,7 @@ const StatusTable = (props) => {
     const circle = (
       <Chip
         label={strings.status.connected}
-        sx={{
-          backgroundColor: "rgba(23, 68, 229, 0.1)",
-          color: "rgba(63, 67, 77, 1)"
-        }}
+        sx={(theme) => ({ backgroundColor: theme.palette.primaryBlue, color: theme.palette.darkGrey })}
         size="small"
         icon={
           <CircleIcon
