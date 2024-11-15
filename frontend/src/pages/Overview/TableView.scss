@@ -4,7 +4,8 @@
 }
 
 .project-column {
-  font-size: 1.1rem;
+  font-size: 0.75rem;
+  color: var(--black-deep-dark-blue-black-100, #111826);
 }
 
 .project-tags-box {
@@ -18,18 +19,18 @@
   width: 100%;
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
   margin-top: 2rem;
-  margin-bottom: 2rem;
+  margin-bottom: 1rem;
+  background-color: transparent;
+}
+.project-box-block {
+  background-color: transparent;
 }
 
 .project-actions {
   display: flex;
   align-items: center;
-}
-
-.project-box-block {
-  display: block;
 }
 
 .filter-menu-box {
@@ -47,8 +48,96 @@
 }
 
 .project-add-button {
-  height: 4rem;
-  width: 4rem;
-  margin-bottom: -7.5rem;
-  margin-right: -2rem;
+  height: 2.5rem;
+  width: auto;
+  border-radius: 2.5rem;
+  padding: 1.5rem 1.25rem;
+  box-shadow: none;
+  color: white;
+  text-transform: none;
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 24;
+  background-color: var(--mui-palette-darkBlue);
+  &:hover {
+    background-color: var(--mui-palette-deepDarkBlue);
+  }
+}
+
+.add-new-project-text {
+  margin-right: 0.375rem;
+  margin-left: 0.375rem;
+}
+
+.project-image {
+  display: flex;
+  width: 128px;
+  max-width: 128px;
+  justify-content: center;
+  align-items: center;
+  align-self: stretch;
+  padding-left: 0;
+}
+
+.project-name {
+  color: var(--mui-palette-deepDarkBlueBlack);
+  font-size: 1rem;
+  font-style: normal;
+  font-weight: 600;
+  line-height: 145%;
+  letter-spacing: 0.12px;
+}
+
+.project-created-on,
+.project-status {
+  color: var(--mui-palette-darkGrey);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 400;
+  line-height: 140%;
+}
+
+.menu-item-box {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 10%;
+  margin-right: 0.3rem;
+}
+
+.check-icon {
+  width: 1rem;
+  height: 1rem;
+}
+
+.filter-menu-dropdown {
+  margin-left: 0.75rem;
+}
+
+.filter-menu-item {
+  &:first-of-type {
+    background-color: transparent;
+    &:hover {
+      background-color: var(--mui-palette-grey-light);
+    }
+  }
+}
+
+.filter-date-dropdown-wrapper,
+.filter-dropdown-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  height: 1.5rem;
+  border: 1px solid;
+  border-color: var(--mui-palette-faintGrey);
+  border-radius: 2.5rem;
+  padding: 0.375rem 0.75rem;
+  background-color: white;
+  box-shadow: none;
+  cursor: pointer;
+  &:hover {
+    background-color: var(--mui-palette-grey-light);
+  }
 }

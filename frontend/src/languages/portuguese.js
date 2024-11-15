@@ -40,7 +40,7 @@ const pt = {
     confirm: "Confirme",
     copy: "Copy",
     create: "Criar",
-    created: "Data de criação",
+    created: "Criado em",
     currency: "Moeda",
     deselect_all: "Desmarcar todos",
     disbursed_budget: "Custo pago",
@@ -146,7 +146,17 @@ const pt = {
     refresh_assignments: "Atualizar atribuições",
     tags: "Etiquetas",
     all: "Tudo",
-    assignee: "Responsável"
+    assignee: "Responsável",
+    project_name: "Nome do projeto",
+    copy_link: "Copiar link",
+    filter_by_search: "Filtrar por pesquisa",
+    budgets: "Orçamentos",
+    filter: "Filtro",
+    date_range: "Período",
+    any_date: "Qualquer data",
+    date_30_days: "Últimos 30 dias",
+    date_6_months: "Últimos 6 meses",
+    date_custom: "Personalizado"
   },
 
   users: {

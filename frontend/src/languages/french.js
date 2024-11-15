@@ -40,7 +40,7 @@ const fr = {
     confirm: "Confirmer",
     copy: "Copy",
     create: "Créer",
-    created: "Date de création",
+    created: "Créé le",
     currency: "Devise",
     deselect_all: "Tout déselectionner",
     disbursed_budget: "Montants payés",
@@ -146,7 +146,17 @@ const fr = {
     refresh_assignments: "Actualiser les affectations",
     tags: "Balises",
     all: "Tous",
-    assignee: "Cessionnaire"
+    assignee: "Cessionnaire",
+    project_name: "Nom du projet",
+    copy_link: "Copier le lien",
+    filter_by_search: "Filtrer par recherche",
+    budgets: "Budgets",
+    filter: "Filtre",
+    date_range: "Plage de dates",
+    any_date: "N'importe quelle date",
+    date_30_days: "30 derniers jours",
+    date_6_months: "6 derniers mois",
+    date_custom: "Coutume"
   },
 
   login: {

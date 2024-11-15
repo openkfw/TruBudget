@@ -1,22 +1,26 @@
 import React, { useCallback, useEffect, useMemo, useState } from "react";
 import DataTable from "react-data-table-component";
 import { useNavigate } from "react-router-dom";
+import { useTheme } from "@emotion/react";
+import _isEmpty from "lodash/isEmpty";
 
+import AccessTimeFilledIcon from "@mui/icons-material/AccessTimeFilled";
 import ContentAdd from "@mui/icons-material/Add";
+import CalendarMonthIcon from "@mui/icons-material/CalendarMonth";
+import CheckIcon from "@mui/icons-material/Check";
 import EditIcon from "@mui/icons-material/Edit";
 import FilterAltIcon from "@mui/icons-material/FilterAlt";
-import PermissionIcon from "@mui/icons-material/LockOpen";
-import MoreIcon from "@mui/icons-material/MoreHoriz";
-import LaunchIcon from "@mui/icons-material/ZoomIn";
-import { Tooltip } from "@mui/material";
+import InsertLinkIcon from "@mui/icons-material/InsertLink";
+import KeyboardArrowDownIcon from "@mui/icons-material/KeyboardArrowDown";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import SupervisorAccountIcon from "@mui/icons-material/SupervisorAccount";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { IconButton, InputAdornment, Menu, MenuItem, Select } from "@mui/material";
 import Box from "@mui/material/Box";
-import Checkbox from "@mui/material/Checkbox";
 import Fab from "@mui/material/Fab";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import FormGroup from "@mui/material/FormGroup";
 import Typography from "@mui/material/Typography";
 
-import { isEmptyDeep, stringToUnixTs, trimSpecialChars, unixTsToString } from "../../helper";
+import { stringToUnixTs, trimSpecialChars, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
 import {
   canCreateProject,
@@ -27,6 +31,7 @@ import {
 import ActionButton from "../Common/ActionButton";
 import Searchbar from "../Common/Searchbar";
 import SelectablePill from "../Common/SelectablePill";
+import StatusChip from "../Common/StatusChip";
 
 import BudgetsList from "./BudgetsList";
 import FilterMenu from "./FilterMenu";
@@ -36,187 +41,264 @@ import "./TableView.scss";
 // Documentation for this custom react data table:
 // https://react-data-table-component.netlify.app/?path=/story/columns-cells-custom-cells--custom-cells
 
-const ProjectButtons = ({
-  project,
-  showEditDialog,
-  showProjectPermissions,
-  showProjectAdditionalData,
-  allowedIntents
-}) => {
+const customStyles = {
+  table: {
+    style: {
+      backgroundColor: "transparent"
+    }
+  },
+  header: {
+    style: {
+      backgroundColor: "transparent",
+      paddingLeft: 0
+    }
+  },
+  headRow: {
+    style: {
+      backgroundColor: "transparent",
+      borderBottom: "none"
+    }
+  },
+  headCells: {
+    style: {
+      backgroundColor: "transparent",
+      paddingLeft: 0,
+      "&:not(:last-of-type)": {
+        paddingRight: "1rem"
+      }
+    }
+  },
+  rows: {
+    style: {
+      cursor: "pointer",
+      borderRadius: "4px",
+      overflow: "hidden",
+      marginBottom: "0.5rem",
+      "&:not(:last-of-type)": {
+        borderBottom: "none"
+      }
+    }
+  },
+  cells: {
+    style: {
+      width: "100%",
+      paddingLeft: 0,
+      "&:not(:last-of-type)": {
+        paddingRight: "1rem"
+      }
+    }
+  },
+  pagination: {
+    style: {
+      display: "flex",
+      border: "none",
+      justifyContent: "center",
+      alignItems: "center",
+      padding: "0.625rem 0",
+      backgroundColor: "transparent"
+    }
+  }
+};
+
+const webpVersion = (imagePath) => {
+  // if imagePath matches Thumbnail_*.jpg, replace .jpg with .webp
+  if (imagePath.match(/Thumbnail_\d+.jpg/)) {
+    return imagePath.replace(".jpg", ".webp");
+  }
+  return imagePath;
+};
+
+const ProjectMenu = ({ project, showEditDialog, showProjectPermissions, allowedIntents }) => {
   const isOpen = project.status === "open";
-  const isAdditionalDataEmpty = isEmptyDeep(project.additionalData);
   const canViewPermissions = canViewProjectPermissions(allowedIntents);
   const editDisabled = !(canUpdateProject(allowedIntents) && isOpen);
   const viewDisabled = !canViewProjectDetails(allowedIntents);
-
   const navigate = useNavigate();
+  const [anchorEl, setAnchorEl] = useState(null);
+  const open = Boolean(anchorEl);
+  const handleClick = (event) => {
+    setAnchorEl(event.currentTarget);
+  };
+  const handleClose = () => {
+    setAnchorEl(null);
+  };
+  const theme = useTheme();
   return (
-    <Box className="project-buttons-box">
-      <ActionButton
-        ariaLabel="show project data"
-        notVisible={isAdditionalDataEmpty}
-        onClick={() => {
-          showProjectAdditionalData(project.id);
-        }}
-        title="Additional Data"
-        icon={<MoreIcon />}
-        data-test={`project-overview-additionaldata-${project.id}`}
-      />
-      <ActionButton
-        ariaLabel="show project"
-        notVisible={viewDisabled}
-        onClick={() => {
-          navigate("/projects/" + project.id);
-        }}
-        title={strings.common.view}
-        alignTooltip="top"
-        icon={<LaunchIcon />}
-        data-test={`project-view-${project.id}`}
-      />
-      <ActionButton
-        ariaLabel="show project permissions"
-        notVisible={!canViewPermissions}
-        onClick={() => showProjectPermissions(project.id, project.displayName)}
-        title={strings.common.show_permissions}
-        alignTooltip="top"
-        icon={<PermissionIcon />}
-        data-test={`project-permissions-${project.id}`}
-      />
-      <ActionButton
-        ariaLabel="show edit dialog"
-        notVisible={!isOpen || editDisabled}
-        onClick={() => {
-          showEditDialog(
-            project.id,
-            project.displayName,
-            project.description,
-            project.thumbnail,
-            project.projectedBudgets,
-            project.tags
-          );
-        }}
-        title={strings.common.edit}
-        alignTooltip="top"
-        icon={<EditIcon />}
-        data-test={`project-edit-${project.id}`}
-      />
-    </Box>
-  );
-};
-
-const TableViewEditor = ({ showTags, setShowTags, showBudgets, setShowBudgets }) => {
-  return (
-    <Box>
-      <FormGroup>
-        <FormControlLabel
-          control={<Checkbox checked={showTags} onChange={(e) => setShowTags(e.target.checked)} />}
-          label="Tags"
+    <div>
+      <IconButton
+        aria-label="more"
+        id="long-button"
+        aria-controls={open ? "long-menu" : undefined}
+        aria-expanded={open ? "true" : undefined}
+        aria-haspopup="true"
+        onClick={handleClick}
+      >
+        <MoreVertIcon
+          sx={(theme) => ({
+            border: "1px solid",
+            borderRadius: "50%",
+            padding: "0.5rem",
+            borderColor: theme.palette.menuBorder,
+            color: theme.palette.deepDarkBlue
+          })}
         />
-        <FormControlLabel
-          control={<Checkbox checked={showBudgets} onChange={(e) => setShowBudgets(e.target.checked)} />}
-          label="Budgets"
-        />
-      </FormGroup>
-    </Box>
+      </IconButton>
+      <Menu
+        id="long-menu"
+        MenuListProps={{
+          "aria-labelledby": "long-button"
+        }}
+        MenuProps={{
+          PaperProps: {
+            sx: {
+              marginTop: 2,
+              border: "1px solid",
+              borderColor: theme.palette.primaryBlue,
+              boxShadow: `2px 4px 6px ${theme.palette.grey.light}`
+            }
+          }
+        }}
+        anchorEl={anchorEl}
+        open={open}
+        onClose={handleClose}
+      >
+        <MenuItem
+          aria-label="show edit dialog"
+          disabled={!isOpen || editDisabled}
+          onClick={() => {
+            showEditDialog(
+              project.id,
+              project.displayName,
+              project.description,
+              project.thumbnail,
+              project.projectedBudgets,
+              project.tags
+            );
+          }}
+          data-test={`project-edit-${project.id}`}
+        >
+          <EditIcon fontSize="small" style={{ marginRight: "0.3rem" }} />
+          {strings.common.edit}
+        </MenuItem>
+        <MenuItem
+          aria-label="show project permissions"
+          disabled={!canViewPermissions}
+          onClick={() => showProjectPermissions(project.id, project.displayName)}
+          data-test={`project-permissions-${project.id}`}
+        >
+          <SupervisorAccountIcon fontSize="small" style={{ marginRight: "0.3rem" }} />
+          {strings.common.show_permissions}
+        </MenuItem>
+        <MenuItem
+          aria-label="show project"
+          disabled={viewDisabled}
+          onClick={() => {
+            navigate("/projects/" + project.id);
+          }}
+          data-test={`project-view-${project.id}`}
+        >
+          <VisibilityIcon fontSize="small" style={{ marginRight: "0.3rem" }} />
+          {strings.common.view}
+        </MenuItem>
+        <MenuItem aria-label="copy link" data-test={`copy-link`}>
+          <InsertLinkIcon fontSize="small" style={{ marginRight: "0.3rem" }} />
+          {strings.common.copy_link}
+        </MenuItem>
+        <MenuItem aria-label="history" data-test={`history`}>
+          <AccessTimeFilledIcon fontSize="small" style={{ marginRight: "0.3rem" }} />
+          {strings.common.history}
+        </MenuItem>
+      </Menu>
+    </div>
   );
 };
 
 const rawColumns = [
   // Documentation: https://react-data-table-component.netlify.app/?path=/docs/api-columns--page
   {
+    id: "image_column",
+    selector: (row) => row.data.imagePath,
+    compact: false,
+    cell: (row) => (
+      <img
+        data-tag="allowRowEvents"
+        className="project-image"
+        src={!_isEmpty(row.data.imagePath) ? webpVersion(row.data.imagePath) : "Default_thumbnail.jpg"}
+        alt={row.data.thumbnail}
+      />
+    )
+  },
+  {
     id: "project_name_column",
-    name: (
-      <Typography variant="subtitle2" className="project-column">
-        {strings.common.project}
-      </Typography>
-    ),
+    style: {
+      paddingRight: 0
+    },
+    name: <Typography className="project-column">{strings.common.project_name}</Typography>,
     selector: (row) => row.data.projectName,
+    compact: false,
     sortField: "name",
     sortable: true,
-    compact: false,
-    minWidth: "15rem",
-    cell: (row) => <Typography data-test="project-name">{trimSpecialChars(row.data.projectName)}</Typography>
+    cell: (row) => (
+      <Typography data-tag="allowRowEvents" data-test="project-name" className="project-name">
+        {trimSpecialChars(row.data.projectName)}
+      </Typography>
+    )
+  },
+  {
+    id: "project_budgets_column",
+    name: <Typography className="project-column">{strings.common.budget}</Typography>,
+    sortable: false,
+    compact: true,
+    cell: (row) => <span data-tag="allowRowEvents">{row.components.Budgets}</span>
   },
   {
     id: "project_status_column",
-    name: (
-      <Typography variant="subtitle2" className="project-column">
-        {strings.common.status}
-      </Typography>
-    ),
+    name: <Typography className="project-column">{strings.common.status}</Typography>,
     selector: (row) => row.data.projectStatus,
     sortField: "status",
-    sortable: true,
     compact: true,
-    minWidth: "5rem",
-    cell: (row) => <Typography>{row.data.projectStatus}</Typography>
+    sortable: true,
+    cell: (row) => (
+      <Typography data-tag="allowRowEvents" className="project-status">
+        {row.data.projectStatus}
+      </Typography>
+    )
   },
   {
     id: "project_date_column",
-    name: (
-      <Typography variant="subtitle2" className="project-column">
-        {strings.common.created}
-      </Typography>
-    ),
+    name: <Typography className="project-column">{strings.common.created}</Typography>,
     selector: (row) => row.data.creationUnixTs, // time in ms to use the built-in sort
     sortField: "date",
-    sortable: true,
     compact: true,
-    minWidth: "10rem",
-    cell: (row) => <Typography>{row.data.createdDate}</Typography> // formatted date that is shown
+    sortable: true,
+    cell: (row) => (
+      <Typography data-tag="allowRowEvents" className="project-created-on">
+        {row.data.createdDate}
+      </Typography>
+    ) // formatted date that is shown
   },
   {
     id: "project_assignee_column",
-    name: (
-      <Typography variant="subtitle2" className="project-column">
-        {strings.common.assignee}
-      </Typography>
-    ),
+    name: <Typography className="project-column">{strings.common.assignee}</Typography>,
     selector: (row) => row.data.assignee,
     sortField: "assignee",
     sortable: true,
     compact: true,
-    minWidth: "5rem",
     cell: (row) => <Typography>{row.data.assignee}</Typography>
   },
   {
     id: "project_tags_column",
-    name: (
-      <Typography variant="subtitle2" className="project-column">
-        {strings.common.tags}
-      </Typography>
-    ),
-    sortable: false,
+    name: <Typography className="project-column">{strings.common.tags}</Typography>,
     compact: true,
-    minWidth: "0rem",
-    maxWidth: "20rem",
+    sortable: false,
     cell: (row) => row.components.Tags
   },
   {
-    id: "project_budgets_column",
-    name: (
-      <Typography variant="subtitle2" className="project-column">
-        {strings.common.budget}
-      </Typography>
-    ),
-    sortable: false,
-    compact: true,
-    minWidth: "0rem",
-    maxWidth: "20rem",
-    cell: (row) => row.components.Budgets
-  },
-  {
     id: "action_buttons_column",
-    name: (
-      <Typography variant="subtitle2" className="project-column">
-        {strings.common.actions}
-      </Typography>
-    ),
+    compact: false,
     sortable: false,
     right: true,
-    compact: false,
-    minWidth: "20rem",
-    cell: (row) => row.components.ProjectButtons
+    cell: (row) => row.components.ProjectMenu
   }
 ];
 
@@ -228,31 +310,42 @@ const formatTable = ({
   storeSearchTerm,
   searchTermArray
 }) => {
-  const projectRows = projects.map((project, index) => {
+  const projectRows = projects.map(({ data, allowedIntents }, index) => {
+    const {
+      displayName,
+      id,
+      status,
+      thumbnail = "Default_thumbnail.jpg",
+      creationUnixTs,
+      projectedBudgets,
+      tags
+    } = data;
+    const imagePath = !_isEmpty(thumbnail) ? webpVersion(thumbnail) : "Default_thumbnail.jpg";
+
     const row = {
       data: {
         id: index,
-        projectId: project.data.id,
-        projectName: project.data.displayName,
-        projectStatus: project.data.status,
-        assignee: project.data.assignee,
-        tags: project.data.tags || [],
-        creationUnixTs: project.data.creationUnixTs,
-        createdDate: unixTsToString(project.data.creationUnixTs)
+        projectId: id,
+        projectName: displayName,
+        projectStatus: <StatusChip status={status} />,
+        tags: tags || [],
+        creationUnixTs: creationUnixTs,
+        createdDate: unixTsToString(creationUnixTs),
+        imagePath: imagePath
       },
       components: {
-        ProjectButtons: (
-          <ProjectButtons
-            project={project.data}
+        ProjectMenu: (
+          <ProjectMenu
+            project={data}
             showEditDialog={showEditDialog}
             showProjectPermissions={showProjectPermissions}
             showProjectAdditionalData={showProjectAdditionalData}
-            allowedIntents={project.allowedIntents}
+            allowedIntents={allowedIntents}
           />
         ),
         Tags: (
           <Box className="project-tags-box">
-            {project.data.tags?.map((tag) => (
+            {tags?.map((tag) => (
               <SelectablePill
                 key={tag}
                 isSelected={searchTermArray?.includes(tag) || false}
@@ -265,7 +358,7 @@ const formatTable = ({
             ))}
           </Box>
         ),
-        Budgets: <BudgetsList budgets={project.data.projectedBudgets} />
+        Budgets: <BudgetsList budgets={projectedBudgets} />
       }
     };
     return row;
@@ -305,6 +398,7 @@ const TableView = (props) => {
   const [columns, setColumns] = useState(rawColumns);
   const [showTags, setShowTags] = useState(true);
   const [showBudgets, setShowBudgets] = useState(true);
+  const [showAssignee, setShowAssignee] = useState(false);
   const [table, setTable] = useState(
     formatTable({
       projects,
@@ -315,6 +409,7 @@ const TableView = (props) => {
       searchTerm
     })
   );
+  const navigate = useNavigate();
 
   useEffect(() => {
     // only enable live updates if they were enabled before
@@ -462,26 +557,223 @@ const TableView = (props) => {
       if (!showBudgets && c.id === "project_budgets_column") {
         return false;
       }
+      if (!showAssignee && c.id === "project_assignee_column") {
+        return false;
+      }
       return true;
     });
 
     setColumns([...currentColumns]);
-  }, [showBudgets, showTags]);
+  }, [showBudgets, showTags, showAssignee]);
+
+  const FilterDropdown = ({ showTags, setShowTags, showBudgets, setShowBudgets }) => {
+    const [selectedOption, setSelectedOption] = useState("");
+
+    const handleSelectChange = (event) => {
+      setSelectedOption(event.target.value);
+    };
+    const theme = useTheme();
+
+    return (
+      <div className="filter-dropdown-wrapper">
+        <Select
+          disableUnderline
+          sx={(theme) => ({
+            "& .MuiSelect-icon": {
+              color: theme.palette.deepDarkBlue,
+              fontSize: "1.3rem"
+            }
+          })}
+          value={selectedOption || "filter"}
+          onChange={handleSelectChange}
+          IconComponent={KeyboardArrowDownIcon}
+          startAdornment={
+            selectedOption === "" && (
+              <InputAdornment position="start">
+                <FilterAltIcon
+                  sx={(theme) => ({
+                    color: theme.palette.deepDarkBlue
+                  })}
+                />
+              </InputAdornment>
+            )
+          }
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                width: "12rem",
+                marginTop: 2,
+                border: "1px solid",
+                borderColor: theme.palette.primaryBlue,
+                boxShadow: `2px 4px 6px ${theme.palette.grey.light}`
+              }
+            },
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left"
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left"
+            }
+          }}
+          renderValue={() => strings.common.filter}
+        >
+          <MenuItem
+            className="filter-menu-item"
+            selected={showTags}
+            onClick={() => setShowTags(!showTags)}
+            value="tags"
+          >
+            <Box className="menu-item-box">{showTags && <CheckIcon className="check-icon" />}</Box>
+            {strings.common.tags}
+          </MenuItem>
+          <MenuItem
+            className="filter-menu-item"
+            selected={showBudgets}
+            onClick={() => setShowBudgets(!showBudgets)}
+            value="budgets"
+          >
+            <Box className="menu-item-box">{showBudgets && <CheckIcon className="check-icon" />}</Box>
+            {strings.common.budgets}
+          </MenuItem>
+          <MenuItem
+            className="filter-menu-item"
+            selected={showAssignee}
+            onClick={() => setShowAssignee(!showAssignee)}
+            value="assignee"
+          >
+            <Box className="menu-item-box">{showAssignee && <CheckIcon className="check-icon" />}</Box>
+            {strings.common.assignee}
+          </MenuItem>
+        </Select>
+      </div>
+    );
+  };
+
+  const FilterDateDropdown = ({ showTags, setShowTags, showBudgets, setShowBudgets }) => {
+    const [selectedOption, setSelectedOption] = useState("");
+
+    const handleSelectChange = (event) => {
+      setSelectedOption(event.target.value);
+    };
+    const theme = useTheme();
+
+    return (
+      <div className="filter-date-dropdown-wrapper">
+        <Select
+          disableUnderline
+          sx={(theme) => ({
+            "& .MuiSelect-icon": {
+              color: theme.palette.deepDarkBlue,
+              fontSize: "1.3rem"
+            }
+          })}
+          value={selectedOption || "filter"}
+          onChange={handleSelectChange}
+          IconComponent={KeyboardArrowDownIcon}
+          startAdornment={
+            selectedOption === "" && (
+              <InputAdornment position="start">
+                <CalendarMonthIcon
+                  sx={(theme) => ({
+                    color: theme.palette.deepDarkBlue,
+                    width: "1.2rem",
+                    height: "1.2rem"
+                  })}
+                />
+              </InputAdornment>
+            )
+          }
+          MenuProps={{
+            PaperProps: {
+              sx: {
+                width: "12rem",
+                marginTop: 2,
+                border: "1px solid",
+                borderColor: theme.palette.primaryBlue,
+                boxShadow: `2px 4px 6px ${theme.palette.grey.light}`
+              }
+            },
+            anchorOrigin: {
+              vertical: "bottom",
+              horizontal: "left"
+            },
+            transformOrigin: {
+              vertical: "top",
+              horizontal: "left"
+            }
+          }}
+          renderValue={() => strings.common.date_range}
+        >
+          <MenuItem
+            className="filter-menu-item"
+            selected={showTags}
+            onClick={() => setShowTags(!showTags)}
+            value="any date"
+          >
+            <Box className="menu-item-box">{showTags && <CheckIcon className="check-icon" />}</Box>
+            {strings.common.any_date}
+          </MenuItem>
+          <MenuItem
+            className="filter-menu-item"
+            selected={showBudgets}
+            onClick={() => setShowBudgets(!showBudgets)}
+            value="last 30 days"
+          >
+            <Box className="menu-item-box">{showBudgets && <CheckIcon className="check-icon" />}</Box>
+            {strings.common.date_30_days}
+          </MenuItem>
+          <MenuItem
+            className="filter-menu-item"
+            selected={showAssignee}
+            onClick={() => setShowAssignee(!showAssignee)}
+            value="last 6 months"
+          >
+            <Box className="menu-item-box">{showAssignee && <CheckIcon className="check-icon" />}</Box>
+            {strings.common.date_6_months}
+          </MenuItem>
+          <MenuItem
+            className="filter-menu-item"
+            selected={showAssignee}
+            onClick={() => setShowAssignee(!showAssignee)}
+            value="custom"
+          >
+            <Box className="menu-item-box">{showAssignee && <CheckIcon className="check-icon" />}</Box>
+            {strings.common.date_custom}
+          </MenuItem>
+        </Select>
+      </div>
+    );
+  };
 
   const actionsMemo = useMemo(
     () => (
       <>
         <Box className="project-actions-box">
-          <Box className="project-box-block">
+          <Box className="project-actions-box-left">
             <Box className="project-actions">
               <Searchbar
                 isSearchBarDisplayedByDefault={true}
                 searchDisabled={false}
                 safeOnChange={true}
-                previewText={strings.project.project_searchtext}
+                previewText={strings.common.filter_by_search}
                 searchTerm={searchTerm}
                 storeSearchTerm={(word) => storeSearchTerm(word)}
               />
+              <Box className="filter-menu-dropdown">
+                <FilterDropdown
+                  showTags={showTags}
+                  setShowTags={setShowTags}
+                  showBudgets={showBudgets}
+                  setShowBudgets={setShowBudgets}
+                  showAssignee={showAssignee}
+                  setShowAssignee={setShowAssignee}
+                />
+              </Box>
+              <Box className="filter-menu-dropdown">
+                <FilterDateDropdown />
+              </Box>
               <ActionButton
                 ariaLabel="show filter"
                 onClick={() => setShowFilter(!showFilter)}
@@ -489,6 +781,7 @@ const TableView = (props) => {
                 data-test="open-filter"
               />
             </Box>
+
             <Box className="filter-menu-box">
               {showFilter && (
                 <FilterMenu
@@ -506,13 +799,17 @@ const TableView = (props) => {
               )}
             </Box>
           </Box>
-          <Box className="table-view-editor-box">
-            <TableViewEditor
-              showTags={showTags}
-              setShowTags={setShowTags}
-              showBudgets={showBudgets}
-              setShowBudgets={setShowBudgets}
-            />
+          <Box className="project-actions-box-right">
+            <Fab
+              className="project-add-button"
+              aria-label="create"
+              disabled={!canCreateProject(props.allowedIntents)}
+              onClick={() => showCreationDialog()}
+              data-test="create-project-button"
+            >
+              <span className="add-new-project-text">{strings.project.add_new_project}</span>
+              <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
+            </Fab>
           </Box>
         </Box>
       </>
@@ -528,26 +825,17 @@ const TableView = (props) => {
       enabledUsers,
       showTags,
       showBudgets,
-      storeSearchTerm
+      storeSearchTerm,
+      showAssignee,
+      props.allowedIntents,
+      showCreationDialog
     ]
   );
 
+  const handleRowClick = (row) => navigate(`/projects/${row.data.projectId}`);
+
   return (
     <>
-      <Box className="create-project-box">
-        <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
-          <Fab
-            className="project-add-button"
-            aria-label="create"
-            disabled={!canCreateProject(props.allowedIntents)}
-            onClick={() => showCreationDialog()}
-            color="primary"
-            data-test="create-project-button"
-          >
-            <ContentAdd />
-          </Fab>
-        </Tooltip>
-      </Box>
       <DataTable
         columns={columns}
         data={table}
@@ -562,7 +850,9 @@ const TableView = (props) => {
         onSort={(column, sortDirection) => setSort(column.sortField, sortDirection)}
         sortServer
         paginationRowsPerPageOptions={[5, 10, 15, 20, 50, 100]}
+        onRowClicked={handleRowClick}
         data-test="project-list"
+        customStyles={customStyles}
       />
     </>
   );

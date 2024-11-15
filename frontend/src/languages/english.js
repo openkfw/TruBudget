@@ -40,7 +40,7 @@ const en = {
     confirm: "Confirm",
     copy: "Copy",
     create: "Create",
-    created: "Created",
+    created: "Created on",
     currency: "Currency",
     deselect_all: "Deselect all",
     disbursed_budget: "Paid Budget",
@@ -145,7 +145,17 @@ const en = {
     refresh_assignments: "Refresh assignments",
     tags: "Tags",
     all: "all",
-    assignee: "Assignee"
+    assignee: "Assignee",
+    project_name: "Project name",
+    copy_link: "Copy link",
+    filter_by_search: "Filter by search",
+    budgets: "Budgets",
+    filter: "Filter",
+    date_range: "Date range",
+    any_date: "Any date",
+    date_30_days: "Last 30 days",
+    date_6_months: "Last 6 months",
+    date_custom: "Custom"
   },
 
   users: {

@@ -41,7 +41,7 @@ const de = {
     confirm: "Bestätigen",
     copy: "Copy",
     create: "Erstellen",
-    created: "Erstellt",
+    created: "Erstellt am",
     currency: "Währung",
     deselect_all: "Alle abwählen",
     disbursed_budget: "Ausgezahltes Budget",
@@ -147,7 +147,17 @@ const de = {
     refresh_assignments: "Zuordnungen aktualisieren",
     tags: "Tags",
     all: "Alle",
-    assignee: "Verantwortlicher"
+    assignee: "Verantwortlicher",
+    project_name: "Projektname",
+    copy_link: "Link kopieren",
+    filter_by_search: "Nach Suche filtern",
+    budgets: "Budgets",
+    filter: "Filter",
+    date_range: "Datumsbereich",
+    any_date: "Beliebiges Datum",
+    date_30_days: "Letzte 30 Tage",
+    date_6_months: "Letzte 6 Monate",
+    date_custom: "Brauch"
   },
 
   login: {

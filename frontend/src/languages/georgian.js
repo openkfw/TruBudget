@@ -145,7 +145,17 @@ const ka = {
     refresh_assignments: "დავალებების განახლება",
     tags: "ტეგები",
     all: "ყველა",
-    assignee: "დავალებული"
+    assignee: "დავალებული",
+    project_name: "პროექტის სახელი",
+    copy_link: "დააკოპირეთ ბმული",
+    filter_by_search: "გაფილტვრა ძიების მიხედვით",
+    budgets: "ბიუჯეტები",
+    filter: "ფილტრი",
+    date_range: "თარიღის დიაპაზონი",
+    any_date: "ნებისმიერი თარიღი",
+    date_30_days: "ბოლო 30 დღე",
+    date_6_months: "ბოლო 6 თვე",
+    date_custom: "საბაჟო"
   },
 
   users: {

@@ -2,17 +2,25 @@ import React from "react";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import SearchIcon from "@mui/icons-material/Search";
+import { InputBase } from "@mui/material";
 import ButtonBase from "@mui/material/ButtonBase";
 import FormControl from "@mui/material/FormControl";
 import IconButton from "@mui/material/IconButton";
-import Input from "@mui/material/Input";
 import InputAdornment from "@mui/material/InputAdornment";
 import Paper from "@mui/material/Paper";
 import Tooltip from "@mui/material/Tooltip";
+import { styled } from "@mui/system";
 
 import strings from "../../localizeStrings";
 
 import "./Searchbar.scss";
+
+const StyledInput = styled(InputBase)(({ theme }) => ({
+  "& .MuiInputBase-input::placeholder": {
+    color: theme.palette.deepDarkBlue,
+    opacity: 1
+  }
+}));
 
 const Searchbar = ({
   searchBarDisplayed = true,
@@ -30,7 +38,8 @@ const Searchbar = ({
         <Paper className="search-field">
           <form onSubmit={(e) => e.preventDefault()} className="form">
             <FormControl className="form-control-search" data-test="search-input">
-              <Input
+              <StyledInput
+                disableUnderline
                 value={searchTerm}
                 placeholder={previewText}
                 autoFocus={!isSearchBarDisplayedByDefault}
@@ -47,9 +56,20 @@ const Searchbar = ({
                 }}
                 startAdornment={
                   <InputAdornment position="start">
-                    <SearchIcon />
+                    <SearchIcon
+                      sx={(theme) => ({
+                        color: theme.palette.deepDarkBlue,
+                        width: "1.3rem",
+                        height: "1.3rem"
+                      })}
+                    />
                   </InputAdornment>
                 }
+                sx={{
+                  "& .MuiInputBase-input": {
+                    padding: "0 0 0 0"
+                  }
+                }}
               />
             </FormControl>
           </form>
