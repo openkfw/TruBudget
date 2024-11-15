@@ -12,8 +12,19 @@ body {
   font-size: 1rem;
   line-height: 1.5;
   letter-spacing: 0.00938em;
+  background-image: url(/Gradient-Background.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  background-position: center;
+  background-attachment: fixed;
 }
 
 .noFocus {
   outline: 0;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
 }
