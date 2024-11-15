@@ -80,6 +80,6 @@
     "find-my-way": "^8.2.2",
     "cookie": "^0.7.0",
     "semver": "^7.6.3",
-    "jsonpath-plus": "^10.0.0"
+    "jsonpath-plus": "^10.0.7"
   }
 }
