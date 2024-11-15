@@ -56,7 +56,6 @@ const Main = ({ refreshToken, window }) => {
 
   return (
     <div className="main">
-      <div className="main-image" />
       <div className="main-nav">
         <NavbarContainer />
       </div>
