@@ -25,6 +25,7 @@ This guide shows three different possibilities how to safely update your Trubudg
 In order to do the minor update of TruBudget e.g. from 2.0.0 to version 2.1.0 you are required to do several steps.
 
 1. Make sure the multichain data and other persistent data is saved. The recommended option is to use volumes to persist TruBudget data. This option mounts a volume into the container depending on your infrastructure you can use docker volumes (docker compose setup) or persistent volumes (kubernetes). If the data is not saved - [do a backup](#backup-and-restore).
+1. Update your repository by running `git pull`. There might be changes in starter script.
 1. Update the version used in the deployment. Use a specific release published on [docker-hub](https://hub.docker.com/u/trubudget). 
 1. Check the changelog file for changes. All bigger modifications to the system which are relevant to the user are added to the CHANGELOG.md. 
 After checking the changelog verify if additional actions are needed to enable new features. 

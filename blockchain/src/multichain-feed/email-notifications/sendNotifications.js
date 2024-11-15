@@ -20,6 +20,16 @@ function ExpiredTokenException(message) {
   this.name = "ExpiredTokenException";
 }
 
+function InvalidAlgorithmException(message) {
+  this.message = message;
+  this.name = "InvalidAlgorithmException";
+}
+
+function InvalidTokenException(message) {
+  this.message = message;
+  this.name = "InvalidTokenException";
+}
+
 function ConnectionRefusedException(message) {
   this.message = message;
   this.name = "ECONNREFUSED";
@@ -37,7 +47,7 @@ const sendNotifications = async (path, emailServiceSocketAddress, token, ssl = f
   for (let i = 0; i < (await files.length); i++) {
     const file = files[i];
     let recipient;
-    const proto = "http";
+    const proto = ssl === "true" || ssl === true ? "https" : "http";
 
     try {
       recipient = await getRecipientFromFile(path, file);
@@ -79,10 +89,15 @@ const sendNotifications = async (path, emailServiceSocketAddress, token, ssl = f
         }
       }
       switch (error.response.status) {
-        case 400:
-          // If Bearer token has expired
-          throw new ExpiredTokenException("JWT-Token expired");
-
+        case 400: {
+          if (error.response.data.message === "invalid algorithm") {
+            throw new InvalidAlgorithmException("invalid algorithm");
+          }
+          if (error.response.data.message === "jwt expired") {
+            throw new ExpiredTokenException("JWT-Token expired");
+          }
+          throw new InvalidTokenException("invalid token");
+        }
         case 404:
           // If no email address is found in the database delete the notification file
           if (error.response.data.notification.emailAddress === "Not Found") {
@@ -135,28 +150,35 @@ function sleep(s) {
 
 const args = process.argv.slice(2);
 log.debug(`${process.argv[0]} is executed with following arguments: ${args}`);
-if (args.length !== 6) {
+if (args.length !== 7) {
   log.error("Wrong amount of arguments");
   process.exit(1);
 }
-const [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl] = args;
+const [path, emailServiceSocketAddress, secret, maxPersistenceHours, loopIntervalSeconds, ssl, algorithm] = args;
 const absolutePath = process.cwd() + "/" + path;
 
-let token = "";
 (async () => {
+  let token;
+  try {
+    token = createJWT(secret, "notification-watcher", algorithm);
+  } catch (error) {
+    log.error(error, "Error creating JWT. Notification Watcher exiting.");
+    process.exit(1);
+  }
+
   while (true) {
     log.trace("Checking for new notifications");
     try {
-      // Check/Send/Delete notification transaction files in notification directory
       await sendNotifications(absolutePath, emailServiceSocketAddress, token, ssl);
       await deleteFilesOlderThan(maxPersistenceHours, absolutePath);
     } catch (error) {
-      // If Bearer Token expired
       if (error.name === "ExpiredTokenException") {
-        token = createJWT(secret, "notification-watcher");
-        log.info("New JWT-Token created due to expiration.");
+        token = createJWT(secret, "notification-watcher", algorithm);
+        log.info("New JWT token created due to expiration.");
+      } else if (error.name === "InvalidAlgorithmException") {
+        log.error(error, `Notification e-mail request signed with invalid algorithm: ${algorithm}`);
       } else {
-        log.error(error, "Error while creating new jwt token");
+        log.error(error, "Error during notification processing");
       }
     }
     await sleep(loopIntervalSeconds);

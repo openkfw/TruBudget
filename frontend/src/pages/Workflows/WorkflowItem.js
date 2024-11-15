@@ -124,7 +124,8 @@ const editWorkflow = (
     documents,
     dueDate,
     workflowitemType,
-    tags
+    tags,
+    fundingOrganization
   },
   props
 ) => {
@@ -143,7 +144,8 @@ const editWorkflow = (
     documents,
     dueDate,
     workflowitemType,
-    tags
+    tags,
+    fundingOrganization
   );
 };
 

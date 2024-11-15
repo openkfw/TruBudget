@@ -41,6 +41,7 @@ export interface RequestData {
   documents?: UploadedDocumentOrLink[];
   additionalData?: object;
   tags?: string[];
+  fundingOrganization?: string;
 }
 
 export type EventData = WorkflowitemUpdated.Modification;
@@ -161,7 +162,8 @@ export async function updateWorkflowitem(
     return new VError(newEvent, "cannot update workflowitem");
   }
 
-  logger.trace({ issuer }, "Checking if user has permissions");
+  logger.trace({ user: issuer }, "Checking if user is authorized");
+  // root can update workflow items
   if (issuer.id !== "root") {
     const intent = "workflowitem.update";
     if (!Workflowitem.permits(workflowitem, issuer, [intent])) {

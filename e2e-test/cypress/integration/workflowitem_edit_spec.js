@@ -8,7 +8,7 @@ describe("Workflowitem edit", function () {
     cy.login();
     cy.createProject("workflowitem edit test project", "workflowitem edit test").then(({ id }) => {
       projectId = id;
-      cy.createSubproject(projectId, "workflowitem edit test", "EUR").then(({ id }) => {
+      cy.createSubproject(projectId, "workflowitem edit test", "EUR", {projectedBudgets: [{currencyCode: "EUR", organization: "Test", value:"5000"}]}).then(({ id }) => {
         subprojectId = id;
       });
     });
@@ -23,7 +23,7 @@ describe("Workflowitem edit", function () {
     "When editing a workflow item with a different currency than the subproject currency, " +
       "the selected currency is displayed",
     function () {
-      cy.intercept(apiRoute + "/v2/subproject.createWorkflowitem*").as("create");
+      cy.intercept(apiRoute + "/subproject.createWorkflowitem*").as("create");
       cy.intercept(apiRoute + "/subproject.viewDetails*").as("viewDetails");
       // Create a workflow item and select a different currency
       cy.get("[data-test=createWorkflowitem]").click();
@@ -32,6 +32,8 @@ describe("Workflowitem edit", function () {
       cy.get("[data-test=amount-type-allocated]").click();
       cy.get("[data-test=dropdown-currencies-click]").click();
       cy.get("[data-value=USD]").click();
+      cy.get("[data-test=dropdown-fundingOrganization-click]").click();
+      cy.get("[data-value=Test]").click();
       cy.get("[data-test=amountinput] input").type("1234");
       cy.get("[data-test=rateinput] input").should("be.enabled");
       cy.get("[data-test=rateinput] input").type("1.5");

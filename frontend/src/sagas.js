@@ -113,6 +113,8 @@ import {
   EDIT_PROJECT_SUCCESS,
   FETCH_ALL_PROJECTS,
   FETCH_ALL_PROJECTS_SUCCESS,
+  FETCH_COMPLETE_LIST_OF_PROJECTS,
+  FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS,
   FETCH_PROJECT_PERMISSIONS,
   FETCH_PROJECT_PERMISSIONS_FAILURE,
   FETCH_PROJECT_PERMISSIONS_SUCCESS,
@@ -856,14 +858,14 @@ export function* createWorkflowItemSaga({ type, ...workflowitemData }) {
         subprojectId: subprojectId,
         additionalActions
       });
-      // use v1 endpoint (json) if there are documents that are links, v2 (multipart) if files
-      let createWorkflowEndpoint = api.createWorkflowItemV2;
+      // use v2 endpoint (multipart) if there are files
+      let createWorkflowEndpoint = api.createWorkflowItem;
       if (
         workflowitemData.documents &&
         workflowitemData.documents.length > 0 &&
-        workflowitemData.documents.some((doc) => doc.link)
+        workflowitemData.documents.some((doc) => doc.base64)
       ) {
-        createWorkflowEndpoint = api.createWorkflowItem;
+        createWorkflowEndpoint = api.createWorkflowItemV2;
       }
       const { data } = yield* executeOriginalAction(createWorkflowEndpoint, originalAction, workflowitemData);
       yield put({
@@ -950,12 +952,19 @@ export function* createWorkflowFromTemplateSaga({ type, ...workflowTemplateData 
 
 export function* editWorkflowItemSaga({ projectId, subprojectId, workflowitemId, changes }) {
   yield execute(function* () {
-    yield callApi(api.editWorkflowItem, projectId, subprojectId, workflowitemId, changes);
-    yield showSnackbarSuccess();
-    yield put({
-      type: EDIT_WORKFLOW_ITEM_SUCCESS
-    });
+    let editWorkflowItemEndpoint = api.editWorkflowItem;
+    if (changes.documents && changes.documents.length > 0 && changes.documents.some((doc) => doc.base64)) {
+      editWorkflowItemEndpoint = api.editWorkflowItemV2;
+    }
 
+    yield callApi(editWorkflowItemEndpoint, projectId, subprojectId, workflowitemId, changes);
+
+    yield showSnackbarSuccess();
+
+    // Dispatch success action
+    yield put({ type: EDIT_WORKFLOW_ITEM_SUCCESS });
+
+    // Fetch updated subproject details
     yield put({
       type: FETCH_ALL_SUBPROJECT_DETAILS,
       projectId: projectId,
@@ -1704,6 +1713,16 @@ export function* fetchAllProjectsSaga({ showLoading }) {
     const [{ data }] = yield all([yield callApi(api.listProjects)]);
     yield put({
       type: FETCH_ALL_PROJECTS_SUCCESS,
+      projects: data.items
+    });
+  }, showLoading);
+}
+
+export function* fetchCompleteListOfProjectsSaga({ showLoading }) {
+  yield execute(function* () {
+    const [{ data }] = yield all([yield callApi(api.listProjects)]);
+    yield put({
+      type: FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS,
       projects: data.items
     });
   }, showLoading);
@@ -3501,6 +3520,7 @@ export default function* rootSaga() {
 
       // Project
       yield takeEvery(FETCH_ALL_PROJECTS, fetchProjectsV2Saga),
+      yield takeEvery(FETCH_COMPLETE_LIST_OF_PROJECTS, fetchCompleteListOfProjectsSaga),
       yield takeEvery(CREATE_PROJECT, createProjectSaga),
       yield takeEvery(EDIT_PROJECT, editProjectSaga),
       yield takeLatest(FETCH_PROJECT_PERMISSIONS, fetchProjectPermissionsSaga),

@@ -160,6 +160,7 @@ import * as WorkflowitemPermissionGrantAPI from "./workflowitem_permission_grant
 import * as WorkflowitemPermissionRevokeAPI from "./workflowitem_permission_revoke";
 import * as WorkflowitemPermissionsListAPI from "./workflowitem_permissions_list";
 import * as WorkflowitemUpdateAPI from "./workflowitem_update";
+import * as WorkflowitemUpdateV2API from "./workflowitem_update.v2";
 import * as WorkflowitemValidateDocumentAPI from "./workflowitem_validate_document";
 import * as WorkflowitemViewDetailsAPI from "./workflowitem_view_details";
 import * as WorkflowitemViewHistoryAPI from "./workflowitem_view_history";
@@ -917,6 +918,20 @@ export interface WorkflowitemUpdateServiceInterface {
 }
 
 WorkflowitemUpdateAPI.addHttpHandler(server, URL_PREFIX, {
+  updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
+    WorkflowitemUpdateService.updateWorkflowitem(
+      db,
+      storageServiceClient,
+      ctx,
+      user,
+      projectId,
+      subprojectId,
+      workflowitemId,
+      data,
+    ),
+});
+
+WorkflowitemUpdateV2API.addHttpHandler(server, URL_PREFIX, {
   updateWorkflowitem: (ctx, user, projectId, subprojectId, workflowitemId, data) =>
     WorkflowitemUpdateService.updateWorkflowitem(
       db,

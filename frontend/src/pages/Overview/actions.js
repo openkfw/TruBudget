@@ -4,6 +4,9 @@ export const CREATE_PROJECT_SUCCESS = "CREATE_PROJECT_SUCCESS";
 export const FETCH_ALL_PROJECTS = "FETCH_ALL_PROJECTS";
 export const FETCH_ALL_PROJECTS_SUCCESS = "FETCH_ALL_PROJECTS_SUCCESS";
 
+export const FETCH_COMPLETE_LIST_OF_PROJECTS = "FETCH_COMPLETE_LIST_OF_PROJECTS";
+export const FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS = "FETCH_COMPLETE_LIST_OF_PROJECTS_SUCCESS";
+
 export const FETCH_PROJECTS_V2 = "FETCH_PROJECTS_V2";
 export const FETCH_PROJECTS_V2_SUCCESS = "FETCH_PROJECTS_V2_SUCCESS";
 
@@ -69,6 +72,13 @@ export const APP_UPGRADE_VERSION_SUCCESS = "APP_UPGRADE_VERSION_SUCCESS";
 export function fetchAllProjects(showLoading = false) {
   return {
     type: FETCH_ALL_PROJECTS,
+    showLoading
+  };
+}
+
+export function fetchCompleteListOfProjects(showLoading = false) {
+  return {
+    type: FETCH_COMPLETE_LIST_OF_PROJECTS,
     showLoading
   };
 }

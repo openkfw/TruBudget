@@ -35,6 +35,7 @@ export interface Modification {
   documentsDeleted?: DocumentOrExternalLinkReference[];
   additionalData?: object;
   tags?: string[];
+  fundingOrganization?: string;
 }
 
 export const modificationSchema = Joi.object({
@@ -50,6 +51,7 @@ export const modificationSchema = Joi.object({
   documentsDeleted: Joi.array().items(documentReferenceSchema),
   additionalData: AdditionalData.schema,
   tags: Joi.array().items(safeStringSchema),
+  fundingOrganization: safeStringSchema.allow(""),
 });
 
 export interface Event {
@@ -163,6 +165,7 @@ function updateProps(workflowitem: Workflowitem.Workflowitem, update: Modificati
     "billingDate",
     "dueDate",
     "tags",
+    "fundingOrganization",
   ].forEach((propname) => {
     if (update[propname] !== undefined) {
       workflowitem[propname] = update[propname];

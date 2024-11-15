@@ -2,18 +2,29 @@
 
 In the following you can find all the environment variables used in the TruBudget project. Use this list as reference for development and deployment.
 
-| Project                    | Shortcut |
-| -------------------------- | -------- |
-| Frontend                   | ui       |
-| API                        | api      |
-| Blockchain                 | bc       |
-| Provisioning               | prov     |
-| Excel export service       | excel    |
-| Storage service            | storage  |
-| Email notification service | email    |
-| Docker-compose             | scripts  |
+| Project                    | Shortcut | List of variables |
+| -------------------------- | -------- | ----------------- |
+| Frontend                   | ui       | [ui]              |
+| API                        | api      | [api]             |
+| Blockchain                 | bc       | [bc]              |
+| Provisioning               | prov     | [prov]            |
+| Excel export service       | excel    | [excel]           |
+| Storage service            | storage  | [storage]         |
+| Email notification service | email    | [email]           |
+| Docker-compose             | scripts  |                   |
 
 If you need a `.env.example` file as a template, use the `.env.example` file in `/scripts/operation`. This file has all values pre-filled.
+
+
+
+[api]: ./environment-variables/api-environment-variables.md
+[bc]: ./environment-variables/blockchain-environment-variables.md
+[prov]: ./environment-variables/provisioning-environment-variables.md
+[email]: ./environment-variables/email-environment-variables.md
+[excel]: ./environment-variables/excel-environment-variables.md
+[storage]: ./environment-variables/storage-environment-variables.md
+[ui]: ./environment-variables/frontend-environment-variables.md
+
 
 | Env Variable                       | Required | Default Value                     | Used by              | Description                                                                                                                                                                                                                                                                                                                                                                                     |
 | ---------------------------------- | -------- | --------------------------------- | -------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
