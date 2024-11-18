@@ -10,14 +10,14 @@ escape_char=$(printf "\x1b")
 if [[ $(git rev-parse --abbrev-ref HEAD) != "main" ]]; then
   echo "Error: Please run this script on the main branch."
   echo "Run 'git checkout main' to switch to the main branch."
-  # exit 1
+  exit 1
 fi
 # Check if script is on latest commit
 git fetch
 if [[ $(git rev-parse HEAD) != $(git rev-parse @{u}) ]]; then
   echo "Error: Please run this script on the latest commit."
   echo "Run 'git pull' to update your local repository."
-  # exit 1
+  exit 1
 fi
 
 # Check if .env.example exists
@@ -28,8 +28,8 @@ fi
 
 # Backup the existing .env file if it exists
 if [[ -f "$ENV_FILE" ]]; then
-  cp "$ENV_FILE" "$ENV_FILE.bak"
-  echo "Existing $ENV_FILE backed up as $ENV_FILE.bak"
+  cp "$ENV_FILE" "$ENV_FILE.file.bak"
+  echo "Existing $ENV_FILE backed up as $ENV_FILE.file.bak"
 fi
 
 # RUN VALIDATIONS
