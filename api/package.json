@@ -93,7 +93,7 @@
     "bcryptjs": "^2.4.3",
     "better-npm-audit": "^3.7.3",
     "content-disposition": "^0.5.4",
-    "fastify": "^4.19.1",
+    "fastify": "^4.28.1",
     "fastify-metrics": "^10.3.0",
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
