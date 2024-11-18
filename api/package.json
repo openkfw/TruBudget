@@ -154,6 +154,7 @@
     "postcss": "^8.4.31",
     "follow-redirects": "^1.15.6",
     "find-my-way": "^8.2.2",
-    "cookie": "^0.7.0"
+    "cookie": "^0.7.0",
+    "cross-spawn": "^7.0.5"
   }
 }

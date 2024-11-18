@@ -33,6 +33,7 @@
   "overrides": {
     "follow-redirects": "^1.15.6",
     "semver": "^7.6.3",
-    "braces": "^3.0.3"
+    "braces": "^3.0.3",
+    "cross-spawn": "^7.0.5"
   }
 }
