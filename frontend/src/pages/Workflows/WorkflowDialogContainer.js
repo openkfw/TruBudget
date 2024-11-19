@@ -31,6 +31,7 @@ import {
   storeWorkflowExchangeRate,
   storeWorkflowFundingOrga,
   storeWorkflowitemType,
+  storeWorkflowMarkdown,
   storeWorkflowName,
   storeWorkflowStatus,
   storeWorkflowTemplate
@@ -183,6 +184,7 @@ const mapDispatchToProps = (dispatch) => {
     storeWorkflowitemType: (workflowitemType) => dispatch(storeWorkflowitemType(workflowitemType)),
     storeWorkflowTemplate: (workflowTemplate) => dispatch(storeWorkflowTemplate(workflowTemplate)),
     storeWorkflowFundingOrga: (fundingOrganization) => dispatch(storeWorkflowFundingOrga(fundingOrganization)),
+    storeWorkflowMarkdown: (markdown) => dispatch(storeWorkflowMarkdown(markdown)),
     hideWorkflowDialog: () => dispatch(hideWorkflowDialog()),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message)),

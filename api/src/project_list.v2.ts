@@ -16,7 +16,6 @@ import { ServiceUser } from "./service/domain/organization/service_user";
 import * as Project from "./service/domain/workflow/project";
 import { AugmentedFastifyInstance } from "./types";
 
-
 const API_VERSION = "2.0";
 
 /**
@@ -122,6 +121,10 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                           thumbnail: { type: "string", example: "/Thumbnail_0001.jpg" },
                           additionalData: { type: "object", additionalProperties: true },
                           tags: { type: "array", items: { type: "string", example: "test" } },
+                          markdown: {
+                            type: "string",
+                            example: "Long description with rich text features",
+                          },
                           projectedBudgets: {
                             type: "array",
                             items: {
@@ -183,6 +186,7 @@ interface ExposedProject {
       currencyCode: string;
     }>;
     tags: string[];
+    markdown?: string;
   };
 }
 
@@ -237,6 +241,7 @@ export function addHttpHandler(
               projectedBudgets: project.projectedBudgets,
               additionalData: project.additionalData,
               tags: project.tags,
+              markdown: project.markdown,
             },
           };
         };

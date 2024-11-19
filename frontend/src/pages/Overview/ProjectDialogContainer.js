@@ -18,6 +18,7 @@ import {
   setCurrentStep,
   storeDeletedProjectedBudget,
   storeProjectComment,
+  storeProjectMarkdown,
   storeProjectName,
   storeProjectThumbnail
 } from "./actions";
@@ -49,6 +50,7 @@ const mapDispatchToProps = (dispatch) => {
     hideProjectDialog: () => dispatch(hideProjectDialog()),
     storeProjectName: (name) => dispatch(storeProjectName(name)),
     storeProjectComment: (comment) => dispatch(storeProjectComment(comment)),
+    storeProjectMarkdown: (markdown) => dispatch(storeProjectMarkdown(markdown)),
     setCurrentStep: (step) => dispatch(setCurrentStep(step)),
     storeProjectThumbnail: (thumbnail) => dispatch(storeProjectThumbnail(thumbnail)),
     addProjectProjectedBudget: (projectedBudget) => dispatch(addProjectProjectedBudget(projectedBudget)),

@@ -1,6 +1,6 @@
 {
   "name": "trubudget-api",
-  "version": "2.16.0",
+  "version": "2.17.0",
   "private": true,
   "repository": {
     "type": "git",
@@ -93,7 +93,7 @@
     "bcryptjs": "^2.4.3",
     "better-npm-audit": "^3.7.3",
     "content-disposition": "^0.5.4",
-    "fastify": "^4.19.1",
+    "fastify": "^4.28.1",
     "fastify-metrics": "^10.3.0",
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
@@ -151,9 +151,6 @@
     "lib": "dist/lib"
   },
   "overrides": {
-    "postcss": "^8.4.31",
-    "follow-redirects": "^1.15.6",
-    "find-my-way": "^8.2.2",
     "cookie": "^0.7.0"
   }
 }

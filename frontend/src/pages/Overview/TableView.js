@@ -92,7 +92,8 @@ const ProjectButtons = ({
             project.description,
             project.thumbnail,
             project.projectedBudgets,
-            project.tags
+            project.tags,
+            project.markdown
           );
         }}
         title={strings.common.edit}

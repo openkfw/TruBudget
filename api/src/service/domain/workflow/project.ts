@@ -32,6 +32,7 @@ export interface Project {
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
   tags: string[];
+  markdown?: string;
 }
 
 export const schema = Joi.object({
@@ -47,6 +48,7 @@ export const schema = Joi.object({
   log: Joi.array().required().items(projectTraceEventSchema),
   additionalData: AdditionalData.schema.required(),
   tags: Joi.array().items(tagsSchema).required().unique().default([]),
+  markdown: Joi.string().allow(""),
 });
 
 export function validate(input): Result.Type<Project> {

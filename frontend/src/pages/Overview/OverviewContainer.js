@@ -94,8 +94,8 @@ const mapDispatchToProps = (dispatch) => {
     disableLiveUpdates: () => dispatch(disableAllProjectsLiveUpdates()),
     enableLiveUpdates: () => dispatch(enableAllProjectsLiveUpdates()),
     showCreationDialog: () => dispatch(showCreationDialog()),
-    showEditDialog: (id, displayName, description, thumbnail, projectedBudgets, tags) =>
-      dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags)),
+    showEditDialog: (id, displayName, description, thumbnail, projectedBudgets, tags, markdown) =>
+      dispatch(showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags, markdown)),
     fetchAllProjects: (showLoading) => dispatch(fetchAllProjects(showLoading)),
     showProjectPermissions: (id, displayName) => dispatch(showProjectPermissions(id, displayName)),
     showProjectAdditionalData: (id) => dispatch(showProjectAdditionalData(id)),

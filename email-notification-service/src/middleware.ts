@@ -48,7 +48,13 @@ export const verifyNotificationJWT = (req: Request, res, next): void => {
     })
     .catch((err) => {
       logger.error({ err, token }, "Notification-JWT invalid");
-      const body: InvalidJWTResponseBody = { message: "Invalid JWT token provided." };
+      let message = "Invalid JWT token provided.";
+      if (err.message === "invalid algorithm") {
+        message = err.message;
+      } else if (err.message === "jwt expired") {
+        message = err.message;
+      }
+      const body: InvalidJWTResponseBody = { message };
       res.status(400).json(body);
     });
 };

@@ -13,7 +13,6 @@ import * as Project from "./service/domain/workflow/project";
 import * as ProjectUpdate from "./service/domain/workflow/project_update";
 import { AugmentedFastifyInstance } from "./types";
 
-
 /**
  * Represents the request body of the endpoint
  */
@@ -26,6 +25,7 @@ interface RequestBodyV1 {
     thumbnail?: string;
     additionalData?: object;
     tags?: string[];
+    markdown?: string;
   };
 }
 
@@ -38,6 +38,7 @@ const requestBodyV1Schema = Joi.object({
     thumbnail: Joi.string().allow(""),
     additionalData: AdditionalData.schema,
     tags: Joi.array().items(Joi.string()),
+    markdown: Joi.string().allow(""),
   }).required(),
 });
 
@@ -93,6 +94,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
                 type: "array",
                 items: { type: "string", example: "project1" },
               },
+              markdown: { type: "string", example: "Rich text with bold letters and italics" },
             },
           },
         },
@@ -139,7 +141,7 @@ export function addHttpHandler(
   service: Service,
 ): void {
   server.register(async function () {
-    server.post(`${urlPrefix}/project.update`, mkSwaggerSchema(server), (request, reply) => {
+    server.post(`${urlPrefix}/project.update`, mkSwaggerSchema(server), async (request, reply) => {
       const ctx: Ctx = { requestId: request.id, source: "http" };
 
       const user = extractUser(request as AuthenticatedRequest);
@@ -160,26 +162,25 @@ export function addHttpHandler(
         thumbnail: bodyResult.data.thumbnail,
         additionalData: bodyResult.data.additionalData,
         tags: bodyResult.data.tags,
+        markdown: bodyResult.data.markdown,
       };
 
-      service
-        .updateProject(ctx, user, projectId, reqData)
-        .then((result) => {
-          if (Result.isErr(result)) {
-            throw new VError(result, "project.update failed");
-          }
-          const code = 200;
-          const body = {
-            apiVersion: "1.0",
-            data: {},
-          };
-          reply.status(code).send(body);
-        })
-        .catch((err) => {
-          const { code, body } = toHttpError(err);
-          request.log.error({ err }, "Error while updating Project");
-          reply.status(code).send(body);
-        });
+      try {
+        const result = await service.updateProject(ctx, user, projectId, reqData);
+        if (Result.isErr(result)) {
+          throw new VError(result, "project.update failed");
+        }
+
+        const response = {
+          apiVersion: "1.0",
+          data: {},
+        };
+        reply.status(200).send(response);
+      } catch (err) {
+        const { code, body } = toHttpError(err);
+        request.log.error({ err }, "Error while updating Project");
+        reply.status(code).send(body);
+      }
     });
   });
 }

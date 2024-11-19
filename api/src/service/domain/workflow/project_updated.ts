@@ -23,6 +23,7 @@ export interface Modification {
   thumbnail?: string;
   additionalData?: object;
   tags?: string[];
+  markdown?: string;
 }
 
 export const modificationSchema = Joi.object({
@@ -31,7 +32,8 @@ export const modificationSchema = Joi.object({
   thumbnail: Joi.string().allow(""),
   additionalData: AdditionalData.schema,
   tags: Joi.array().items(Project.tagsSchema),
-}).or("displayName", "description", "thumbnail", "additionalData", "tags");
+  markdown: Joi.string().allow(""),
+}).or("displayName", "description", "thumbnail", "additionalData", "tags", "markdown");
 
 export interface Event {
   type: EventTypeType;
@@ -105,7 +107,7 @@ export function mutate(project: Project.Project, event: Event): Result.Type<void
 
   const update = event.update;
 
-  ["displayName", "description", "thumbnail", "tags"].forEach((propname) => {
+  ["displayName", "description", "thumbnail", "tags", "markdown"].forEach((propname) => {
     if (update[propname] !== undefined) {
       project[propname] = update[propname];
     }
