@@ -67,7 +67,8 @@ const getTableEntries = ({
       creationUnixTs,
       projectedBudgets,
       additionalData,
-      tags
+      tags,
+      markdown = ""
     } = data;
     const budgets = <BudgetsList budgets={projectedBudgets} />;
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
@@ -110,6 +111,7 @@ const getTableEntries = ({
           tags={tags}
           imagePath={imagePath}
           searchTermArray={searchTermArray}
+          markdown={markdown}
         />
       );
     } else return null;

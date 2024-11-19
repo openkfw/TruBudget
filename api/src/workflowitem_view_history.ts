@@ -27,6 +27,7 @@ const requestBodySchema = Joi.array().items({
     amount: Joi.string(),
     currency: Joi.string(),
     amountType: Joi.string(),
+    markdown: Joi.string().allow(""),
   }).required(),
 });
 

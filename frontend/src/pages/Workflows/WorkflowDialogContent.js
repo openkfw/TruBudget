@@ -2,6 +2,7 @@ import React from "react";
 
 import CancelIcon from "@mui/icons-material/Cancel";
 import InfoOutlinedIcon from "@mui/icons-material/InfoOutlined";
+import { Typography } from "@mui/material";
 import Divider from "@mui/material/Divider";
 import IconButton from "@mui/material/IconButton";
 import MenuItem from "@mui/material/MenuItem";
@@ -10,6 +11,7 @@ import Tooltip from "@mui/material/Tooltip";
 import strings from "../../localizeStrings";
 import DatePicker from "../Common/DatePicker";
 import Identifier from "../Common/Identifier";
+import Markdown from "../Common/Markdown";
 import Dropdown from "../Common/NewDropdown";
 import SingleSelection from "../Common/SingleSelection";
 import TagEditor from "../Common/TagEditor";
@@ -65,9 +67,11 @@ const WorkflowDialogContent = (props) => {
     storeWorkflowExchangeRate,
     storeWorkflowFundingOrga,
     defaultWorkflowExchangeRate,
+    storeWorkflowMarkdown,
     tags,
     projectedBudgets
   } = props;
+  console.log(workflowToAdd.markdown);
   const { workflowitemType } = workflowToAdd;
   const isWorkflowFromTemplate = !!workflowTemplate;
 
@@ -196,6 +200,11 @@ const WorkflowDialogContent = (props) => {
           projectTags={tags}
           tagText={strings.workflow.add_tag_wfi_text}
         />
+      </div>
+      <Divider />
+      <div>
+        <Typography variant="subtitle2">{strings.workflow.markdown}</Typography>
+        <Markdown text={workflowToAdd.markdown} onChangeFunc={storeWorkflowMarkdown} />
       </div>
     </div>
   );

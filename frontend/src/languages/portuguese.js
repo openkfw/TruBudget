@@ -281,7 +281,8 @@ const pt = {
     project_thumbnail: "Miniatura",
     project_title_description: "Descrição do projeto",
     project_title: "Nome do projeto",
-    project_searchtext: "Pesquisar projectos"
+    project_searchtext: "Pesquisar projectos",
+    markdown: "Descrição do projeto"
   },
 
   subproject: {
@@ -386,7 +387,8 @@ const pt = {
     workflowitem_type_general: "Criar un item de workflow action do tipo general.",
     workflowitem_type_restricted:
       "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização.",
-    workflowitem_type: "Categoria do item de workflow action"
+    workflowitem_type: "Categoria do item de workflow action",
+    markdown: "Descrição"
   },
 
   workflowTemplate: {

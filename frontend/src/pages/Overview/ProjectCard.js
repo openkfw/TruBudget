@@ -50,7 +50,8 @@ const ProjectCard = ({
   thumbnail,
   tags,
   imagePath,
-  searchTermArray
+  searchTermArray,
+  markdown
 }) => {
   const theme = useTheme();
   const navigate = useNavigate();
@@ -150,7 +151,7 @@ const ProjectCard = ({
               ariaLabel="show edit dialog"
               notVisible={!isOpen || editDisabled}
               onClick={() => {
-                showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags);
+                showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags, markdown);
               }}
               title={strings.common.edit}
               icon={<EditIcon />}

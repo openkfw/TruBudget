@@ -26,6 +26,7 @@
     "@date-io/dayjs": "^2.16.0",
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
+    "@mdxeditor/editor": "^3.14.0",
     "@microsoft/applicationinsights-clickanalytics-js": "^3.0.5",
     "@microsoft/applicationinsights-react-js": "^17.0.2",
     "@microsoft/applicationinsights-web": "^3.0.5",

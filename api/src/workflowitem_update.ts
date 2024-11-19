@@ -110,6 +110,7 @@ function mkSwaggerSchema(server: AugmentedFastifyInstance): Object {
               workflowitemId: { type: "string", example: "4j28c69eg298c87e3899119e025eff1f" },
               tags: { type: "array", items: { type: "string", example: "test" } },
               fundingOrganization: { type: "string", example: "funding organization" },
+              markdown: { type: "string", example: "build a classroom" },
               documents: {
                 type: "array",
                 items: {

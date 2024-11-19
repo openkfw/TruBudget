@@ -280,7 +280,8 @@ const en = {
     project_thumbnail: "Thumbnail",
     project_title_description: "Name of the project",
     project_title: "Project title",
-    project_searchtext: "Search projects"
+    project_searchtext: "Search projects",
+    markdown: "Project description"
   },
 
   subproject: {
@@ -383,7 +384,8 @@ const en = {
     workflowitem_type_general: "Create a workflow action of type general.",
     workflowitem_type_restricted:
       "When assigning a restricted workflow action permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    workflowitem_type: "Workflow action type"
+    workflowitem_type: "Workflow action type",
+    markdown: "Workflow action description"
   },
 
   workflowTemplate: {

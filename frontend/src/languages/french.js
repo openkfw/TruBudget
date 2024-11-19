@@ -198,7 +198,8 @@ const fr = {
     project_thumbnail: "Vignette",
     project_title_description: "Description du titre du projet",
     project_title: "Titre de projet",
-    project_searchtext: "Recherche de projets"
+    project_searchtext: "Recherche de projets",
+    markdown: "Commentaire sur le projet"
   },
 
   subproject: {
@@ -304,7 +305,8 @@ const fr = {
     workflowitem_type_general: "Créer une étape de workflow action de type général.",
     workflowitem_type_restricted:
       "Lors de l'attribution d'un workflow action restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation",
-    workflowitem_type: "Type de l’étape de workflow action"
+    workflowitem_type: "Type de l’étape de workflow action",
+    markdown: "Description de l'action du workflow"
   },
 
   workflowTemplate: {

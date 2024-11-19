@@ -25,6 +25,7 @@ export const ADD_PROJECT_PROJECTED_BUDGET = "ADD_PROJECT_PROJECTED_BUDGET";
 export const EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT = "EDIT_PROJECT_PROJECTED_BUDGET_AMOUNT";
 export const PROJECT_DELETED_PROJECTED_BUDGET = "PROJECT_DELETED_PROJECTED_BUDGET";
 export const PROJECT_COMMENT = "PROJECT_COMMENT";
+export const PROJECT_MARKDOWN = "PROJECT_MARKDOWN";
 export const PROJECT_THUMBNAIL = "PROJECT_THUMBNAIL";
 export const PROJECT_CREATION_STEP = "PROJECT_CREATION_STEP";
 
@@ -168,7 +169,7 @@ export function hideProjectDialog() {
   };
 }
 
-export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags) {
+export function showEditDialog(id, displayName, description, thumbnail, projectedBudgets, tags, markdown) {
   return {
     type: SHOW_EDIT_DIALOG,
     id,
@@ -176,7 +177,8 @@ export function showEditDialog(id, displayName, description, thumbnail, projecte
     description,
     thumbnail,
     projectedBudgets,
-    tags
+    tags,
+    markdown
   };
 }
 
@@ -213,6 +215,13 @@ export function storeProjectComment(comment) {
   return {
     type: PROJECT_COMMENT,
     comment: comment
+  };
+}
+
+export function storeProjectMarkdown(markdown) {
+  return {
+    type: PROJECT_MARKDOWN,
+    markdown
   };
 }
 

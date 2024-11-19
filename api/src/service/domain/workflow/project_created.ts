@@ -28,6 +28,7 @@ interface InitialData {
   // Additional information (key-value store), e.g. external IDs:
   additionalData: object;
   tags?: string[];
+  markdown?: string;
 }
 
 const initialDataSchema = Joi.object({
@@ -41,6 +42,7 @@ const initialDataSchema = Joi.object({
   permissions: permissionsSchema.required(),
   additionalData: AdditionalData.schema.required(),
   tags: Joi.array().items(Project.tagsSchema),
+  markdown: Joi.string().allow(""),
 }).options({ stripUnknown: true });
 
 export interface Event {
@@ -106,6 +108,7 @@ export function createFrom(ctx: Ctx, event: Event): Result.Type<Project.Project>
     log: [],
     additionalData: initialData.additionalData,
     tags: initialData.tags || [],
+    // todo markdown ?
   };
 
   return Result.mapErr(
