@@ -18,6 +18,7 @@ scripts/operation/.env
 docs/developer/api-docs
 scripts/development/.env.bak
 scripts/operation/.env.bak
+scripts/operation/.env.file.bak
 scripts/operation/cronjob.err
 scripts/operation/cronjob.output
 api/src/trubudget-config/upgrade_version.txt
