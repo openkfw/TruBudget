@@ -151,9 +151,6 @@
     "lib": "dist/lib"
   },
   "overrides": {
-    "postcss": "^8.4.31",
-    "follow-redirects": "^1.15.6",
-    "find-my-way": "^8.2.2",
     "cookie": "^0.7.0"
   }
 }
