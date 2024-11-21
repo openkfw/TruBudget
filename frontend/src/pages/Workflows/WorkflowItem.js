@@ -35,16 +35,6 @@ import WorkflowAssigneeContainer from "./WorkflowAssigneeContainer.js";
 
 import "./WorkflowItem.scss";
 
-const createLine = (isFirst, selectable) => {
-  let className = "";
-  if (isFirst && selectable) {
-    className = "first-line";
-  } else {
-    className = selectable ? "line" : "line not-selectable";
-  }
-  return <div className={className} />;
-};
-
 const StepDot = (props) => {
   const {
     sortEnabled,
@@ -83,13 +73,11 @@ const StepDot = (props) => {
     }
   };
   return isWorkflowItemSelectable(redacted, sortEnabled, allowedIntents) ? (
-    <div className="workflow-checkbox">
-      <Checkbox
-        onChange={updateSelectedList}
-        checked={!!selectedWorkflowItems.find((item) => item.data.id === currentWorkflowItem.data.id)}
-        data-test="check-workflowitem"
-      />
-    </div>
+    <Checkbox
+      onChange={updateSelectedList}
+      checked={!!selectedWorkflowItems.find((item) => item.data.id === currentWorkflowItem.data.id)}
+      data-test="check-workflowitem"
+    />
   ) : (
     <Paper className="dots" elevation={2} disabled={selectable}>
       <Icon className={selectable ? "workflow-icon" : "workflow-icon not-selectable"} />
@@ -236,7 +224,13 @@ const getAmountField = (amount, type, exchangeRate, sourceCurrency, targetCurren
         </div>
       ) : null}
       <div>
-        <Chip className="amount-chip" label={amountTypes(type)} />
+        <Chip
+          sx={{
+            backgroundColor: type === "allocated" ? "blue" : "#16b816",
+            color: "white"
+          }}
+          label={amountTypes(type)}
+        />
       </div>
     </div>
   );
@@ -444,17 +438,6 @@ export const WorkflowItem = ({
             }}
             className="container-item"
           >
-            {createLine(mapIndex === 0, workflowSelectable)}
-            <StepDot
-              sortEnabled={workflowSortEnabled}
-              status={status}
-              selectable={workflowSelectable}
-              storeWorkflowItemsSelected={storeWorkflowItemsSelected}
-              storeWorkflowItemsBulkAction={storeWorkflowItemsBulkAction}
-              currentWorkflowItem={workflow}
-              selectedWorkflowItems={selectedWorkflowItems}
-              allowedIntents={allowedIntents}
-            />
             <Card
               data-test="selectable-card"
               elevation={workflowSelectable ? 1 : 0}
@@ -462,6 +445,18 @@ export const WorkflowItem = ({
               className={getCardStyle(workflowSortEnabled, status, rejectReason)}
             >
               <div className="workflow-item-content" data-test={`workflowitem-${id}`}>
+                <div className="info-cell">
+                  <StepDot
+                    sortEnabled={workflowSortEnabled}
+                    status={status}
+                    selectable={workflowSelectable}
+                    storeWorkflowItemsSelected={storeWorkflowItemsSelected}
+                    storeWorkflowItemsBulkAction={storeWorkflowItemsBulkAction}
+                    currentWorkflowItem={workflow}
+                    selectedWorkflowItems={selectedWorkflowItems}
+                    allowedIntents={allowedIntents}
+                  />
+                </div>
                 <div className="info-cell">{infoButton}</div>
                 <div className="info-cell">{attachmentButton}</div>
                 <div className={workflowSelectable ? "workflow-cell" : "workflow-cell not-selectable"}>
@@ -588,8 +583,6 @@ export const RedactedWorkflowItem = ({
             }}
             className="container-item"
           >
-            {createLine(mapIndex === 0, workflowSelectable)}
-            <StepDot status={status} selectable={workflowSelectable} redacted={true} />
             <Card
               data-test="redacted-selectable-card"
               elevation={workflowSelectable ? 1 : 0}
@@ -597,6 +590,7 @@ export const RedactedWorkflowItem = ({
               className="workflow-item-card"
             >
               <div className="workflow-item-content">
+                <StepDot status={status} selectable={workflowSelectable} redacted={true} />
                 <div className="hidden-icon-container">
                   <IconButton aria-label="Hidden Icon" className="button-style" size="large">
                     <HiddenIcon />
