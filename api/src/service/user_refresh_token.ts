@@ -4,7 +4,7 @@ import { globalIntents } from "../authz/intents";
 import { config } from "../config";
 import { Ctx } from "../lib/ctx";
 import DbConnector from "../lib/db";
-import { getValue } from "../lib/keyValueStore";
+import { getValue, getAllValues } from "../lib/keyValueStore";
 import logger from "../lib/logger";
 import * as SymmetricCrypto from "../lib/symmetricCrypto";
 import { verifyToken } from "../lib/token";
@@ -48,6 +48,8 @@ export async function validateRefreshToken(
   let storedRefreshToken: { userId: string; validUntil: number } | undefined;
 
   if (config.refreshTokenStorage === "memory") {
+    const storeValues = getAllValues();
+    logger.error(JSON.stringify(storeValues, null, 2));
     storedRefreshToken = getValue(`refreshToken.${refreshToken}`) as
       | { userId: string; validUntil: number }
       | undefined;

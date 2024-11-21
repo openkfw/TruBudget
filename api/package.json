@@ -95,6 +95,7 @@
     "content-disposition": "^0.5.4",
     "fastify": "^4.28.1",
     "fastify-metrics": "^10.3.0",
+    "fastify-plugin": "^5.0.1",
     "joi": "^17.9.1",
     "jsonwebtoken": "^9.0.0",
     "knex": "^3.1.0",
