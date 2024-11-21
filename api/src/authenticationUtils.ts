@@ -1,9 +1,9 @@
 import * as jsonwebtoken from "jsonwebtoken";
 
-import { JwtConfig } from "./config";
+import { config, JwtConfig } from "./config";
 
-export const refreshTokenExpirationInDays = 8;
-export const accessTokenExpirationInMinutesWithrefreshToken = 10;
+export const refreshTokenExpirationInHours = config.refreshTokenExpiration;
+export const accessTokenExpirationInMinutesWithrefreshToken = config.accessTokenExpiration;
 
 /**
  * Creates a refresh JWT Token
@@ -18,7 +18,7 @@ export function createRefreshJWTToken(
 ): string {
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
   return jsonwebtoken.sign(payload, secretOrPrivateKey, {
-    expiresIn: `${refreshTokenExpirationInDays}d`,
+    expiresIn: `${refreshTokenExpirationInHours}h`,
     algorithm,
   });
 }

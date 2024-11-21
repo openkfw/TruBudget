@@ -103,6 +103,8 @@ services:
       API_DB_SCHEMA: ${API_DB_SCHEMA}
       API_DB_NAME: ${API_DB_NAME}
       API_REFRESH_TOKENS_TABLE: ${API_REFRESH_TOKENS_TABLE}
+      REFRESH_TOKEN_EXPIRATION: ${REFRESH_TOKEN_EXPIRATION}
+      ACCESS_TOKEN_EXPIRATION: ${ACCESS_TOKEN_EXPIRATION}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:

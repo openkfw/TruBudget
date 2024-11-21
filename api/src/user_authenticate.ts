@@ -6,7 +6,7 @@ import { VError } from "verror";
 import {
   accessTokenExpirationInMinutesWithrefreshToken,
   createRefreshJWTToken,
-  refreshTokenExpirationInDays,
+  refreshTokenExpirationInHours,
 } from "./authenticationUtils";
 import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
@@ -252,7 +252,7 @@ export function addHttpHandler(
       const now = new Date();
       // time in miliseconds of refresh token expiration
       const refreshTokenExpiration = new Date(
-        now.getTime() + 1000 * 60 * 60 * 24 * refreshTokenExpirationInDays,
+        now.getTime() + 1000 * 60 * 60 * refreshTokenExpirationInHours,
       );
       const refreshToken = createRefreshJWTToken(
         { userId: token.userId, expirationAt: refreshTokenExpiration },

@@ -258,6 +258,16 @@ export const envVarsSchema = Joi.object({
     .empty(["", null])
     .default("public")
     .note('Database schema, e.g. "public".'),
+  REFRESH_TOKEN_EXPIRATION: Joi.number()
+    .default(8)
+    .allow("")
+    .empty(["", null])
+    .note("Refresh token expiration in hours"),
+  ACCESS_TOKEN_EXPIRATION: Joi.number()
+    .default(15)
+    .allow("")
+    .empty(["", null])
+    .note("Access token expiration in minutes"),
   API_REFRESH_TOKENS_TABLE: Joi.string()
     .empty(["", null])
     .default("refresh_token")
