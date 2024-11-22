@@ -14,23 +14,8 @@
   height: 1.25rem;
   width: 1.25rem;
   text-align: center;
-  display: inline-block;
-  position: absolute;
-  z-index: 20;
-  top: 21px;
-  left: 16px;
   border-radius: 10px;
-}
-
-.workflow-checkbox {
-  height: 1.25rem;
-  width: 1.25rem;
-  text-align: center;
-  display: inline-block;
-  position: absolute;
-  top: 8px;
-  left: 5px;
-  border-radius: 10px;
+  margin-left: 0.7rem;
 }
 
 .workflow-item-actions {
@@ -43,34 +28,10 @@
   width: 25%;
 }
 
-.line {
-  position: absolute;
-  border-left: 2px solid black;
-  height: 100%;
-  left: 25px;
-  bottom: 35px;
-  &.not-selectable {
-    opacity: 0.2;
-  }
-}
-
-.first-line {
-  position: absolute;
-  border-left: 2px solid black;
-  height: 2.3rem;
-  left: 25px;
-  bottom: 35px;
-}
-
 .button-style {
   min-width: 1.875rem;
   margin-left: 0.3rem;
 }
-
-.amount-chip {
-  margin-left: 1rem;
-}
-
 .tag-chip {
   color: var(--mui-palette-tag-main);
 }
@@ -100,7 +61,7 @@
   display: flex;
   justify-content: space-between;
   overflow: hidden;
-  padding: 0.25rem 0.5rem 0.25rem 0.25rem;
+  padding: 0.3rem;
 }
 
 .info-cell {
@@ -177,7 +138,7 @@
 }
 
 .workflow-item-card {
-  margin-left: 3rem;
+  margin-left: 0.625rem;
   margin-right: 0.625rem;
   &.green {
     background-color: #f1f8e9;
@@ -209,6 +170,7 @@
 
 .amount-field-container {
   display: flex;
+  flex-direction: column;
 }
 
 .amount-field {
