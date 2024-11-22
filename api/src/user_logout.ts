@@ -6,7 +6,7 @@ import { VError } from "verror";
 import { config } from "./config";
 import { toHttpError } from "./http_errors";
 import { Ctx } from "./lib/ctx";
-import { clearValue } from "./lib/keyValueStore";
+import { kvStore } from "./lib/keyValueStore";
 import * as Result from "./result";
 
 import { UserLogoutAPIService } from "./index";
@@ -132,7 +132,7 @@ export function addHttpHandler(
 
       // delete refresh token from storage
       if (currentRefreshToken && config.refreshTokenStorage === "memory") {
-        clearValue(`refreshToken.${currentRefreshToken}`);
+        kvStore.clear(`refreshToken.${currentRefreshToken}`);
       } else if (currentRefreshToken && config.refreshTokenStorage === "db") {
         await service.clearRefreshToken(currentRefreshToken);
       }

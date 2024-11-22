@@ -1,8 +1,11 @@
 import { FastifyInstance, FastifyPluginOptions } from "fastify";
 import fp from "fastify-plugin";
 
+import { config } from "../config";
 import { AuthenticatedRequest } from "../httpd/lib";
+import { kvStore } from "../lib/keyValueStore";
 
+// todo should not run in refreshtoken route
 async function activityTrackingPlugin(
   fastify: FastifyInstance,
   options: FastifyPluginOptions,
@@ -12,6 +15,12 @@ async function activityTrackingPlugin(
     if (request.user) {
       try {
         const userId = request.user?.userId;
+        if (config.refreshTokenStorage === "memory") {
+          // TODO save, update last activity
+          kvStore.save(`lastActivity.${userId}`, Date.now(), Date.now() + 1000 * 60 * 10);
+        } else if (config.refreshTokenStorage === "db") {
+          // create or update last access for userId
+        }
       } catch (err) {
         //logger.error({ err }, `preHandler failed to get groups for user ${request.user?.userId}`);
       }
@@ -20,7 +29,17 @@ async function activityTrackingPlugin(
 
   // background job to check idle users
   const checkIdleUsers = async (): Promise<void> => {
-    for (let i = 0; i < 1; i++) {}
+    try {
+      if (config.refreshTokenStorage === "memory") {
+        // go through all stored lastAccesses
+        // invalidate refreshTokens of users with last activity older than X
+      } else if (config.refreshTokenStorage === "db") {
+        // get all last accesses
+        // invalidate refreshTokens of users with last activity older than X
+      }
+    } catch (err) {
+      //logger.error({ err }, `preHandler failed to get groups for user ${request.user?.userId}`);
+    }
   };
 
   // run job every X minutes - setInterval

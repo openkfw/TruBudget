@@ -13,7 +13,7 @@ import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
 import { safeIdSchema, safeStringSchema } from "./lib/joiValidation";
-import { saveValue } from "./lib/keyValueStore";
+import { kvStore } from "./lib/keyValueStore";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
@@ -261,7 +261,7 @@ export function addHttpHandler(
       );
 
       if (config.refreshTokenStorage === "memory") {
-        saveValue(
+        kvStore.save(
           `refreshToken.${refreshToken}`,
           {
             userId: token.userId,
