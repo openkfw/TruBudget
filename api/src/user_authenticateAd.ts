@@ -4,15 +4,15 @@ import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 
 import {
-  accessTokenExpirationInMinutesWithrefreshToken,
+  accessTokenExpirationInHoursWithrefreshToken,
   createRefreshJWTToken,
-  refreshTokenExpirationInDays,
+  refreshTokenExpirationInHours,
 } from "./authenticationUtils";
 import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
 import { assertUnreachable } from "./lib/assertUnreachable";
 import { Ctx } from "./lib/ctx";
-import { saveValue } from "./lib/keyValueStore";
+import { kvStore } from "./lib/keyValueStore";
 import * as Result from "./result";
 import { AuthToken } from "./service/domain/organization/auth_token";
 import { Group } from "./service/domain/organization/group";
@@ -247,7 +247,7 @@ export function addHttpHandler(
         const now = new Date();
         // time in miliseconds of refresh token expiration
         const refreshTokenExpiration = new Date(
-          now.getTime() + 1000 * 60 * 60 * 24 * refreshTokenExpirationInDays,
+          now.getTime() + 1000 * 60 * 60 * refreshTokenExpirationInHours,
         );
         const refreshToken = createRefreshJWTToken(
           { userId: token.userId, expirationAt: refreshTokenExpiration },
@@ -256,10 +256,11 @@ export function addHttpHandler(
         );
 
         if (config.refreshTokenStorage === "memory") {
-          saveValue(
-            `refreshToken.${refreshToken}`,
+          kvStore.save(
+            `refreshToken.${token.userId}`,
             {
               userId: token.userId,
+              token: refreshToken,
             },
             refreshTokenExpiration,
           );
@@ -299,7 +300,7 @@ export function addHttpHandler(
 
         // conditionally add token expiration to payload
         if (config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)) {
-          body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
+          body.data.accessTokenExp = 1000 * 60 * 60 * accessTokenExpirationInHoursWithrefreshToken;
         }
 
         reply
