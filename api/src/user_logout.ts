@@ -4,7 +4,9 @@ import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 
 import { config } from "./config";
+import { extractUser } from "./handlerUtils";
 import { toHttpError } from "./http_errors";
+import { AuthenticatedRequest } from "./httpd/lib";
 import { Ctx } from "./lib/ctx";
 import { kvStore } from "./lib/keyValueStore";
 import * as Result from "./result";
@@ -118,6 +120,7 @@ export function addHttpHandler(
 ): void {
   server.post(`${urlPrefix}/user.logout`, swaggerSchema, async (request, reply) => {
     const ctx: Ctx = { requestId: request.id, source: "http" };
+    const user = extractUser(request as AuthenticatedRequest);
     const bodyResult = validateRequestBody(request.body);
 
     if (Result.isErr(bodyResult)) {
@@ -132,7 +135,7 @@ export function addHttpHandler(
 
       // delete refresh token from storage
       if (currentRefreshToken && config.refreshTokenStorage === "memory") {
-        kvStore.clear(`refreshToken.${currentRefreshToken}`);
+        kvStore.clear(`refreshToken.${user.id}`);
       } else if (currentRefreshToken && config.refreshTokenStorage === "db") {
         await service.clearRefreshToken(currentRefreshToken);
       }

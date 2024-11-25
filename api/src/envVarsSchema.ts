@@ -264,10 +264,10 @@ export const envVarsSchema = Joi.object({
     .empty(["", null])
     .note("Refresh token expiration in hours"),
   ACCESS_TOKEN_EXPIRATION: Joi.number()
-    .default(15)
+    .default(0.25)
     .allow("")
     .empty(["", null])
-    .note("Access token expiration in minutes"),
+    .note("Access token expiration in hours"),
   API_REFRESH_TOKENS_TABLE: Joi.string()
     .empty(["", null])
     .default("refresh_token")
@@ -291,6 +291,7 @@ export const envVarsSchema = Joi.object({
   APPLICATIONINSIGHTS_CONNECTION_STRING: Joi.string()
     .allow("")
     .note("Azure Application Insights Connection String"),
+  IDLE_TIME: Joi.number().default(8).allow("").empty(["", null]),
 })
   .unknown()
   .required();

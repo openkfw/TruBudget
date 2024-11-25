@@ -48,9 +48,6 @@ export async function validateRefreshToken(
   let storedRefreshToken: { userId: string; validUntil: number } | undefined;
 
   if (config.refreshTokenStorage === "memory") {
-    // todo delete next 2 lines
-    const storeValues = kvStore.getAll();
-    logger.error(JSON.stringify(storeValues, null, 2));
     storedRefreshToken = kvStore.get(`refreshToken.${refreshToken}`) as
       | { userId: string; validUntil: number }
       | undefined;

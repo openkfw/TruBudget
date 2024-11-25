@@ -3,7 +3,7 @@ import * as jsonwebtoken from "jsonwebtoken";
 import { config, JwtConfig } from "./config";
 
 export const refreshTokenExpirationInHours = config.refreshTokenExpiration;
-export const accessTokenExpirationInMinutesWithrefreshToken = config.accessTokenExpiration;
+export const accessTokenExpirationInHoursWithrefreshToken = config.accessTokenExpiration;
 
 /**
  * Creates a refresh JWT Token

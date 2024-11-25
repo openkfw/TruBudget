@@ -2,7 +2,7 @@ import Joi = require("joi");
 import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 
-import { accessTokenExpirationInMinutesWithrefreshToken } from "./authenticationUtils";
+import { accessTokenExpirationInHoursWithrefreshToken } from "./authenticationUtils";
 import { JwtConfig, config } from "./config";
 import { toHttpError } from "./http_errors";
 import { AuthenticatedRequest } from "./httpd/lib";
@@ -220,10 +220,10 @@ export function addHttpHandler(
         data: {},
       };
       // conditionally add token expiration to payload
-      request.log.warn(`checking  accessTokenExp ${config.refreshTokenStorage}`);
+      request.log.debug(`checking  accessTokenExp ${config.refreshTokenStorage}`);
       if (config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)) {
-        request.log.warn("adding accessTokenExp");
-        body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
+        request.log.debug("adding accessTokenExp");
+        body.data.accessTokenExp = 1000 * 60 * 60 * accessTokenExpirationInHoursWithrefreshToken;
       }
 
       reply

@@ -57,6 +57,7 @@ interface ProcessEnvVars {
   ACCESS_TOKEN_EXPIRATION: string;
   API_REFRESH_TOKENS_TABLE: string;
   REFRESH_TOKEN_STORAGE?: string; // "db" || "memory" || undefined
+  IDLE_TIME: string;
 }
 
 interface DatabaseConfig {
@@ -124,6 +125,7 @@ interface Config {
   db: DatabaseConfig;
   dbType: string;
   sqlDebug: boolean | undefined;
+  userIdleTime: number;
   accessTokenExpiration: number;
   refreshTokenExpiration: number;
   refreshTokensTable: string | undefined;
@@ -202,6 +204,7 @@ export const config: Config = {
   },
   dbType: envVars.DB_TYPE,
   sqlDebug: envVars.SQL_DEBUG,
+  userIdleTime: envVars.IDLE_TIME,
   accessTokenExpiration: envVars.ACCESS_TOKEN_EXPIRATION,
   refreshTokenExpiration: envVars.REFRESH_TOKEN_EXPIRATION,
   refreshTokensTable: envVars.API_REFRESH_TOKENS_TABLE,

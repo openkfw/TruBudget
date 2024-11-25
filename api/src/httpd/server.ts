@@ -21,6 +21,7 @@ import fastifyMetricsPlugin from "fastify-metrics";
 import { JwtConfig } from "../config";
 import { Ctx } from "../lib/ctx";
 import logger from "../lib/logger";
+import lastActivityTracker from "../plugins/activity";
 import * as Result from "../result";
 import { ConnToken } from "../service";
 import {
@@ -239,6 +240,9 @@ export const createBasicApp = (
 
   addTokenHandling(server, jwt);
   addLogging(server);
+  server.register(lastActivityTracker, {
+    excludePaths: ["/api/user.refreshToken", "/api/notification.list"],
+  });
 
   server.addContentTypeParser("application/gzip", async function (request, payload) {
     request.headers["content-length"] = "1024mb";

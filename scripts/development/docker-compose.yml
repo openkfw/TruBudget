@@ -105,6 +105,7 @@ services:
       API_REFRESH_TOKENS_TABLE: ${API_REFRESH_TOKENS_TABLE}
       REFRESH_TOKEN_EXPIRATION: ${REFRESH_TOKEN_EXPIRATION}
       ACCESS_TOKEN_EXPIRATION: ${ACCESS_TOKEN_EXPIRATION}
+      IDLE_TIME: ${IDLE_TIME}
     command: ["npm", "run", "watch"] # npm run watch: hot reloading
     # volume to track code changes
     volumes:

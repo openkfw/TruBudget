@@ -4,7 +4,7 @@ import * as jsonwebtoken from "jsonwebtoken";
 import { VError } from "verror";
 
 import {
-  accessTokenExpirationInMinutesWithrefreshToken,
+  accessTokenExpirationInHoursWithrefreshToken,
   createRefreshJWTToken,
   refreshTokenExpirationInHours,
 } from "./authenticationUtils";
@@ -262,9 +262,10 @@ export function addHttpHandler(
 
       if (config.refreshTokenStorage === "memory") {
         kvStore.save(
-          `refreshToken.${refreshToken}`,
+          `refreshToken.${token.userId}`,
           {
             userId: token.userId,
+            token: refreshToken,
           },
           refreshTokenExpiration,
         );
@@ -302,7 +303,7 @@ export function addHttpHandler(
       };
       // conditionally add token expiration to payload
       if (config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)) {
-        body.data.accessTokenExp = 1000 * 60 * accessTokenExpirationInMinutesWithrefreshToken;
+        body.data.accessTokenExp = 1000 * 60 * 60 * accessTokenExpirationInHoursWithrefreshToken;
       }
 
       reply
@@ -353,7 +354,7 @@ function createJWT(
   const secretOrPrivateKey = algorithm === "RS256" ? Buffer.from(key, "base64") : key;
   const expiresIn =
     config.refreshTokenStorage && ["db", "memory"].includes(config.refreshTokenStorage)
-      ? `${accessTokenExpirationInMinutesWithrefreshToken}m`
+      ? `${accessTokenExpirationInHoursWithrefreshToken}h`
       : "8h";
   return jsonwebtoken.sign(
     {
