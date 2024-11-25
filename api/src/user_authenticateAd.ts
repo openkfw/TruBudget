@@ -257,10 +257,9 @@ export function addHttpHandler(
 
         if (config.refreshTokenStorage === "memory") {
           kvStore.save(
-            `refreshToken.${token.userId}`,
+            `refreshToken.${refreshToken}`,
             {
               userId: token.userId,
-              token: refreshToken,
             },
             refreshTokenExpiration,
           );

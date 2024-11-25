@@ -265,7 +265,6 @@ export function addHttpHandler(
           `refreshToken.${refreshToken}`,
           {
             userId: token.userId,
-            token: refreshToken,
           },
           refreshTokenExpiration,
         );
