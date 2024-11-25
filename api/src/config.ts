@@ -53,6 +53,8 @@ interface ProcessEnvVars {
   API_DB_PORT: string;
   API_DB_SSL: string;
   API_DB_SCHEMA: string;
+  REFRESH_TOKEN_EXPIRATION: string;
+  ACCESS_TOKEN_EXPIRATION: string;
   API_REFRESH_TOKENS_TABLE: string;
   REFRESH_TOKEN_STORAGE?: string; // "db" || "memory" || undefined
 }
@@ -122,6 +124,8 @@ interface Config {
   db: DatabaseConfig;
   dbType: string;
   sqlDebug: boolean | undefined;
+  accessTokenExpiration: number;
+  refreshTokenExpiration: number;
   refreshTokensTable: string | undefined;
   refreshTokenStorage: string | undefined;
   snapshotEventInterval: number;
@@ -198,6 +202,8 @@ export const config: Config = {
   },
   dbType: envVars.DB_TYPE,
   sqlDebug: envVars.SQL_DEBUG,
+  accessTokenExpiration: envVars.ACCESS_TOKEN_EXPIRATION,
+  refreshTokenExpiration: envVars.REFRESH_TOKEN_EXPIRATION,
   refreshTokensTable: envVars.API_REFRESH_TOKENS_TABLE,
   refreshTokenStorage: envVars.REFRESH_TOKEN_STORAGE,
   snapshotEventInterval: envVars.SNAPSHOT_EVENT_INTERVAL,
