@@ -718,6 +718,12 @@ const fr = {
     select: "Sélectionner ou télécharger une image personnalisée"
   },
 
+  clipboard: {
+    copy: "Copy link",
+    copied: "Link copied",
+    paste: "Paste link"
+  },
+
   language: {
     english: "Anglais",
     french: "Français",

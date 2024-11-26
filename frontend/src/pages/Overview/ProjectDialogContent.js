@@ -55,7 +55,13 @@ const ProjectDialogContent = (props) => {
       <Divider />
       <div>
         <Typography variant="subtitle2">{strings.project.markdown}</Typography>
-        <Markdown onChangeFunc={props.storeProjectMarkdown} text={props.projectToAdd.markdown} />
+        <Markdown
+          onChangeFunc={props.storeProjectMarkdown}
+          text={props.projectToAdd.markdown}
+          clipboard={props.clipboard}
+          paste={props.pasteClipboard}
+          readOnly={false}
+        />
       </div>
     </div>
   );

@@ -36,6 +36,9 @@ export const SAVE_EMAIL_ADDRESS_SUCCESS = "SAVE_EMAIL_ADDRESS_SUCCESS";
 export const SAVE_EMAIL_ADDRESS_FAILED = "SAVE_EMAIL_ADDRESS_FAILED";
 export const SET_VALID_EMAIL_ADDRESS_INPUT = "SET_VALID_EMAIL_ADDRESS_INPUT";
 
+export const CLIPBOARD_COPY = "CLIPBOARD_COPY";
+export const CLIPBOARD_PASTE = "CLIPBOARD_PASTE";
+
 export function toggleSidebar() {
   return {
     type: TOGGLE_SIDEBAR
@@ -142,5 +145,18 @@ export function setValidEmailAddressInput(valid) {
   return {
     type: SET_VALID_EMAIL_ADDRESS_INPUT,
     valid
+  };
+}
+
+export function clipboardCopy(text) {
+  return {
+    type: CLIPBOARD_COPY,
+    text
+  };
+}
+
+export function clipboardPaste() {
+  return {
+    type: CLIPBOARD_PASTE
   };
 }

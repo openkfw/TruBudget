@@ -1,9 +1,11 @@
 import React from "react";
+import { useLocation } from "react-router-dom";
 import _isEmpty from "lodash/isEmpty";
 
 import AmountIcon from "@mui/icons-material/AccountBalance";
 import BarChartIcon from "@mui/icons-material/BarChart";
 import DoneIcon from "@mui/icons-material/Check";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
 import DateIcon from "@mui/icons-material/DateRange";
 import AssigneeIcon from "@mui/icons-material/Group";
 import PersonIcon from "@mui/icons-material/Person";
@@ -24,7 +26,14 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-import { statusIconMapping, statusMapping, toAmountString, toCurrencyCode, trimSpecialChars, unixTsToString } from "../../helper.js";
+import {
+  statusIconMapping,
+  statusMapping,
+  toAmountString,
+  toCurrencyCode,
+  trimSpecialChars,
+  unixTsToString
+} from "../../helper.js";
 import strings from "../../localizeStrings";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
@@ -66,165 +75,183 @@ const SubProjectDetails = ({
   openAnalyticsDialog,
   projectedBudgets,
   subprojectValidator,
-  fixedWorkflowitemType
+  fixedWorkflowitemType,
+  clipboardCopy,
+  storeSnackbarMessage,
+  showSnackbar
 }) => {
   const mappedStatus = statusMapping(status);
   const statusIcon = statusIconMapping[status];
   const date = unixTsToString(created);
   const validator = users.find((user) => user.id === subprojectValidator);
 
+  const location = useLocation();
+
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
   return (
-    <div className="sub-project-details-container">
-      <Card className="sub-project-card">
-        <List className="sub-project-details">
-          <ListItem data-test="subproject-details-displayname">
-            {displayName ? (
-              <ListItemAvatar>
-                <Avatar>{displayName[0]}</Avatar>
-              </ListItemAvatar>
-            ) : null}
-            <ListItemText primary={trimSpecialChars(displayName)} secondary={description} />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>
-                <DateIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={date} secondary={strings.common.created} />
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>
-                <AmountIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={currency} secondary={strings.subproject.subproject_currency} />
-          </ListItem>
-          {!_isEmpty(fixedWorkflowitemType) ? (
+    <>
+      <IconButton
+        onClick={() => {
+          clipboardCopy(`[${displayName}](${location.pathname})`);
+          storeSnackbarMessage(strings.clipboard.copied);
+          showSnackbar();
+        }}
+        data-test={`subproject-copy-button-${subprojectId}`}
+        size="small"
+      >
+        <ContentPasteIcon />
+      </IconButton>
+      <div className="sub-project-details-container">
+        <Card className="sub-project-card">
+          <List className="sub-project-details">
+            <ListItem data-test="subproject-details-displayname">
+              {displayName ? (
+                <ListItemAvatar>
+                  <Avatar>{displayName[0]}</Avatar>
+                </ListItemAvatar>
+              ) : null}
+              <ListItemText primary={trimSpecialChars(displayName)} secondary={description} />
+            </ListItem>
             <ListItem>
               <ListItemAvatar>
                 <Avatar>
-                  <SettingsIcon />
+                  <DateIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={fixedWorkflowitemType} secondary={strings.workflow.workflowitem_type} />
+              <ListItemText primary={date} secondary={strings.common.created} />
             </ListItem>
-          ) : null}
-        </List>
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>
+                  <AmountIcon />
+                </Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={currency} secondary={strings.subproject.subproject_currency} />
+            </ListItem>
+            {!_isEmpty(fixedWorkflowitemType) ? (
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <SettingsIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={fixedWorkflowitemType} secondary={strings.workflow.workflowitem_type} />
+              </ListItem>
+            ) : null}
+          </List>
 
-        <div className="projected-budget" data-test="subproject-projected-budget">
-          <Typography variant="body1">{strings.common.projected_budget}</Typography>
-          {isDataLoading ? (
-            <div />
-          ) : projectedBudgets.length > 0 ? (
-            <div>
-              <Table padding="none">
-                <TableHead>
-                  <TableRow>
-                    <TableCell className="sub-project-table-cell">{strings.common.organization}</TableCell>
-                    <TableCell className="sub-project-table-cell" align="right">
-                      {strings.common.amount}
-                    </TableCell>
-                    <TableCell className="sub-project-table-cell" align="right">
-                      {strings.common.currency}
-                    </TableCell>
-                  </TableRow>
-                </TableHead>
-                <TableBody>
-                  {projectedBudgets.map((budget) => (
-                    <TableRow key={budget.organization + budget.currencyCode}>
-                      <TableCell className="sub-project-table-cell">{budget.organization}</TableCell>
+          <div className="projected-budget" data-test="subproject-projected-budget">
+            <Typography variant="body1">{strings.common.projected_budget}</Typography>
+            {isDataLoading ? (
+              <div />
+            ) : projectedBudgets.length > 0 ? (
+              <div>
+                <Table padding="none">
+                  <TableHead>
+                    <TableRow>
+                      <TableCell className="sub-project-table-cell">{strings.common.organization}</TableCell>
                       <TableCell className="sub-project-table-cell" align="right">
-                        {toAmountString(budget.value, undefined, true)}
+                        {strings.common.amount}
                       </TableCell>
                       <TableCell className="sub-project-table-cell" align="right">
-                        {toCurrencyCode(budget.value, budget.currencyCode, true)}
+                        {strings.common.currency}
                       </TableCell>
                     </TableRow>
-                  ))}
-                </TableBody>
-              </Table>
-              <div className="analytics">
-                <Button
-                  variant="outlined"
-                  color="primary"
-                  data-test="details-analytics-button"
-                  onClick={openAnalyticsDialog}
-                >
-                  <BarChartIcon />
-                  {strings.project.project_details}
-                </Button>
-              </div>
-            </div>
-          ) : (
-            <BudgetEmptyState text={strings.common.no_budget_subproject} />
-          )}
-        </div>
-        <List className="sub-project-assignee">
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>{statusIcon}</Avatar>
-            </ListItemAvatar>
-            <ListItemText primary={mappedStatus} secondary={strings.common.status} />
-            {status !== "closed" ? (
-              <Tooltip
-                id="tooltip-sclose"
-                title={subProjectCloseButtonTooltip(canCloseSubproject, closingOfSubProjectAllowed)}
-              >
-                <div>
-                  <IconButton
-                    aria-label="close subproject"
+                  </TableHead>
+                  <TableBody>
+                    {projectedBudgets.map((budget) => (
+                      <TableRow key={budget.organization + budget.currencyCode}>
+                        <TableCell className="sub-project-table-cell">{budget.organization}</TableCell>
+                        <TableCell className="sub-project-table-cell" align="right">
+                          {toAmountString(budget.value, undefined, true)}
+                        </TableCell>
+                        <TableCell className="sub-project-table-cell" align="right">
+                          {toCurrencyCode(budget.value, budget.currencyCode, true)}
+                        </TableCell>
+                      </TableRow>
+                    ))}
+                  </TableBody>
+                </Table>
+                <div className="analytics">
+                  <Button
+                    variant="outlined"
                     color="primary"
-                    data-test="spc-button"
-                    disabled={!closingOfSubProjectAllowed}
-                    onClick={closeSubproject}
-                    size="large"
+                    data-test="details-analytics-button"
+                    onClick={openAnalyticsDialog}
                   >
-                    <DoneIcon />
-                  </IconButton>
+                    <BarChartIcon />
+                    {strings.project.project_details}
+                  </Button>
                 </div>
-              </Tooltip>
-            ) : null}
-          </ListItem>
-          <ListItem>
-            <ListItemAvatar>
-              <Avatar>
-                <AssigneeIcon />
-              </Avatar>
-            </ListItemAvatar>
-            <ListItemText
-              primary={
-                <SubProjectAssigneeContainer
-                  projectId={projectId}
-                  subprojectId={subprojectId}
-                  users={users}
-                  disabled={!canAssignSubproject}
-                  assignee={assignee}
-                />
-              }
-              secondary={strings.subproject.assignee}
-            />
-          </ListItem>
-          {!_isEmpty(validator) ? (
+              </div>
+            ) : (
+              <BudgetEmptyState text={strings.common.no_budget_subproject} />
+            )}
+          </div>
+          <List className="sub-project-assignee">
+            <ListItem>
+              <ListItemAvatar>
+                <Avatar>{statusIcon}</Avatar>
+              </ListItemAvatar>
+              <ListItemText primary={mappedStatus} secondary={strings.common.status} />
+              {status !== "closed" ? (
+                <Tooltip
+                  id="tooltip-sclose"
+                  title={subProjectCloseButtonTooltip(canCloseSubproject, closingOfSubProjectAllowed)}
+                >
+                  <div>
+                    <IconButton
+                      aria-label="close subproject"
+                      color="primary"
+                      data-test="spc-button"
+                      disabled={!closingOfSubProjectAllowed}
+                      onClick={closeSubproject}
+                      size="large"
+                    >
+                      <DoneIcon />
+                    </IconButton>
+                  </div>
+                </Tooltip>
+              ) : null}
+            </ListItem>
             <ListItem>
               <ListItemAvatar>
                 <Avatar>
-                  <PersonIcon />
+                  <AssigneeIcon />
                 </Avatar>
               </ListItemAvatar>
-              <ListItemText primary={validator.displayName} secondary={strings.subproject.workflowitem_assignee} />
+              <ListItemText
+                primary={
+                  <SubProjectAssigneeContainer
+                    projectId={projectId}
+                    subprojectId={subprojectId}
+                    users={users}
+                    disabled={!canAssignSubproject}
+                    assignee={assignee}
+                  />
+                }
+                secondary={strings.subproject.assignee}
+              />
             </ListItem>
-          ) : null}
-        </List>
-      </Card>
-      <SubProjectAnalyticsDialog
-        projectId={projectId}
-        subProjectId={subprojectId}
-        projectedBudgets={projectedBudgets}
-      />
-    </div>
+            {!_isEmpty(validator) ? (
+              <ListItem>
+                <ListItemAvatar>
+                  <Avatar>
+                    <PersonIcon />
+                  </Avatar>
+                </ListItemAvatar>
+                <ListItemText primary={validator.displayName} secondary={strings.subproject.workflowitem_assignee} />
+              </ListItem>
+            ) : null}
+          </List>
+        </Card>
+        <SubProjectAnalyticsDialog
+          projectId={projectId}
+          subProjectId={subprojectId}
+          projectedBudgets={projectedBudgets}
+        />
+      </div>
+    </>
   );
 };
 export default SubProjectDetails;

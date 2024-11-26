@@ -712,6 +712,12 @@ const pt = {
     select: "Selecione ou faça o upload de uma imagem personalizada"
   },
 
+  clipboard: {
+    copy: "Copy link",
+    copied: "Link copied",
+    paste: "Paste link"
+  },
+
   language: {
     english: "English",
     french: "Français",

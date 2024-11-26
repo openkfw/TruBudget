@@ -710,6 +710,12 @@ const ka = {
     select: "აირჩიეთ სურათი გალერეიდან ან ატვირთეთ მორგებული სურათი."
   },
 
+  clipboard: {
+    copy: "Copy link",
+    copied: "Link copied",
+    paste: "Paste link"
+  },
+
   language: {
     english: "ინგლისური",
     french: "ფრანგული",
