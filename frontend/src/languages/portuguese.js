@@ -713,9 +713,9 @@ const pt = {
   },
 
   clipboard: {
-    copy: "Copy link",
-    copied: "Link copied",
-    paste: "Paste link"
+    copy: "Copiar link",
+    copied: "Link copiado",
+    paste: "Colar link"
   },
 
   language: {

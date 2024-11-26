@@ -711,9 +711,9 @@ const ka = {
   },
 
   clipboard: {
-    copy: "Copy link",
-    copied: "Link copied",
-    paste: "Paste link"
+    copy: "დააკოპირეთ ბმული",
+    copied: "ბმული კოპირებულია",
+    paste: "ჩასვით ლინკი"
   },
 
   language: {

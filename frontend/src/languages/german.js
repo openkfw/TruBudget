@@ -711,9 +711,9 @@ const de = {
   },
 
   clipboard: {
-    copy: "Copy link",
-    copied: "Link copied",
-    paste: "Paste link"
+    copy: "Link kopieren",
+    copied: "Link kopiert",
+    paste: "Link einfügen"
   },
 
   language: {

@@ -719,9 +719,9 @@ const fr = {
   },
 
   clipboard: {
-    copy: "Copy link",
-    copied: "Link copied",
-    paste: "Paste link"
+    copy: "Copier le lien",
+    copied: "Lien copié",
+    paste: "Coller le lien"
   },
 
   language: {
