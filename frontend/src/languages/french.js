@@ -711,7 +711,9 @@ const fr = {
     error: "erreur",
     warning: "avertissement",
     done: "fait",
-    toBeDone: "A faire"
+    toBeDone: "A faire",
+    speed: "Vitesse",
+    connected: "Connecté"
   },
 
   picture: {

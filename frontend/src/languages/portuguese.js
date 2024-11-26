@@ -705,7 +705,9 @@ const pt = {
     error: "Erro",
     warning: "Advertência",
     done: "feito",
-    toBeDone: "A fazer"
+    toBeDone: "A fazer",
+    speed: "Velocidade",
+    connected: "Conectado"
   },
 
   picture: {
