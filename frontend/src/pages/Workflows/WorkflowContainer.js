@@ -159,7 +159,7 @@ class WorkflowContainer extends Component {
           onClick={() => this.props.showCreateDialog()}
           className="workflow-add-button"
         >
-          <span className="add-new-workflow-text">{strings.workflow.add_new_workflow}</span>
+          <Typography className="add-new-workflow-text">{strings.workflow.add_new_workflow}</Typography>
           <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
         </Fab>
         <div className="inner-container">

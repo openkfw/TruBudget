@@ -4,7 +4,7 @@ import _isEqual from "lodash/isEqual";
 import queryString from "query-string";
 
 import ContentAdd from "@mui/icons-material/Add";
-import { Fab } from "@mui/material";
+import { Fab, Typography } from "@mui/material";
 
 import { toJS } from "../../helper";
 import { convertToSearchBarString } from "../../helper";
@@ -119,7 +119,7 @@ class SubProjectContainer extends Component {
           className="sub-project-add-button"
           data-test="subproject-create-button"
         >
-          <span className="add-new-sub-project-text">{strings.subproject.add_new_subproject}</span>
+          <Typography className="add-new-sub-project-text">{strings.subproject.add_new_subproject}</Typography>
           <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
         </Fab>
         <div className="inner-container">

@@ -543,7 +543,7 @@ const TableView = (props) => {
           color="primary"
           data-test="create-project-button"
         >
-          <span className="add-new-project-text">{strings.project.add_new_project}</span>
+          <Typography className="add-new-project-text">{strings.project.add_new_project}</Typography>
           <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
         </Fab>
       </Box>

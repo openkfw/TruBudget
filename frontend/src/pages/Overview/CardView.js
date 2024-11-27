@@ -2,7 +2,7 @@ import React from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import ContentAdd from "@mui/icons-material/Add";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
@@ -154,7 +154,7 @@ const CardView = (props) => {
             className="project-add-button card-view"
             data-test="add-project-button"
           >
-            <span className="add-new-project-text">{strings.project.add_new_project}</span>
+            <Typography className="add-new-project-text">{strings.project.add_new_project}</Typography>
             <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
           </Fab>
         </Box>
