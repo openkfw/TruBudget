@@ -7,7 +7,6 @@ import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
 import TablePagination from "@mui/material/TablePagination";
-import Tooltip from "@mui/material/Tooltip";
 
 import { statusMapping, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
@@ -164,18 +163,16 @@ const CardView = (props) => {
         <Card data-test="project-creation" className="add-project-card">
           <div className="add-project-content">
             <CardActions>
-              <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
-                <Fab
-                  className="content-add-button"
-                  aria-label="create"
-                  disabled={!canCreateProject(allowedIntents) || isRoot}
-                  onClick={() => showCreationDialog()}
-                  color="primary"
-                  data-test="create-project-button"
-                >
-                  <ContentAdd />
-                </Fab>
-              </Tooltip>
+              <Fab
+                className="content-add-button"
+                aria-label="create"
+                disabled={!canCreateProject(allowedIntents) || isRoot}
+                onClick={() => showCreationDialog()}
+                color="primary"
+                data-test="create-project-button"
+              >
+                <ContentAdd />
+              </Fab>
             </CardActions>
           </div>
         </Card>
