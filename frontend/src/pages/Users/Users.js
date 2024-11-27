@@ -26,7 +26,9 @@ const renderTab = (props) => {
       const isAllowedToCreateUser = allowedIntents.includes("global.createUser");
       return (
         <>
-          {isAllowedToCreateUser ? <CreateButton onClick={() => showDashboardDialog("addUser")} /> : null}
+          {isAllowedToCreateUser ? (
+            <CreateButton onClick={() => showDashboardDialog("addUser")} buttonText={strings.users.add_new_user} />
+          ) : null}
           <UsersTable {...props} users={enabledUsers} CustomEmptyState={EnabledUserEmptyState} />
         </>
       );
@@ -36,7 +38,9 @@ const renderTab = (props) => {
       const isAllowedToCreateGroup = allowedIntents.includes("global.createGroup");
       return (
         <>
-          {isAllowedToCreateGroup ? <CreateButton onClick={() => showDashboardDialog("addGroup")} /> : null}
+          {isAllowedToCreateGroup ? (
+            <CreateButton onClick={() => showDashboardDialog("addGroup")} buttonText={strings.users.add_new_group} />
+          ) : null}
           {groups.length > 0 ? <GroupTable {...props} /> : <UserGroupsEmptyState />}
         </>
       );

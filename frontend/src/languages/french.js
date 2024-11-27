@@ -208,6 +208,7 @@ const fr = {
     workflow_mode: "Mode de workflow action",
     workflow_mode_ordered: "Workflow action (ordonnée)",
     workflow_mode_unordered: "Liste d'actions (non ordonnée)",
+    add_new_subproject: "Ajouter une nouvelle composante",
     subproject_add_title: "Ajouter une nouvelle composante",
     subproject_assigned_organization: "Organisation assignée",
 
@@ -306,7 +307,8 @@ const fr = {
     workflowitem_type_restricted:
       "Lors de l'attribution d'un workflow action restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation",
     workflowitem_type: "Type de l’étape de workflow action",
-    markdown: "Description de l'action du workflow"
+    markdown: "Description de l'action du workflow",
+    add_new_workflow: "Ajouter un nouveau flux de travail"
   },
 
   workflowTemplate: {
@@ -329,6 +331,8 @@ const fr = {
     account_name: "Compte utilisateur",
     add_group: "Ajouter un groupe",
     add_user: "Ajouter un nouveau compte utilisateur",
+    add_new_user: "Ajouter un nouvel utilisateur",
+    add_new_group: "Ajouter un nouveau groupe",
     change_password_for: "Changer le mot de passe pour {0}",
     current_user_password: "Votre mot de passe",
     edit_group: "Éditer un groupe",

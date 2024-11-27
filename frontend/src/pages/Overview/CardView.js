@@ -146,19 +146,17 @@ const CardView = (props) => {
           labelRowsPerPage={strings.project.cards_per_page}
         />
         <Box className="add-project">
-          <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
-            <div className="project-add-button">
-              <Fab
-                aria-label="create"
-                disabled={!canCreateProject(allowedIntents) || isRoot}
-                onClick={() => showCreationDialog()}
-                color="primary"
-                data-test="add-project-button"
-              >
-                <ContentAdd />
-              </Fab>
-            </div>
-          </Tooltip>
+          <Fab
+            aria-label="create"
+            disabled={!canCreateProject(allowedIntents) || isRoot}
+            onClick={() => showCreationDialog()}
+            color="primary"
+            className="project-add-button card-view"
+            data-test="add-project-button"
+          >
+            <span className="add-new-project-text">{strings.project.add_new_project}</span>
+            <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
+          </Fab>
         </Box>
       </div>
       <div aria-label="projects" className="projects-table-entries">

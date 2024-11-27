@@ -206,6 +206,7 @@ const de = {
     workflow_mode: "Workflow Modus",
     workflow_mode_ordered: "Workflow / Prozess",
     workflow_mode_unordered: "Liste",
+    add_new_subproject: "Neues Subprojekt",
     subproject_add_title: "Neues Subprojekt",
     subproject_assigned_organization: "Verantwortliche Organisation",
     subproject_budget_amount: "Subprojekt Budget",
@@ -301,7 +302,8 @@ const de = {
     workflowitem_type_restricted:
       "Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
     workflowitem_type: "Workflow action Typ",
-    markdown: "Beschreibung der Workflow-Aktion"
+    markdown: "Beschreibung der Workflow-Aktion",
+    add_new_workflow: "Neuen Workflow hinzufügen"
   },
 
   workflowTemplate: {
@@ -328,6 +330,8 @@ const de = {
     new_group: "Neue Benutzergruppe",
     groups: "Benutzergruppe",
     add_user: "Benutzer hinzufügen",
+    add_new_user: "Neuen Benutzer hinzufügen",
+    add_new_group: "Neue Gruppe hinzufügen",
     group_created: "Benutzergruppe wurde erstellt",
     add_group: "Benutzergruppe",
     edit_group: "Benutzergruppe ändern",
