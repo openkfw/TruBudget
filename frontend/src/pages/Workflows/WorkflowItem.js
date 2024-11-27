@@ -426,7 +426,11 @@ export const WorkflowItem = ({
   };
 
   return (
-    <div className="workflow-item-container" data-test={`workflowitem-container-${id}`}>
+    <div
+      className="workflow-item-container"
+      data-test={`workflowitem-container-${id}`}
+      data-testid={`workflowitem-container-${index}`}
+    >
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
         {(provided) => (
           <div
@@ -571,7 +575,11 @@ export const RedactedWorkflowItem = ({
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
 
   return (
-    <div className="workflow-item-container" data-test={`workflowitem-container-${id}`}>
+    <div
+      className="workflow-item-container"
+      data-test={`workflowitem-container-${id}`}
+      data-testid={`workflowaction-container-${index}`}
+    >
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
         {(provided) => (
           <div
