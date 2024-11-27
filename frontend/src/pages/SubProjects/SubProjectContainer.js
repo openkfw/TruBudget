@@ -103,7 +103,7 @@ class SubProjectContainer extends Component {
   };
 
   render() {
-    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
+    const allowedToCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = this.props.currentUser === this.props.projectAssignee;
     const projectId = this.projectId;
@@ -113,7 +113,7 @@ class SubProjectContainer extends Component {
         {this.props.isLiveUpdatesProjectEnabled ? <LiveUpdates update={this.update} /> : null}
         <Fab
           aria-label="create subproject"
-          disabled={!canCreateSubProject || this.props.projectStatus === "closed"}
+          disabled={!allowedToCreateSubproject || this.props.projectStatus === "closed"}
           onClick={this.props.showSubprojectDialog}
           color="primary"
           className="sub-project-add-button"
@@ -138,7 +138,6 @@ class SubProjectContainer extends Component {
               <SubProjects
                 {...this.props}
                 projectId={projectId}
-                canCreateSubProject={canCreateSubproject}
                 storeSearchTerm={this.props.storeSubSearchTerm}
                 storeSearchBarDisplayed={this.props.storeSubSearchBarDisplayed}
                 searchTerm={this.props.searchTerm}
