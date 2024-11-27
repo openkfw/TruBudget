@@ -152,6 +152,8 @@ const ka = {
     account_name: "ანგარიშის სახელი",
     add_group: "ჯგუფის დამატება",
     add_user: "მომხმარებლის დამატება",
+    add_new_user: "ახალი მომხმარებლის დამატება",
+    add_new_group: "ახალი ჯგუფის დამატება",
     change_password_for: "პაროლის შეცვლა {0}",
     current_user_password: "შენი პაროლი",
     edit_group: "ჯგუფის რედაქტირება",
@@ -291,6 +293,7 @@ const ka = {
     workflow_mode: "სამუშაო რეჟიმი",
     workflow_mode_ordered: "სამუშაო სია (დალაგებული)",
     workflow_mode_unordered: "სამუშაო სია (არ დალაგებული)",
+    add_new_subproject: "ახალი ქვეპროექტის დამატება",
     subproject_add_title: "ახალი ქვეპროექტის დამატება",
     subproject_assigned_organization: "Assigned organization",
 
@@ -388,7 +391,8 @@ const ka = {
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
     workflowitem_type: "Workflow action ტიპი",
-    markdown: "აღწერა"
+    markdown: "აღწერა",
+    add_new_workflow: "დაამატეთ ახალი სამუშაო პროცესი"
   },
 
   workflowTemplate: {

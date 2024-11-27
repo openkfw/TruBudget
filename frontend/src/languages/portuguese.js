@@ -153,6 +153,8 @@ const pt = {
     account_name: "Nome ou descrição do usuário",
     add_group: "Criar novo grupo",
     add_user: "Criar novo usuário",
+    add_new_user: "Adicionar novo usuário",
+    add_new_group: "Adicionar novo grupo",
     change_password_for: "Mudar senha para {0}",
     current_user_password: "Sua Senha",
     edit_group: "Editar grupo",
@@ -291,6 +293,7 @@ const pt = {
     workflow_mode: "Modo de fluxo de trabalho",
     workflow_mode_ordered: "Seleção ordenada",
     workflow_mode_unordered: "Seleção não ordenada",
+    add_new_subproject: "Criar novo subprojeto",
     subproject_add_title: "Criar novo subprojeto",
     subproject_assigned_organization: "Organização responsável",
 
@@ -388,7 +391,8 @@ const pt = {
     workflowitem_type_restricted:
       "Ao atribuir um fluxo de trabalho restrito, as permissões são automaticamente concedidas e revogadas. O cedente manterá apenas as permissões de visualização.",
     workflowitem_type: "Categoria do item de workflow action",
-    markdown: "Descrição"
+    markdown: "Descrição",
+    add_new_workflow: "Adicionar novo fluxo de trabalho"
   },
 
   workflowTemplate: {
