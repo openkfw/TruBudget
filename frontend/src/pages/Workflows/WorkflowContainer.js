@@ -3,12 +3,14 @@ import { connect } from "react-redux";
 import _isEqual from "lodash/isEqual";
 import queryString from "query-string";
 
+import ContentAdd from "@mui/icons-material/Add";
+import { Fab } from "@mui/material";
 import Typography from "@mui/material/Typography";
 
 import { convertToSearchBarString } from "../../helper";
 import { toJS } from "../../helper";
 import strings from "../../localizeStrings";
-import { canAssignSubProject, canViewSubProjectPermissions } from "../../permissions";
+import { canAssignSubProject, canCreateWorkflowItems, canViewSubProjectPermissions } from "../../permissions";
 import WebWorker from "../../WebWorker.js";
 import { withRouter } from "../../wrappers/withRouter";
 import { openAnalyticsDialog } from "../Analytics/actions";
@@ -143,9 +145,23 @@ class WorkflowContainer extends Component {
     const canAssignSubproject = canAssignSubProject(this.props.allowedIntents);
     const canCloseSubproject = this.props.currentUser === this.props.assignee;
     const canViewPermissions = canViewSubProjectPermissions(this.props.allowedIntents);
+    const allowedToCreateWorkflows = canCreateWorkflowItems(this.props.allowedIntents) && !this.props.isRoot;
+    const createDisabled = this.props.workflowSortEnabled
+      ? this.props.workflowSortEnabled
+      : !allowedToCreateWorkflows || this.props.status === "closed";
     return (
       <div>
         {!this.props.workflowSortEnabled ? this.addLiveUpdates() : null}
+        <Fab
+          disabled={createDisabled}
+          data-test="createWorkflowitem"
+          color="primary"
+          onClick={() => this.props.showCreateDialog()}
+          className="workflow-add-button"
+        >
+          <Typography className="add-new-workflow-text">{strings.workflow.add_new_workflow}</Typography>
+          <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
+        </Fab>
         <div className="inner-container">
           <div>
             <SubProjectDetails

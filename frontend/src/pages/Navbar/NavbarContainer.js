@@ -30,10 +30,8 @@ import Navbar from "./Navbar";
 class NavbarContainer extends Component {
   componentDidMount() {
     this.props.fetchActivePeers();
+    this.props.setIsRoot(this.props.userId === "root");
 
-    if (this.props.userId === "root") {
-      this.props.setIsRoot(true);
-    }
     if (this.props.location.search) {
       const queryParameter = queryString.parse(this.props.location.search);
       const searchTermString = convertToSearchBarString(queryString.stringify(queryParameter));

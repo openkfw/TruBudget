@@ -1,8 +1,7 @@
-.create-button {
+.sub-project-add-button {
   position: absolute;
-  top: 0;
+  top: -3.3rem;
   right: 0;
-  margin-top: -1.25rem;
   height: 2.5rem;
   width: auto;
   border-radius: 2.5rem;
@@ -15,7 +14,7 @@
   line-height: 24;
 }
 
-.create-button-text {
+.add-new-sub-project-text {
   margin-right: 0.375rem;
   margin-left: 0.375rem;
 }

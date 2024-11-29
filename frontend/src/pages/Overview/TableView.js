@@ -8,7 +8,6 @@ import FilterAltIcon from "@mui/icons-material/FilterAlt";
 import PermissionIcon from "@mui/icons-material/LockOpen";
 import MoreIcon from "@mui/icons-material/MoreHoriz";
 import LaunchIcon from "@mui/icons-material/ZoomIn";
-import { Tooltip } from "@mui/material";
 import Box from "@mui/material/Box";
 import Checkbox from "@mui/material/Checkbox";
 import Fab from "@mui/material/Fab";
@@ -292,7 +291,8 @@ const TableView = (props) => {
     storeSearchTerm,
     setPage,
     setRowsPerPage,
-    setSort
+    setSort,
+    isRoot
   } = props;
 
   const hasSearchTerm = searchTerm !== "";
@@ -536,18 +536,17 @@ const TableView = (props) => {
   return (
     <>
       <Box className="create-project-box">
-        <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
-          <Fab
-            className="project-add-button"
-            aria-label="create"
-            disabled={!canCreateProject(props.allowedIntents)}
-            onClick={() => showCreationDialog()}
-            color="primary"
-            data-test="create-project-button"
-          >
-            <ContentAdd />
-          </Fab>
-        </Tooltip>
+        <Fab
+          className="project-add-button"
+          aria-label="create"
+          disabled={!canCreateProject(props.allowedIntents) || isRoot}
+          onClick={() => showCreationDialog()}
+          color="primary"
+          data-test="create-project-button"
+        >
+          <Typography className="add-new-project-text">{strings.project.add_new_project}</Typography>
+          <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
+        </Fab>
       </Box>
       <DataTable
         columns={columns}

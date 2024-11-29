@@ -152,6 +152,8 @@ const en = {
     account_name: "Account Name",
     add_group: "Add Group",
     add_user: "Add User",
+    add_new_user: "Add new user",
+    add_new_group: "Add new group",
     change_password_for: "Change password for {0}",
     current_user_password: "Your password",
     edit_group: "Edit Group",
@@ -290,6 +292,7 @@ const en = {
     workflow_mode: "Workflow Mode",
     workflow_mode_ordered: "Workflow (Ordered)",
     workflow_mode_unordered: "Action List (Unordered)",
+    add_new_subproject: "Add new subproject",
     subproject_add_title: "Add new subproject",
     subproject_assigned_organization: "Assigned organization",
     subproject_budget_amount: "Subproject  budget amount",
@@ -385,7 +388,8 @@ const en = {
     workflowitem_type_restricted:
       "When assigning a restricted workflow action permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
     workflowitem_type: "Workflow action type",
-    markdown: "Workflow action description"
+    markdown: "Workflow action description",
+    add_new_workflow: "Add new workflow"
   },
 
   workflowTemplate: {
