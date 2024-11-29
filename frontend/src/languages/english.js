@@ -712,6 +712,12 @@ const en = {
     select: "Select a picture from the gallery or upload a custom picture"
   },
 
+  clipboard: {
+    copy: "Copy link",
+    copied: "Link copied",
+    paste: "Paste link"
+  },
+
   language: {
     english: "English",
     french: "French",

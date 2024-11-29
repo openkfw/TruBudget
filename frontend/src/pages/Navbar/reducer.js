@@ -10,6 +10,8 @@ import {
 import { FETCH_ALL_SUBPROJECT_DETAILS_SUCCESS } from "../Workflows/actions";
 
 import {
+  CLIPBOARD_COPY,
+  CLIPBOARD_PASTE,
   DISABLE_USER_PROFILE_EDIT,
   ENABLE_USER_PROFILE_EDIT,
   FETCH_ACTIVE_PEERS_SUCCESS,
@@ -40,7 +42,8 @@ const defaultState = fromJS({
   userProfileOpen: false,
   userProfileEdit: false,
   tempEmailAddress: "",
-  isEmailAddressInputValid: true
+  isEmailAddressInputValid: true,
+  clipboard: null
 });
 
 export default function navbarReducer(state = defaultState, action) {
@@ -100,6 +103,12 @@ export default function navbarReducer(state = defaultState, action) {
         searchTerm: defaultState.get("searchTerm"),
         searchBarDisplayed: defaultState.get("searchBarDisplayed")
       });
+    case CLIPBOARD_COPY: {
+      return state.set("clipboard", action.text || "");
+    }
+    case CLIPBOARD_PASTE: {
+      return state.set("clipboard", null);
+    }
     default:
       return state;
   }

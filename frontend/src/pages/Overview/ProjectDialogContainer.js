@@ -3,6 +3,7 @@ import { connect } from "react-redux";
 
 import { toJS } from "../../helper";
 import withInitialLoading from "../Loading/withInitialLoading";
+import { clipboardPaste } from "../Navbar/actions";
 import { storeSnackbarMessage } from "../Notifications/actions";
 
 import {
@@ -38,7 +39,8 @@ const mapStateToProps = (state) => {
     currentStep: state.getIn(["overview", "currentStep"]),
     projectToAdd: state.getIn(["overview", "projectToAdd"]),
     dialogTitle: state.getIn(["overview", "dialogTitle"]),
-    allowedIntents: state.getIn(["login", "allowedIntents"])
+    allowedIntents: state.getIn(["login", "allowedIntents"]),
+    clipboard: state.getIn(["navbar", "clipboard"])
   };
 };
 
@@ -61,7 +63,8 @@ const mapDispatchToProps = (dispatch) => {
     addProjectTag: (tag) => dispatch(addProjectTag(tag)),
     removeProjectTag: (tag) => dispatch(removeProjectTag(tag)),
     addCustomImage: (imageBase64) => dispatch(addCustomImage(imageBase64)),
-    removeCustomImage: (imageBase64) => dispatch(removeCustomImage(imageBase64))
+    removeCustomImage: (imageBase64) => dispatch(removeCustomImage(imageBase64)),
+    pasteClipboard: () => dispatch(clipboardPaste())
   };
 };
 

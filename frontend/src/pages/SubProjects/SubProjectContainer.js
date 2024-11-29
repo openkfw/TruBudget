@@ -4,6 +4,8 @@ import _isEqual from "lodash/isEqual";
 import queryString from "query-string";
 
 import ContentAdd from "@mui/icons-material/Add";
+import ContentPasteIcon from "@mui/icons-material/ContentPaste";
+import { IconButton } from "@mui/material";
 import { Fab, Typography } from "@mui/material";
 
 import { toJS } from "../../helper";
@@ -17,8 +19,8 @@ import AdditionalInfo from "../Common/AdditionalInfo";
 import worker from "../Common/filterProjects.worker.js";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
-import { setSelectedView } from "../Navbar/actions";
-import { hideHistory, openHistory } from "../Notifications/actions";
+import { clipboardCopy, setSelectedView } from "../Navbar/actions";
+import { hideHistory, openHistory, showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 
 import {
   closeProject,
@@ -77,6 +79,16 @@ class SubProjectContainer extends Component {
   }
 
   componentDidUpdate(prevProps) {
+    if (this.props.router.location.pathname !== prevProps.router.location.pathname) {
+      const newProjectId = this.props.router.location.pathname.split("/")[2];
+      if (newProjectId !== this.projectId) {
+        this.setState({ isDataFetched: false });
+        this.projectId = newProjectId;
+        this.props.setSelectedView(this.projectId, "project");
+        this.props.fetchAllProjectDetails(this.projectId, true);
+        this.setState({ isDataFetched: true });
+      }
+    }
     const searchTermChanges = this.props.searchTerm !== prevProps.searchTerm;
     const projectsChange = !_isEqual(this.props.subProjects, prevProps.subProjects);
 
@@ -127,6 +139,19 @@ class SubProjectContainer extends Component {
             <div />
           ) : (
             <div>
+              <>
+                <IconButton
+                  onClick={() => {
+                    this.props.clipboardCopy(`[${this.props.projectName}](${this.props.router.location.pathname})`);
+                    this.props.storeSnackbarMessage(strings.clipboard.copied);
+                    this.props.showSnackbar();
+                  }}
+                  data-test={`project-copy-button-${projectId}`}
+                  size="small"
+                >
+                  <ContentPasteIcon />
+                </IconButton>
+              </>
               <ProjectDetails
                 {...this.props}
                 projectId={projectId}
@@ -188,7 +213,10 @@ const mapDispatchToProps = (dispatch) => {
     storeSubSearchTerm: (subSearchTerm) => dispatch(storeSubSearchTerm(subSearchTerm)),
     storeSubSearchBarDisplayed: (subSearchBarDisplayed) => dispatch(storeSubSearchBarDisplayed(subSearchBarDisplayed)),
     storeFilteredSubProjects: (filteredSubProjects) => dispatch(storeFilteredSubProjects(filteredSubProjects)),
-    storeSubSearchTermArray: (searchTerms) => dispatch(storeSubSearchTermArray(searchTerms))
+    storeSubSearchTermArray: (searchTerms) => dispatch(storeSubSearchTermArray(searchTerms)),
+    clipboardCopy: (text) => dispatch(clipboardCopy(text)),
+    showSnackbar: () => dispatch(showSnackbar()),
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message))
   };
 };
 
@@ -221,7 +249,8 @@ const mapStateToProps = (state) => {
     searchTerms: state.getIn(["detailview", "searchTerms"]),
     idsPermissionsUnassigned: state.getIn(["detailview", "idsPermissionsUnassigned"]),
     isDataLoading: state.getIn(["loading", "loadingVisible"]),
-    isLiveUpdatesProjectEnabled: state.getIn(["detailview", "isLiveUpdatesProjectEnabled"])
+    isLiveUpdatesProjectEnabled: state.getIn(["detailview", "isLiveUpdatesProjectEnabled"]),
+    clipboard: state.getIn(["navbar", "clipboard"])
   };
 };
 

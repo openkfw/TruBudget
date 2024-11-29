@@ -20,8 +20,8 @@ import InformationDialog from "../Common/InformationDialog";
 import { addDocument } from "../Documents/actions";
 import LiveUpdates from "../LiveUpdates/LiveUpdates";
 import { fetchUser } from "../Login/actions";
-import { setSelectedView } from "../Navbar/actions";
-import { openHistory } from "../Notifications/actions";
+import { clipboardCopy, setSelectedView } from "../Navbar/actions";
+import { openHistory, showSnackbar, storeSnackbarMessage } from "../Notifications/actions";
 import SubProjectHistoryDrawer from "../SubProjects/SubProjectHistoryDrawer";
 
 import {
@@ -173,6 +173,9 @@ class WorkflowContainer extends Component {
               closeSubproject={this.closeSubproject}
               canCloseSubproject={canCloseSubproject}
               isDataLoading={this.props.isDataLoading}
+              clipboardCopy={this.props.clipboardCopy}
+              storeSnackbarMessage={this.props.storeSnackbarMessage}
+              showSnackbar={this.props.showSnackbar}
             />
 
             {this.props.permissionDialogShown ? (
@@ -291,7 +294,10 @@ const mapDispatchToProps = (dispatch, _ownProps) => {
     disableLiveUpdatesSubproject: () => dispatch(disableLiveUpdatesSubproject()),
     storeWorkflowSearchBarDisplayed: (workflowSearchBarDisplayed) =>
       dispatch(storeWorkflowSearchBarDisplayed(workflowSearchBarDisplayed)),
-    storeWorkflowSearchTermArray: (searchTerms) => dispatch(storeWorkflowSearchTermArray(searchTerms))
+    storeWorkflowSearchTermArray: (searchTerms) => dispatch(storeWorkflowSearchTermArray(searchTerms)),
+    clipboardCopy: (text) => dispatch(clipboardCopy(text)),
+    showSnackbar: () => dispatch(showSnackbar()),
+    storeSnackbarMessage: (message) => dispatch(storeSnackbarMessage(message))
   };
 };
 
@@ -301,6 +307,7 @@ const mapStateToProps = (state) => {
     amount: state.getIn(["workflow", "amount"]),
     assignee: state.getIn(["workflow", "assignee"]),
     budgetEditEnabled: state.getIn(["workflow", "subProjectBudgetEditEnabled"]),
+    clipboard: state.getIn(["navbar", "clipboard"]),
     created: state.getIn(["workflow", "created"]),
     currency: state.getIn(["workflow", "currency"]),
     currentUser: state.getIn(["login", "id"]),
@@ -322,8 +329,8 @@ const mapStateToProps = (state) => {
     permissionDialogShown: state.getIn(["workflow", "showWorkflowPermissions"]),
     projectedBudgets: state.getIn(["workflow", "projectedBudgets"]),
     rejectReason: state.getIn(["workflow", "rejectReason"]),
-    searchTerm: state.getIn(["workflow", "searchTerm"]),
     searchBarDisplayed: state.getIn(["workflow", "searchBarDisplayed"]),
+    searchTerm: state.getIn(["workflow", "searchTerm"]),
     searchTerms: state.getIn(["workflow", "searchTerms"]),
     selectedWorkflowItems: state.getIn(["workflow", "selectedWorkflowItems"]),
     showDetailsItem: state.getIn(["workflow", "showDetailsItem"]),
@@ -338,9 +345,9 @@ const mapStateToProps = (state) => {
     worflowDetailsInitialTab: state.getIn(["workflow", "worflowDetailsInitialTab"]),
     workflowDocuments: state.getIn(["documents", "tempDocuments"]),
     workflowItems: state.getIn(["workflow", "workflowItems"]),
-    workflowMode: state.getIn(["workflow", "workflowMode"]),
     workflowItemsBeforeSort: state.getIn(["workflow", "workflowItemsBeforeSort"]),
     workflowitemsBulkAction: state.getIn(["workflow", "workflowitemsBulkAction"]),
+    workflowMode: state.getIn(["workflow", "workflowMode"]),
     workflowSortEnabled: state.getIn(["workflow", "workflowSortEnabled"])
   };
 };

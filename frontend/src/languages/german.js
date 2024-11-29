@@ -714,6 +714,12 @@ const de = {
     select: "Wählen Sie ein Bild aus oder laden Sie ein eigenes hoch"
   },
 
+  clipboard: {
+    copy: "Link kopieren",
+    copied: "Link kopiert",
+    paste: "Link einfügen"
+  },
+
   language: {
     english: "Englisch",
     french: "Französisch",
