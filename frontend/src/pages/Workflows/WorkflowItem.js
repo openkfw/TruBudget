@@ -477,7 +477,7 @@ export const WorkflowItem = ({
                       : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
                   </Typography>
                 </div>
-                <div className="status-cell">
+                <div className="status-cell" data-testid={`workflowitem-status-${index}`}>
                   <ChipStatus status={calculateStatus(status, workflowSelectable, workflowSortEnabled)} />
                 </div>
                 <div className="workflow-cell" data-test="outside">

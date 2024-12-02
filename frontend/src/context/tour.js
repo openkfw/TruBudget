@@ -1,11 +1,14 @@
 import React, { createContext, useCallback, useContext, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
 const appState = {
   run: false,
   stepIndex: 0,
   steps: [],
   tourActive: false,
-  beforeStart: null
+  beforeStart: null,
+  backButtonClicked: false,
+  goToStepCheck: false
 };
 
 export const TourAppContext = createContext({
@@ -19,21 +22,19 @@ TourAppContext.displayName = "TourAppContext";
 export function TourAppProvider(props) {
   const [state, setState] = useState(appState);
 
+  const navigate = useNavigate();
+
   const setPartialState = useCallback((parcial) => {
     setState((prevState) => ({ ...prevState, ...parcial }));
   }, []);
 
   const goToNextStepIf = useCallback(() => {
     setState((prevState) => {
-      if (prevState.steps[prevState.stepIndex]?.goToNextStepIf) {
-        console.log("goToNextStepIf", prevState.steps[prevState.stepIndex].goToNextStepIf);
-
+      if (prevState?.steps[prevState?.stepIndex]?.goToNextStepIf) {
         const { url, elementNotVisible } = prevState.steps[prevState.stepIndex].goToNextStepIf;
         const currentUrl = window.location.pathname;
 
         if (url && url === currentUrl) {
-          return { ...prevState, stepIndex: prevState.stepIndex + 1 };
-        } else if (elementNotVisible && !document.querySelector(elementNotVisible)) {
           return { ...prevState, stepIndex: prevState.stepIndex + 1 };
         } else {
           // due to animations it is possible that element is not visible at the moment
@@ -41,7 +42,7 @@ export function TourAppProvider(props) {
             if (elementNotVisible && !document.querySelector(elementNotVisible)) {
               setState((prevState) => ({ ...prevState, stepIndex: prevState.stepIndex + 1 }));
             }
-          }, 500);
+          }, 800);
         }
       }
       return prevState;
@@ -49,22 +50,20 @@ export function TourAppProvider(props) {
   }, []);
 
   const startTour = useCallback(() => {
-    console.log("startTour", state.beforeStart);
     // perform before start actions
     if (state.beforeStart) {
       if (Array.isArray(state.beforeStart)) {
         for (const beforeStartAction of state.beforeStart) {
           if (beforeStartAction?.navigateTo) {
-            if (window.location.href !== beforeStartAction.navigateTo) {
-              window.location.href = beforeStartAction.navigateTo;
+            if (window.location.pathname !== beforeStartAction.navigateTo) {
+              navigate(beforeStartAction.navigateTo);
             }
-
           }
         }
       }
     }
     setState((prevState) => ({ ...prevState, run: true, stepIndex: 0, tourActive: true }));
-  }, [state.beforeStart]);
+  }, [navigate, state.beforeStart]);
 
   const value = {
     state,

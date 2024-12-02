@@ -8,7 +8,7 @@
   font-size: 14px;
   line-height: 1.5;
   color: #333;
-  max-width: 300px;
+  min-width: 400px;
   min-width: 200px;
   white-space: normal;
   text-align: left;
@@ -25,20 +25,45 @@
   .tooltip__content_wrapper {
     margin-top: 30px;
 
-    .tooltip__clickInfo {
-      font-size: 0.8em;
-      margin: 20px 0px;
-      background-color: #ddd;
-      color: #666;
-      font-style: italic;
-      padding: 10px;
+    .tooltip__typeIcon {
+      width: 120px;
+      padding-left: 14px;
+      float: left;
 
-      .tooltip__clickInfo__icon {
-        position: absolute;
+      p {
+        text-align: left;
+        margin-left: 10px;
+      }
+    }
+
+    .tooltip__navigationLink {
+      margin-left: 5px;
+    }
+
+    .tooltip__text {
+      min-width: 300px;
+      min-height: 140px;
+      padding-left: 120px;
+
+      .tooltip__content {
+        font-size: 1.2em;
       }
 
-      span {
-        margin-left: 30px;
+      .tooltip__clickInfo {
+        font-size: 0.8em;
+        margin: 20px 12px;
+        background-color: #ddd;
+        color: #666;
+        font-style: italic;
+        padding: 10px;
+
+        .tooltip__clickInfo__icon {
+          position: absolute;
+        }
+
+        span {
+          margin-left: 30px;
+        }
       }
     }
 
@@ -48,6 +73,17 @@
 
       .tooltip__button--primary {
         float: right;
+      }
+    }
+  }
+}
+
+.__floater__arrow {
+  bottom: 1px;
+  span {
+    svg {
+      polygon {
+        fill: #fff !important;
       }
     }
   }
