@@ -282,8 +282,8 @@ export const registerRoutes = (
     );
 
     server.get(
-      `${urlPrefix}/timestaps`,
-      silentRouteSettings(getSchema(server, "version")),
+      `${urlPrefix}/timestamps`,
+      silentRouteSettings(getSchema(server, "timestamps")),
       (request, reply) => {
         getTimestamps(
           multichainClient,
