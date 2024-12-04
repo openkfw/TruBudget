@@ -15,9 +15,7 @@ import strings from "../../localizeStrings";
 
 import "./TourWrapper.scss";
 
-function CustomTooltip(props) {
-  const { backProps, closeProps, continuous, index, skipProps, primaryProps, step, tooltipProps } = props;
-
+function CustomTooltip({ backProps, closeProps, continuous, index, skipProps, primaryProps, step, tooltipProps }) {
   const navigate = useNavigate();
 
   const { setState } = useTourAppContext();
@@ -47,7 +45,7 @@ function CustomTooltip(props) {
           ) : step.spotlightClicks ? (
             <>
               <AdsClickIcon sx={{ fontSize: 80 }} />
-              <p>Click & Try</p>
+              <p>{strings.tour.clickTry}</p>
             </>
           ) : (
             <InfoIcon sx={{ color: "#ccc", fontSize: 80 }} />
@@ -59,13 +57,13 @@ function CustomTooltip(props) {
           {step.spotlightClicks && (
             <div className="tooltip__clickInfo">
               <FormatQuoteIcon className="tooltip__clickInfo__icon" />
-              <span>{step.spotlightClicksHint || "Click on highlighted area to continue."}</span>
+              <span>{step.spotlightClicksHint || strings.tour.clickOnArea}</span>
             </div>
           )}
         </div>
         <div className="tooltip__navigationLink">
           <Button variant="text" onClick={toggleChapterList}>
-            {chapterListVisible ? "Hide tour chapters" : "Show tour chapters"}
+            {chapterListVisible ? strings.tour.hideChapters : strings.tour.showChapters}
           </Button>
         </div>
         <div className="tooltip__contentList" style={{ display: chapterListVisible ? "" : "none" }}>
@@ -75,7 +73,7 @@ function CustomTooltip(props) {
             aria-labelledby="nested-list-subheader"
             subheader={
               <ListSubheader component="div" id="nested-list-subheader">
-                <strong>Jump to specific chapter</strong>
+                <strong>{strings.tour.chaptersHeading}</strong>
               </ListSubheader>
             }
           >
@@ -88,22 +86,19 @@ function CustomTooltip(props) {
           </List>
         </div>
         <div className="tooltip__footer">
-          {/* <button className="tooltip__button" {...skipProps}>
-          {skipProps.title}
-        </button> */}
           <div className="tooltip__spacer">
             {index > 0 && (
               <Button className="tooltip__button" {...backProps}>
-                {backProps.title}
+                {strings.tour.back}
               </Button>
             )}
             {continuous && step?.hideNextButton !== true ? (
               <Button className="tooltip__button tooltip__button--primary" variant="contained" {...primaryProps}>
-                {index === 0 ? strings.common.tourStart : primaryProps.title}
+                {index === 0 ? strings.common.tourStart : strings.tour.next}
               </Button>
             ) : (
               <Button className="tooltip__button tooltip__button--primary" variant="text" {...primaryProps}>
-                {skipProps.title}
+                {strings.tour.skip}
               </Button>
             )}
           </div>
@@ -143,22 +138,22 @@ const initialState = ({ firstProjectId, firstSubprojectId }) => {
   const steps = [
     {
       target: "body",
-      content: "Welcome to TruBudget application tour.",
+      content: strings.tour.steps.welcome,
       disableBeacon: true
     },
     {
       target: "[data-test*=sidebarmenu-items-main-group]",
-      content: "You can use main menu to navigate TruBudget application.",
+      content: strings.tour.steps.menu,
       disableBeacon: true,
       disableOverlayClose: true,
-      chapter: { title: "Main menu", navigateTo: "/projects" }
+      chapter: { title: strings.tour.mainMenu, navigateTo: "/projects" }
     },
     {
       target: "[data-test*=sidenav-drawer-backdrop]",
-      content: "Let's start with list of projects. Click anywhere away from menu.",
+      content: strings.tour.steps.menuClose,
       disableBeacon: true,
       spotlightClicks: true,
-      spotlightClicksHint: "Click anywhere away from menu to close the main menu.",
+      spotlightClicksHint: strings.tour.menuCloseHint,
       hideNextButton: true,
       disableOverlayClose: true,
       disableOverlay: true,
@@ -166,25 +161,25 @@ const initialState = ({ firstProjectId, firstSubprojectId }) => {
     },
     {
       target: "#card-table-view-switch",
-      content: "Here you can switch view of your projects between card and table view.",
+      content: strings.tour.steps.tableView,
       disableBeacon: true,
-      chapter: { title: "Projects view", navigateTo: "/projects" },
+      chapter: { title: strings.tour.projectsView, navigateTo: "/projects" },
       backAction: { click: "[data-test*=openSideNavbar]", ifNotVisible: "[data-test*=sidenav-drawer-backdrop]" }
     },
     {
       target: "[data-test*=add-project-button]",
-      content: "Here you can add more projects.",
+      content: strings.tour.steps.addProject,
       disableBeacon: true,
       backAction: { click: "[data-test*=set-table-view]" }
     },
     {
       target: `[data-test*=project-card-${firstProjectId}]`,
-      content: "Here you can see project overview card with project information.",
+      content: strings.tour.steps.projectCard,
       disableBeacon: true
     },
     {
       target: "[data-test*=project-view-button-0]",
-      content: "Here you can display project details. Click on the button to see project details.",
+      content: strings.tour.steps.projectDetailsButton,
       disableBeacon: true,
       spotlightClicks: true,
       hideNextButton: true,
@@ -193,41 +188,41 @@ const initialState = ({ firstProjectId, firstSubprojectId }) => {
     },
     {
       target: ".main-container",
-      content: "This is project details page.",
-      chapter: { title: "Project detail", navigateTo: `/projects/${firstProjectId}` }
+      content: strings.tour.steps.projectDetails,
+      chapter: { title: strings.tour.projectDetail, navigateTo: `/projects/${firstProjectId}` }
     },
     {
       target: ".project-details-container",
-      content: "Here you can see project summary."
+      content: strings.tour.steps.projectSummary
     },
     {
       target: "[data-test*=sub-projects]",
-      content: "And here is the list of all subprojects of this project."
+      content: strings.tour.steps.subProjects
     },
     {
       target: "[data-test*=project-projected-budget]",
-      content: "You can see overal budget.",
+      content: strings.tour.steps.projectBudget,
       disableBeacon: true
     },
     {
       target: "[data-test*=single-select-container]",
-      content: "Here you can view the responsible person for this project."
+      content: strings.tour.steps.projectOwner
     },
     {
       target: "[data-test*=project-overal-status]",
-      content: "Here you can see project overal status."
+      content: strings.tour.steps.projectStatus
     },
     {
       target: "[data-testid*=subproject-0]",
-      content: "Here you can see individual subproject rows."
+      content: strings.tour.steps.subprojectRow
     },
     {
       target: "[data-test*=subproject-view-status-0]",
-      content: "Individual subprojects might have different status."
+      content: strings.tour.steps.subprojectStatus
     },
     {
       target: "[data-test*=subproject-view-details-0]",
-      content: "Here you can display subproject details.",
+      content: strings.tour.steps.subprojectDetails,
       disableBeacon: true,
       spotlightClicks: true,
       hideNextButton: true,
@@ -236,20 +231,20 @@ const initialState = ({ firstProjectId, firstSubprojectId }) => {
     },
     {
       target: "[data-test*=subproject-projected-budget]",
-      content: "Subproject budget.",
+      content: strings.tour.steps.subprojectBudget,
       disableBeacon: true
     },
     {
       target: "[data-testid*=workflowitem-container-0]",
-      content: "Each row is an individual workflow action."
+      content: strings.tour.steps.workflowActionRow
     },
     {
       target: "[data-testid*=workflowitem-status-0]",
-      content: "Each action has own status. You cannot edit the closed actions."
+      content: strings.tour.steps.workflowActionStatus
     },
     {
       target: ".bulk-actions",
-      content: "You can also perform bulk actions on selected workflow actions."
+      content: strings.tour.steps.bulkActions
     }
   ];
 
@@ -345,12 +340,7 @@ export default function TourWrapper() {
 
   // Wrapper component to inject helpers into CustomTooltip
   const WrappedTooltip = (props) => {
-    return (
-      <CustomTooltip
-        {...props}
-        helpers={helpers}
-      />
-    );
+    return <CustomTooltip {...props} helpers={helpers} />;
   };
 
   return (
