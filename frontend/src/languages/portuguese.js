@@ -131,6 +131,9 @@ const pt = {
     task_status: "Status da tarefa",
     thumbnail: "Miniatura",
     total_budget: "Orçamento total",
+    tour: "Tour",
+    tourStart: "Start Tour",
+    tourRestart: "Restart Tour",
     type: "Tipo",
     update: "Atualizar",
     username: "Id do usuário",
@@ -722,6 +725,43 @@ const pt = {
     german: "Deutsch",
     portuguese: "Português",
     georgian: "Georgiano"
+  },
+
+  tour: {
+    back: "Back",
+    chaptersHeading: "Jump to specific chapter",
+    clickTry: "Click & Try",
+    clickOnArea: "Click on highlighted area to continue.",
+    hideChapters: "Hide tour chapters",
+    mainMenu: "Main menu",
+    menuCloseHint: "Click anywhere away from menu to close the main menu.",
+    next: "Next",
+    projectDetail: "Project detail",
+    projectsView: "Projects view",
+    showChapters: "Show tour chapters",
+    skip: "Skip",
+    steps: {
+      addProject: "Here you can add more projects.",
+      bulkActions: "You can also perform bulk actions on selected workflow actions.",
+      menu: "You can use main menu to navigate TruBudget application.",
+      menuClose: "Let's start with list of projects. Click anywhere away from menu.",
+      projectBudget: "You can see overal budget.",
+      projectCard: "Here you can see project overview card with project information.",
+      projectDetails: "This is project details page.",
+      projectDetailsButton: "Here you can display project details. Click on the button to see project details.",
+      projectOwner: "Here you can view the responsible person for this project.",
+      projectStatus: "Here you can see project overal status.",
+      projectSummary: "Here you can see project summary.",
+      subProjects: "And here is the list of all subprojects of this project.",
+      subprojectBudget: "Subproject budget.",
+      subprojectDetails: "Here you can display subproject details.",
+      subprojectRow: "Here you can see individual subproject rows.",
+      subprojectStatus: "Individual subprojects might have different status.",
+      tableView: "Here you can switch view of your projects between card and table view.",
+      welcome: "Welcome to TruBudget application tour.",
+      workflowActionRow: "Each row is an individual workflow action.",
+      workflowActionStatus: "Each action has own status. You cannot edit the closed actions."
+    }
   }
 };
 

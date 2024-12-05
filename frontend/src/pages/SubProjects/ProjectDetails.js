@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import BarChartIcon from "@mui/icons-material/BarChart";
@@ -23,6 +23,7 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
+import { useTourAppContext } from "../../context/tour.js";
 import {
   formattedTag,
   statusIconMapping,
@@ -77,6 +78,31 @@ const ProjectDetails = (props) => {
   const hasOpenSubprojects = !_isEmpty(subProjects.find((subproject) => subproject.data.status === "open"));
   const closeDisabled = !canClose || hasOpenSubprojects || projectStatus === "closed";
   const tags = displayTags(projectTags || []);
+
+  const {
+    setState,
+    state: { tourActive },
+    goToNextStepIf
+  } = useTourAppContext();
+
+  const ref = useRef();
+
+  useEffect(() => {
+    let timer;
+    if (tourActive && !ref.current) {
+      goToNextStepIf();
+      timer = setTimeout(() => {
+        setState({ run: true });
+      }, 1200);
+      ref.current = true;
+    }
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  });
+
   return (
     <div className="project-details-container">
       <Card className="project-details-card">
@@ -157,7 +183,7 @@ const ProjectDetails = (props) => {
           )}
         </div>
         <List className="project-assignee">
-          <ListItem>
+          <ListItem data-test="project-overal-status">
             <ListItemAvatar>
               <Avatar>{statusIcon}</Avatar>
             </ListItemAvatar>

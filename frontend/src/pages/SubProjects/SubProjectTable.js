@@ -97,7 +97,7 @@ const getTableEntries = ({
     if (!redacted && visibleSubproject) {
       const amountString = displaySubprojectBudget(projectedBudgets);
       return (
-        <TableRow key={index} data-test={`subproject-${id}`}>
+        <TableRow key={index} data-test={`subproject-${id}`} data-testid={`subproject-${index}`}>
           <TableCell className="sub-project-name" data-test={`subproject-title-${index}`}>
             <Highlighter
               data-test="highlighted-displayname"
@@ -107,7 +107,7 @@ const getTableEntries = ({
             />
           </TableCell>
           <TableCell className="sub-project-projected-budget">{amountString}</TableCell>
-          <TableCell className="sub-project-status">
+          <TableCell className="sub-project-status" data-test={`subproject-view-status-${index}`}>
             <Highlighter
               highlightStyle={{ backgroundColor: theme.palette.primary.light }}
               searchWords={searchTermArray}

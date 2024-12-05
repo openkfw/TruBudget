@@ -426,7 +426,11 @@ export const WorkflowItem = ({
   };
 
   return (
-    <div className="workflow-item-container" data-test={`workflowitem-container-${id}`}>
+    <div
+      className="workflow-item-container"
+      data-test={`workflowitem-container-${id}`}
+      data-testid={`workflowitem-container-${index}`}
+    >
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
         {(provided) => (
           <div
@@ -473,7 +477,7 @@ export const WorkflowItem = ({
                       : getAmountField(amount, amountType, exchangeRate, sourceCurrency, targetCurrency)}
                   </Typography>
                 </div>
-                <div className="status-cell">
+                <div className="status-cell" data-testid={`workflowitem-status-${index}`}>
                   <ChipStatus status={calculateStatus(status, workflowSelectable, workflowSortEnabled)} />
                 </div>
                 <div className="workflow-cell" data-test="outside">
@@ -571,7 +575,11 @@ export const RedactedWorkflowItem = ({
   const workflowSelectable = isWorkflowSelectable(currentWorkflowSelectable, workflowSortEnabled, status);
 
   return (
-    <div className="workflow-item-container" data-test={`workflowitem-container-${id}`}>
+    <div
+      className="workflow-item-container"
+      data-test={`workflowitem-container-${id}`}
+      data-testid={`workflowaction-container-${index}`}
+    >
       <Draggable draggableId={`draggable-${id}`} key={id} index={index} isDragDisabled={disabled}>
         {(provided) => (
           <div
