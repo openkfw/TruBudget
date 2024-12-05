@@ -92,13 +92,19 @@ const SubProjectDetails = ({
   const ref = useRef();
 
   useEffect(() => {
+    let timer;
     if (tourActive && !ref.current) {
       goToNextStepIf();
-      setTimeout(() => {
+      timer = setTimeout(() => {
         setState({ run: true });
       }, 1200);
       ref.current = true;
     }
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
   });
 
   return (
