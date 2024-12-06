@@ -4,11 +4,11 @@
   border: 1px solid #ccc;
   border-radius: 4px;
   box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-  padding: 0.8em;
-  font-size: 1em;
+  padding: 0.8rem;
+  font-size: 1rem;
   line-height: 1.5;
   color: #333;
-  min-width: 13em;
+  min-width: 13rem;
   white-space: normal;
   text-align: left;
   cursor: default;
@@ -16,7 +16,7 @@
 
   .tooltip__close {
     float: right;
-    font-size: 0.8em;
+    font-size: 0.8rem;
     color: #999;
     cursor: pointer;
   }
@@ -26,49 +26,49 @@
 
     .tooltip__typeIcon {
       width: 120px;
-      padding-left: 0.8em;
+      padding-left: 0.8rem;
       float: left;
 
       p {
         text-align: left;
-        margin-left: 0.6empx;
+        margin-left: 0.6rempx;
       }
     }
 
     .tooltip__navigationLink {
-      margin-left: 0.35em;
+      margin-left: 0.35rem;
     }
 
     .tooltip__text {
-      min-width: 19em;
-      min-height: 9em;
-      padding-left: 7.5em;
+      min-width: 19rem;
+      min-height: 9rem;
+      padding-left: 7.5rem;
 
       .tooltip__content {
-        font-size: 1.2em;
+        font-size: 1.2rem;
       }
 
       .tooltip__clickInfo {
-        font-size: 0.8em;
-        margin: 1.25em 0.8em;
+        font-size: 0.8rem;
+        margin: 1.25rem 0.8rem;
         background-color: #ddd;
         color: #666;
         font-style: italic;
-        padding: 0.8em;
+        padding: 0.8rem;
 
         .tooltip__clickInfo__icon {
           position: absolute;
         }
 
         span {
-          margin-left: 2em;
+          margin-left: 2rem;
         }
       }
     }
 
     .tooltip__footer {
-      margin: 0.8em 0;
-      min-height: 2em;
+      margin: 0.8rem 0;
+      min-height: 2rem;
 
       .tooltip__button--primary {
         float: right;
