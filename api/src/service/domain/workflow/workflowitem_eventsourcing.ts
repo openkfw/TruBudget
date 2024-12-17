@@ -107,6 +107,7 @@ export function parseWorkflowitemFromSnapshot(workflowitemJson): Workflowitem.Wo
     currency: workflowitemJson.currency,
     tags: workflowitemJson.tags,
     fundingOrganization: workflowitemJson.fundingOrganization,
+    markdown: workflowitemJson.markdown,
   };
 }
 
@@ -123,6 +124,7 @@ function newTraceEvent(
       amount: workflowitem.amount,
       currency: workflowitem.currency,
       amountType: workflowitem.amountType,
+      markdown: workflowitem.markdown,
     },
   };
 }

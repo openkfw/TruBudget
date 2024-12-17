@@ -1,6 +1,7 @@
-import React, { useCallback } from "react";
+import React, { useCallback, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 
+import AutoAwesomeIcon from "@mui/icons-material/AutoAwesome";
 import StatusIcon from "@mui/icons-material/Build";
 import ProjectIcon from "@mui/icons-material/Business";
 import NodesIcon from "@mui/icons-material/DesktopWindows";
@@ -22,6 +23,7 @@ import Subheader from "@mui/material/ListSubheader";
 import Stack from "@mui/material/Stack";
 import Switch from "@mui/material/Switch";
 
+import { useTourAppContext } from "../../context/tour";
 import strings from "../../localizeStrings";
 
 import DownloadBackupButton from "./DownloadBackupButton";
@@ -62,6 +64,16 @@ const SideNavCard = ({
     }
   }, [disableLiveUpdates, enableLiveUpdates, isLiveUpdateAllProjectsEnabled]);
 
+  const {
+    state: { run },
+    startTour,
+    goToNextStepIf
+  } = useTourAppContext();
+
+  useEffect(() => {
+    goToNextStepIf();
+  });
+
   return (
     <div className="side-navigation" data-test="side-navigation">
       <div
@@ -95,7 +107,7 @@ const SideNavCard = ({
           </ListItem>
         </div>
       </div>
-      <List>
+      <List data-test="sidebarmenu-items-main-group">
         <Subheader>{strings.navigation.selections}</Subheader>
         <ListItemButton onClick={() => navigate("/")} data-test="side-navigation-projects">
           <ListItemIcon>
@@ -165,6 +177,18 @@ const SideNavCard = ({
         </div>
       </List>
       <Divider />
+
+      <List>
+        <Subheader>{strings.common.tour} </Subheader>
+        <ListItemButton onClick={startTour} data-test="side-navigation-tour">
+          <ListItemIcon>
+            <AutoAwesomeIcon />
+          </ListItemIcon>
+          <ListItemText primary={run ? strings.common.tourRestart : strings.common.tourStart} />
+        </ListItemButton>
+      </List>
+      <Divider />
+
       <List>
         {groups.length ? <Subheader> {strings.users.groups} </Subheader> : null}
         {groups.map((group) => {

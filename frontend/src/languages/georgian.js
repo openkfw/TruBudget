@@ -23,7 +23,7 @@ const ka = {
     approver: "Approver",
     assign: "assign",
     assigned_budget: "გამოყოფილი ბიუჯეტი",
-    assigned: "Assigned",
+    assigned: "მინიჭებული",
     assignees: "Assignee(s)",
     back: "უკან დაბრუნება",
     backToLogin: "უკან შესვლა",
@@ -130,6 +130,9 @@ const ka = {
     task_status: "დავალების სტატუსი",
     thumbnail: "Thumbnail",
     total_budget: "მთლიანი ბიუჯეტი",
+    tour: "Tour",
+    tourStart: "Start Tour",
+    tourRestart: "Restart Tour",
     type: "ტიპი",
     update: "განახლება",
     username: "მომხმარებლის სახელი",
@@ -152,6 +155,8 @@ const ka = {
     account_name: "ანგარიშის სახელი",
     add_group: "ჯგუფის დამატება",
     add_user: "მომხმარებლის დამატება",
+    add_new_user: "ახალი მომხმარებლის დამატება",
+    add_new_group: "ახალი ჯგუფის დამატება",
     change_password_for: "პაროლის შეცვლა {0}",
     current_user_password: "შენი პაროლი",
     edit_group: "ჯგუფის რედაქტირება",
@@ -281,7 +286,8 @@ const ka = {
     project_thumbnail: "Thumbnail",
     project_title_description: "პროექტის სახელწოდება",
     project_title: "პროექტის სათაური",
-    project_searchtext: "პროექტების ძებნა"
+    project_searchtext: "პროექტების ძებნა",
+    markdown: "პროექტის აღწერა"
   },
 
   subproject: {
@@ -290,6 +296,7 @@ const ka = {
     workflow_mode: "სამუშაო რეჟიმი",
     workflow_mode_ordered: "სამუშაო სია (დალაგებული)",
     workflow_mode_unordered: "სამუშაო სია (არ დალაგებული)",
+    add_new_subproject: "ახალი ქვეპროექტის დამატება",
     subproject_add_title: "ახალი ქვეპროექტის დამატება",
     subproject_assigned_organization: "Assigned organization",
 
@@ -331,7 +338,7 @@ const ka = {
     workflow_budget_allocated: "გამოყოფილი",
     workflow_budget_disbursed: "გადახდილი",
     workflow_budget_na: "არ მიესადაგება",
-    workflow_budget_status_allocated: "Assigned",
+    workflow_budget_status_allocated: "მინიჭებული",
     workflow_budget_status_disbursed: "გადახდილი",
     workflow_budget_status_na: "N/A",
     workflow_budget: "ბიუჯეტის თანხა",
@@ -386,7 +393,9 @@ const ka = {
     workflowitem_type_general: "ზოგადი ტიპის სამუშაო ნაწილის შექმნა.",
     workflowitem_type_restricted:
       "შეზღუდული სამუშაო ნაკადის გადაცემისას ნებართვები ავტომატურად გაიცემა და გაუქმებულია. დავალება მხოლოდ შეინარჩუნებს ხედის ნებართვას.",
-    workflowitem_type: "Workflow action ტიპი"
+    workflowitem_type: "Workflow action ტიპი",
+    markdown: "აღწერა",
+    add_new_workflow: "დაამატეთ ახალი სამუშაო პროცესი"
   },
 
   workflowTemplate: {
@@ -714,6 +723,43 @@ const ka = {
     german: "გერმანული",
     portuguese: "პორტუგალიური",
     georgian: "ქართული ენა"
+  },
+
+  tour: {
+    back: "Back",
+    chaptersHeading: "Jump to specific chapter",
+    clickTry: "Click & Try",
+    clickOnArea: "Click on highlighted area to continue.",
+    hideChapters: "Hide tour chapters",
+    mainMenu: "Main menu",
+    menuCloseHint: "Click anywhere away from menu to close the main menu.",
+    next: "Next",
+    projectDetail: "Project detail",
+    projectsView: "Projects view",
+    showChapters: "Show tour chapters",
+    skip: "Skip",
+    steps: {
+      addProject: "Here you can add more projects.",
+      bulkActions: "You can also perform bulk actions on selected workflow actions.",
+      menu: "You can use main menu to navigate TruBudget application.",
+      menuClose: "Let's start with list of projects. Click anywhere away from menu.",
+      projectBudget: "You can see overal budget.",
+      projectCard: "Here you can see project overview card with project information.",
+      projectDetails: "This is project details page.",
+      projectDetailsButton: "Here you can display project details. Click on the button to see project details.",
+      projectOwner: "Here you can view the responsible person for this project.",
+      projectStatus: "Here you can see project overal status.",
+      projectSummary: "Here you can see project summary.",
+      subProjects: "And here is the list of all subprojects of this project.",
+      subprojectBudget: "Subproject budget.",
+      subprojectDetails: "Here you can display subproject details.",
+      subprojectRow: "Here you can see individual subproject rows.",
+      subprojectStatus: "Individual subprojects might have different status.",
+      tableView: "Here you can switch view of your projects between card and table view.",
+      welcome: "Welcome to TruBudget application tour.",
+      workflowActionRow: "Each row is an individual workflow action.",
+      workflowActionStatus: "Each action has own status. You cannot edit the closed actions."
+    }
   }
 };
 

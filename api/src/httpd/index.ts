@@ -1,7 +1,5 @@
 import Intent from "../authz/intents";
 import { AuthToken } from "../authz/token";
-import { Ctx } from "../lib/ctx";
-import { ServiceUser } from "../service/domain/organization/service_user";
 import Type from "../service/domain/workflowitem_types/types";
 
 export interface Document {
@@ -47,21 +45,6 @@ export type GlobalPermissionRevoker = (
   recipient: string,
   intent: Intent,
 ) => Promise<void>;
-
-export type ProjectCreator = (
-  ctx: Ctx,
-  issuer: ServiceUser,
-  token: AuthToken,
-  payload: CreateProjectPayload,
-) => Promise<void>;
-
-export type ProjectAssigner = (
-  token: AuthToken,
-  projectId: string,
-  assignee: string,
-) => Promise<void>;
-
-export type ProjectUpdater = (token: AuthToken, projectId: string, update: object) => Promise<void>;
 
 type MaybeHistoryEvent = null | {
   key: string; // the resource ID (same for all events that relate to the same resource)

@@ -6,7 +6,7 @@ This setup helps operation teams to setup TruBudget in an easy way with a pre-co
 
 To setup TruBudget, you need to install [Docker](https://www.docker.com/community-edition#/download) (version 20.10.7 or higher) and [Docker Compose](https://docs.docker.com/compose/install/) (version 1.29.2 or higher). If you use Docker Desktop, you need to expose a shared folder for `/alphaNode` in `Preferences/Resources/File Sharing` in order to store the local blockchain.
 
-First, to make sure the `.env` file is set, run `cp env.example .env`
+First, to make sure the `.env` file is set, run `bash env-vars-generator.sh` that will guid you through variables creation. Alternatively you can run `cp env.example .env` and copy example file and then manually update `.env` file.
 
 To start the slim setup (only blockchain, api, frontend), run `bash start-trubudget.sh` or `bash start-trubudget.sh --slim`.
 

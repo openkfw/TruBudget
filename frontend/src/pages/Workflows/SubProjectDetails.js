@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useRef } from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import AmountIcon from "@mui/icons-material/AccountBalance";
@@ -24,7 +24,15 @@ import TableRow from "@mui/material/TableRow";
 import Tooltip from "@mui/material/Tooltip";
 import Typography from "@mui/material/Typography";
 
-import { statusIconMapping, statusMapping, toAmountString, toCurrencyCode, trimSpecialChars, unixTsToString } from "../../helper.js";
+import { useTourAppContext } from "../../context/tour.js";
+import {
+  statusIconMapping,
+  statusMapping,
+  toAmountString,
+  toCurrencyCode,
+  trimSpecialChars,
+  unixTsToString
+} from "../../helper.js";
 import strings from "../../localizeStrings";
 import SubProjectAnalyticsDialog from "../Analytics/SubProjectAnalyticsDialog";
 import BudgetEmptyState from "../Common/BudgetEmptyState";
@@ -74,6 +82,31 @@ const SubProjectDetails = ({
   const validator = users.find((user) => user.id === subprojectValidator);
 
   const closingOfSubProjectAllowed = subProjectCanBeClosed(status === "closed", canCloseSubproject, workflowItems);
+
+  const {
+    setState,
+    state: { tourActive },
+    goToNextStepIf
+  } = useTourAppContext();
+
+  const ref = useRef();
+
+  useEffect(() => {
+    let timer;
+    if (tourActive && !ref.current) {
+      goToNextStepIf();
+      timer = setTimeout(() => {
+        setState({ run: true });
+      }, 1200);
+      ref.current = true;
+    }
+    return () => {
+      if (timer) {
+        clearTimeout(timer);
+      }
+    };
+  });
+
   return (
     <div className="sub-project-details-container">
       <Card className="sub-project-card">

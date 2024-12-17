@@ -2,12 +2,11 @@ import React from "react";
 import _isEmpty from "lodash/isEmpty";
 
 import ContentAdd from "@mui/icons-material/Add";
-import { Box } from "@mui/material";
+import { Box, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import Fab from "@mui/material/Fab";
 import TablePagination from "@mui/material/TablePagination";
-import Tooltip from "@mui/material/Tooltip";
 
 import { statusMapping, unixTsToString } from "../../helper";
 import strings from "../../localizeStrings";
@@ -67,7 +66,8 @@ const getTableEntries = ({
       creationUnixTs,
       projectedBudgets,
       additionalData,
-      tags
+      tags,
+      markdown = ""
     } = data;
     const budgets = <BudgetsList budgets={projectedBudgets} />;
     const mappedStatus = strings.common.status + ": " + statusMapping(status);
@@ -110,6 +110,7 @@ const getTableEntries = ({
           tags={tags}
           imagePath={imagePath}
           searchTermArray={searchTermArray}
+          markdown={markdown}
         />
       );
     } else return null;
@@ -144,19 +145,17 @@ const CardView = (props) => {
           labelRowsPerPage={strings.project.cards_per_page}
         />
         <Box className="add-project">
-          <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
-            <div className="project-add-button">
-              <Fab
-                aria-label="create"
-                disabled={!canCreateProject(allowedIntents) || isRoot}
-                onClick={() => showCreationDialog()}
-                color="primary"
-                data-test="add-project-button"
-              >
-                <ContentAdd />
-              </Fab>
-            </div>
-          </Tooltip>
+          <Fab
+            aria-label="create"
+            disabled={!canCreateProject(allowedIntents) || isRoot}
+            onClick={() => showCreationDialog()}
+            color="primary"
+            className="project-add-button card-view"
+            data-test="add-project-button"
+          >
+            <Typography className="add-new-project-text">{strings.project.add_new_project}</Typography>
+            <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
+          </Fab>
         </Box>
       </div>
       <div aria-label="projects" className="projects-table-entries">
@@ -164,18 +163,16 @@ const CardView = (props) => {
         <Card data-test="project-creation" className="add-project-card">
           <div className="add-project-content">
             <CardActions>
-              <Tooltip id="tooltip-pcreate" title={strings.project.add_new_project}>
-                <Fab
-                  className="content-add-button"
-                  aria-label="create"
-                  disabled={!canCreateProject(allowedIntents) || isRoot}
-                  onClick={() => showCreationDialog()}
-                  color="primary"
-                  data-test="create-project-button"
-                >
-                  <ContentAdd />
-                </Fab>
-              </Tooltip>
+              <Fab
+                className="content-add-button"
+                aria-label="create"
+                disabled={!canCreateProject(allowedIntents) || isRoot}
+                onClick={() => showCreationDialog()}
+                color="primary"
+                data-test="create-project-button"
+              >
+                <ContentAdd />
+              </Fab>
             </CardActions>
           </div>
         </Card>

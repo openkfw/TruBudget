@@ -1,0 +1,89 @@
+.tooltip__body {
+  z-index: 1000;
+  background-color: #fff;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
+  padding: 0.8rem;
+  font-size: 1rem;
+  line-height: 1.5;
+  color: #333;
+  min-width: 13rem;
+  white-space: normal;
+  text-align: left;
+  cursor: default;
+  transition: opacity 0.3s;
+
+  .tooltip__close {
+    float: right;
+    font-size: 0.8rem;
+    color: #999;
+    cursor: pointer;
+  }
+
+  .tooltip__content_wrapper {
+    margin-top: 30px;
+
+    .tooltip__typeIcon {
+      width: 120px;
+      padding-left: 0.8rem;
+      float: left;
+
+      p {
+        text-align: left;
+        margin-left: 0.6rempx;
+      }
+    }
+
+    .tooltip__navigationLink {
+      margin-left: 0.35rem;
+    }
+
+    .tooltip__text {
+      min-width: 19rem;
+      min-height: 9rem;
+      padding-left: 7.5rem;
+
+      .tooltip__content {
+        font-size: 1.2rem;
+      }
+
+      .tooltip__clickInfo {
+        font-size: 0.8rem;
+        margin: 1.25rem 0.8rem;
+        background-color: #ddd;
+        color: #666;
+        font-style: italic;
+        padding: 0.8rem;
+
+        .tooltip__clickInfo__icon {
+          position: absolute;
+        }
+
+        span {
+          margin-left: 2rem;
+        }
+      }
+    }
+
+    .tooltip__footer {
+      margin: 0.8rem 0;
+      min-height: 2rem;
+
+      .tooltip__button--primary {
+        float: right;
+      }
+    }
+  }
+}
+
+.__floater__arrow {
+  bottom: 1px;
+  span {
+    svg {
+      polygon {
+        fill: #fff !important;
+      }
+    }
+  }
+}

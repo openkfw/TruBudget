@@ -16,7 +16,6 @@ import { ConnectionSettings } from "./RpcClient.h";
 export { ConnToken } from "./conn";
 export * from "./event";
 export * from "./issuer";
-export * from "./ProjectEvents";
 
 const workflowitemsGroupKey = (subprojectId): string => `${subprojectId}_workflows`;
 const workflowitemOrderingKey = (subprojectId): string => `${subprojectId}_workflowitem_ordering`;

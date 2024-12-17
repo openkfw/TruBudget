@@ -130,6 +130,9 @@ const en = {
     task_status: "Task status",
     thumbnail: "Thumbnail",
     total_budget: "Participating Stakeholder",
+    tour: "Tour",
+    tourStart: "Start Tour",
+    tourRestart: "Restart Tour",
     type: "Type",
     update: "Update",
     username: "Login ID",
@@ -152,6 +155,8 @@ const en = {
     account_name: "Account Name",
     add_group: "Add Group",
     add_user: "Add User",
+    add_new_user: "Add new user",
+    add_new_group: "Add new group",
     change_password_for: "Change password for {0}",
     current_user_password: "Your password",
     edit_group: "Edit Group",
@@ -280,7 +285,8 @@ const en = {
     project_thumbnail: "Thumbnail",
     project_title_description: "Name of the project",
     project_title: "Project title",
-    project_searchtext: "Search projects"
+    project_searchtext: "Search projects",
+    markdown: "Project description"
   },
 
   subproject: {
@@ -289,6 +295,7 @@ const en = {
     workflow_mode: "Workflow Mode",
     workflow_mode_ordered: "Workflow (Ordered)",
     workflow_mode_unordered: "Action List (Unordered)",
+    add_new_subproject: "Add new subproject",
     subproject_add_title: "Add new subproject",
     subproject_assigned_organization: "Assigned organization",
     subproject_budget_amount: "Subproject  budget amount",
@@ -383,7 +390,9 @@ const en = {
     workflowitem_type_general: "Create a workflow action of type general.",
     workflowitem_type_restricted:
       "When assigning a restricted workflow action permissions are automatically granted and revoked. The assigner will only keep the view permissions.",
-    workflowitem_type: "Workflow action type"
+    workflowitem_type: "Workflow action type",
+    markdown: "Workflow action description",
+    add_new_workflow: "Add new workflow"
   },
 
   workflowTemplate: {
@@ -712,6 +721,43 @@ const en = {
     german: "German",
     portuguese: "Portuguese",
     georgian: "Georgian"
+  },
+
+  tour: {
+    back: "Back",
+    chaptersHeading: "Jump to specific chapter",
+    clickTry: "Click & Try",
+    clickOnArea: "Click on highlighted area to continue.",
+    hideChapters: "Hide tour chapters",
+    mainMenu: "Main menu",
+    menuCloseHint: "Click anywhere away from menu to close the main menu.",
+    next: "Next",
+    projectDetail: "Project detail",
+    projectsView: "Projects view",
+    showChapters: "Show tour chapters",
+    skip: "Skip",
+    steps: {
+      addProject: "Here you can add more projects.",
+      bulkActions: "You can also perform bulk actions on selected workflow actions.",
+      menu: "You can use main menu to navigate TruBudget application.",
+      menuClose: "Let's start with list of projects. Click anywhere away from menu.",
+      projectBudget: "You can see overal budget.",
+      projectCard: "Here you can see project overview card with project information.",
+      projectDetails: "This is project details page.",
+      projectDetailsButton: "Here you can display project details. Click on the button to see project details.",
+      projectOwner: "Here you can view the responsible person for this project.",
+      projectStatus: "Here you can see project overal status.",
+      projectSummary: "Here you can see project summary.",
+      subProjects: "And here is the list of all subprojects of this project.",
+      subprojectBudget: "Subproject budget.",
+      subprojectDetails: "Here you can display subproject details.",
+      subprojectRow: "Here you can see individual subproject rows.",
+      subprojectStatus: "Individual subprojects might have different status.",
+      tableView: "Here you can switch view of your projects between card and table view.",
+      welcome: "Welcome to TruBudget application tour.",
+      workflowActionRow: "Each row is an individual workflow action.",
+      workflowActionStatus: "Each action has own status. You cannot edit the closed actions."
+    }
   }
 };
 

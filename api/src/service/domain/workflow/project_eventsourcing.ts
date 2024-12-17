@@ -279,5 +279,6 @@ export function parseProjectFromSnapshot(projectJson): Project.Project {
     log: projectJson.log,
     additionalData: projectJson.additionalData,
     tags: projectJson.tags,
+    markdown: projectJson.markdown,
   };
 }

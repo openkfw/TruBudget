@@ -59,7 +59,7 @@ describe("Attaching a document to a workflowitem.", function () {
     cy.get("[data-test=edit-workflowitem]").should("be.visible").click();
 
     // click "next" button:
-    cy.get("[data-test=next]").should("be.visible").click();
+    cy.get("[data-test=next]").scrollIntoView().should("be.visible").click();
 
     // "upload" the file:
     cy.fixture(fileName, { encoding: null }).then((contents) => {
@@ -199,7 +199,7 @@ describe("Deleting a document from a workflowitem.", function () {
     cy.get("[data-test=edit-workflowitem]").should("be.visible").click();
 
     // click "next" button:
-    cy.get("[data-test=next]").should("be.visible").click();
+    cy.get("[data-test=next]").scrollIntoView().should("be.visible").click();
 
     // "upload" the file:
     cy.fixture(fileName, { encoding: null }).then((contents) => {
@@ -273,7 +273,7 @@ describe("Deleting a document from a closed workflowitem.", function () {
     cy.get("[data-test=edit-workflowitem]").last().should("be.visible").click();
 
     // click "next" button:
-    cy.get("[data-test=next]").should("be.visible").click();
+    cy.get("[data-test=next]").scrollIntoView().should("be.visible").click();
 
     // "upload" the file:
     cy.fixture(fileName, { encoding: null }).then((contents) => {

@@ -131,6 +131,9 @@ const fr = {
     task_status: "Etat de la tâche",
     thumbnail: "Vignette",
     total_budget: "Coût total",
+    tour: "Tour",
+    tourStart: "Start Tour",
+    tourRestart: "Restart Tour",
     type: "Type",
     update: "Mettre à jour",
     username: "Identifiant",
@@ -198,7 +201,8 @@ const fr = {
     project_thumbnail: "Vignette",
     project_title_description: "Description du titre du projet",
     project_title: "Titre de projet",
-    project_searchtext: "Recherche de projets"
+    project_searchtext: "Recherche de projets",
+    markdown: "Commentaire sur le projet"
   },
 
   subproject: {
@@ -207,6 +211,7 @@ const fr = {
     workflow_mode: "Mode de workflow action",
     workflow_mode_ordered: "Workflow action (ordonnée)",
     workflow_mode_unordered: "Liste d'actions (non ordonnée)",
+    add_new_subproject: "Ajouter une nouvelle composante",
     subproject_add_title: "Ajouter une nouvelle composante",
     subproject_assigned_organization: "Organisation assignée",
 
@@ -304,7 +309,9 @@ const fr = {
     workflowitem_type_general: "Créer une étape de workflow action de type général.",
     workflowitem_type_restricted:
       "Lors de l'attribution d'un workflow action restreint, les autorisations sont automatiquement accordées et révoquées. Le cédant ne conservera que les autorisations de visualisation",
-    workflowitem_type: "Type de l’étape de workflow action"
+    workflowitem_type: "Type de l’étape de workflow action",
+    markdown: "Description de l'action du workflow",
+    add_new_workflow: "Ajouter un nouveau flux de travail"
   },
 
   workflowTemplate: {
@@ -327,6 +334,8 @@ const fr = {
     account_name: "Compte utilisateur",
     add_group: "Ajouter un groupe",
     add_user: "Ajouter un nouveau compte utilisateur",
+    add_new_user: "Ajouter un nouvel utilisateur",
+    add_new_group: "Ajouter un nouveau groupe",
     change_password_for: "Changer le mot de passe pour {0}",
     current_user_password: "Votre mot de passe",
     edit_group: "Éditer un groupe",
@@ -722,6 +731,43 @@ const fr = {
     german: "Allemand",
     portuguese: "Portugues",
     georgian: "Géorgien"
+  },
+
+  tour: {
+    back: "Back",
+    chaptersHeading: "Jump to specific chapter",
+    clickTry: "Click & Try",
+    clickOnArea: "Click on highlighted area to continue.",
+    hideChapters: "Hide tour chapters",
+    mainMenu: "Main menu",
+    menuCloseHint: "Click anywhere away from menu to close the main menu.",
+    next: "Next",
+    projectDetail: "Project detail",
+    projectsView: "Projects view",
+    showChapters: "Show tour chapters",
+    skip: "Skip",
+    steps: {
+      addProject: "Here you can add more projects.",
+      bulkActions: "You can also perform bulk actions on selected workflow actions.",
+      menu: "You can use main menu to navigate TruBudget application.",
+      menuClose: "Let's start with list of projects. Click anywhere away from menu.",
+      projectBudget: "You can see overal budget.",
+      projectCard: "Here you can see project overview card with project information.",
+      projectDetails: "This is project details page.",
+      projectDetailsButton: "Here you can display project details. Click on the button to see project details.",
+      projectOwner: "Here you can view the responsible person for this project.",
+      projectStatus: "Here you can see project overal status.",
+      projectSummary: "Here you can see project summary.",
+      subProjects: "And here is the list of all subprojects of this project.",
+      subprojectBudget: "Subproject budget.",
+      subprojectDetails: "Here you can display subproject details.",
+      subprojectRow: "Here you can see individual subproject rows.",
+      subprojectStatus: "Individual subprojects might have different status.",
+      tableView: "Here you can switch view of your projects between card and table view.",
+      welcome: "Welcome to TruBudget application tour.",
+      workflowActionRow: "Each row is an individual workflow action.",
+      workflowActionStatus: "Each action has own status. You cannot edit the closed actions."
+    }
   }
 };
 

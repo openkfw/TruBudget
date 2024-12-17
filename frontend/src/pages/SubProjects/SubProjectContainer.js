@@ -3,8 +3,12 @@ import { connect } from "react-redux";
 import _isEqual from "lodash/isEqual";
 import queryString from "query-string";
 
+import ContentAdd from "@mui/icons-material/Add";
+import { Fab, Typography } from "@mui/material";
+
 import { toJS } from "../../helper";
 import { convertToSearchBarString } from "../../helper";
+import strings from "../../localizeStrings.js";
 import { canAssignProject, canCreateSubProject } from "../../permissions";
 import WebWorker from "../../WebWorker.js";
 import { withRouter } from "../../wrappers/withRouter";
@@ -36,6 +40,8 @@ import ProjectHistoryDrawer from "./ProjectHistoryDrawer";
 import SubProjectDialogContainer from "./SubProjectDialogContainer";
 import SubProjectPermissionsContainer from "./SubProjectPermissionsContainer";
 import SubProjects from "./SubProjects";
+
+import "./SubProjectContainer.scss";
 
 class SubProjectContainer extends Component {
   constructor(props) {
@@ -97,7 +103,7 @@ class SubProjectContainer extends Component {
   };
 
   render() {
-    const canCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
+    const allowedToCreateSubproject = canCreateSubProject(this.props.allowedIntents) && !this.props.isRoot;
     const canAssign = canAssignProject(this.props.allowedIntents);
     const canClose = this.props.currentUser === this.props.projectAssignee;
     const projectId = this.projectId;
@@ -105,6 +111,17 @@ class SubProjectContainer extends Component {
     return (
       <div>
         {this.props.isLiveUpdatesProjectEnabled ? <LiveUpdates update={this.update} /> : null}
+        <Fab
+          aria-label="create subproject"
+          disabled={!allowedToCreateSubproject || this.props.projectStatus === "closed"}
+          onClick={this.props.showSubprojectDialog}
+          color="primary"
+          className="sub-project-add-button"
+          data-test="subproject-create-button"
+        >
+          <Typography className="add-new-sub-project-text">{strings.subproject.add_new_subproject}</Typography>
+          <ContentAdd sx={{ width: "1.25rem", height: "1.25rem" }} />
+        </Fab>
         <div className="inner-container">
           {!this.state.isDataFetched ? (
             <div />
@@ -121,7 +138,6 @@ class SubProjectContainer extends Component {
               <SubProjects
                 {...this.props}
                 projectId={projectId}
-                canCreateSubProject={canCreateSubproject}
                 storeSearchTerm={this.props.storeSubSearchTerm}
                 storeSearchBarDisplayed={this.props.storeSubSearchBarDisplayed}
                 searchTerm={this.props.searchTerm}
