@@ -20,6 +20,27 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 <!-- ### Fixed -->
   
   
+## [2.18.0] - 2024-12-17
+
+<!-- ## Unreleased -->
+
+### Added
+  
+- UI: More descriptive Add buttons [#2107](https://github.com/openkfw/TruBudget/issues/2107)
+- api: Configurable refresh token and session token length [#2103](https://github.com/openkfw/TruBudget/issues/2103)
+
+
+### Changed
+
+- UI: Refactor styles for Workflow action [#2105](https://github.com/openkfw/TruBudget/issues/2105)
+- UI: New TruBudget background [#2097](https://github.com/openkfw/TruBudget/issues/2097)
+
+
+### Fixed
+
+- ui: Permissions not loaded correctly when switching users [#2109](https://github.com/openkfw/TruBudget/issues/2109)
+  
+  
 ## [2.17.0] - 2024-11-11
 
 <!-- ## Unreleased -->
@@ -1308,7 +1329,8 @@ If you install TruBudget freshly, this is not an issue for you. If you update to
 - Updated translation keys and language-specific formatting.
 - Fixed bug where the subproject permissions dialog would break the details view of another project.
 
-[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.17.0...main
+[unreleased]: https://github.com/openkfw/TruBudget/compare/v2.18.0...main
+[2.18.0]: https://github.com/openkfw/TruBudget/compare/v2.17.0...v2.18.0
 [2.17.0]: https://github.com/openkfw/TruBudget/compare/v2.16.0...v2.17.0
 [2.16.0]: https://github.com/openkfw/TruBudget/compare/v2.15.0...v2.16.0
 [2.15.0]: https://github.com/openkfw/TruBudget/compare/v2.14.0...v2.15.0
