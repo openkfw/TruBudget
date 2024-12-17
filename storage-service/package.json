@@ -1,6 +1,6 @@
 {
   "name": "storage-service",
-  "version": "2.17.0",
+  "version": "2.18.0",
   "private": true,
   "description": "Handles the TruBudget object storage",
   "main": "src/index.js",
