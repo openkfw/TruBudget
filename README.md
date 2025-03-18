@@ -95,3 +95,4 @@ Data that is relevant for GDPR (e.g. personal data) should be stored off-chain.
 Trubudget is [GNU GENERAL PUBLIC](./LICENSE) licensed.
 
 TruBudget is a workflow engine therefore does not contain any relevant data to GDPR. If relevant data is collected, the organizations using the software have to ensure that the data is appropriately encoded or stored.
+
