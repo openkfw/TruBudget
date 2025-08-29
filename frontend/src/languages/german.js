@@ -125,7 +125,7 @@ const de = {
     invalid_tag: "Ungültiger Tag",
     invalid_format: "Ungültiges Format",
     task_status: "Task status",
-    total_budget: "Gesamtes Budget",
+    total_budget: "Zugehöriges Budget",
     tour: "Tour",
     tourStart: "Start Tour",
     tourRestart: "Restart Tour",
@@ -230,7 +230,7 @@ const de = {
       "Nur Workflow-Elemente vom Typ 'eingeschränkt' zulassen. Bei Zuweisung eines eingeschränkten Workflow-Items an einen anderen User werden Berechtigungen automatisch erteilt und entzogen. Der Zuweisende behält nur die Anzeigerechte.",
     workflowitem_assignee: "Fester Zuständiger",
     organization_info: "Förderer",
-    total_budget_info: "Beteiligter Stakeholder",
+    total_budget_info: "Zugehöriges Budget",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow items in subproject without an option to change it."
@@ -486,7 +486,7 @@ const de = {
     projected_budget_ratio: "Projizierte Budgetquote",
     projected_budgets_distribution: "Verteilung des geplanten Budgets",
     subproject_analytics: "Subprojekt Analyse",
-    total_budget_distribution: "Gesamte Budget Verteilung",
+    total_budget_distribution: "Zugehörige Budgetverteilung",
     total: "Gesamt:"
   },
 
