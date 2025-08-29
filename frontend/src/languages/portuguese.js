@@ -130,7 +130,7 @@ const pt = {
     tag: "Tag",
     task_status: "Status da tarefa",
     thumbnail: "Miniatura",
-    total_budget: "Orçamento total",
+    total_budget: "Orçamento associado",
     tour: "Tour",
     tourStart: "Start Tour",
     tourRestart: "Restart Tour",
@@ -319,7 +319,7 @@ const pt = {
       "Permitir apenas item de fluxo de trabalho do tipo restrito. Ao atribuir um item de fluxo de trabalho restrito, as permissões são concedidas e revogadas automaticamente. O atribuidor manterá apenas as permissões de visualização.",
     workflowitem_assignee: "Cessionário padrão",
     organization_info: "Organização financiadora",
-    total_budget_info: "Parte interessada participante",
+    total_budget_info: "Orçamento associado",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow actions items in subproject without an option to change it."
@@ -486,7 +486,7 @@ const pt = {
     projected_budget_ratio: "% do Orçamento Projetado",
     projected_budgets_distribution: "Distribuição dos orçamentos projetados",
     subproject_analytics: "Dashboard do Subprojeto",
-    total_budget_distribution: "Distribuição do Orçamento Total",
+    total_budget_distribution: "Distribuição do Orçamento associado",
     total: "Total:"
   },
 

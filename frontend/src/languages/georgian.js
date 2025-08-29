@@ -129,7 +129,7 @@ const ka = {
     tag: "თაგი",
     task_status: "დავალების სტატუსი",
     thumbnail: "Thumbnail",
-    total_budget: "მთლიანი ბიუჯეტი",
+    total_budget: "ასოცირებული ბიუჯეტი",
     tour: "Tour",
     tourStart: "Start Tour",
     tourRestart: "Restart Tour",
@@ -319,7 +319,7 @@ const ka = {
       "მხოლოდ ტიპის workflow action- ის აკრძალვა შეზღუდულია. შეზღუდული workflow action- ის მინიჭებისას, ნებართვები ავტომატურად გაიცემა და გაუქმდება. შემკვეთი მხოლოდ ნახვის ნებართვებს ინახავს.",
     workflowitem_assignee: "ფიქსირებული მიმწოდებელი",
     organization_info: "დამფინანსებელი ორგანიზაცია",
-    total_budget_info: "მონაწილე დაინტერესებული მხარე",
+    total_budget_info: "ასოცირებული ბიუჯეტი",
     default_assignee_warning: "Fixed assignee cannot be changed once Subproject is created.",
     default_assignee_warning2:
       "Fixed assignee will be assigned to all workflow actions in subproject without an option to change it."
@@ -484,7 +484,7 @@ const ka = {
     projected_budget_ratio: "Projected Budget Ratio",
     projected_budgets_distribution: "დაგეგმილი ბიუჯეტის განაწილება",
     subproject_analytics: "ქვეპროექტების ანალიტიკა",
-    total_budget_distribution: "მთლიანი ბიუჯეტის განაწილება",
+    total_budget_distribution: "ასოცირებული ბიუჯეტის განაწილება",
     total: "სულ:"
   },
 
