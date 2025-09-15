@@ -293,6 +293,7 @@ export const envVarsSchema = Joi.object({
   APPLICATIONINSIGHTS_CONNECTION_STRING: Joi.string()
     .allow("")
     .note("Azure Application Insights Connection String"),
+  AZURE_POSTGRESQL_CLIENTID: Joi.string().allow(""),
 })
   .unknown()
   .required();

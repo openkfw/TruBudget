@@ -57,9 +57,11 @@ interface ProcessEnvVars {
   ACCESS_TOKEN_EXPIRATION: string;
   API_REFRESH_TOKENS_TABLE: string;
   REFRESH_TOKEN_STORAGE?: string; // "db" || "memory" || undefined
+  AZURE_POSTGRESQL_CLIENTID: string;
 }
 
 interface DatabaseConfig {
+  azureClientId: string;
   user: string;
   password: string;
   host: string;
@@ -192,6 +194,7 @@ export const config: Config = {
     jwsSignature: envVars.AUTHPROXY_JWS_SIGNATURE,
   },
   db: {
+    azureClientId: envVars.AZURE_POSTGRESQL_CLIENTID,
     user: envVars.API_DB_USER,
     password: envVars.API_DB_PASSWORD,
     host: envVars.API_DB_HOST,

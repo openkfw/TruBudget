@@ -1,3 +1,4 @@
+import { DefaultAzureCredential } from "@azure/identity";
 import { Knex, knex } from "knex";
 
 import { config } from "../config";
@@ -30,6 +31,22 @@ class DbConnector {
 
   public getDb = async (): Promise<Knex> => {
     if (!this.pool) {
+      if (config.db.azureClientId) {
+        try {
+          logger.trace("Retrieving Azure Postgresql credential");
+          const credential = new DefaultAzureCredential({
+            managedIdentityClientId: config.db.azureClientId,
+          });
+
+          const accessToken = await credential.getToken(
+            "https://ossrdbms-aad.database.windows.net/.default",
+          );
+          config.db.password = accessToken.token;
+        } catch (e) {
+          logger.error(e);
+        }
+      }
+
       logger.trace("Initializing DB connection(s) ...");
       this.pool = this.initializeConnection();
     }
