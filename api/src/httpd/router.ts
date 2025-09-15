@@ -22,6 +22,7 @@ import { restoreBackup } from "../system/restoreBackup";
 
 import { AuthenticatedRequest, HttpResponse } from "./lib";
 import { getSchema, getSchemaWithoutAuth } from "./schema";
+import { getTimestamps } from "../system/getTimestamps";
 
 const send = (res, httpResponse: HttpResponse): void => {
   const [code, body] = httpResponse;
@@ -227,7 +228,7 @@ export const registerRoutes = (
   storageServiceClient: StorageServiceClient,
   invalidateCache: () => void,
 ): FastifyInstance => {
-  server.register(async function () {
+  server.register(async function() {
     const multichainClient = conn.multichainClient;
 
     // ------------------------------------------------------------
@@ -279,6 +280,21 @@ export const registerRoutes = (
           .catch((err) => handleError(request, reply, err));
       },
     );
+
+    server.get(
+      `${urlPrefix}/timestamps`,
+      silentRouteSettings(getSchema(server, "timestamps")),
+      (request, reply) => {
+        getTimestamps(
+          multichainClient,
+        )
+          .then((response) => {
+            send(reply, response);
+          })
+          .catch((err) => handleError(request, reply, err));
+      },
+    )
+
 
     // ------------------------------------------------------------
     //       network

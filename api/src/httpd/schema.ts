@@ -143,6 +143,40 @@ const schemas: Schemas = {
     },
   },
 
+  timestamps :{
+    schema: {
+      description: "Returns the latest 10 timestamps",
+      tags: ["system"],
+      summary: "Get timestamps",
+      security: [
+        {
+          bearerToken: [],
+        },
+      ],
+      response: {
+        200: {
+          description: "successful response",
+          type: "object",
+          properties: {
+            apiVersion: { type: "string", example: "1.0" },
+            data: {
+              type: "object",
+              properties: {
+                timestamps: {
+                  type: "array",
+                  items: {
+                    type: "number",
+                    example: 1613000000,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    }
+  },
+
   registerNode: {
     schema: {
       description: "Used by non-alpha MultiChain nodes to register their wallet address.",
